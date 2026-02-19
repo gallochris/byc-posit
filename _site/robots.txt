@@ -1,1 +1,1 @@
-Sitemap: https://cjg.quarto.pub/bless-your-chart/sitemap.xml
+Sitemap: https://your-connect-server.com/bless-your-chart/sitemap.xml

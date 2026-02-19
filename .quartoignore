@@ -1,0 +1,7 @@
+data/
+tmp/
+*.zip
+*.csv
+*.xlsx
+*.png
+posts/byc_036/
