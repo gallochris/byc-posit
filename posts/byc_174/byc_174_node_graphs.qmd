@@ -231,4 +231,150 @@ ggplot2::ggsave(
 
 ### 
 
-### 
+### ACC Standings table 
+
+```{r acc-standings, warning=FALSE, message=FALSE}
+
+acc <- readr::read_csv("acc-standings.csv") |> 
+  dplyr::select(-...1)
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png'
+       style='height: 105px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC standings <br>through February 18 games</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Sorted by overall conference win percentage.<br> Table includes point differentials, home and away records in league play.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+final_tbl <- acc |> 
+  dplyr::arrange(-win_pct) |> 
+  dplyr::mutate(
+    overall_rec = paste0(wins, "-", loss),
+    home_rec = paste0(home_w, "-", home_l),
+    away_rec = paste0(away_w, "-", away_l),
+  ) |> 
+  cbbplotR::gt_cbb_teams(team, team, include_name = FALSE) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gt::cols_hide(columns = c(wins, loss, home_w, home_l, away_w, away_l)) |> 
+  gtUtils::gt_theme_gtutils() |>
+  gt::fmt(
+    columns = c(pd, home_pd, away_pd),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::fmt_number(columns = ends_with("win_pct"), decimals = 3) |>
+  gt::fmt_number(columns = ends_with("wp"), decimals = 3) |>
+  gt::cols_align(columns = c(team), align = "center") |>
+  gtExtras::gt_merge_stack(
+    col1 = win_pct,
+    col2 = overall_rec,
+    palette = c("black", "#333333")
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = home_wp,
+    col2 = home_rec,
+    palette = c("black", "#333333")
+  ) |> 
+   gtExtras::gt_merge_stack(
+    col1 = away_wp,
+    col2 = away_rec,
+    palette = c("black", "#333333")
+  ) |> 
+   gt::data_color(
+    columns = c(win_pct, home_wp, away_wp),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", 
+                "#ffffbf", "#a6d96a", 
+                "#1a9641"),
+    alpha = 0.6
+  ) |> 
+   gt::data_color(
+    columns = c(pd, home_pd, away_pd),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", 
+                "#ffffbf", "#a6d96a", 
+                "#1a9641"),
+    alpha = 0.6
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    win_pct = list(heading = "Overall", subtitle = "W-L"),
+    pd = list(heading = "+/-", subtitle = "All games"),
+    home_wp = list(heading = "Home", subtitle = "W-L"),
+    home_pd = list(heading = "+/-", subtitle = "Home games"),
+    away_wp = list(heading = "Away", subtitle = "W-L"),
+    away_pd = list(heading = "+/-", subtitle = "Away games"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(
+    team = "",
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from barttorvik.com and theme for {gtUtils}<br>
+                ACC teams play 14 opponents once, two opponents twice, and one opponent not at all.<br>
+                Teams that don't play each other:<br>
+                Florida State-Louisville, Cal-NC State, Notre Dame-Wake Forest<br>
+                Stanford-Syracuse, Pittsburgh-Virginia Tech, Clemson-Virginia<br>
+                Duke-Miami, Georgia Tech-SMU, Boston College-North Carolina<br>
+                <hr><b>Table by Chris at Bless your chart | February 19, 2026</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+    gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)  # Make it thicker than internal borders
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  )  |> 
+   
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |>
+  gt::tab_options(table.width = gt::px(650))
+
+
+
+gt_save_crop(final_tbl,
+             file = "acc_tbl.png",
+             whitespace = 60,
+             bg = "#FFFDF5")
+
+
+final_tbl
+```

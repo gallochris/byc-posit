@@ -409,8 +409,1151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="section" class="level3">
 <h3 class="anchored" data-anchor-id="section"></h3>
 </section>
-<section id="section-1" class="level3">
-<h3 class="anchored" data-anchor-id="section-1"></h3>
+<section id="acc-standings-table" class="level3">
+<h3 class="anchored" data-anchor-id="acc-standings-table">ACC Standings table</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>acc <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"acc-standings.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>...<span class="dv">1</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>custom_header <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;div style='display: flex; justify-content: space-between; align-items: center;'&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;div&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png'</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="st">       style='height: 105px; width: auto; vertical-align: middle;'&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;div style='flex-grow:1; margin-left: 30px; margin-right: 30px'&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'&gt;ACC standings &lt;br&gt;through February 18 games&lt;/span&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'&gt;Sorted by overall conference win percentage.&lt;br&gt; Table includes point differentials, home and away records in league play.&lt;/span&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;div&gt;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="st">       style='height: 45px; width: auto; vertical-align: middle;'&gt;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="st">   &lt;/div&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;br&gt;"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>final_tbl <span class="ot">&lt;-</span> acc <span class="sc">|&gt;</span> </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="sc">-</span>win_pct) <span class="sc">|&gt;</span> </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">overall_rec =</span> <span class="fu">paste0</span>(wins, <span class="st">"-"</span>, loss),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">home_rec =</span> <span class="fu">paste0</span>(home_w, <span class="st">"-"</span>, home_l),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">away_rec =</span> <span class="fu">paste0</span>(away_w, <span class="st">"-"</span>, away_l),</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  cbbplotR<span class="sc">::</span><span class="fu">gt_cbb_teams</span>(team, team, <span class="at">include_name =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt_markdown</span>(team) <span class="sc">|&gt;</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_hide</span>(<span class="at">columns =</span> <span class="fu">c</span>(wins, loss, home_w, home_l, away_w, away_l)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_theme_gtutils</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt</span>(</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(pd, home_pd, away_pd),</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">fns =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ifelse</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="fu">paste0</span>(<span class="st">"+"</span>, x), x)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">ends_with</span>(<span class="st">"win_pct"</span>), <span class="at">decimals =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">ends_with</span>(<span class="st">"wp"</span>), <span class="at">decimals =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_align</span>(<span class="at">columns =</span> <span class="fu">c</span>(team), <span class="at">align =</span> <span class="st">"center"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_merge_stack</span>(</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">col1 =</span> win_pct,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">col2 =</span> overall_rec,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#333333"</span>)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_merge_stack</span>(</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">col1 =</span> home_wp,</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">col2 =</span> home_rec,</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#333333"</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>   gtExtras<span class="sc">::</span><span class="fu">gt_merge_stack</span>(</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">col1 =</span> away_wp,</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">col2 =</span> away_rec,</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#333333"</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>   gt<span class="sc">::</span><span class="fu">data_color</span>(</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(win_pct, home_wp, away_wp),</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"column"</span>),</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"numeric"</span>),</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#d7191c"</span>, <span class="st">"#fdae61"</span>, </span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>                <span class="st">"#ffffbf"</span>, <span class="st">"#a6d96a"</span>, </span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>                <span class="st">"#1a9641"</span>),</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>   gt<span class="sc">::</span><span class="fu">data_color</span>(</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(pd, home_pd, away_pd),</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"column"</span>),</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"numeric"</span>),</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#d7191c"</span>, <span class="st">"#fdae61"</span>, </span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>                <span class="st">"#ffffbf"</span>, <span class="st">"#a6d96a"</span>, </span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>                <span class="st">"#1a9641"</span>),</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_column_subheaders</span>(</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">win_pct =</span> <span class="fu">list</span>(<span class="at">heading =</span> <span class="st">"Overall"</span>, <span class="at">subtitle =</span> <span class="st">"W-L"</span>),</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">pd =</span> <span class="fu">list</span>(<span class="at">heading =</span> <span class="st">"+/-"</span>, <span class="at">subtitle =</span> <span class="st">"All games"</span>),</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">home_wp =</span> <span class="fu">list</span>(<span class="at">heading =</span> <span class="st">"Home"</span>, <span class="at">subtitle =</span> <span class="st">"W-L"</span>),</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">home_pd =</span> <span class="fu">list</span>(<span class="at">heading =</span> <span class="st">"+/-"</span>, <span class="at">subtitle =</span> <span class="st">"Home games"</span>),</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">away_wp =</span> <span class="fu">list</span>(<span class="at">heading =</span> <span class="st">"Away"</span>, <span class="at">subtitle =</span> <span class="st">"W-L"</span>),</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">away_pd =</span> <span class="fu">list</span>(<span class="at">heading =</span> <span class="st">"+/-"</span>, <span class="at">subtitle =</span> <span class="st">"Away games"</span>),</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading_color =</span> <span class="st">"black"</span>,</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle_color =</span> <span class="st">"gray"</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_label</span>(</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">team =</span> <span class="st">""</span>,</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_header</span>(<span class="at">title =</span> gt<span class="sc">::</span><span class="fu">html</span>(custom_header)) <span class="sc">|&gt;</span></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_source_note</span>(</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_note =</span></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">html</span>(</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>        <span class="st">"&lt;hr&gt;Data from barttorvik.com and theme for {gtUtils}&lt;br&gt;</span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="st">                ACC teams play 14 opponents once, two opponents twice, and one opponent not at all.&lt;br&gt;</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="st">                Teams that don't play each other:&lt;br&gt;</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="st">                Florida State-Louisville, Cal-NC State, Notre Dame-Wake Forest&lt;br&gt;</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="st">                Stanford-Syracuse, Pittsburgh-Virginia Tech, Clemson-Virginia&lt;br&gt;</span></span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="st">                Duke-Miami, Georgia Tech-SMU, Boston College-North Carolina&lt;br&gt;</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;hr&gt;&lt;b&gt;Table by Chris at Bless your chart | February 19, 2026&lt;/b&gt;"</span></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> gt<span class="sc">::</span><span class="fu">cells_source_notes</span>(),</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> gt<span class="sc">::</span><span class="fu">cell_text</span>(</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">font =</span> gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Signika Negative"</span>),</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">10</span>),</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> <span class="dv">250</span></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>    gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">cell_borders</span>(</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>      <span class="at">sides =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"top"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">2</span>)  <span class="co"># Make it thicker than internal borders</span></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">list</span>(</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">cells_body</span>(),</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">cells_column_labels</span>(),</span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">cells_row_groups</span>()</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>  )  <span class="sc">|&gt;</span> </span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">cell_text</span>(</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">font =</span> gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Signika Negative"</span>),</span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> gt<span class="sc">::</span><span class="fu">cells_body</span>(</span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> gt<span class="sc">::</span><span class="fu">everything</span>(),</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> gt<span class="sc">::</span><span class="fu">everything</span>()</span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_options</span>(<span class="at">table.width =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">650</span>))</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a><span class="fu">gt_save_crop</span>(final_tbl,</span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>             <span class="at">file =</span> <span class="st">"acc_tbl.png"</span>,</span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>             <span class="at">whitespace =</span> <span class="dv">60</span>,</span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>             <span class="at">bg =</span> <span class="st">"#FFFDF5"</span>)</span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>final_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="vtnfalcdjg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almarai:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almarai:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almarai:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#vtnfalcdjg table {
+  font-family: Almarai, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vtnfalcdjg thead, #vtnfalcdjg tbody, #vtnfalcdjg tfoot, #vtnfalcdjg tr, #vtnfalcdjg td, #vtnfalcdjg th {
+  border-style: none;
+}
+
+#vtnfalcdjg p {
+  margin: 0;
+  padding: 0;
+}
+
+#vtnfalcdjg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  font-style: normal;
+  background-color: #FFFDF5;
+  width: 650px;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #FFFDF5;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #FFFDF5;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFDF5;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #FFFDF5;
+}
+
+#vtnfalcdjg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vtnfalcdjg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFDF5;
+  border-bottom-width: 0;
+}
+
+#vtnfalcdjg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFDF5;
+  border-top-width: 0;
+}
+
+#vtnfalcdjg .gt_heading {
+  background-color: #FFFDF5;
+  text-align: left;
+  border-bottom-color: #FFFDF5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: 500;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vtnfalcdjg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: 500;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vtnfalcdjg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vtnfalcdjg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vtnfalcdjg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vtnfalcdjg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vtnfalcdjg .gt_group_heading {
+  padding-top: 1.5px;
+  padding-bottom: 1.5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vtnfalcdjg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: middle;
+}
+
+#vtnfalcdjg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vtnfalcdjg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vtnfalcdjg .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgba(255, 255, 255, 0);
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vtnfalcdjg .gt_stub {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtnfalcdjg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vtnfalcdjg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vtnfalcdjg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vtnfalcdjg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFDF5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtnfalcdjg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vtnfalcdjg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFDF5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtnfalcdjg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vtnfalcdjg .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFDF5;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtnfalcdjg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFDF5;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vtnfalcdjg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtnfalcdjg .gt_left {
+  text-align: left;
+}
+
+#vtnfalcdjg .gt_center {
+  text-align: center;
+}
+
+#vtnfalcdjg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vtnfalcdjg .gt_font_normal {
+  font-weight: normal;
+}
+
+#vtnfalcdjg .gt_font_bold {
+  font-weight: bold;
+}
+
+#vtnfalcdjg .gt_font_italic {
+  font-style: italic;
+}
+
+#vtnfalcdjg .gt_super {
+  font-size: 65%;
+}
+
+#vtnfalcdjg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vtnfalcdjg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vtnfalcdjg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vtnfalcdjg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vtnfalcdjg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vtnfalcdjg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vtnfalcdjg .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#vtnfalcdjg .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#vtnfalcdjg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+
+#vtnfalcdjg tbody tr:last-child {
+  border-bottom: 2px solid #FFFDF5;
+}
+
+#vtnfalcdjg .gt_col_heading {
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+
+#vtnfalcdjg .gt_subtitle {
+  padding-top: 0px !important;
+  padding-bottom: 4px !important;
+}
+
+#vtnfalcdjg .gt_sourcenote {
+  border-bottom-color: #FFFDF5 !important;
+}
+
+#vtnfalcdjg .gt_heading {
+  padding-bottom: 0px;
+  padding-top: 6px;
+}
+
+#vtnfalcdjg .gt_column_spanner {
+  padding-bottom: 2px;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="gt_heading header">
+<td colspan="7" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="font-family: 'Signika Negative'; font-weight: 650"><div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<img src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png" class="img-fluid" style="height: 105px; width: auto; vertical-align: middle;">
+</div>
+<div style="flex-grow:1; margin-left: 30px; margin-right: 30px">
+<span style="display: block; font-weight: bold; text-align: center; font-size: 24px;">ACC standings<br>
+through February 18 games</span> <span style="font-size: 14px; font-weight: normal; display: block; text-align: center;">Sorted by overall conference win percentage.<br>
+Table includes point differentials, home and away records in league play.</span>
+</div>
+<div>
+<img src="https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png" class="img-fluid" style="height: 45px; width: auto; vertical-align: middle;">
+</div>
+</div>
+<br>
+</td>
+</tr>
+<tr class="gt_col_headings even">
+<th id="team" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"></th>
+<th id="win_pct" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"><div style="line-height: 1.05; margin-bottom: -2px;">
+<span style="font-size: 14px; font-weight: bold; color: black;"> Overall </span><br>
+<span style="font-size: 10px; font-weight: normal; color: gray;"> W-L </span>
+</div></th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"><div style="line-height: 1.05; margin-bottom: -2px;">
+<span style="font-size: 14px; font-weight: bold; color: black;"> +/- </span><br>
+<span style="font-size: 10px; font-weight: normal; color: gray;"> All games </span>
+</div></th>
+<th id="home_wp" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"><div style="line-height: 1.05; margin-bottom: -2px;">
+<span style="font-size: 14px; font-weight: bold; color: black;"> Home </span><br>
+<span style="font-size: 10px; font-weight: normal; color: gray;"> W-L </span>
+</div></th>
+<th id="home_pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"><div style="line-height: 1.05; margin-bottom: -2px;">
+<span style="font-size: 14px; font-weight: bold; color: black;"> +/- </span><br>
+<span style="font-size: 10px; font-weight: normal; color: gray;"> Home games </span>
+</div></th>
+<th id="away_wp" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"><div style="line-height: 1.05; margin-bottom: -2px;">
+<span style="font-size: 14px; font-weight: bold; color: black;"> Away </span><br>
+<span style="font-size: 10px; font-weight: normal; color: gray;"> W-L </span>
+</div></th>
+<th id="away_pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="col"><div style="line-height: 1.05; margin-bottom: -2px;">
+<span style="font-size: 14px; font-weight: bold; color: black;"> +/- </span><br>
+<span style="font-size: 10px; font-weight: normal; color: gray;"> Away games </span>
+</div></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/150.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.929</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">13-1</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+220</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">1.000</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">7-0</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+133</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(45,155,68,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.857</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-1</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+87</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/258.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(96,178,82,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.846</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">11-2</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(168,218,108,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+124</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(158,212,103,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.800</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">4-1</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(179,223,119,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+67</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.875</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">7-1</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(133,198,94,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+57</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(144,204,98,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.769</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">10-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(234,246,171,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+55</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(196,230,134,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.714</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">5-2</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(232,245,169,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+33</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(64,163,73,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.833</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">5-1</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(217,239,154,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+22</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/228.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(174,221,114,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.714</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">10-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(215,238,153,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+75</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(216,238,153,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.667</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">4-2</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(229,244,166,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+35</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(115,188,88,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.750</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-2</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(178,222,117,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+40</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/152.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(174,221,114,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.714</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">10-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(202,232,140,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+89</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,255,191,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.571</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">4-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(212,237,150,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+46</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(45,155,68,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.857</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-1</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(172,219,111,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+43</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/97.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(219,240,156,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.615</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">8-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(195,229,133,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+97</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(196,230,134,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.714</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">5-2</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(170,219,110,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+73</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(230,244,167,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.500</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(213,237,150,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+24</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/153.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(219,240,156,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.615</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">8-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,251,186,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+28</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(26,150,65,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">1.000</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-0</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(183,224,122,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+65</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,199,125,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.286</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(253,175,98,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-37</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2567.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(254,254,190,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.538</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">7-6</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(252,254,188,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+36</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(196,230,134,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.714</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">5-2</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(235,247,172,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+31</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,216,146,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.333</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(253,254,189,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+5</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/25.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,224,155,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.462</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-7</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(253,177,100,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-57</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,228,159,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.500</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(250,163,90,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-45</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,252,187,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.429</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,224,154,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-12</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/52.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,224,155,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.462</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-7</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,200,127,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-30</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,201,128,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.429</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(254,182,106,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-34</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(230,244,167,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.500</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,255,191,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+4</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/183.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,211,139,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.429</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-8</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(254,182,106,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-51</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,255,191,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.571</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">4-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,252,188,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">+16</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,199,125,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.286</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(228,83,47,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-67</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/259.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,211,139,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.429</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">6-8</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,207,135,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-22</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,255,191,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.571</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">4-3</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,221,151,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-6</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,199,125,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.286</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,216,145,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-16</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/24.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,193,118,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.385</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">5-8</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(254,184,108,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-49</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,201,128,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.429</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,203,130,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-19</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,216,146,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.333</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,189,114,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-30</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/154.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,193,118,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.385</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">5-8</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(254,183,107,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-50</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,201,128,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.429</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,193,119,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-26</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,216,146,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.333</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,200,127,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-24</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/87.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(235,105,57,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.231</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">3-10</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(248,154,85,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-76</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(250,161,89,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.333</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-4</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,210,138,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-14</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(242,132,72,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.143</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">1-6</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(233,100,55,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-62</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/103.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(218,41,31,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.154</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-11</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(237,114,62,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-106</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(243,134,73,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.286</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,192,117,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-27</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.000</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">0-6</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-79</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="team" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/221.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(218,41,31,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.154</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-11</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(227,80,45,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-129</td>
+<td class="gt_row gt_center" headers="home_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.143</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">1-6</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-97</td>
+<td class="gt_row gt_center" headers="away_wp" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(246,145,79,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.167</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">1-5</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; background-color: rgba(255,185,109,0.6); color: #000000; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black">-32</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="team" style="border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black; font-family: 'Signika Negative'"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/59.png" style="height: 25px; width: auto; vertical-align: -30%;"></td>
+<td class="gt_row gt_center" headers="win_pct" style="background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.143</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">2-12</span>
+</div></td>
+<td class="gt_row gt_center" headers="pd" style="background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black">-154</td>
+<td class="gt_row gt_center" headers="home_wp" style="background-color: rgba(215,25,28,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.143</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">1-6</span>
+</div></td>
+<td class="gt_row gt_center" headers="home_pd" style="background-color: rgba(218,44,32,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black">-93</td>
+<td class="gt_row gt_center" headers="away_wp" style="background-color: rgba(242,132,72,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black"><div style="line-height:14px">
+<span class="smallcaps">0.143</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#333333;font-size:10px">1-6</span>
+</div></td>
+<td class="gt_row gt_center" headers="away_pd" style="background-color: rgba(234,104,56,0.6); color: #FFFFFF; font-family: 'Signika Negative'; border-left-width: 2px; border-left-style: solid; border-left-color: black; border-right-width: 2px; border-right-style: solid; border-right-color: black; border-top-width: 2px; border-top-style: solid; border-top-color: black; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black">-61</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="7" class="gt_sourcenote" style="font-family: 'Signika Negative'; font-size: 10px; font-weight: 250"><hr>
+Data from barttorvik.com and theme for {gtUtils}<br>
+ACC teams play 14 opponents once, two opponents twice, and one opponent not at all.<br>
+Teams that don't play each other:<br>
+Florida State-Louisville, Cal-NC State, Notre Dame-Wake Forest<br>
+Stanford-Syracuse, Pittsburgh-Virginia Tech, Clemson-Virginia<br>
+Duke-Miami, Georgia Tech-SMU, Boston College-North Carolina<br>
+
+<hr>
+<strong>Table by Chris at Bless your chart | February 19, 2026</strong></td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
 
 
 </section>
