@@ -1,0 +1,385 @@
+---
+title: "121: Lineup data"
+date: "2024-12-03"
+categories:
+  - gtUtils
+  - bigballR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load Maui Lineups
+
+```{r lineup-data, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+schedule <- bigballR::get_team_schedule(season = "2024-25", team.name = "North Carolina")
+
+maui_pbp <- bigballR::get_play_by_play(schedule$Game_ID[5:7])
+
+maui_lineups <- bigballR::get_lineups(play_by_play_data = maui_pbp) |>
+  dplyr::filter(Team == "North Carolina") |>
+  dplyr::filter(Mins > 5) |>
+  dplyr::arrange(NETRTG) |>
+  dplyr::mutate(row_num = dplyr::row_number()) |>
+  dplyr::mutate(
+    lineup = dplyr::case_match(
+      row_num,
+      1 ~ "Cadeau-Davis-Trimble-Withers-Washington",
+      2 ~ "Cadeau-Davis-Trimble-Withers-Lubin",
+      3 ~ "Cadeau-Trimble-Jackson-Powell-Lubin",
+      4 ~ "Cadeau-Davis-Trimble-Powell-Lubin",
+      5 ~ "Cadeau-Davis-Trimble-Powell-Withers",
+      6 ~ "Cadeau-Davis-Trimble-Powell-Washington",
+      7 ~ "Davis-Trimble-Jackson-Powell-Lubin"
+    )
+  ) |>
+  dplyr::select(
+    lineup,
+    NETRTG,
+    Mins,
+    oPOSS,
+    ORTG,
+    PTS,
+    eFG.,
+    TOrate,
+    ORB.,
+    FTrate,
+    TimePerPoss,
+    dPOSS,
+    DRTG,
+    dPTS,
+    deFG.,
+    dTOrate,
+    DRB.,
+    dFTrate,
+    dTimePerPoss
+  )
+
+dayton_pbp <- bigballR::get_play_by_play(schedule$Game_ID[5])
+
+auburn_pbp <- bigballR::get_play_by_play(schedule$Game_ID[6])
+
+msu_pbp <- bigballR::get_play_by_play(schedule$Game_ID[7])
+
+dayton_lineups <- bigballR::get_lineups(play_by_play_data = dayton_pbp) |>
+  dplyr::filter(Team == "North Carolina") |>
+  dplyr::arrange(-Mins) |>
+  dplyr::mutate(row_num = dplyr::row_number()) |>
+  dplyr::mutate(lineup = dplyr::case_match(row_num, 2 ~ "Cadeau-Davis-Trimble-Withers-Washington")) |>
+  dplyr::filter(row_num == 2) |>
+  dplyr::mutate(opp = "Dayton") |>
+  dplyr::select(
+    lineup,
+    opp,
+    NETRTG,
+    Mins,
+    oPOSS,
+    ORTG,
+    PTS,
+    eFG.,
+    TOrate,
+    ORB.,
+    FTrate,
+    dPOSS,
+    DRTG,
+    dPTS,
+    deFG.,
+    dTOrate,
+    DRB.,
+    dFTrate
+  )
+
+auburn_lineups <- bigballR::get_lineups(play_by_play_data = auburn_pbp) |>
+  dplyr::filter(Team == "North Carolina") |>
+  dplyr::arrange(-Mins) |>
+  dplyr::mutate(row_num = dplyr::row_number()) |>
+  dplyr::mutate(lineup = dplyr::case_match(row_num, 2 ~ "Cadeau-Davis-Trimble-Withers-Washington")) |>
+  dplyr::filter(row_num == 2) |>
+  dplyr::mutate(opp = "Auburn") |>
+  dplyr::select(
+    lineup,
+    opp,
+    NETRTG,
+    Mins,
+    oPOSS,
+    ORTG,
+    PTS,
+    eFG.,
+    TOrate,
+    ORB.,
+    FTrate,
+    dPOSS,
+    DRTG,
+    dPTS,
+    deFG.,
+    dTOrate,
+    DRB.,
+    dFTrate
+  )
+
+
+msu_lineups <- bigballR::get_lineups(play_by_play_data = msu_pbp) |>
+  dplyr::filter(Team == "North Carolina") |>
+  dplyr::arrange(-Mins) |>
+  dplyr::mutate(row_num = dplyr::row_number()) |>
+  dplyr::mutate(lineup = dplyr::case_match(row_num, 2 ~ "Cadeau-Davis-Trimble-Withers-Washington")) |>
+  dplyr::filter(row_num == 2) |>
+  dplyr::mutate(opp = "Michigan State") |>
+  dplyr::select(
+    lineup,
+    opp,
+    NETRTG,
+    Mins,
+    oPOSS,
+    ORTG,
+    PTS,
+    eFG.,
+    TOrate,
+    ORB.,
+    FTrate,
+    dPOSS,
+    DRTG,
+    dPTS,
+    deFG.,
+    dTOrate,
+    DRB.,
+    dFTrate
+  )
+
+all_lineups <- dayton_lineups |>
+  dplyr::bind_rows(auburn_lineups) |>
+  dplyr::bind_rows(msu_lineups)
+```
+
+```{r maui-lineups}
+
+maui_tbl <- maui_lineups |>
+  dplyr::arrange(-NETRTG) |>
+  dplyr::mutate(
+    eFG. = eFG. * 100,
+    deFG. = deFG. * 100,
+    FTrate = FTrate * 100,
+    dFTrate = dFTrate * 100
+  ) |>
+  dplyr::select(lineup, NETRTG, Mins, oPOSS, PTS, ORTG, dPOSS, dPTS, DRTG) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::fmt_number(columns = c(NETRTG, ORTG, DRTG, Mins),
+                 decimals = 1) |>
+  gt::cols_align(columns = c(lineup), align = "left") |>
+  gtUtils::gt_column_subheaders(
+    NETRTG = list(heading = "NET", subtitle = "Rating"),
+    Mins = list(heading = "Mins", subtitle = "Played"),
+    oPOSS = list(heading = "Possessions", subtitle = "Played"),
+    PTS = list(heading = "Points", subtitle = "Scored"),
+    ORTG = list(heading = "Rating", subtitle = "Offense"),
+    dPOSS = list(heading = "Possessions", subtitle = "Played"),
+    dPTS = list(heading = "Points", subtitle = "Allowed"),
+    DRTG = list(heading = "Rating", subtitle = "Defense"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(lineup = "Lineup") |>
+  gt::tab_spanner(columns = c(oPOSS, PTS, ORTG),
+                  label = gt::html("Offense")) |>
+  gt::tab_spanner(columns = c(dPOSS, dPTS, DRTG),
+                  label = gt::html("Defense")) |>
+  gtExtras::gt_add_divider(
+    columns = c(Mins, ORTG),
+    sides = "right",
+    color = "black"
+  ) |>
+  gt::data_color(
+    columns = NETRTG,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("lightpink", "lightgreen"),
+    alpha = 0.6
+  ) |>
+  gt::tab_header(
+    title = gt::html("North Carolina: Lineups over 2024 Maui Invitational"),
+    subtitle = gt::html(
+      "Shows the seven lineups that played at least five minutes over the three games in the Maui Invitational.<br>Carolina went 1-2 in these three games, the starting lineup is highlighted."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via bigballR, theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+   gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(lineup)
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(800)) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#C5C5FF")),
+    locations = gt::cells_body(columns = c(lineup), rows = c(7))
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) 
+
+
+gtUtils::gt_save_crop(
+  maui_tbl,
+  file = "maui_tbl.png",
+  whitespace = 30,
+  bg = "#FFFDF5"
+)
+
+maui_tbl
+```
+
+### Starters 
+
+```{r starters}
+
+start_tbl <- all_lineups |> 
+  dplyr::arrange(-oPOSS) |>
+  dplyr::mutate(
+    eFG. = eFG. * 100,
+    deFG. = deFG. * 100,
+    FTrate = FTrate * 100,
+    dFTrate = dFTrate * 100
+  ) |>
+  dplyr::select(opp, NETRTG, Mins, PTS, eFG., TOrate, ORB., FTrate, 
+                dPTS, deFG., dTOrate, DRB., dFTrate) |>
+  cbbplotR::gt_cbb_teams(opp, opp) |> 
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::fmt_number(columns = c(NETRTG, Mins),
+                 decimals = 1) |>
+  gt::cols_align(columns = c(opp), align = "left") |>
+  gt::fmt_markdown(columns = c(opp)) |> 
+  gtUtils::gt_column_subheaders(
+    NETRTG = list(heading = "NET", subtitle = "Rating"),
+    Mins = list(heading = "Mins", subtitle = "Played"),
+    PTS = list(heading = "Points", subtitle = "Scored"),
+    eFG. = list(heading = "Shooting", subtitle = "eFG %"),
+    TOrate = list(heading = "Turnover", subtitle = "Rate"),
+    ORB. = list(heading = "Rebound", subtitle = "Rate"),
+    FTrate = list(heading = "Free Throw", subtitle = "Rate"),
+    dPTS = list(heading = "Points", subtitle = "Allowed"),
+    deFG. = list(heading = "Shooting", subtitle = "eFG %"),
+    dTOrate = list(heading = "Turnover", subtitle = "Rate"),
+    DRB. = list(heading = "Rebound", subtitle = "Rate"),
+    dFTrate = list(heading = "Free Throw", subtitle = "Rate"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(opp = "") |>
+  gt::tab_spanner(columns = c(PTS, eFG., TOrate, ORB., FTrate),
+                  label = gt::html("Offense")) |>
+  gt::tab_spanner(columns = c(dPTS, deFG., dTOrate, DRB., dFTrate),
+                  label = gt::html("Defense")) |>
+  gtExtras::gt_add_divider(
+    columns = c(Mins, FTrate),
+    sides = "right",
+    color = "black"
+  ) |>
+  gt::data_color(
+    columns = NETRTG,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("lightpink", "lightgreen"),
+    alpha = 0.6,
+    domain = c(-75, 75)
+  ) |>
+  gt::tab_header(
+    title = gt::html("North Carolina's Starting Lineup over the 2024 Maui Invitational"),
+    subtitle = gt::html(
+      "Shows the four factors in each game for minutes that the starting lineup played together in the Maui Invitational."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via bigballR, theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+   gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(opp)
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(850)) |>
+  gtUtils::gt_color_pills(TOrate,
+    domain = c(0, .5), format_type = "percent", digits = 1,
+    palette = "ggsci::green_material",
+    reverse = TRUE
+  ) |> 
+  gtUtils::gt_color_pills(ORB.,
+    domain = c(0, .5), format_type = "percent", digits = 1,
+    palette = "ggsci::green_material",
+  ) |> 
+  gtUtils::gt_color_pills(dTOrate,
+    domain = c(0, .5), format_type = "percent", digits = 1,
+    palette = "ggsci::red_material",
+  ) |> 
+  gtUtils::gt_color_pills(DRB.,
+    domain = c(0, 1), format_type = "percent", digits = 1,
+    palette = "ggsci::red_material",
+    reverse = TRUE
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) 
+
+gtUtils::gt_save_crop(
+  start_tbl,
+  file = "start_tbl.png",
+  whitespace = 30,
+  bg = "#FFFDF5"
+)
+
+
+start_tbl
+
+
+```

@@ -1,0 +1,456 @@
+---
+title: "172: Slope and streaks"
+date: "2026-02-05"
+categories:
+  - geom_tile
+  - scale_discrete
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+# duke unc 
+duke_unc <- readr::read_csv("duke-unc.csv")
+
+# find streaks 
+find_streaks <- duke_unc |> 
+dplyr::mutate(
+    result = stringr::str_extract(Result, "^[WL]"),
+    date_clean = stringr::str_split(Date, " ", simplify = TRUE)[,1],
+    date = lubridate::ymd(date_clean),
+    year = lubridate::year(date),
+    winner = dplyr::case_when(
+      result == "W" ~ "UNC",
+      result == "L" ~ "Duke"
+    )
+  ) |>
+  dplyr::arrange(date) |>
+  dplyr::mutate(game_num = dplyr::row_number())
+
+data_with_streaks <- find_streaks |>
+  dplyr::mutate(
+    winner_changed = winner != dplyr::lag(winner, default = ""),
+    streak_id = cumsum(winner_changed)
+  ) |>
+  dplyr::group_by(streak_id) |>
+  dplyr::mutate(
+    streak_length = dplyr::n(),
+    streak_game_num = dplyr::row_number(),
+    streak_start_date = min(date),
+    streak_end_date = max(date),
+    streak_start_year = lubridate::year(streak_start_date),
+    streak_end_year = lubridate::year(streak_end_date)
+  ) |>
+  dplyr::ungroup()
+
+streak_summary <- data_with_streaks |>
+  dplyr::group_by(streak_id) |>
+  dplyr::summarise(
+    winner = dplyr::first(winner),
+    streak_length = dplyr::first(streak_length),
+    streak_start_date = dplyr::first(streak_start_date),
+    streak_end_date = dplyr::first(streak_end_date),
+    streak_start_year = dplyr::first(streak_start_year),
+    streak_end_year = dplyr::first(streak_end_year),
+    games = paste(game_num, collapse = ", "),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(dplyr::desc(streak_length), streak_start_date)
+
+# wab data 
+wab <- readr::read_csv("wab_2025.csv")
+```
+
+### Duke-UNC plot
+
+```{r duke-unc-plot, warning=FALSE, message=FALSE}
+
+streak_data <- duke_unc |>
+  dplyr::rename(location = `...4`) |>
+  dplyr::mutate(
+    result = stringr::str_extract(Result, "^[WL]"),
+    date_clean = stringr::str_extract(Date, "^\\d{4}-\\d{2}-\\d{2}"),
+    date = lubridate::ymd(date_clean),
+    winner = dplyr::if_else(result == "W", "Carolina", "Duke")
+  ) |>
+  dplyr::arrange(date)
+
+# find more streaks
+streaks <- streak_data |>
+  dplyr::mutate(
+    streak_change = winner != dplyr::lag(winner, default = dplyr::first(winner)),
+    streak_id = cumsum(streak_change)
+  ) |>
+  dplyr::group_by(streak_id) |>
+  dplyr::summarise(
+    winner = dplyr::first(winner),
+    streak_length = dplyr::n(),
+    start_date = min(date),
+    end_date = max(date),
+    .groups = "drop"
+  )
+
+# make the data for the plot
+tile_data <- streak_data |>
+  dplyr::mutate(
+    decade = paste0(floor(lubridate::year(date) / 10) * 10, "s")
+  ) |>
+  # only one game from 1949, so remove it 
+  dplyr::filter(decade != "1940s") |>
+  # re-order, so recent decades are at the top 
+  dplyr::mutate(
+    decade = forcats::fct_reorder(decade, lubridate::year(date), .desc = FALSE)
+  ) |>
+  dplyr::group_by(decade) |>
+  dplyr::arrange(date) |>
+  dplyr::mutate(game_num = dplyr::row_number()) |>
+  dplyr::ungroup()
+
+# make the plot 
+streak_plot <- ggplot2::ggplot(tile_data, ggplot2::aes(x = game_num, y = decade, fill = winner)) +
+  ggplot2::geom_tile(color = "white",
+                     linewidth = 0.5,
+                     height = 0.45) +
+  ggplot2::scale_fill_manual(values = c("Duke" = "#012169", "Carolina" = "#56a0d3"),
+                             name = "") +
+  ggplot2::scale_x_continuous(breaks = seq(0, 30, 10), expand = c(0, 0)) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::labs(
+    title = "Blue Streaks \nCarolina & Duke Since 1950",
+    subtitle = "Each tile is one game in chronological order (left to right, grouped by decade), with the winning team shown in different shades of blue.<br>",
+    x = "",
+    y = "",
+    caption = "data via sports-reference.com | Viz by Chris at Bless your chart"
+  ) +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 9.5,
+      lineheight = 1.5,
+      family = "Roboto Condensed"
+    ),
+    legend.position = "none",
+    axis.text.x = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_text(size = 14, family = "Roboto Condensed"),
+    plot.caption = ggplot2::element_text(
+      face = "plain",
+      size = 8,
+      family = "Roboto Condensed"
+    ),
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major = ggplot2::element_blank(),
+    plot.margin = ggplot2::margin(
+      t = 10,
+      r = 20,
+      b = 10,
+      l = 10
+    )
+  ) +
+  # UNC logo (top)
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 28.35,
+    y = 9.35,
+    team = "North Carolina",
+    height = 0.075,
+    alpha = 0.8
+  ) +
+  # UNC label (top)
+  ggtext::geom_richtext(
+    ggplot2::aes(
+      x = 26,
+      y = 7.75,
+      label = "<b>103 wins overall</b><br><br>
+        <span style='font-size:9pt'><b>LONGEST WIN STREAKS</b></span><br>
+        8 (1972-74, 75-77)<br>
+        7 (1993-1996)<br>
+        6 (1959-60, 1982-84)<br>
+        5 (1956-57)<br>
+        4 (1967-68)<br>
+        3 (Five times)"
+      ),
+    stat = "identity",
+    fill = "#56a0d3",
+    label.color = NA,
+    color = "#0d3a5c",
+    hjust = 0,
+    size = 3,
+    family = "Roboto Condensed",
+    label.padding = ggplot2::unit(c(0.4, 0.4, 0.4, 0.4), "lines")
+  ) +
+  # Duke logo (bottom)
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 28.35,
+    y = 6.05,
+    team = "Duke",
+    height = 0.070,
+    alpha = 0.8
+  ) +
+  # Duke label (bottom)
+  ggtext::geom_richtext(
+    ggplot2::aes(
+      x = 26,
+      y = 4.5,
+      label = "<b>92 wins overall</b><br><br>
+        <span style='font-size:9pt'><b>LONGEST WIN STREAKS</b></span><br>
+          8 (1951-54)<br>
+          7 (1962-1964)<br>
+          6 (2001-03)<br>
+          5 (1999-2000)<br>
+          4 (2003-05, 2014-16)<br>
+          3 (Six times, 2025-PRESENT)"
+      ),
+    stat = "identity",
+    fill = "#012169",
+    label.color = NA,
+    color = "white",
+    hjust = 0,
+    size = 3,
+    family = "Roboto Condensed",
+    label.padding = ggplot2::unit(c(0.4, 0.4, 0.4, 0.4), "lines")
+  ) +
+  ggplot2::annotate(
+     "text",
+    x = 6.6,
+    y = 8.65,
+    label = "2022  \nFinal  \nFour",
+    family = "Roboto Condensed",
+    size = 2.75,
+    hjust = 0,
+    fontface = "bold",
+    color = "#56a0d3",
+  ) +
+   ggplot2::annotate(
+     "text",
+    x = 12.6,
+    y = 8.65,
+    label = "Duke  \n3-game  \nWin Streak",
+    family = "Roboto Condensed",
+    size = 2.75,
+    hjust = 0,
+    fontface = "bold",
+    color = "#012169",
+  ) 
+  
+  
+  
+
+ggplot2::ggsave("duke_unc_plot.png",
+                streak_plot,
+                w = 10.5,
+                h = 7,
+                dpi = 600,
+                bg = "white",
+                type = "cairo")
+
+
+```
+
+### Slope plot 
+
+```{r slope-plot, warning=FALSE, message=FALSE}
+
+
+wabnc <- wab |> 
+  dplyr::filter(game_type == "played") |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarise(
+    wab_non_conf = sum(wab[type == "nc"], na.rm = TRUE),
+    wab_conf = sum(wab[type == "conf"], na.rm = TRUE)
+  ) |> 
+  dplyr::mutate(diff = abs(wab_non_conf - wab_conf))
+
+wabnc_long <- wabnc |>
+  tidyr::pivot_longer(
+    cols = c(wab_non_conf, wab_conf),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(
+    metric = factor(metric, levels = c("wab_non_conf", "wab_conf"))
+  )
+
+# Define the two groups
+group1_teams <- c("N.C. State")
+
+group2_teams <- c("BYU")
+
+wabnc_long <- wabnc |>
+  tidyr::pivot_longer(
+    cols = c(wab_non_conf, wab_conf),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(
+    metric = factor(metric, levels = c("wab_non_conf", "wab_conf")),
+    highlight = dplyr::case_when(
+      team %in% group1_teams ~ "group1",
+      team %in% group2_teams ~ "group2",
+      TRUE ~ "other"
+    )
+  )
+
+slope_plot <- wabnc_long |>
+  ggplot2::ggplot(ggplot2::aes(x = metric, y = value, group = team)) +
+  ggplot2::geom_line(ggplot2::aes(color = highlight, size = highlight, alpha = highlight)) +
+  ggplot2::geom_point(ggplot2::aes(color = highlight, size = highlight, alpha = highlight)) +
+  ggplot2::scale_color_manual(
+    values = c("group1" = "lightgreen", "group2" = "lightpink", "other" = "gray70")
+  ) +
+  ggplot2::scale_size_manual(
+    values = c("group1" = 1.2, "group2" = 1.2, "other" = 0.4)
+  ) +
+  ggplot2::scale_alpha_manual(
+    values = c("group1" = 1, "group2" = 1, "other" = 0.3)
+  ) +
+  ggplot2::scale_x_discrete(
+    labels = c("wab_non_conf" = "Non-Conference", 
+               "wab_conf" = "Conference"),
+    position = "top"
+  ) +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::labs(
+    title = "There is more than one way  \nto build a tournament résumé",
+    subtitle = "Shows difference in Wins-Above-Bubble (WAB)  \nearned in non-conference play and league play.",
+    x = "",
+    y = "WAB",
+    caption = "data via barttorvik.com  \ndata through February 4 games\nViz by Chris at Bless your chart"
+  ) +
+  ggplot2::theme(
+      plot.title = ggplot2::element_text(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 12.5,
+      lineheight = 1.5,
+      family = "Roboto Condensed"
+    ),
+    legend.position = "none",
+    axis.text.x = ggplot2::element_text(
+      size = 14,
+      family = "Roboto Condensed",
+      face = "bold"
+    ),
+    axis.title.y = ggplot2::element_text(
+      size = 14, 
+      family = "Roboto Condensed",
+      face = "bold"),
+    axis.text.y = ggplot2::element_text(
+      size = 14, 
+      family = "Roboto Condensed",
+      face = "bold"),
+    plot.caption = ggplot2::element_text(
+      face = "plain",
+      size = 10,
+      family = "Roboto Condensed"
+    )
+  ) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dotted") +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.1,
+    y = 2.36,
+    team = "NC State", 
+    height = 0.055,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = 2.2,
+    y = 2.4,
+    label = "+2.50",
+    family = "Roboto Condensed",
+    size = 4.5,
+    hjust = 0,
+    fontface = "bold",
+    color = "lightgreen",
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 0.9,
+    y = -0.45,
+    team = "NC State", 
+    height = 0.055,
+    alpha = 0.1
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = 0.65,
+    y = -0.45,
+    label = "-0.22",
+    family = "Roboto Condensed",
+    size = 4.5,
+    hjust = 0,
+    fontface = "bold",
+    color = "lightpink",
+  ) +
+   ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.1,
+    y = 0.53,
+    team = "BYU", 
+    height = 0.055,
+    alpha = 0.1
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = 2.2,
+    y = 0.53,
+    label = "+0.53",
+    family = "Roboto Condensed",
+    size = 4.5,
+    hjust = 0,
+    fontface = "bold",
+    color = "lightpink",
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 0.9,
+    y = 3.1,
+    team = "BYU", 
+    height = 0.055,
+    alpha = 0.9
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = 0.65,
+    y = 3.10,
+    label = "+3.10",
+    family = "Roboto Condensed",
+    size = 4.5,
+    hjust = 0,
+    fontface = "bold",
+    color = "lightgreen",
+  ) 
+  
+
+ggplot2::ggsave("slope_plot.png",
+                slope_plot,
+                h = 9,
+                w = 7,
+                dpi = 600,
+                bg = "white",
+                type = "cairo")
+
+
+
+```
+
+### 

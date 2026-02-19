@@ -1,0 +1,16 @@
+{
+  "hash": "1409413f39dbcec558c1db0e0893cec2",
+  "result": {
+    "markdown": "---\ntitle: \"Hoops points distribution\"\ndate: \"2022-12-13\"\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n\n\n### Load data and make data\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# data was manually created from kenpom\nseason <- tibble::tribble(\n  ~Season,~Games,~Type,~Values,\n  \"2021-22\",39,\"Threes\",32.4,\n  \"2021-22\",39,\"Twos\",49.2,\n  \"2021-22\",39,\"Free Throws\",18.4,\n  \"2022-23\",11,\"Threes\",23.6,\n  \"2022-23\",11,\"Twos\",51.9,\n  \"2022-23\",11,\"Free Throws\",24.5\n)\n\n# load csv from sportsreference\nassists <- read_csv('assists_turnovers.csv')\n```\n:::\n\n\n### Manipulate data and make tables\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# season table\nseason_tb <- season %>%\n  group_by(Season) %>%\n  summarize(list_data = list(Values)) %>%\n  arrange(Season)\n\njoin_season <- season %>%\n  group_by(Season) %>%\n  summarize(Games = Games[1])\n\nfinal_season <- merge(season_tb, join_season, by = \"Season\") %>%\n  select(Season, Games, list_data)\n\nfinal_season %>%\n  gt() %>%\n  gt_plt_bar_stack(\n    column = list_data,\n    width = 50,\n    labels = c(\"Threes\", \"Twos\", \"Free Throws\"),\n    palette = c(\"#d38956\", \"#56a0d3\", \"#d356a0\"),\n    fmt_fn = scales::label_number(accuracy = 0.1)\n  ) %>%\n  gt_theme_nytimes() %>%\n  # set title + caption + subtitle\n  tab_header(title = \"Points distribution under Hubert Davis\",\n             subtitle = \"Percentage of points scored from three-pointers, two-pointers, and free throws.\") %>%\n  tab_source_note(source_note = \"@dadgumboxscores | December 14, 2022\")  %>%\n  # fix font of source note\n  tab_options (source_notes.font.size = px(10),\n               table.font.size = px(12)) %>%\n  gtsave(\"diet.png\", expand = 10)\n\n# assists data\nassists %>%\n  slice(1:11) %>%\n  mutate(Opp = if_else(Opp == \"College of Charleston\", \"Charleston\", Opp)) %>%\n  mutate(\"AST:TO\" = (AST - TOV),\n         logo = Opp) %>%\n  adorn_totals() %>%\n  mutate(logo = if_else(logo == \"-\", 'North Carolina', logo)) %>%\n  select(G, Opp, logo, `W/L`, FG, FGA, AST, TOV, `AST:TO`) %>%\n  gt() %>%\n  gt_fmt_cfb_logo(columns = \"logo\") %>%\n  cols_label(Opp = \"Opponent\",\n             logo = \"\",\n             G = \"\",\n             FG = \"FGM\") %>%\n  fmt(\n    columns = c(`AST:TO`),\n    fns = function(x) {\n      ifelse(x > 0, paste0(\"+\", x), x)\n    }\n  ) %>%\n  gt_highlight_rows(\n    rows = c(2, 4, 5, 10, 11),\n    fill = \"#d0e4f3\",\n    bold_target_only = TRUE,\n    target_col = c(`AST:TO`),\n  ) %>%\n  gt_theme_nytimes() %>%\n  # set title + caption + subtitle\n  tab_header(title = \"Made Field Goals and Assist to Turnover Ratio\") %>%\n  tab_source_note(source_note = \"@dadgumboxscores | December 14, 2022\")  %>%\n  # fix font of source note\n  tab_options (source_notes.font.size = px(10),\n               table.font.size = px(12)) %>%\n  gtsave(\"a_to.png\", expand = 10)\n```\n:::\n",
+    "supporting": [
+      "byc-006_points_dist_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

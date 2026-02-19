@@ -1,0 +1,74 @@
+---
+title: "023: Radars"
+date: "2023-03-23"
+categories:
+  - ggRadar
+  - ggiraphExtra
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(hoopR)
+library(ggiraphExtra)
+library(ggthemes)
+library(ggtext)
+library(cfbplotR)
+```
+
+### Load data
+
+```{r data-load, message=FALSE}
+ # use hoopR to grab stats
+cont <- kp_height(min_year = 2023, max_year = 2023)
+
+rdr <- cont %>% 
+      select(team, conf, continuity_rk, experience_rk, bench_rk, avg_hgt_rk)
+
+teams <- c("N.C. State", "North Carolina", "Wake Forest", "Duke", "Kansas St.", "Michigan St.", "Connecticut", "Arkansas", "Florida Atlantic", "Tennessee", "Gonzaga", "UCLA", "Xavier", "Texas", "San Diego St.", "Alabama", "Miami FL", "Houston", "Princeton", "Creighton")
+```
+
+### Create Radar plot
+
+```{r radar-plot, warning=FALSE}
+att_radar <- rdr %>% 
+    filter(team %in% teams) %>% 
+    mutate(bench_rk = dense_rank(desc(bench_rk)),
+           experience_rk = dense_rank(desc(experience_rk)),
+           continuity_rk = dense_rank(desc(continuity_rk)),
+           avg_hgt_rk = dense_rank(desc(avg_hgt_rk))
+    ) %>%
+    rename(`1` = avg_hgt_rk,
+           `2` = continuity_rk,
+           `3` = experience_rk,
+           `4` = bench_rk) %>%
+    ggRadar(aes(color =team), scales = "free") + 
+    facet_wrap(~team, nrow=4, strip.position = "bottom") +
+    labs(
+        title = "Roster Attributes for Sweet 16  \n(plus big four #goacc)",
+        subtitle = "1: Average Height  \n2: Minutes Continuity  \n3: Experience  \n4: Bench Minutes",
+        x = "",
+        y = "",
+        caption = "@dadgumboxscores | March 23, 2023 | data via hoopR + kenpom"
+    ) +
+    theme_fivethirtyeight() +
+    theme(legend.position = "none", strip.text = element_cfb_logo(size = 1), plot.title = element_markdown(), plot.subtitle = element_markdown(), text=element_text(family="Arial"), panel.grid = element_blank(),
+          axis.text.y = element_blank()) 
+
+ggsave(
+  "radar.png",
+  att_radar,
+  w = 9,
+  h = 9,
+  dpi = 600,
+  type = 'cairo'
+)
+
+att_radar
+```
+
+#### 

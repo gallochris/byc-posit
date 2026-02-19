@@ -1,0 +1,294 @@
+---
+title: "054: ACC Football"
+date: "2023-10-22"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+combine_data <- function(years = c(2023), season_type = "regular", conference = "ACC") {
+  # Combine the data from each year
+  data <- lapply(years, function(year) {
+    cfbfastR::cfbd_game_info(year = year, season_type = season_type, conference = conference) |>
+      dplyr::filter(home_conference == "ACC" & away_conference == "ACC") |>
+      dplyr::select(season, week, home_team, home_points, away_team, away_points)
+  })
+  # Bind the data together
+  data <- dplyr::bind_rows(data)
+  # Filter out any rows with missing values for home_points
+  data <- data |> dplyr::filter(!is.na(home_points))
+  # Return the data
+  return(data)
+}
+acc_data <- combine_data(years = c(2023))
+
+home_results <- acc_data |> 
+  dplyr::mutate(h_result = dplyr::if_else(home_points > away_points,
+                                          "W", "L")) |> 
+  dplyr::group_by(home_team, h_result) |> 
+  dplyr::count() |> 
+  tidyr::pivot_wider( 
+    names_from = h_result,
+    values_from = n) |> 
+  dplyr::rename(team = home_team, h_w = W, h_l = L) |> 
+  dplyr::mutate_at(dplyr::vars(h_w, h_l), (~replace(., is.na(.), 0))) 
+
+away_results <- acc_data |> 
+  dplyr::mutate(a_result = dplyr::if_else(away_points > home_points,
+                                          "W", "L")) |> 
+  dplyr::group_by(away_team, a_result) |> 
+  dplyr::count() |> 
+  tidyr::pivot_wider( 
+    names_from = a_result,
+    values_from = n) |> 
+  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+  dplyr::mutate_at(dplyr::vars(a_w, a_l), (~replace(., is.na(.), 0))) |> 
+  dplyr::ungroup() 
+
+full_recs <- merge(home_results, away_results, by = "team") |>  
+  dplyr::mutate_all(list(~ifelse(is.na(.), 0, .))) |> 
+  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l)) |> 
+  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+home_diffs <- acc_data |> 
+  dplyr::mutate(h_diff = home_points - away_points) |> 
+  dplyr::group_by(home_team) |> 
+  dplyr::summarize(home_diff = sum(h_diff)) |> 
+  dplyr::rename(team = home_team)
+
+away_diffs <- acc_data |> 
+  dplyr::mutate(a_diff = away_points - home_points) |> 
+  dplyr::group_by(away_team) |> 
+  dplyr::summarize(away_diff = sum(a_diff)) |> 
+  dplyr::rename(team = away_team) 
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team") |> 
+  dplyr::mutate(full_diff = (home_diff + away_diff)) |> 
+  dplyr::select(team, full_diff, home_diff, away_diff) 
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+
+# spread
+
+spread <- tibble::tribble(
+  ~Season,~Opponent,~Spread,~Results,~Score,
+  2023,"Virginia",-23.5,"L","17-21",
+  2022,"Georgia Tech",-21.5,"L","17-21",
+  2021,"South Carolina",-12,"L","21-38",
+  2021,"Florida State",-17.5,"L","25-35",
+  2021,"at Georgia Tech",-14.5,"L","22-45",
+  2020,"at Florida State",-13.5,"L","28-31"
+)
+```
+
+\
+
+### GT Athletic Theme
+
+```{r gt-theme, warning=FALSE}
+
+gt_theme_athletic <- function(gt_object, ...) {
+  
+  # get id, if one is passed through to use with CSS
+  table_id <- subset(gt_object[['_options']], parameter == 'table_id')$value[[1]]
+  
+  table <- gt_object |> 
+    # set table font
+    gt::opt_table_font(
+      font = list(
+        gt::google_font('Spline Sans Mono'),
+        gt::default_fonts()
+      ),
+      weight = 500
+    ) |> 
+    # set the column label font and style
+    gt::tab_style(
+      locations = gt::cells_column_labels(
+        columns = gt::everything()
+      ),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 650,
+        size = gt::px(14),
+        transform = 'uppercase', # column labels to uppercase
+        align = 'left'
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title('title'),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 650
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title('subtitle'),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 500
+      )
+    ) |>
+    # set think black column sep.
+    gt::tab_style(
+      style = gt::cell_borders(sides = 'left', weight = gt::px(0.5), color = 'black'),
+      locations = gt::cells_body(
+        # everything but the first column
+        columns = c(-names(gt_object[['_data']])[1])
+      )
+    ) |> 
+    # set thin dotted row sep.
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'dotted'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    )|>
+    # left align cell text
+    gt::cols_align(
+      align = 'left',
+      columns = gt::everything()
+    ) |> 
+    gt::tab_options(
+      table.font.size = 14,
+      column_labels.border.bottom.width = 2,
+      column_labels.border.bottom.color = 'black',
+      column_labels.border.top.color = 'white',
+      row_group.border.bottom.color = 'white',
+      table.border.top.style = 'none',
+      table.border.bottom.style = 'none',
+      heading.border.bottom.style = 'none',
+      heading.align = 'left',
+      heading.title.font.size = gt::px(30),
+      source_notes.border.lr.style = 'none',
+      source_notes.font.size = 10
+    )
+  
+  # add css if table id is passed through
+  table <- if(!is.null(table_id)) {
+    table |> 
+      # remove the border from the bottom cell
+      gt::opt_css(
+        paste0("#", table_id, " tbody tr:last-child {border-bottom: 2px solid #ffffff00;}"),
+        add = TRUE
+      )
+  }
+  
+  return(table)
+  
+}
+```
+
+### GT Table
+
+```{r gt-table, warning=FALSE}
+the_table <- diffs_recs |>
+  dplyr::mutate(logo = team) |>
+  dplyr::relocate(logo, .before = team) |>
+  dplyr::mutate(win_pct = round(W / (W+L), 3)) |> 
+  dplyr::relocate(win_pct, .before = full_diff) |> 
+  dplyr::arrange(-win_pct, -full_diff) |>
+  dplyr::select(logo,
+                team,
+                W,
+                L,
+                full_diff,
+                h_w,
+                h_l,
+                home_diff,
+                a_w,
+                a_l,
+                away_diff) |>
+  gt::gt() |>
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    team = "Team",
+    full_diff = "+/-",
+    h_w = "W",
+    h_l = "L",
+    home_diff = "+/-",
+    a_w = "W",
+    a_l = "L",
+    away_diff = "+/-",
+  ) |>
+  gt::tab_spanner(label = "Overall",
+                  columns = c(W, L, full_diff)) |>
+  gt::tab_spanner(label = "Home",
+                  columns = c(h_w, h_l, home_diff)) |>
+  gt::tab_spanner(label = "Away",
+                  columns = c(a_w, a_l, away_diff)) |>
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |>
+  gt::fmt(
+    columns = c(full_diff, home_diff, away_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::data_color(
+    columns = c(full_diff, home_diff, away_diff),
+    colors = scales::col_numeric(
+      c(
+        "#0a4c6a",
+        "#73bfe2",
+        "#cfe8f3",
+        "#fff2cf",
+        "#fdd870",
+        "#fdbf11",
+        "#ca5800"
+      ),
+      domain = NULL
+    )
+  ) |>
+  gt::tab_header(title = "ACC Football  \n2023 Conference Standings") |>
+  gt::tab_source_note(source_note = "Bless your chart | November 26 | data via cfbfastR + gt athletic theme from @andreweatherman")  |>
+  gt_theme_athletic() |>
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("left"),
+    color = "#c1c1c1",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = c(W, h_w, a_w))))
+
+gtExtras::gtsave_extra(the_table,
+                       filename = "acc_table.png",
+                       vheight = 875,
+                       vwidth = 650)
+
+the_table
+```
+
+### Spread table
+
+```{r spread-table, warning=FALSE}
+spread_table <- spread |> 
+gt::gt() |>
+  gt::data_color(
+    columns = c(Spread),
+    colors = scales::col_numeric(
+      c(
+        "#ca5800",
+        "#fdbf11",
+        "#fdd870",
+        "#fff2cf"
+      ),
+      domain = NULL
+    )
+  ) |>
+  gt::tab_header(title = "North Carolina outright losses as a double-digit favorite") |>
+  gt::tab_source_note(source_note = "Bless your chart | October 22 | data via BetIQ Team Rankings")  |>
+  gt_theme_athletic()
+
+gtExtras::gtsave_extra(spread_table,
+                       filename = "spread_table.png",
+                       vheight = 875,
+                       vwidth = 600)
+
+spread_table
+```

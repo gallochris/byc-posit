@@ -1,0 +1,213 @@
+---
+title: "018: ACC Point Differentials"
+date: "2023-02-26"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(hoopR)
+library(gt)
+library(gtExtras)
+library(cfbplotR)
+```
+
+### Fetch data using hoopR
+
+```{r hoopR}
+acc <-
+  c(
+    "North Carolina",
+    "Duke",
+    "Wake Forest",
+    "N.C. State",
+    "Pittsburgh",
+    "Virginia Tech",
+    "Georgia Tech",
+    "Notre Dame",
+    "Virginia",
+    "Boston College",
+    "Louisville",
+    "Syracuse",
+    "Clemson",
+    "Florida St.",
+    "Miami FL"
+  )
+
+acc_team <- function(id) {
+  kp_team_schedule(team = id, year = 2023)
+}
+
+# function to get ACC games
+teams_acc <- lapply(acc, acc_team)
+
+# build table of only home conference games
+acc_results_2023 <- as.data.frame(do.call(rbind, teams_acc)) %>%
+  filter(conference_game == TRUE) %>%
+  filter(!is.na(w_conference)) %>%
+  mutate(
+    full_result = str_split(result, ",", simplify = T),
+    points_for = str_split(full_result[, 2], "-", simplify = T),
+    fr = full_result[, 1],
+    pf = points_for[, 1],
+    pa = points_for[, 2]
+  ) %>%
+  select(game_date, game_id, team, opponent, location, fr, pf, pa) %>%
+  mutate(diff = as.numeric(pf) - as.numeric(pa),
+         year = 2023) %>%
+  rename(result = fr,
+         points_scored = pf,
+         points_allowed = pa) %>%
+  filter(location == "Home")
+
+home_diff_w <-  acc_results_2023 %>%
+  filter(result == "W") %>%
+  group_by(team) %>%
+  summarize(w_diff = sum(diff), W = n())
+
+home_diff_l <-  acc_results_2023 %>%
+  filter(result == "L") %>%
+  group_by(team) %>%
+  summarize(l_diff = sum(diff), L = n()) %>%
+  add_row(team = "Duke", l_diff = 0, L = 0) %>%
+  add_row(team = "Virginia", l_diff = 0, L = 0)
+
+full_home <- merge(home_diff_w, home_diff_l, by = "team")
+
+h <- full_home %>%
+  mutate(pd_home = w_diff - l_diff) %>%
+  select(team, W, L, pd_home) %>%
+  rename(W_home = W, L_home = L)
+
+
+# build table of only away conference games
+acc_results_2023_away <-
+  as.data.frame(do.call(rbind, teams_acc)) %>%
+  filter(conference_game == TRUE) %>%
+  filter(!is.na(w_conference)) %>%
+  mutate(
+    full_result = str_split(result, ",", simplify = T),
+    points_for = str_split(full_result[, 2], "-", simplify = T),
+    fr = full_result[, 1],
+    pf = points_for[, 1],
+    pa = points_for[, 2]
+  ) %>%
+  select(game_date, game_id, team, opponent, location, fr, pf, pa) %>%
+  mutate(diff = as.numeric(pf) - as.numeric(pa),
+         year = 2023) %>%
+  rename(result = fr,
+         points_scored = pf,
+         points_allowed = pa) %>%
+  filter(location == "Away")
+
+away_diff_w <-  acc_results_2023_away %>%
+  filter(result == "W") %>%
+  group_by(team) %>%
+  summarize(w_diff = sum(diff), W = n()) %>%
+  add_row(team = "Louisville", w_diff = 0, W = 0) %>%
+  add_row(team = "Georgia Tech", w_diff = 0, W = 0) %>%
+  add_row(team = "Notre Dame", w_diff = 0, W = 0)
+
+
+away_diff_l <-  acc_results_2023_away %>%
+  filter(result == "L") %>%
+  group_by(team) %>%
+  summarize(l_diff = sum(diff), L = n())
+
+full_away <- merge(away_diff_w, away_diff_l, by = "team")
+
+away <- full_away %>%
+  mutate(pd_away = w_diff - l_diff) %>%
+  select(team, W, L, pd_away) %>%
+  rename(W_away = W, L_away = L)
+
+
+
+total <- merge(h, away, by = "team")
+
+
+final <- total %>%
+  mutate(
+    team = case_match(
+      team,
+      "Florida St." ~ "Florida State",
+      "N.C. State" ~ "NC State",
+      "Miami FL" ~ "Miami",
+      team ~ team
+    )
+  ) %>%
+  mutate(W = W_home + W_away,
+         L = L_home + L_away,
+         delta = pd_home + pd_away) %>%
+  select(team, W, L, delta, W_home, L_home, pd_home, W_away, L_away, pd_away) %>%
+  arrange(-delta)
+```
+
+### Make gt table
+
+```{r gt-table, warning=FALSE }
+the_table <- final %>%
+  mutate(row_number = 1:n(), logo = team) %>%
+  relocate(row_number, .before = team) %>%
+  relocate(logo, .before = team) %>%
+  gt() %>%
+  cols_label(
+    # rename columns
+    row_number = "",
+    logo = "",
+    team = "Team",
+    delta = "+/-",
+    W_home = "W",
+    L_home = "L",
+    pd_home = "+/-",
+    W_away = "W",
+    L_away = "L",
+    pd_away = "+/-",
+  ) %>%
+  tab_spanner(label = "Home",
+              columns = c(W_home, L_home, pd_home)) %>%
+  tab_spanner(label = "Away",
+              columns = c(W_away, L_away, pd_away)) %>%
+  gt_fmt_cfb_logo(columns = "logo") %>%
+  fmt(
+    columns = c(delta, pd_home, pd_away),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) %>%
+  data_color(
+    columns = c(delta, pd_home, pd_away),
+    colors = scales::col_numeric(
+      c(
+        "#0a4c6a",
+                 "#73bfe2",
+                 "#cfe8f3",
+                 "#fff2cf",
+                 "#fdd870",
+                 "#fdbf11",
+                 "#ca5800"
+      ),
+      domain = range(-210:145)
+    )
+  ) %>%
+  tab_header(title = "ACC: Conference Records and Point Differential through February 25 games") %>%
+  tab_source_note(source_note = "@dadgumboxscores | February 26, 2023 | data via kenpom")  %>%
+  gt_theme_dot_matrix() %>%
+  tab_options (
+    source_notes.font.size = px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = px(10),
+    column_labels.text_transform = 'capitalize'
+  )
+
+
+the_table
+```
+
+### 

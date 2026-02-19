@@ -1,0 +1,77 @@
+---
+title: "034: Freshmen playing time"
+date: "2023-06-07"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(toRvik)
+library(gt)
+library(gtExtras)
+```
+
+### Make data
+
+```{r data-load, message=FALSE}
+## example to fetch data from toRvik 
+# bart_player_season(year = 2023, stat = 'advanced') %>% filter(min > 9.999999) %>% group_by(exp) %>% count %>% adorn_totals()
+# manually build table after swapping years 
+
+frosh_mins <- tibble::tribble(
+    ~Season,~fr_min,~non_fr_min,
+    "2022-2023",649,3651,
+    "2021-2022",701,3616,
+    "2020-2021",704,3513,
+    "2019-2020",814,3497,
+    "2018-2019",832,3519,
+    "2017-2018",797,3481,
+    "2016-2017",779,3532,
+    "2015-2016",813,3505,
+    "2014-2015",815,3521,
+    "2013-2014",759,3497,
+) %>% mutate(pct = fr_min / non_fr_min)
+
+```
+
+### Make GT Table with Bars
+
+```{r gt-table, warning=FALSE}
+# make plot 
+bar_tbl <- frosh_mins %>%
+  gt() %>%
+  cols_label(fr_min = "Freshmen",
+             non_fr_min = "Total Players",
+             pct = "") %>%
+  gt_plt_bar(column = pct, 
+             keep_column = FALSE,
+             color = "#5B9BD5",
+             scale_type = 'percent') %>%
+   gt::fmt_number(columns = pct,
+                 decimals = 2,
+                 use_seps = FALSE) %>%
+  tab_header(
+    title = "Freshmen Playing Time by Season",
+    subtitle = md(
+      "Shows number  and percentage of freshmen with least 10% of minutes played by season."
+    )
+  ) %>%
+  tab_source_note(source_note = "@dadgumboxscores | data via barttorvik.com + toRvik")  %>%
+  # adjust font sizes
+  tab_options (source_notes.font.size = px(10),
+               table.font.size = px(12),
+  ) %>%
+  gt_theme_nytimes()
+
+gtsave(bar_tbl, 'bar_tbl.png')
+
+bar_tbl
+```
+
+### 

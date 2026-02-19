@@ -1,0 +1,117 @@
+---
+title: "118: Shot volume"
+date: "2024-11-12"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Make data from box scores
+
+```{r load-data, message = FALSE, warning=FALSE}
+
+
+unc <- tibble::tribble(
+  ~Opponent,~Type,~Offense,~Defense,
+  "Elon<br>Pace: 75","Shots",80,61,
+  "Elon<br>Pace: 75","FTMs-FTAs",13,14,
+  "Elon<br>Pace: 75","PPP",1.20,1.01,
+  "Elon<br>Pace: 75","eFG%",48.1,53.3,
+  "Elon<br>Pace: 75","TO%",8.0,21.4,
+  "Elon<br>Pace: 75","OR%",37.5,28.6,
+  "Elon<br>Pace: 75","FTR",20.0,22.9,
+  "Kansas<br>Pace: 77","Shots",63,76,
+  "Kansas<br>Pace: 77","FTMs-FTAs",28,17,
+  "Kansas<br>Pace: 77","PPP",1.16,1.19,
+  "Kansas<br>Pace: 77","eFG%",48.4,52.6,
+  "Kansas<br>Pace: 77","TO%",14.2,5.2,
+  "Kansas<br>Pace: 77","OR%",27.0,28.6,
+  "Kansas<br>Pace: 77","FTR",49.2,22.4,
+) |> 
+  dplyr::mutate(
+    Delta = dplyr::if_else(Type != "TO%", Offense - Defense,
+                           Defense - Offense)
+  ) 
+
+```
+
+### GT table
+
+```{r gt-tbl, warning=FALSE}
+
+svi_tbl <- unc |>
+  dplyr::group_by(Opponent) |>
+  gt::gt(
+    groupname_col = c("Opponent"),
+    process_md = TRUE,
+    row_group_as_column = FALSE,
+  ) |>
+  gtUtils::gt_theme_athletic() |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::cols_label(
+    Type = "",
+    Offense = "UNC",
+    Defense = "Opponent",
+    Delta = "+/-"
+  ) |>
+  gt::fmt_number(
+    columns = c(Offense, Defense, Delta),
+    rows = c(1, 2, 8, 9),
+    decimals = 0
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(color = "red", weight = "bold")),
+    locations = gt::cells_body(
+      columns = c(Delta),
+      rows = c(2, 4, 7, 8, 10, 11, 12, 13)
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      color = "#04AF70", weight = "bold"
+    )),
+    locations = gt::cells_body(columns = c(Delta), rows = c(1, 3, 5, 6, 9, 14))
+  ) |>
+  gt::fmt(
+    columns = c(Delta),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::cols_align(Type, align = "left") |>
+  gt::cols_align(columns = -Type, align = "right") |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via kenpom.com and theme via {gtUtils}. <br>Measures total shot attempts (2PTA + 3PTA) and UNC's free throw makes minus opponent free throw attempts alongside the four factors and points per possession (PPP).<hr>
+    <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_header(title = "North Carolina's shot volume", subtitle = "After two games, Carolina is 1-1 with a 90-76 win over Elon and a 92-89 loss at Kansas.") |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(450)) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        weight = 850,
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(color = "#C5C5FF")
+    )
+  )
+
+gtUtils::gt_save_crop(svi_tbl,
+                      file = "svi_tbl.png",
+                      whitespace = 30,
+                      bg = "white")
+
+svi_tbl
+```

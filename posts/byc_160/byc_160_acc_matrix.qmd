@@ -1,0 +1,449 @@
+---
+title: "160: ACC Matrix"
+date: "2025-11-06"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+```
+
+### ACC matrix
+
+```{r acc-matrix, warning=FALSE, message=FALSE}
+
+mt <- readr::read_csv("mt.csv")
+
+# --- function for team headers
+md = function(x) {
+  gt::html(x)
+}
+
+team_headers <- c(
+  "Virginia",
+  "Pittsburgh",
+  "Georgia Tech",
+  "Duke",
+  "SMU",
+  "Louisville",
+  "Miami",
+  "NC State",
+  "Virginia Tech",
+  "Cal",
+  "Wake Forest",
+  "Clemson",
+  "Stanford",
+  "North Carolina",
+  "Florida State",
+  "Syracuse",
+  "Boston College"
+)
+# cfbplotR urls from https://github.com/Kazink36/cfbplotR/blob/main/data-raw/logo_ref_2.csv
+team_img_urls <- c(
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/258.png",
+  # uva
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/221.png",
+  #pitt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/59.png",
+  # gt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/150.png",
+  # duke
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2567.png",
+  #smu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/97.png",
+  # lville
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png",
+  # miami
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/152.png",
+  #ncsu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/259.png",
+  # vt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/25.png",
+  # cal
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/154.png",
+  # wake forest
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/228.png",
+  #clemson
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/24.png",
+  # stanford
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/153.png",
+  # unc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/52.png",
+  # fsu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/183.png",
+  #cuse
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/103.png" # bc
+)
+
+add_team_header <- function(team_name, img_url) {
+  gtExtras::img_header(
+    label = "",
+    img_url = img_url,
+    height = 25,
+    palette = c("white")
+  )
+}
+
+
+# add teams headers
+team_headers_with_images <- purrr::map2(team_headers, team_img_urls, add_team_header) |>
+  purrr::set_names(team_headers)
+
+
+# table header
+fball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC Football Results and Schedule Matrix</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows conference games between ACC opponents.<br>
+       Find a game by locating one team on the left and the opponent across the top, the intersection shows the result or scheduled date.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+acc_tbl <- mt |>
+  dplyr::mutate(name = team) |>
+  cbbplotR::gt_cbb_teams(team, team, include_name = FALSE, logo_height = 25) |>
+  dplyr::mutate(dplyr::across(c(-team, -name), ~ dplyr::if_else(is.na(.x), "---", .x))) |>
+  # Then apply styling
+  dplyr::mutate(dplyr::across(
+    c(-team, -name),
+    ~ dplyr::case_when(
+      .x == "---" ~ "<span style='color:#CCCCCC;'>---</span>",
+      # grepl("^11/", .x) ~ paste0("<span style='color:#E67E22; font-weight:bold;'>", .x, "</span>"),
+      TRUE ~ .x
+    )
+  )) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::cols_label(team = "", !!!team_headers_with_images) |>
+  gt::cols_align('center') |>
+  gtExtras::gt_merge_stack(
+    col1 = team,
+    col2 = name,
+    palette = c("black", "#333333")
+  ) |>
+  gt::fmt_markdown(columns = gt::everything())  |>
+  gt::tab_header(title = gt::html(fball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via collegefootballdata.com | theme via {gtUtils} <br>
+        Data for 2025 season through November 2 games.<br>
+        NC State beat Virginia 35-31 earlier this season in a non-conference game, denoted in pink.<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(12)
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10.5),
+      weight = 250
+    )
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(4, 9, 11),
+    columns = 2,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(3, 7),
+    columns = 3,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2, 17),
+    columns = 4,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1, 11, 14),
+    columns = 5,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(6, 10, 17),
+    columns = 6,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(5, 10, 12),
+    columns = 7,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2, 8, 9, 16),
+    columns = 8,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(7, 14, 15),
+    columns = 9,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  # special case for State/UVA
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = 9,
+    fill = "lightpink",
+    alpha = 0.4
+  ) |>
+  # special case for State/UVA
+  gtExtras::gt_highlight_rows(
+    rows = c(8),
+    columns = 2,
+    fill = "lightpink",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1, 7, 15),
+    columns = 10,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(5, 6, 13),
+    columns = 11,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1, 4, 14),
+    columns = 12,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(6, 15),
+    columns = 13,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(10, 14),
+    columns = 14,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(4, 8, 11, 13),
+    columns = 15,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(8, 9),
+    columns = 16,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(7, 17),
+    columns = 17,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(3, 5, 16),
+    columns = 18,
+    fill = "#E67E22",
+    alpha = 0.4
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)  # Make it thicker than internal borders
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) 
+
+gt_save_crop(acc_tbl,
+             file = "acc_tbl.png",
+             whitespace = 60,
+             bg = "#FFFDF5")
+
+acc_tbl
+
+```
+
+### Kansas and UNC
+
+```{r gt-tbl, warning=FALSE}
+
+ku <- readr:::read_csv("ku-unc.csv")
+
+ku_gt <- ku |> 
+  dplyr::select(Date, Location, Winner, Result, Type, Order) |> 
+  cbbplotR::gt_cbb_teams(Winner, Winner, include_name = FALSE) |> 
+  dplyr::mutate(
+    Type = dplyr::if_else(Type == "NCAA Final", "trophy",
+                          Type)) |>
+  dplyr::arrange(Order) |> 
+  gt::gt() |> 
+  gt::cols_hide(Order) |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gt::fmt_markdown(Winner) |>
+  gt::fmt_icon(
+   columns = c(Type),
+   rows = c(2, 13),
+    fill_color = "orange"
+ ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = "Date",
+    col2 = "Location",
+    palette = c("black", "#848484"),
+    small_cap = FALSE
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(Location),
+                           sides = "right",
+                           color = "black") |>
+  gt::cols_align(columns = c(Date, Location, Result),
+                 align = "left") |> 
+  gt::tab_header(title = gt::html("<span style='color:#56a0d3'>North Carolina</span> and <span style='color:#E8000D'>Kansas</span> Series History"),
+                 subtitle = gt::html("The two teams have met seven times in the NCAA Tournament and 13 times overall since the 1957 season. Kansas leads the overall series 7-6.<br>
+                                     Kansas plays its first game in Chapel Hill, NC this Friday.")) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from Stathead and sports-reference.com, theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::cols_align(Type, align = "left") |> 
+  gt::cols_label(
+    Date = "",
+    Winner = "",
+    Result = "",
+    Type =""
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Date, Location, Result, Type)
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(500)) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    color = "#E8000D"
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Result),
+      rows = c(1:5, 8, 10)
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    color = "#56a0d3"
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Result),
+      rows = c(6, 7, 9, 11:13)
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(weight = "bold"
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Type),
+      rows = c(3, 4,  5, 7, 8)
+    )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) 
+
+gt_save_crop(ku_gt,
+  file = "ku_gt.png",
+  whitespace = 30,
+  bg = "#FFFDF5"
+)
+
+ku_gt
+```

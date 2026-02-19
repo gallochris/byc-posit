@@ -1,0 +1,17 @@
+{
+  "hash": "58ad62da39dc779857cbef002ea276f6",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"112: Conference Shapes\"\ndate: \"2024-10-15\"\ncategories:\n  - geom_density\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(cbbplotR)\nlibrary(rlang)\n\ncfb_ratings <- readr::read_csv(\"cfb_ratings.csv\") |> \n  dplyr::select(-1)\n\nconf_stats <- readr::read_csv(\"conf_stats.csv\") |> \n  dplyr::select(-1)\n\n# order the conferences\nconf_order <- conf_stats |> \n      dplyr::pull(conf)\n\nconf_stats <- conf_stats |>\n  dplyr::mutate(conf = factor(conf, levels = conf_order)) |>\n  dplyr::arrange(conf)\n```\n:::\n\n\n### Density plot\n\n\n::: {.cell}\n\n```{.r .cell-code}\nconf_density <- cfb_ratings |>\n  dplyr::filter(!conf %in% c(\"Pac-2\", \"Independents\")) |> \n  dplyr::mutate(conf = forcats::fct_relevel(conf, conf_order)) |>\n  ggplot2::ggplot(ggplot2::aes(x = f_plus_ptile, fill = conf)) +\n  ggplot2::geom_density(alpha = 0.7) +\n  ggplot2::facet_wrap(~ conf, scales = \"free_y\") +\n  ggplot2::geom_vline(data = conf_stats, ggplot2::aes(xintercept = mean_f_plus_ptile), \n                      linetype = \"dashed\", color = \"#333333\") +\n  ggplot2::geom_label(data = conf_stats, \n                     ggplot2::aes(x = mean_f_plus_ptile, y = Inf, \n                                  label = sprintf(\"%.0f%%\", mean_f_plus_ptile * 100)),\n                     hjust = -0.1, vjust = 3, fill = \"floral white\", color = \"#333333\", size = 4) +\n  hrbrthemes::theme_ipsum_rc() +\n  ggplot2::labs(\n    title = \"FBS Conference Shapes\",\n    subtitle = \"Shows distribution of F+ rating percentiles sorted by average percentile. <br>F+ ratings are a combination between Brian Fremeau's FEI ratings and Bill Connelly's SP+ ratings.\",\n    x = \"F+ Rating Percentile\",\n    y = \"\",\n    caption = \"October 15, 2024  \\nPlot by Chris (@dadgumboxscores) | Bless your chart\",\n    x = \"\", \n  ) +\n  ggplot2::theme(\n    legend.position = \"none\",\n    strip.background = ggplot2::element_rect(fill = \"lightgray\"),\n    strip.text = ggplot2::element_text(face = \"bold\"),\n    axis.text.y = ggplot2::element_blank(), \n    axis.title.y = ggplot2::element_blank(),\n    plot.subtitle = ggtext::element_markdown()\n  ) +\n  ggplot2::scale_fill_manual(values = \n                               colorRampPalette(RColorBrewer::brewer.pal(8, \"Dark2\"))(\n                                 length(unique(cfb_ratings$conf)))) +\n  ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 1))\n\n\n\n ggplot2::ggsave(\n    \"conf_density_plot.png\",\n    conf_density,\n    w = 10.5,\n    h = 8.5,\n    dpi = 600,\n    type = 'cairo'\n  )\n\nconf_density\n```\n\n::: {.cell-output-display}\n![](byc_112_conf_shapes_files/figure-html/geom_density-1.png){width=672}\n:::\n:::\n\n\n### \n",
+    "supporting": [
+      "byc_112_conf_shapes_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

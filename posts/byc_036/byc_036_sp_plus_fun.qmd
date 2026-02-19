@@ -1,0 +1,498 @@
+---
+title: "036: Historical SP+"
+date: "2023-06-20"
+categories:
+  - gtExtras
+  - nanoplots
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+self-contained: false
+---
+
+### Add data
+
+```{r data-load, message=FALSE}
+# load csv public
+sp_plus <- readr::read_csv("sp_historical.csv") |> 
+          dplyr::mutate(team = dplyr::if_else(team == "Miami-FL", "Miami", team))
+
+sp_data <- dplyr::group_by(sp_plus, team) |>
+  dplyr::mutate(year = as.numeric(year)) |>
+  dplyr::arrange(year) |>
+  dplyr::mutate(pctile = stringr::str_remove_all(pctile, "%"), off_pctile = stringr::str_remove_all(off_pctile, "%"), def_pctile = stringr::str_remove_all(def_pctile, "%")) |>
+  dplyr::mutate(pctile = as.numeric(pctile), off_pctile = as.numeric(off_pctile), def_pctile = as.numeric(def_pctile)) |>
+  dplyr::mutate(avg = zoo::rollmean(
+    pctile,
+    k = 5,
+    fill = NA,
+    align = 'right'
+  )) |>
+  dplyr::ungroup()
+
+```
+
+### Make GT Tables
+
+```{r gt-tables, warning=FALSE}
+# make ACC table 
+acc_teams <- c("Boston College", "Clemson", "Notre Dame", "Duke", "Florida State",
+               "Georgia Tech", "Louisville", "Maryland", "Miami", "NC State", 
+               "North Carolina", "Pittsburgh", "Syracuse", "Virginia", "Virginia Tech",
+               "Wake Forest")
+
+sp_data |> 
+  dplyr::filter(team %in% acc_teams & decade > 1990) |> 
+  dplyr::group_by(team, decade) |> 
+  dplyr::summarize(sum_data = list(pctile), avg = mean(pctile), .groups = "drop") |> 
+  tidyr::pivot_wider(names_from = c(decade), values_from = c(avg, sum_data)) |> 
+  dplyr::select(team, avg_2020, sum_data_2020, avg_2010, sum_data_2010, avg_2000, sum_data_2000) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::relocate(logo, .before = team) |> 
+  dplyr::arrange(-avg_2020) |> 
+  gt::gt() |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    team = "Team",
+    avg_2020 = "Avg.",
+    sum_data_2020 = "Trend",
+    avg_2010 = "Avg.",
+    sum_data_2010 = "Trend",
+    avg_2000 = "Avg.",
+    sum_data_2000 = "Trend"
+  ) |> 
+      gtExtras::gt_plt_dist(sum_data_2000, type ="density", fill = "#013ca6") |> 
+  gtExtras::gt_plt_dist(sum_data_2010, type ="density", fill = "#013ca6") |> 
+  gtExtras::gt_plt_dist(sum_data_2020, type = "density", fill = "#013ca6") |> 
+    gt::tab_spanner(label = "2020s",
+              columns = c(avg_2020, sum_data_2020)) |> 
+  gt::tab_spanner(label = "2010s",
+              columns = c(avg_2010, sum_data_2010)) |> 
+  gt::tab_spanner(label = "2000s",
+              columns = c(avg_2000, sum_data_2000)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(
+    columns = c(avg_2020, avg_2010, avg_2000),
+    decimals = 1,
+    use_seps = FALSE
+  ) |> 
+  gt::tab_header(title = "ACC Football: SP+ Average Percentile Rankings by Decade",
+                 subtitle = "Full time members across all three decades in yellow.") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 20, 2023 | data via @ESPN_BillC")  |> 
+  gtExtras::gt_theme_538() |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_borders(
+        sides = c("left"),
+        color = "#c1c1c1",
+        weight = gt::px(2)
+      )
+    ),
+    locations = list(
+      gt::cells_body(
+        columns = c(avg_2020, avg_2010, avg_2000)
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(
+        transform = "capitalize",
+        size = gt::px(16)
+      )
+    ),
+    locations = gt::cells_column_spanners()
+    ) |> 
+    gtExtras::gt_highlight_rows(
+    rows = c(1, 4, 5, 6, 10, 11, 15, 16),
+    fill = "#ffffe0",
+    font_weight = "normal"
+  ) -> acc_table 
+
+acc_table 
+
+# make Big Ten table 
+big_teams <- c("Illinois", "Minnesota", "Northwestern", "Purdue", "Wisconsin", "Michigan", "Indiana", "Iowa", "Ohio State", "Michigan State", "Penn State", "Nebraska", "Maryland", "Rutgers", "USC", "UCLA")
+
+sp_data |> 
+  dplyr::filter(team %in% big_teams & decade > 1990) |> 
+  dplyr::group_by(team, decade) |> 
+  dplyr::summarize(sum_data = list(pctile), avg = mean(pctile), .groups = "drop") |> 
+  tidyr::pivot_wider(names_from = c(decade), values_from = c(avg, sum_data)) |> 
+  dplyr::select(team, avg_2020, sum_data_2020, avg_2010, sum_data_2010, avg_2000, sum_data_2000) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::relocate(logo, .before = team) |> 
+  dplyr::arrange(-avg_2020) |> 
+  gt::gt() |> 
+  gtExtras::gt_plt_dist(sum_data_2000, type ="density", fill = "#0088ce") |> 
+  gtExtras::gt_plt_dist(sum_data_2010, type ="density", fill = "#0088ce") |> 
+  gtExtras::gt_plt_dist(sum_data_2020, type = "density", fill = "#0088ce") |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    team = "Team",
+    avg_2020 = "Avg.",
+    sum_data_2020 = "Trend",
+    avg_2010 = "Avg.",
+    sum_data_2010 = "Trend",
+    avg_2000 = "Avg.",
+    sum_data_2000 = "Trend"
+  ) |> 
+  gt::tab_spanner(label = "2020s",
+              columns = c(avg_2020, sum_data_2020)) |> 
+  gt::tab_spanner(label = "2010s",
+              columns = c(avg_2010, sum_data_2010)) |> 
+  gt::tab_spanner(label = "2000s",
+              columns = c(avg_2000, sum_data_2000)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(
+    columns = c(avg_2020, avg_2010, avg_2000),
+    decimals = 1,
+    use_seps = FALSE
+  ) |> 
+  gt::tab_header(title = "Big Ten Football: SP+ Average Percentile Rankings by Decade",
+                 subtitle = "Full time members across all three decades in yellow.") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 20, 2023 | data via @ESPN_BillC")  |> 
+  gtExtras::gt_theme_538() |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_borders(
+        sides = c("left"),
+        color = "#c1c1c1",
+        weight = gt::px(2)
+      )
+    ),
+    locations = list(
+      gt::cells_body(
+        columns = c(avg_2020, avg_2010, avg_2000)
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(
+        transform = "capitalize",
+        size = gt::px(16)
+      )
+    ),
+    locations = gt::cells_column_spanners()
+    ) |> 
+    gtExtras::gt_highlight_rows(
+    rows = c(1, 2, 3, 4, 5, 6, 9, 10, 12, 14, 15),
+    fill = "#ffffe0",
+    font_weight = "normal"
+  ) -> big_table 
+
+big_table
+
+# make SEC table
+sec_teams <- c("Florida", "Georgia", "Kentucky", "Tennessee", "Vanderbilt", "Alabama", "Auburn", "LSU", "Ole Miss", "Mississippi State", "South Carolina", "Arkansas", "Missouri", "Texas A&M", "Texas", "Oklahoma")
+
+sp_data |> 
+  dplyr::filter(team %in% sec_teams & decade > 1990) |> 
+  dplyr::group_by(team, decade) |> 
+  dplyr::summarize(sum_data = list(pctile), avg = mean(pctile), .groups = "drop") |> 
+  tidyr::pivot_wider(names_from = c(decade), values_from = c(avg, sum_data)) |> 
+  dplyr::select(team, avg_2020, sum_data_2020, avg_2010, sum_data_2010, avg_2000, sum_data_2000) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::relocate(logo, .before = team) |> 
+  dplyr::arrange(-avg_2020) |> 
+  gt::gt() |> 
+  gtExtras::gt_plt_dist(sum_data_2000, type ="density", fill = "#004b8d") |> 
+  gtExtras::gt_plt_dist(sum_data_2010, type ="density", fill = "#004b8d") |> 
+  gtExtras::gt_plt_dist(sum_data_2020, type = "density", fill = "#004b8d") |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    team = "Team",
+    avg_2020 = "Avg.",
+    sum_data_2020 = "Trend",
+    avg_2010 = "Avg.",
+    sum_data_2010 = "Trend",
+    avg_2000 = "Avg.",
+    sum_data_2000 = "Trend"
+  ) |> 
+  gt::tab_spanner(label = "2020s",
+              columns = c(avg_2020, sum_data_2020)) |> 
+  gt::tab_spanner(label = "2010s",
+              columns = c(avg_2010, sum_data_2010)) |> 
+  gt::tab_spanner(label = "2000s",
+              columns = c(avg_2000, sum_data_2000)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(
+    columns = c(avg_2020, avg_2010, avg_2000),
+    decimals = 1,
+    use_seps = FALSE
+  ) |> 
+  gt::tab_header(title = "SEC Football: SP+ Average Percentile Rankings by Decade",
+                 subtitle = "Full time members across all three decades in yellow.") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 20, 2023 | data via @ESPN_BillC")  |> 
+  gtExtras::gt_theme_538() |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_borders(
+        sides = c("left"),
+        color = "#c1c1c1",
+        weight = gt::px(2)
+      )
+    ),
+    locations = list(
+      gt::cells_body(
+        columns = c(avg_2020, avg_2010, avg_2000)
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(
+        transform = "capitalize",
+        size = gt::px(16)
+      )
+    ),
+    locations = gt::cells_column_spanners()
+    ) |> 
+    gtExtras::gt_highlight_rows(
+    rows = c(1, 2, 5, 7, 8, 9, 10, 11, 12, 13, 15, 16),
+    fill = "#ffffe0",
+    font_weight = "normal"
+  ) -> sec_table
+
+sec_table
+```
+
+### Make rolling mean tables
+
+```{r dead-letters, warning = FALSE}
+
+# make rolling mean tables
+sp_data |>
+  dplyr::filter(team %in% c("Ole Miss", "Colorado")) |>
+  dplyr::filter(year > 1949) |> 
+  ggplot2::ggplot(ggplot2::aes(x = year, y = pctile)) +
+  ggplot2::geom_col(alpha = 3 / 10,
+                    linetype = 0,
+                    ggplot2::aes(fill = team)) +
+  ggplot2::geom_line(ggplot2::aes(x = year, y = avg, color = team)) +
+  cfbplotR::scale_color_cfb(alpha = .8) +
+  cfbplotR::scale_fill_cfb(alpha = .8) +
+  ggplot2::facet_wrap( ~ team, nrow = 4) +
+  ggplot2::geom_hline(yintercept = 50.0,
+                      linetype = 'dashed',
+                      color = "#333333") +
+   ggplot2::scale_x_continuous(breaks = seq(1950, 2022, 10)) +
+  ggplot2::scale_y_continuous(breaks = seq(0, 100, 25)) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::theme(
+    strip.text = cfbplotR::element_cfb_logo(size = 1),
+    plot.title = ggtext::element_markdown(),
+    plot.subtitle = ggtext::element_markdown(),
+    text = ggplot2::element_text(family = "Arial"),
+    panel.grid = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "",
+    y = "",
+    title = "<span style='color:#CFB87C;'>Colorado</span> and <span style='color:#CE1126;'>Ole Miss</span> Football  \nSP+ Percentile Rankings",
+    
+    subtitle = "Shows percentile by year and rolling 5 year average since 1950 season.",
+    caption = "dadgumboxscores | June 20, 2023 | data via @ESPN_BillC"
+  )  -> sp_data_plot
+
+
+ggplot2::ggsave(
+  "sp_plot.png",
+  sp_data_plot,
+  w = 8,
+  h = 8,
+  dpi = 600,
+  type = 'cairo'
+)
+
+sp_data_plot
+```
+
+### Coach GT Tables
+
+```{r coach-gt, warning= FALSE}
+sp_data |> 
+  dplyr::filter(year > 2004 & conf == "ACC") |> 
+  dplyr::filter(team != "Notre Dame") |> 
+  dplyr::select(year, team, pctile, off_pctile, def_pctile) |> 
+  dplyr::mutate(coach = dplyr::case_when(
+    team == "North Carolina" & year < 2007 ~ "John Bunting",
+    team == "North Carolina" & year > 2006 & year < 2011 ~ "Butch Davis", 
+    team == "North Carolina" & year == 2011 ~ "Everett Withers", 
+    team == "North Carolina" & year > 2011 & year < 2019 ~ "Larry Fedora", 
+    team == "North Carolina" & year > 2018 ~ "Mack Brown 2.0", 
+    team == "Florida State" & year < 2010 ~ "Bobby Bowden", 
+    team == "Florida State" & year > 2009 & year < 2018 ~ "Jimbo Fisher", 
+    team == "Florida State" & year > 2017 & year < 2019 ~ "Willie Taggart", 
+    team == "Florida State" & year == 2019 ~ "Willie Taggart/Odell Haggins", 
+    team == "Florida State" & year > 2019 ~ "Mike Norvell", 
+    team == "Boston College" & year < 2007 ~ "Tom O'Brien", 
+    team == "Boston College" & year < 2009 & year > 2006 ~ "Jeff Jagodzinkski", 
+    team == "Boston College" & year > 2008 & year < 2013 ~ "Frank Spaziani",
+    team == "Boston College" & year > 2012 & year < 2020 ~ "Steve Addazio", 
+    team == "Boston College" & year > 2019 ~ "Jeff Hafley",
+    team == "Clemson" & year < 2008 ~ "Tommy Bowden", 
+    team == "Clemson" & year == 2008 ~ "Tommy Bowden/Dabo Swinney", 
+    team == "Clemson" & year > 2008 ~ "Dabo Swinney", 
+    team == "NC State" & year < 2007 ~ "Chuck Amato", 
+    team == "NC State" & year > 2006 & year < 2013 ~ "Tom O'Brien", 
+    team == "NC State" & year > 2012 ~ "Dave Doeren", 
+    team == "Maryland" & year < 2011 ~ "Ralph Friedgen", 
+    team == "Maryland" & year > 2010 ~ "Randy Edsall", 
+    team == "Wake Forest" & year < 2014 ~ "Jim Grobe", 
+    team == "Wake Forest" & year > 2013 ~ "Dave Clawson", 
+    team == "Virginia Tech" & year < 2016 ~ "Frank Beamer", 
+    team == "Virginia Tech" & year > 2015 & year < 2021 ~ "Justin Fuente",
+    team == "Virginia Tech" & year == 2021 ~ "Justin Fuente/JC Price",
+    team == "Virginia Tech" & year == 2022 ~ "Brent Pry",
+    team == "Miami" & year < 2007 ~ "Larry Coker", 
+    team == "Miami" & year > 2006 & year < 2011 ~ "Randy Shannon", 
+    team == "Miami" & year > 2010 & year < 2015 ~ "Al Golden", 
+    team == "Miami" & year == 2015 ~ "Al Golden/Larry Scott",
+    team == "Miami" & year > 2015 & year < 2019 ~ "Mark Richt",
+    team == "Miami" &year > 2018 & year < 2022 ~ "Manny Diaz", 
+    team == "Miami" & year == 2022 ~ "Mario Cristobal", 
+    team == "Georgia Tech" & year < 2008 ~ "Chan Gailey",
+    team == "Georgia Tech" & year > 2007 & year < 2019 ~ "Paul Johnson",
+    team == "Georgia Tech" & year > 2018 & year < 2022 ~ "Geoff Collins",
+    team == "Georgia Tech" & year == 2022 ~ "Geoff Collins/Brent Key",
+    team == "Virginia" & year < 2010 ~ "Al Groh", 
+    team == "Virginia" & year > 2009 & year < 2016 ~ "Mike London",
+    team == "Virginia" & year > 2015 & year < 2022 ~ "Bronco Mendenhall",
+    team == "Virginia" & year == 2022 ~ "Tony Elliott", 
+    team == "Duke" & year < 2008 ~ "Ted Roof", 
+    team == "Duke" & year > 2007 & year < 2022 ~ "David Cutcliffe", 
+    team == "Duke" & year == 2022 ~ "Mike Elko",
+    team == "Syracuse" & year > 2012 & year < 2016 ~ "Scott Shafer", 
+    team == "Syracuse" & year > 2015 ~ "Dino Barbers", 
+    team == "Pittsburgh" & year < 2015 ~ "Paul Chryst", 
+    team == "Pittsburgh" & year > 2014 ~ "Pat Narduzzi", 
+    team == "Louisville" & year < 2018 ~ "Bobby Petrino", 
+    team == "Louisville" & year == 2018 ~ "Bobby Petrino/Lorenzo Ward", 
+    team == "Louisville" & year > 2018 ~ "Scott Satterfield",
+    TRUE ~ NA_character_
+  )) -> coaches
+
+
+coaches |> 
+  dplyr::group_by(coach, team) |> 
+  dplyr::summarise(avg_overall = mean(pctile), 
+                   avg_off = mean(off_pctile),
+                   avg_def = mean(def_pctile),
+                   total_szn = dplyr::n(),
+                   .groups = "drop") |> 
+  dplyr::arrange(-total_szn) |> 
+  dplyr::filter(team != "Maryland") -> the_coach
+
+
+the_coach |> 
+  dplyr::filter(team %in% c("NC State", "North Carolina", "Duke", "Wake Forest")) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::select(logo, team, coach, total_szn, avg_overall, avg_off, avg_def) |> 
+  gt::gt(groupname_col = "team") |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    coach = "Head Coach",
+    total_szn = "Seasons",
+    avg_overall = "Overall",
+    avg_off = "Offense",
+    avg_def = "Defense"
+  ) |> 
+  gt::tab_spanner(label = "Average SP+ Percentile",
+                  columns = c(avg_overall, avg_off, avg_def)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(columns = c(avg_overall, avg_off, avg_def),
+                 decimals = 2,
+                 use_seps = FALSE) |> 
+  gt::tab_header(title = "ACC Football Since 2005: Average SP+ Percentiles by Coach") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 28, 2023 | data via @ESPNBill_BillC") |> 
+  gtExtras::gt_theme_538() -> first_four 
+
+first_four
+
+the_coach |> 
+  dplyr::filter(team %in% c("Clemson", "Georgia Tech", "Pittsburgh", "Louisville")) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::select(logo, team, coach, total_szn, avg_overall, avg_off, avg_def) |> 
+  gt::gt(groupname_col = "team") |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    coach = "Head Coach",
+    total_szn = "Seasons",
+    avg_overall = "Overall",
+    avg_off = "Offense",
+    avg_def = "Defense"
+  ) |> 
+  gt::tab_spanner(label = "Average SP+ Percentile",
+                  columns = c(avg_overall, avg_off, avg_def)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(columns = c(avg_overall, avg_off, avg_def),
+                 decimals = 2,
+                 use_seps = FALSE) |> 
+  gt::tab_header(title = "ACC Football Since 2005: Average SP+ Percentiles by Coach") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 28, 2023 | data via @ESPNBill_BillC") |> 
+  gtExtras::gt_theme_538() -> second_four 
+
+second_four
+
+the_coach |> 
+  dplyr::filter(team %in% c("Florida State", "Miami", "Boston College")) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::select(logo, team, coach, total_szn, avg_overall, avg_off, avg_def) |> 
+  gt::gt(groupname_col = "team") |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    coach = "Head Coach",
+    total_szn = "Seasons",
+    avg_overall = "Overall",
+    avg_off = "Offense",
+    avg_def = "Defense"
+  ) |> 
+  gt::tab_spanner(label = "Average |>  SP+ Percentile",
+                  columns = c(avg_overall, avg_off, avg_def)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(columns = c(avg_overall, avg_off, avg_def),
+                 decimals = 2,
+                 use_seps = FALSE) |> 
+  gt::tab_header(title = "ACC Football Since 2005: Average SP+ Percentiles by Coach") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 28, 2023 | data via @ESPNBill_BillC") |> 
+  gtExtras::gt_theme_538() -> third_four 
+
+third_four
+
+the_coach |> 
+  dplyr::filter(team %in% c("Virginia", "Virginia Tech", "Syracuse")) |> 
+  dplyr::mutate(logo = team) |> 
+  dplyr::select(logo, team, coach, total_szn, avg_overall, avg_off, avg_def) |> 
+  gt::gt(groupname_col = "team") |> 
+  gt::cols_label(
+    # rename columns
+    logo = "",
+    coach = "Head Coach",
+    total_szn = "Seasons",
+    avg_overall = "Overall",
+    avg_off = "Offense",
+    avg_def = "Defense"
+  ) |> 
+  gt::tab_spanner(label = "Average SP+ Percentile",
+                  columns = c(avg_overall, avg_off, avg_def)) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = "logo") |> 
+  gt::fmt_number(columns = c(avg_overall, avg_off, avg_def),
+                 decimals = 2,
+                 use_seps = FALSE) |> 
+  gt::tab_header(title = "ACC Football Since 2005: Average SP+ Percentiles by Coach") |> 
+  gt::tab_source_note(source_note = "@dadgumboxscores | June 28, 2023 | data via @ESPNBill_BillC") |> 
+  gtExtras::gt_theme_538() -> four_four 
+
+four_four
+
+```

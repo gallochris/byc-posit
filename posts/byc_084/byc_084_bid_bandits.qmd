@@ -1,0 +1,191 @@
+---
+title: "084: Bid Bandits"
+date: "2024-03-17"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### AQ data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+
+ ### Auto-qualifiers 
+
+autobids <- c("Connecticut", 
+              "Iowa St.",
+              "Auburn",
+              "Saint Mary's",
+              "New Mexico",
+              "Drake",
+              "James Madison",
+              "Grand Canyon",
+              "UAB",
+              "McNeese St.",
+              "VCU",
+              "Duquesne",
+              "Yale",
+              "Samford",
+              "Vermont",
+              "College of Charleston",
+              "Akron",
+              "Oakland",
+              "Morehead St.",
+              "Colgate",
+              "Western Kentucky",
+              "Illinois",
+              "Wisconsin",
+              "Duquesne",
+              "Temple",
+              "UC Davis",
+              "South Dakota St.",
+              "Longwood",
+              "Florida",
+              "Montana St.",
+              "Stetson",
+              "Wagner",
+              "Grambling St.",
+              "Howard",
+              "Saint Peter's",
+              "Oregon",
+              "North Carolina St.")
+             
+
+# ACC    thief - 1
+#American    thief - 2 
+# Atlantic 10    thief - 2 
+# Big 12 - 1 
+# Big East - 1 
+# Big Ten - 2
+# Mountain West    thief - 1
+# Pacific-12    thief - 1 
+# SEC - 
+# West Coast
+# Missouri Valley    thief
+
+confsPick <- c("ACC", "Amer", "A10", "B12",
+               "BE", "B10", "MWC", "P12", "SEC", "WCC", "MVC")
+
+sched_with_rtg <- readr::read_csv("https://raw.githubusercontent.com/gallochris/wab_data_job/main/data/played_sched_rtg.csv")
+  
+# pull confs 
+  sched_with_rtg |> 
+    dplyr::filter(team %in% autobids) |>
+    dplyr::select(team, conf) |> 
+    dplyr::distinct() -> teamConfs
+  
+  sched_with_rtg |>
+    dplyr::filter(team %in% autobids) |>
+    dplyr::group_by(team) |>
+    dplyr::summarise(
+      W = sum(result == "W"),
+      L = sum(result == "L"),
+      wabTotal = sum(wab)
+    ) |>
+    dplyr::arrange(-wabTotal) |> 
+    dplyr::left_join(teamConfs, by = "team") |> 
+    dplyr::filter(conf %in% confsPick) -> confTBL
+
+  
+  
+  conf_name_lookup <- function(conf_var) {
+    conf_var = dplyr::case_match(
+      conf_var,
+      "B12" ~ "Big 12",
+      "BE" ~ "Big East",
+      "P12" ~ "Pac-12",
+      "B10" ~ "Big Ten",
+      "Amer" ~ "American",
+      "SB" ~ "Sun Belt",
+      "Slnd" ~ "Southland",
+      "BW" ~ "Big West",
+      "SC" ~ "Southern",
+      "AE" ~ "America East",
+      "BSth" ~ "Big South",
+      "ASun" ~ "Atlantic Sun",
+      "Pat" ~ "Patriot",
+      "Horz" ~ "Horizon",
+      "BSky" ~ "Big Sky",
+      "OVC" ~ "Ohio Valley",
+      "Sum" ~ "Summit",
+      "A10" ~ "Atlantic 10",
+      "MWC" ~ "Mountain West",
+      "MVC" ~ "Missouri Valley",
+      "NEC" ~ "Northeast",
+      "MAC" ~ "Mid-American",
+      "MAAC" ~ "Metro Atlantic",
+      "ind" ~ "Independent",
+      conf_var ~ conf_var
+    )
+  }
+  
+```
+
+### Bid Bandit GT Table
+
+```{r gt-table, warning = FALSE}
+
+  confTBL |> 
+    dplyr::select(team, conf, W, L, wabTotal) |> 
+    dplyr::mutate(conf = conf_name_lookup(conf)) |> 
+    cbbplotR::gt_cbb_teams(team, team) |>
+    gt::gt() |>
+    gt::fmt_markdown(team) |>
+    gt::cols_label(
+      team = "",
+      conf = "",
+      W = "W", 
+      L = "L",
+      wabTotal = "WAB",
+    ) |>
+    gtExtras::gt_theme_538() |> 
+    gt::cols_align(align = "left", columns = c("team")) |>
+    gtExtras::gt_add_divider(columns = c(W), sides = "left") |> 
+    gt::fmt_number(columns = c(wabTotal), decimals = 2) |>
+    gtExtras::gt_hulk_col_numeric(columns = c(wabTotal), domain = c(11.5, -11)) |> 
+    gt::fmt(
+      columns = c(wabTotal),
+      fns = function(x) {
+        ifelse(x > 0, paste0("+", sprintf("%.1f", x)), sprintf("%.1f", x))
+      }
+    ) |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = "bold")
+      ),
+      locations = gt::cells_body(
+        rows = c(7, 8, 10:15),
+        columns = c(team, conf)
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        color = "#333333",
+        transform = "uppercase"
+      ),
+      locations = gt::cells_column_labels(everything())
+    ) |>
+    gt::tab_header(title = "AQ's and Bid Bandits: Records and Wins-Above-Bubble (WAB)",
+                   subtitle = "Shows the record and wins-above-bubble of teams in conferences with potential bid thieves and their actual automatic qualifier. Leagues with actual bid thieves are in bold.") |>
+    gt::tab_source_note(source_note = gt::html("<br>Wins-above-bubble (WAB) is a résumé metric that reflects how many more (or fewer)
+games a team has won against its schedule than a bubble-quality team would be expected to win against that same schedule.<br>
+Big Ten, SEC, American, and Atlantic 10 all complete conference championship games today.<hr>
+<b>Fifth Factor + Bless your chart | Through March 16 games | data via cbbdata + cbbplotR</b>")) -> bidBandits
+
+  
+  gtExtras::gtsave_extra(bidBandits,
+                       filename = "bidbandit_tbl.png",
+                       vheight = 875,
+                       vwidth = 600)
+
+  
+  bidBandits
+  
+```
+
+### 

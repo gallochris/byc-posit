@@ -1,0 +1,151 @@
+---
+title: "024: NET changes"
+date: "2023-03-24"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(rvest)
+library(gt)
+library(gtExtras)
+library(tidyverse)
+```
+
+### Load data
+
+```{r data-load, message=FALSE}
+ # function to grab NET data
+net_ranks <- function(url) {
+  
+  net_page <- read_html(url)
+  
+  net_rk <- net_page %>%
+    html_nodes("table") %>%
+    .[1] %>%
+    html_table(fill = TRUE)
+  
+  net_table <- as.data.frame(net_rk)  
+
+  net_table <- net_table %>%   
+    mutate(prev_day_result = net_table[,3]) %>% 
+    mutate(date = gsub("[^0-9.-]", "", colnames(net_table[3]))) %>% 
+    mutate(date = str_sub(date, end = -2)) %>%
+    mutate(record = str_split(WL, "-", simplify = T),
+           wins = record[,1],
+           losses = record[,2],
+           conf_record = str_split(Conf..Record, "-", simplify = T),
+           wins_conf = conf_record[,1],
+           losses_conf = conf_record[,2],
+           non_conf_record = str_split(Non.Conference.Record, "-", simplify = T),
+           wins_non_conf = non_conf_record[,1],
+           losses_non_conf = non_conf_record[,2],
+           first_q = str_split(Quadrant.1, "-", simplify = T),
+           q1_win = first_q[,1],
+           q1_loss = first_q[,2],
+           second_q = str_split(Quadrant.2, "-", simplify = T),
+           q2_win = second_q[,1],
+           q2_loss = second_q[,2],
+           third_q = str_split(Quadrant.3, "-", simplify = T),
+           q3_win = third_q[,1],
+           q3_loss = third_q[,2],
+           fourth_q = str_split(Quadrant.4, "-", simplify = T),
+           q4_win = fourth_q[,1],
+           q4_loss = fourth_q[,2],
+    ) %>% 
+    rename(team = Team, conf = Conference, net = NET, prev_net = Prev.NET, 
+           sos = NET.SOS, non_conf_sos = NET.NonConf.SOS) %>% 
+    select(team, conf, net, prev_net, prev_day_result, sos, non_conf_sos, wins, 
+           losses, wins_non_conf, losses_non_conf, q1_win, q1_loss, 
+           q2_win, q2_loss, q3_win, q3_loss, q4_win, q4_loss, date) %>% 
+    mutate_at(vars(-team, -conf, -date, -prev_day_resu), as.numeric)
+
+}
+
+# function to loop through and grab all data
+# net_nums <- function(id) {
+# net_ranks(url = id)
+# }
+
+# ids <- read_csv("ids.csv) 
+# ids <- ids$urls 
+
+# function to get ACC games 
+# all_net_rks <- lapply(ids, net_nums)
+
+# load csv of scraped ids
+
+# full_net <- as.data.frame(do.call(rbind, all_net_rks)) 
+
+# pull acc teams only
+
+full_net <- readr::read_csv("full-net.csv")
+
+acc_bad_rank <- full_net %>% 
+                filter(prev_day_result == "L") %>% 
+                mutate(diff = net - prev_net) %>% 
+                filter(diff < 0) %>% 
+                select(team, conf, net, prev_net, diff, prev_day_result, date) %>% 
+                filter(conf == "ACC")
+
+# manually grad opponents from torvik or kenpom to cross-check results 
+
+# make csv 
+# load just the acc teams 
+lun_acc <- read_csv("acc_teams.csv")
+```
+
+### Create GT Table
+
+```{r gt-table, warning=FALSE}
+table <- lun_acc %>%
+  select(team, opponent, prev_day_result, net, prev_net, diff) %>%
+  gt() %>%
+  cols_label(
+    # rename columns
+    team = "Team",
+    opponent = "Opponent",
+    prev_day_result = "Result",
+    net = "After",
+    prev_net = "Before",
+    diff = "+/-"
+  ) %>%
+  data_color(columns = c(diff),
+             colors = scales::col_numeric(
+               c(
+                 "#ca5800",
+                 "#cfe8f3",
+                 "#73bfe2",
+                 "#0a4c6a",
+                 "#fff2cf",
+                 "#fdd870",
+                 "#fdbf11"
+               ),
+               domain = NULL
+             )) %>%
+  tab_spanner(label = "NET Change",
+              columns = c(net, prev_net, diff)) %>%
+  gt_theme_538() %>%
+  tab_header(title = "ACC teams that went down in NET ranking after a win") %>%
+  tab_source_note(source_note = "@dadgumboxscores | March 30, 2023 | data via NCAA") %>%
+  tab_options (
+    source_notes.font.size = px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = px(10),
+    column_labels.text_transform = 'capitalize'
+  )
+
+gtsave_extra(table,
+             "lun_acc.png",
+             vwidth = 650,
+             vheight = 650)
+
+table
+```
+
+#### 

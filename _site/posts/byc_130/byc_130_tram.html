@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-02-07">
+
+<title>130: TRAM – bless your chart</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">bless your chart</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">about</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/gallochris/caRolina"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dadgumboxscores"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page">
+      <h1 class="title">130: TRAM</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">broom</div>
+                <div class="quarto-category">gtUtils</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 7, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+
+
+
+
+
+<section id="load-game-data" class="level3">
+<h3 class="anchored" data-anchor-id="load-game-data">Load game data</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cbbplotR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># grab the raw ratings from kenpom </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># raw_ratings &lt;- hoopR::kp_efficiency(min_year = 2025, max_year = 2025) |&gt; </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::select(team, raw_o, raw_d) |&gt; </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::mutate(raw_em = raw_o - raw_d)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># now grab the four factors from kenpom to compute tram </span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># tram_data &lt;- hoopR::kp_fourfactors(min_year = 2025, max_year = 2025) |&gt; </span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::mutate(</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    to_pct = off_to_pct / 100,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    or_pct = off_or_pct / 100,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    d_to_pct = def_to_pct / 100,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    d_or_pct = def_or_pct / 100</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  ) |&gt; </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::mutate(</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    off_svi = ((100 - (100 * to_pct)) + (or_pct * (0.561 * (100 - (100 * to_pct))))),</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    def_svi = ((100 - (100 * d_to_pct)) + (d_or_pct * (0.561 * (100 - (100 * d_to_pct))))),</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#    tram = off_svi - def_svi,</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#    old_svi_off = (100 + or_pct - to_pct),</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#    old_svi_def = (100 + d_or_pct - d_to_pct),</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#    old_svi_diff = old_svi_off - old_svi_def</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  ) |&gt; </span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::left_join(raw_ratings, by = c("team")) |&gt; </span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::mutate(adj_em = adj_o - adj_d) |&gt; </span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::select(team, conf, tram, raw_em, adj_em,</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#                old_svi_diff, off_svi, def_svi, </span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#                old_svi_off, old_svi_def,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#                to_pct, or_pct, d_to_pct, d_or_pct,</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                raw_o, raw_d, </span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                adj_o, adj_d, off_e_fg_pct, off_ft_rate,</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                def_e_fg_pct, def_ft_rate)</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>tram_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"tram_data.csv"</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># model based on raw efficiency margin </span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># this is using the examples here: https://beanumber.github.io/abdwr3e/04-pythagoras.html</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>tram_raw <span class="ot">&lt;-</span> <span class="fu">lm</span>(raw_em <span class="sc">~</span> tram, <span class="at">data =</span> tram_data)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tram_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = raw_em ~ tram, data = tram_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-18.9928  -4.9364  -0.1968   4.8903  23.4395 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.01631    0.38851  -0.042    0.967    
+tram         1.71733    0.08248  20.821   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.411 on 362 degrees of freedom
+Multiple R-squared:  0.545, Adjusted R-squared:  0.5437 
+F-statistic: 433.5 on 1 and 362 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r2_value <span class="ot">&lt;-</span> <span class="fu">summary</span>(tram_raw)<span class="sc">$</span>r.squared</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>p_value <span class="ot">&lt;-</span> <span class="fu">summary</span>(tram_raw)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(tram_raw, <span class="at">newdata =</span> tram_data)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>rmse_value <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((tram_data<span class="sc">$</span>raw_em <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the residuals </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>aug <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(tram_raw, <span class="at">data =</span> tram_data)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>highlight_teams <span class="ot">&lt;-</span> aug <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use power conferences</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(conf <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ACC"</span>, <span class="st">"MW"</span>, <span class="st">"BE"</span>, <span class="st">"B12"</span>, <span class="st">"B10"</span>, <span class="st">"SEC"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"%s</span><span class="sc">\n</span><span class="st">Actual Raw EM: %.1f</span><span class="sc">\n</span><span class="st">Predicted: %.1f"</span>, </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                    team, </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                    raw_em, </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                    .fitted)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="fu">sign</span>(.resid)) <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_max</span>(<span class="at">order_by =</span> <span class="fu">abs</span>(.resid), <span class="at">n =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(.fitted)  <span class="sc">|&gt;</span> </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># arbitrary selection of a few interesting teams to highlight</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(team <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Seton Hall"</span>, <span class="st">"Oklahoma St."</span>,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"Creighton"</span>, <span class="st">"Alabama"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="team-plot-for-tram-model" class="level3">
+<h3 class="anchored" data-anchor-id="team-plot-for-tram-model">Team plot for TRAM model</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># limits for y-axis</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>max_abs_y <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">abs</span>(tram_data<span class="sc">$</span>raw_em))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>team_plot <span class="ot">&lt;-</span> tram_data <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> tram, <span class="at">y =</span> raw_em)) <span class="sc">+</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"#56a0d3"</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span>max_abs_y, max_abs_y)) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#333333"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"2024-25 Men's College Basketball</span><span class="sc">\n</span><span class="st">Relationship Between TRAM and Raw Efficiency Margin"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"TRAM is Turnover-Rebound-Adjusted-Margin computed for D-I teams"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"TRAM (Turnover-Rebound-Adjusted-Margin)"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Raw Efficiency Margin"</span>,  <span class="co"># Changed from "Raw EM"</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Viz and model by Chris at Bless your Chart | February 7, 2025"</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>() <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">annotate</span>(</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"label"</span>, <span class="at">x =</span> <span class="fu">max</span>(tram_data<span class="sc">$</span>tram), <span class="at">y =</span> <span class="fu">min</span>(tram_data<span class="sc">$</span>raw_em), </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"R² = %.2f</span><span class="sc">\n</span><span class="st">RMSE = %.2f"</span>, r2_value, rmse_value),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">color =</span> <span class="st">"#333333"</span>, <span class="at">fill =</span> <span class="st">"#56a0d3"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">3</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">annotate</span>(</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"label"</span>, <span class="at">x =</span> <span class="fu">min</span>(tram_data<span class="sc">$</span>tram), <span class="at">y =</span> <span class="fu">max</span>(tram_data<span class="sc">$</span>raw_em),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Higher TRAM correlates with </span><span class="sc">\n</span><span class="st">higher raw efficiency margin"</span>,  </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"#333333"</span>, <span class="at">fill =</span> <span class="st">"#56a0d3"</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">3</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">"team_plot.png"</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  team_plot,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">w =</span> <span class="fl">9.5</span>,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">h =</span> <span class="dv">7</span>,</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">600</span>,</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">'cairo'</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>team_plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="byc_130_tram_files/figure-html/team-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="residual-plot" class="level3">
+<h3 class="anchored" data-anchor-id="residual-plot">Residual plot</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>resid_plot <span class="ot">&lt;-</span> aug <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> tram, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"#acacac"</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">annotate</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"label"</span>, <span class="at">x =</span> <span class="dv">14</span>, <span class="at">y =</span> <span class="sc">-</span><span class="dv">15</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">paste</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Highlighted Teams  </span><span class="sc">\n</span><span class="st">Actual Raw EM, Predicted Raw EM  </span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(highlight_teams<span class="sc">$</span>team, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>             <span class="st">" ( "</span>, <span class="fu">round</span>(highlight_teams<span class="sc">$</span>raw_em, <span class="dv">1</span>), </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>             <span class="st">", "</span>, <span class="fu">round</span>(highlight_teams<span class="sc">$</span>.fitted, <span class="dv">1</span>), <span class="st">")"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">collapse =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#333333"</span>, <span class="at">fill =</span> <span class="st">"#56a0d3"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">3</span>, <span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  cbbplotR<span class="sc">::</span><span class="fu">geom_cbb_teams</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> highlight_teams,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">aes</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">team =</span> team),</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> .<span class="dv">03</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> ggplot2<span class="sc">::</span><span class="fu">position_dodge2</span>(<span class="at">width =</span> <span class="fl">0.30</span>, <span class="at">padding =</span> <span class="fl">0.15</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"TRAM Model Residuals: Actual and Predicted Raw Efficiency"</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Positive residuals: team performs better than TRAM predicts</span><span class="sc">\n</span><span class="st">Negative residuals: team performs worse than TRAM predicts"</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"TRAM (Turnover-Rebound-Adjusted-Margin)"</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residual (Actual - Predicted Raw Efficiency Margin)"</span>,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Viz and model by Chris at Bless your Chart | February 7, 2025"</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>()</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">"resid_plot.png"</span>,</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  resid_plot,</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">w =</span> <span class="fl">9.5</span>,</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">h =</span> <span class="dv">7</span>,</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">600</span>,</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">'cairo'</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>resid_plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="byc_130_tram_files/figure-html/resid-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="table-for-top-tram-teams" class="level3">
+<h3 class="anchored" data-anchor-id="table-for-top-tram-teams">Table for top TRAM teams</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tram_header <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;div style='display: flex; justify-content: space-between; align-items: center;'&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;div&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">       style='height: 40px; width: auto; vertical-align: middle;'&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;div style='flex-grow:1; margin-left: 30px; margin-right: 30px'&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'&gt;Teams with highest TRAM &lt;br&gt;Turnover-Rebound-Adjusted-Margin&lt;/span&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'&gt;Shows the teams with the highest TRAM along with the team's adjusted raw efficiency margin, raw efficiency margin, turnover and rebound rates for offense and defense.&lt;/span&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;div&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="st">       style='height: 40px; width: auto; vertical-align: middle;'&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">   &lt;/div&gt;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;br&gt;"</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>team_tbl <span class="ot">&lt;-</span> tram_data <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(tram <span class="sc">&gt;</span> <span class="fl">9.5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="sc">-</span>tram) <span class="sc">|&gt;</span> </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(team, tram, raw_em, adj_em, to_pct, or_pct, d_to_pct, d_or_pct) <span class="sc">|&gt;</span> </span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">tram =</span> <span class="fu">round</span>(tram, <span class="dv">1</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  cbbplotR<span class="sc">::</span><span class="fu">gt_cbb_teams</span>(team, team) <span class="sc">|&gt;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_theme_gtutils</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt_markdown</span>(team) <span class="sc">|&gt;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_align</span>(team, <span class="at">align =</span> <span class="st">"left"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt</span>(</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(tram, raw_em, adj_em),</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">fns =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ifelse</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="fu">paste0</span>(<span class="st">"+"</span>, x), x)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_label</span>(</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">team =</span> <span class="st">""</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">tram =</span> <span class="st">"TRAM"</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">raw_em =</span> <span class="st">"Raw"</span>, </span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">adj_em =</span> <span class="st">"Adjusted"</span>,</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">to_pct =</span> <span class="st">"TO%"</span>,</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">or_pct =</span> <span class="st">"OR%"</span>,</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_to_pct =</span> <span class="st">"TO%"</span>,</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_or_pct =</span> <span class="st">"DR%"</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_header</span>(<span class="at">title =</span> gt<span class="sc">::</span><span class="fu">html</span>(tram_header)) <span class="sc">|&gt;</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_source_note</span>(</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_note =</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">html</span>(</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">"&lt;hr&gt;These are teams that increase their efficiency through rebounds and turnovers. None of this data includes shooting performances.&lt;hr&gt;Data via hoopR and kenpom.com, theme via {gtUtils} and logos from ESPN.&lt;hr&gt;&lt;b&gt;Table by Chris at Bless your chart | data through February 6 games&lt;/b&gt;"</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Offense"</span>, <span class="at">columns =</span> <span class="fu">c</span>(to_pct, or_pct)) <span class="sc">|&gt;</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Defense"</span>, <span class="at">columns =</span> <span class="fu">c</span>(d_to_pct, d_or_pct)) <span class="sc">|&gt;</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"Efficiency Margin"</span>, <span class="at">columns =</span> <span class="fu">c</span>(raw_em, adj_em)) <span class="sc">|&gt;</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">data_color</span>(</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(tram, adj_em, raw_em),</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"column"</span>),</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"numeric"</span>),</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="st">"Greens"</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_color_pills</span>(to_pct,</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> <span class="fu">c</span>(.<span class="dv">1</span>, .<span class="dv">20</span>), <span class="at">format_type =</span> <span class="st">"percent"</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#FFFACD"</span>, <span class="st">"#B0E57C"</span>)</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_color_pills</span>(or_pct,</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> <span class="fu">c</span>(.<span class="dv">25</span>, .<span class="dv">45</span>), <span class="at">format_type =</span> <span class="st">"percent"</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#FFFACD"</span>, <span class="st">"#B0E57C"</span>)</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_color_pills</span>(d_to_pct,</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> <span class="fu">c</span>(.<span class="dv">15</span>, .<span class="dv">25</span>), <span class="at">format_type =</span> <span class="st">"percent"</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#FFB6B6"</span>, <span class="st">"#D8BFD8"</span>),</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">reverse =</span> <span class="cn">TRUE</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_color_pills</span>(d_or_pct,</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> <span class="fu">c</span>(.<span class="dv">25</span>, .<span class="dv">33</span>), <span class="at">format_type =</span> <span class="st">"percent"</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#FFB6B6"</span>, <span class="st">"#D8BFD8"</span>),</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">reverse =</span> <span class="cn">TRUE</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_border_bars_bottom</span>(<span class="fu">c</span>(<span class="st">"#636363"</span>, <span class="st">"#969696"</span>, <span class="st">"#cccccc"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_options</span>(<span class="at">table.width =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">675</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>  gtUtils<span class="sc">::</span><span class="fu">gt_border_grid</span>(<span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>                          <span class="at">weight =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>                          <span class="at">include_labels =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_add_divider</span>(<span class="at">columns =</span> team,</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>                           <span class="at">sides =</span> <span class="st">"right"</span>,</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>                           <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> gt<span class="sc">::</span><span class="fu">cells_source_notes</span>(),</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> gt<span class="sc">::</span><span class="fu">cell_text</span>(</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>      <span class="at">font =</span> gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Signika Negative"</span>),</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="fl">11.5</span>),</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> <span class="dv">250</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">cell_text</span>(<span class="at">font =</span> gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Signika Negative"</span>))),</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> gt<span class="sc">::</span><span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="fu">everything</span>())</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> gt<span class="sc">::</span><span class="fu">cells_column_spanners</span>(),</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> gt<span class="sc">::</span><span class="fu">cell_text</span>(</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>      <span class="at">font =</span> gt<span class="sc">::</span><span class="fu">google_font</span>(<span class="st">"Signika Negative"</span>),</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> <span class="dv">850</span>,</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">15</span>)</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>gtUtils<span class="sc">::</span><span class="fu">gt_save_crop</span>(team_tbl,</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>                      <span class="at">file =</span> <span class="st">"team_tbl.png"</span>,</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>                      <span class="at">whitespace =</span> <span class="dv">60</span>,</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bg =</span> <span class="st">"#FFFDF5"</span>)</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>team_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="uqposxsdqx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almarai:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almarai:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Signika+Negative:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almarai:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#uqposxsdqx table {
+  font-family: Almarai, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#uqposxsdqx thead, #uqposxsdqx tbody, #uqposxsdqx tfoot, #uqposxsdqx tr, #uqposxsdqx td, #uqposxsdqx th {
+  border-style: none;
+}
+
+#uqposxsdqx p {
+  margin: 0;
+  padding: 0;
+}
+
+#uqposxsdqx .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  font-style: normal;
+  background-color: #FFFDF5;
+  width: 675px;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #FFFDF5;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #FFFDF5;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFDF5;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #FFFDF5;
+}
+
+#uqposxsdqx .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#uqposxsdqx .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFDF5;
+  border-bottom-width: 0;
+}
+
+#uqposxsdqx .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFDF5;
+  border-top-width: 0;
+}
+
+#uqposxsdqx .gt_heading {
+  background-color: #FFFDF5;
+  text-align: left;
+  border-bottom-color: #FFFDF5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_col_heading {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: 500;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#uqposxsdqx .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: 500;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#uqposxsdqx .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#uqposxsdqx .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#uqposxsdqx .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#uqposxsdqx .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#uqposxsdqx .gt_group_heading {
+  padding-top: 1.5px;
+  padding-bottom: 1.5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#uqposxsdqx .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: middle;
+}
+
+#uqposxsdqx .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#uqposxsdqx .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#uqposxsdqx .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgba(255, 255, 255, 0);
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#uqposxsdqx .gt_stub {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uqposxsdqx .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFDF5;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#uqposxsdqx .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#uqposxsdqx .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#uqposxsdqx .gt_summary_row {
+  color: #333333;
+  background-color: #FFFDF5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uqposxsdqx .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#uqposxsdqx .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFDF5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uqposxsdqx .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#uqposxsdqx .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_footnotes {
+  color: #333333;
+  background-color: #FFFDF5;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uqposxsdqx .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFDF5;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#uqposxsdqx .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uqposxsdqx .gt_left {
+  text-align: left;
+}
+
+#uqposxsdqx .gt_center {
+  text-align: center;
+}
+
+#uqposxsdqx .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#uqposxsdqx .gt_font_normal {
+  font-weight: normal;
+}
+
+#uqposxsdqx .gt_font_bold {
+  font-weight: bold;
+}
+
+#uqposxsdqx .gt_font_italic {
+  font-style: italic;
+}
+
+#uqposxsdqx .gt_super {
+  font-size: 65%;
+}
+
+#uqposxsdqx .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#uqposxsdqx .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#uqposxsdqx .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#uqposxsdqx .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#uqposxsdqx .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#uqposxsdqx .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#uqposxsdqx .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#uqposxsdqx .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#uqposxsdqx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+
+#uqposxsdqx tbody tr:last-child {
+  border-bottom: 2px solid #FFFDF5;
+}
+
+#uqposxsdqx .gt_col_heading {
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+
+#uqposxsdqx .gt_subtitle {
+  padding-top: 0px !important;
+  padding-bottom: 4px !important;
+}
+
+#uqposxsdqx .gt_sourcenote {
+  border-bottom-color: #FFFDF5 !important;
+}
+
+#uqposxsdqx .gt_heading {
+  padding-bottom: 0px;
+  padding-top: 6px;
+}
+
+#uqposxsdqx .gt_column_spanner {
+  padding-bottom: 2px;
+}
+
+#uqposxsdqx .gt_sourcenote {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  padding-bottom: 0px;
+}
+
+#uqposxsdqx .gt_row {
+  border-top-color: black;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="gt_heading header">
+<td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="font-family: 'Signika Negative'; font-weight: 650"><div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<img src="https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png" class="img-fluid" style="height: 40px; width: auto; vertical-align: middle;">
+</div>
+<div style="flex-grow:1; margin-left: 30px; margin-right: 30px">
+<span style="display: block; font-weight: bold; text-align: center; font-size: 24px;">Teams with highest TRAM<br>
+Turnover-Rebound-Adjusted-Margin</span> <span style="font-size: 14px; font-weight: normal; display: block; text-align: center;">Shows the teams with the highest TRAM along with the team's adjusted raw efficiency margin, raw efficiency margin, turnover and rebound rates for offense and defense.</span>
+</div>
+<div>
+<img src="https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png" class="img-fluid" style="height: 40px; width: auto; vertical-align: middle;">
+</div>
+</div>
+<br>
+</td>
+</tr>
+<tr class="gt_col_headings gt_spanner_row even">
+<th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650; border-right-width: 2px; border-right-style: solid; border-right-color: black" scope="col"></th>
+<th rowspan="2" id="TRAM" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">TRAM</th>
+<th colspan="2" id="Efficiency Margin" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 15px; font-weight: 850" scope="colgroup"><span class="gt_column_spanner">Efficiency Margin</span></th>
+<th colspan="2" id="Offense" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 15px; font-weight: 850" scope="colgroup"><span class="gt_column_spanner">Offense</span></th>
+<th colspan="2" id="Defense" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 15px; font-weight: 850" scope="colgroup"><span class="gt_column_spanner">Defense</span></th>
+</tr>
+<tr class="gt_col_headings header">
+<th id="Raw" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">Raw</th>
+<th id="Adjusted" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">Adjusted</th>
+<th id="TO%" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">TO%</th>
+<th id="OR%" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">OR%</th>
+<th id="TO%" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">TO%</th>
+<th id="DR%" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-family: 'Signika Negative'; font-size: 14px; font-weight: 650" scope="col">DR%</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/248.png" style="height: 25px; width: auto; vertical-align: -30%;"> Houston</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #00441B; color: #FFFFFF; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+14.2</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #00441B; color: #FFFFFF; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+30.3</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #00441B; color: #FFFFFF; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+34.8</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #DEF1AA; color: #000000; border-radius: 10px; text-align: center; ">14.3%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #CAEC96; color: #000000; border-radius: 10px; text-align: center; ">38.5%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F6B8BE; color: #000000; border-radius: 10px; text-align: center; ">22.5%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #ECBBC8; color: #000000; border-radius: 10px; text-align: center; ">28.8%</span></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="https://a.espncdn.com/i/teamlogos/ncaa/500/269.png" style="height: 25px; width: auto; vertical-align: -30%;"> Marquette</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #70C274; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+12</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #E6F5E1; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+15.2</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #85CC84; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+23.7</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E9F4B6; color: #000000; border-radius: 10px; text-align: center; ">12.9%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #ECF5B9; color: #000000; border-radius: 10px; text-align: center; ">30.0%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #FAB7BA; color: #000000; border-radius: 10px; text-align: center; ">23.7%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F8B8BC; color: #000000; border-radius: 10px; text-align: center; ">31.5%</span></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2599.png" style="height: 25px; width: auto; vertical-align: -30%;"> St.&nbsp;John’s</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #A7DCA1; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+11.3</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #A5DB9F; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+19.4</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #79C67A; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+24.4</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #D0EE9D; color: #000000; border-radius: 10px; text-align: center; ">16.0%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #CEED9B; color: #000000; border-radius: 10px; text-align: center; ">37.5%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F4B9C1; color: #000000; border-radius: 10px; text-align: center; ">21.9%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E8BCCB; color: #000000; border-radius: 10px; text-align: center; ">28.1%</span></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/66.png" style="height: 25px; width: auto; vertical-align: -30%;"> Iowa St.</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #D8F0D2; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+10.5</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #A5DB9F; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+19.4</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #54B466; color: #FFFFFF; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+26.3</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #D4EFA1; color: #000000; border-radius: 10px; text-align: center; ">15.5%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #DDF1A9; color: #000000; border-radius: 10px; text-align: center; ">33.8%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F5B9C0; color: #000000; border-radius: 10px; text-align: center; ">22.1%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E7BCCC; color: #000000; border-radius: 10px; text-align: center; ">27.8%</span></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/26.png" style="height: 25px; width: auto; vertical-align: -30%;"> UCLA</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #DEF2D8; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+10.4</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #D2EDCC; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+16.7</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #ACDEA5; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+21.4</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #CEED9A; color: #000000; border-radius: 10px; text-align: center; ">16.3%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E3F3B0; color: #000000; border-radius: 10px; text-align: center; ">32.2%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #FBB7B9; color: #000000; border-radius: 10px; text-align: center; ">24.0%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #EEBAC6; color: #000000; border-radius: 10px; text-align: center; ">29.2%</span></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/245.png" style="height: 25px; width: auto; vertical-align: -30%;"> Texas A&amp;M</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #DEF2D8; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+10.4</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #F2FAEF; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+13.8</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #73C475; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+24.7</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #C2EA8E; color: #000000; border-radius: 10px; text-align: center; ">17.8%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #B9E785; color: #000000; border-radius: 10px; text-align: center; ">42.8%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F0BAC4; color: #000000; border-radius: 10px; text-align: center; ">20.9%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E8BCCB; color: #000000; border-radius: 10px; text-align: center; ">28.1%</span></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="https://a.espncdn.com/i/teamlogos/ncaa/500/28.png" style="height: 25px; width: auto; vertical-align: -30%;"> UC San Diego</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #DEF2D8; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+10.4</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #B1E0AB; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+18.7</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #F7FCF5; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+14.5</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #DCF1A9; color: #000000; border-radius: 10px; text-align: center; ">14.5%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F9F8C6; color: #000000; border-radius: 10px; text-align: center; ">26.7%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #FAB7BA; color: #000000; border-radius: 10px; text-align: center; ">23.7%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E4BDCF; color: #000000; border-radius: 10px; text-align: center; ">27.2%</span></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="https://a.espncdn.com/i/teamlogos/ncaa/500/2608.png" style="height: 25px; width: auto; vertical-align: -30%;"> Saint Mary’s</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #DEF2D8; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+10.4</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #91D18D; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+20.4</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #9CD797; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+22.4</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #D8F0A5; color: #000000; border-radius: 10px; text-align: center; ">15.0%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #C1EA8D; color: #000000; border-radius: 10px; text-align: center; ">40.9%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E4BDCE; color: #000000; border-radius: 10px; text-align: center; ">17.8%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #DDBED4; color: #000000; border-radius: 10px; text-align: center; ">25.9%</span></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="team" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/238.png" style="height: 25px; width: auto; vertical-align: -30%;"> Vanderbilt</p></td>
+<td class="gt_row gt_center" headers="tram" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #F1FAEE; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+9.9</td>
+<td class="gt_row gt_center" headers="raw_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #F7FCF5; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+13.2</td>
+<td class="gt_row gt_center" headers="adj_em" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; background-color: #F3FAF0; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+15.1</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #DDF1A9; color: #000000; border-radius: 10px; text-align: center; ">14.4%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E6F3B2; color: #000000; border-radius: 10px; text-align: center; ">31.6%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F5B9C0; color: #000000; border-radius: 10px; text-align: center; ">22.1%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #8A817C; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F0BAC4; color: #000000; border-radius: 10px; text-align: center; ">29.7%</span></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="team" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><p><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/120.png" style="height: 25px; width: auto; vertical-align: -30%;"> Maryland</p></td>
+<td class="gt_row gt_center" headers="tram" style="background-color: #F7FCF5; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+9.7</td>
+<td class="gt_row gt_center" headers="raw_em" style="background-color: #5CB86A; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+22.8</td>
+<td class="gt_row gt_center" headers="adj_em" style="background-color: #80C97F; color: #000000; font-family: 'Signika Negative'; border-right-width: 0.5px; border-right-style: solid; border-right-color: black">+24</td>
+<td class="gt_row gt_center" headers="to_pct" style="border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #DAF0A6; color: #000000; border-radius: 10px; text-align: center; ">14.8%</span></td>
+<td class="gt_row gt_center" headers="or_pct" style="border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E3F3AF; color: #000000; border-radius: 10px; text-align: center; ">32.4%</span></td>
+<td class="gt_row gt_center" headers="d_to_pct" style="border-right-width: 0.5px; border-right-style: solid; border-right-color: black; font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #F0BAC4; color: #000000; border-radius: 10px; text-align: center; ">20.8%</span></td>
+<td class="gt_row gt_center" headers="d_or_pct" style="font-family: 'Signika Negative'"><span style="display: inline-block; width: 5ch; padding-left: 3px; padding-right: 3px; height: 25px; line-height: 25px; background-color: #E1BDD1; color: #000000; border-radius: 10px; text-align: center; ">26.6%</span></td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="8" class="gt_sourcenote" style="font-family: 'Signika Negative'; font-size: 11.5px; font-weight: 250"><hr>
+These are teams that increase their efficiency through rebounds and turnovers. None of this data includes shooting performances.
+<hr>
+Data via hoopR and kenpom.com, theme via {gtUtils} and logos from ESPN.
+<hr>
+<strong>Table by Chris at Bless your chart | data through February 6 games</strong></td>
+</tr>
+<tr class="even">
+<td colspan="8" class="gt_sourcenote" style="font-family: 'Signika Negative'; font-size: 11.5px; font-weight: 250"><div style="background-color: transparent; width: 100%; margin-left: auto; margin-right: auto;">
+<div style="height: 10px; background-color: #636363;">
+
+</div>
+<div style="height: 10px; background-color: #969696;">
+
+</div>
+<div style="height: 10px; background-color: #cccccc;">
+
+</div>
+</div></td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/cjg\.quarto\.pub\/bless-your-chart\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,16 @@
+{
+  "hash": "2226998f0567d6ff46050adfae9b2f25",
+  "result": {
+    "markdown": "---\ntitle: \"050: ACC SP+\"\ndate: \"2023-10-03\"\ncategories:\n  - geom_col\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsp_conf <- readr::read_csv(\"conf_sp.csv\")\n```\n:::\n\n\n### SP+ Week 5\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsp_conf |> \n    dplyr::filter(conference == \"ACC\") |> \n   dplyr::mutate(team = forcats::fct_reorder(team,ranking)) |> \n   ggplot2::ggplot(ggplot2::aes(x = team, y = ranking)) +\n   ggplot2::geom_col(ggplot2::aes(fill = team, color = team),size = 1.5) +\n    cfbplotR::geom_cfb_logos(ggplot2::aes(team = team, y = ranking + .3), width = 0.055) +\n    ggplot2::annotate(cfbplotR::GeomCFBlogo,x = \"Florida State\",y = -5,team = \"ACC\",height = .35,alpha = .3) +\n    cfbplotR::scale_fill_cfb(alpha = .8) +\n    ggplot2::annotate(\n        geom = \"curve\",\n        color = \"#333333\",\n        x = \"Georgia Tech\",\n        y = 0.3,\n        xend = \"Clemson\",\n        yend = 19.3,\n        curvature = .3,\n        arrow = ggplot2::arrow(length = ggplot2::unit(4, \"mm\"))\n    ) +\n    ggplot2::annotate(\n        \"label\",\n        x = \"Georgia Tech\",\n        y = 15,\n        label = \"Miami is favored by  \\n23.9 points hosting  \\nGeorgia Tech this week\",\n        family = \"Chalkboard Bold\",\n        size = 3.5,\n        color = \"#333333\",\n        fontface = \"bold\",\n        fill = \"floral white\"\n    ) +\n    cfbplotR::scale_color_cfb(alt_colors = sp_conf$team) +\n    ggplot2::scale_y_continuous(breaks = seq(-10, 20, 5), limits = c(-10, 20)) +\n    ggplot2::labs(x = \"\", y = \"SP+ Rating\", title = \"ACC: SP+ Ratings through Week 5\", caption = \"Bless your chart | October 3, 2023\") +\n    ggthemes::theme_few() +\n    #theme_x_cfb()\n    ggplot2::theme(axis.text.y = ggplot2::element_blank()) +\n    ggplot2::coord_flip()  -> sp_acc\n\nggplot2::ggsave(\n  \"sp_acc.png\",\n  sp_acc,\n  w = 9,\n  h = 8.5,\n  dpi = 600,\n  type = 'cairo'\n)\n\nsp_acc\n```\n\n::: {.cell-output-display}\n![](byc_050_sp_week_5_files/figure-html/sp-week-5-1.png){width=672}\n:::\n:::\n\n\n### \n",
+    "supporting": [
+      "byc_050_sp_week_5_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

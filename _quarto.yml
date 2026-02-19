@@ -1,0 +1,32 @@
+project:
+  type: website
+  
+execute:
+  timeout: 300  # 5 minutes (adjust as needed)
+
+website:
+  title: "bless your chart"
+  site-url: "https://cjg.quarto.pub/bless-your-chart/"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/gallochris/caRolina
+      - icon: twitter
+        href: https://twitter.com/dadgumboxscores
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+editor: visual
+
+exclude:
+  - data/
+  - tmp/
+  - "*.zip"
+  - "*.csv"
+  - "*.xlsx"
+  - "*.png"
+  - posts/byc_036/
+

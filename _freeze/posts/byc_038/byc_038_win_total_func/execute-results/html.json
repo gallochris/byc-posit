@@ -1,0 +1,14 @@
+{
+  "hash": "9989a41859ddf252a882bfe044453f32",
+  "result": {
+    "markdown": "---\ntitle: \"038: Win total function\"\ndate: \"2023-07-09\"\ncategories:\n  - cfbfastR\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n### Add data\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# load in win totals from vegas insider and team colors from cfbplotR \n# https://www.vegasinsider.com/college-football/odds/win-totals/\nwt <- readr::read_csv(\"https://raw.githubusercontent.com/gallochris/caRolina/main/old_scraps/wt.csv\") |> \n      dplyr::mutate(team = dplyr::if_else(team == \"UTSA\", \"UT San Antonio\", team)) |> \n      dplyr::select(-1)\n```\n:::\n\n\n### Function to fetch schedules\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# function to fetch schedules \nsched_win_totals <- function(team_names) {\n  result_list <- purrr::map(team_names, function(team_name) {\n    cfbfastR::cfbd_game_info(\n      year = 2023,\n      season_type = \"regular\",\n      team = team_name\n    ) |> \n      dplyr::select(week, neutral_site, conference_game, home_team, away_team) |> \n      tidyr::pivot_longer(cols = c(home_team, away_team), names_to = \"home_away\", values_to = \"opponent\") |>     \n      dplyr::filter(opponent != team_name) |> \n      dplyr::mutate(team = team_name) |> \n      dplyr::mutate(home_away = dplyr::case_match(home_away,\n                                                  \"away_team\" ~ \"home\",\n                                                  \"home_team\" ~ \"away\")) |> \n      dplyr::mutate(home_away = dplyr::if_else(neutral_site == TRUE, \"neutral\", home_away)) |> \n      dplyr::select(team, week, conference_game, home_away, opponent)\n    \n  })\n  \n  combined_result <- dplyr::bind_rows(result_list)\n  \n  return(combined_result)\n}\n\n# find schedules for teams in file \nwt_teams <- wt$team\n\n# loop through teams to fetch schedules\ncombined_result <- sched_win_totals(wt_teams)\n\n# find opponent win totals \nwt |> \n  dplyr::filter(team %in% combined_result$opponent) |> \n  dplyr::rename(opponent = team) -> team_totals\n\n# combine all the data\ncombined_data <- dplyr::left_join(combined_result, team_totals, by = \"opponent\") |> \n  dplyr::mutate(team_name = team) |> \n  dplyr::rename(win_total = total) |> \n  dplyr::select(week, team_name, conference_game, home_away, opponent, win_total, color) |> \n  dplyr::mutate(team_name = dplyr::if_else(team_name == \"UT San Antonio\", \"UTSA\", team_name)) |> \n  dplyr::mutate(opponent = dplyr::if_else(opponent == \"UT San Antonio\", \"UTSA\", opponent)) \n\n# save data as RDS file \nsaveRDS(combined_data, \"combined_data.rds\")\n```\n:::\n\n\n### \n\n### \n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

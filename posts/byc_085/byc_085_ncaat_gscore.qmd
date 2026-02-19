@@ -1,0 +1,181 @@
+---
+title: "085: NCAAT Game Scores"
+date: "2024-03-19"
+categories:
+  - gt_table
+  - nanoplots
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+
+# load seeds 
+seeds <- readr::read_csv("https://gist.githubusercontent.com/gallochris/86fc2a21dd4b30e3dd9ea79516594f05/raw/1e2dfa7eae2d196f5dee9ecf5fe95e5f76ba827d/ncaat_seeds.csv") |> 
+  dplyr::select(seed = Seed, team = Team, region = Region)
+        
+# only nccat teams 
+ncaat_teams <- seeds |> 
+  dplyr::pull(team)
+
+cbbdata::cbd_torvik_game_stats(year = 2024) |> 
+  dplyr::filter(team %in% ncaat_teams) |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarise(
+    record = paste0(sum(result == "W"), "-", sum(result == "L")),
+    avg = mean(game_score),
+    avg_last_10 = mean(head(game_score, 10)),
+    sum_data = list(rev(game_score)),
+    max_game = max(game_score),
+    max_result = result[which.max(game_score)],
+    max_opp = opp[which.max(game_score)],
+    max_pts_scored =  pts_scored[which.max(game_score)],
+    max_pts_allowed =  pts_allowed[which.max(game_score)],
+    min_game = min(game_score),
+    min_result = result[which.min(game_score)],
+    min_opp = opp[which.min(game_score)],
+    min_pts_scored =  pts_scored[which.min(game_score)],
+    min_pts_allowed =  pts_allowed[which.min(game_score)],
+  ) |> 
+  dplyr::mutate(
+    max_score = paste0(max_result, ", ", 
+                       max_opp, " ",
+                       max_pts_scored, "-",
+                       max_pts_allowed),
+    min_score = paste0(min_result, ", ", 
+                       min_opp, " ",
+                       min_pts_scored, "-",
+                       min_pts_allowed),
+  ) |> 
+  dplyr::select(team, record, avg, avg_last_10, sum_data, max_score, max_game, min_score, min_game,) |> 
+  dplyr::arrange(-avg) -> gscores
+
+# join the data with seeds 
+ncaat_gscores <- gscores |> 
+  dplyr::left_join(seeds, by = "team") |> 
+  dplyr::relocate(seed, .before = team) |> 
+  dplyr::relocate(region, .after = team)
+
+```
+
+### Game Score Function by Region
+
+```{r gt-table-func, warning = FALSE}
+
+  region_tbl <- function(region) {
+
+  # Set the title of the plot
+  table_title <-
+    paste0(region, " Region: Range of Game Scores")
+  
+  ncaat_gscores |>
+    dplyr::filter(region == {
+      {
+        region
+      }
+    }) |>
+    dplyr::arrange(seed) |> 
+    cbbplotR::gt_cbb_teams(team, team) |> 
+    gt::gt() |>
+    gt::fmt_markdown(columns = c(team)) |>
+    gt::cols_hide(columns = c(region)) |> 
+    gt::cols_label(
+      seed = "Seed",
+      team = "",
+      record = "W-L",
+      avg = "Avg",
+      avg_last_10 = "Last 10",
+      sum_data = "Change",
+      max_score = "Best Performance",
+      max_game = "",
+      min_score = "Worst Performance",
+      min_game = ""
+    ) |>
+    gt::fmt_number(columns = c(avg, avg_last_10), decimals = 1) |> 
+     gt::cols_nanoplot(
+        columns = sum_data,
+        reference_line = "mean",
+        autohide = TRUE,
+        new_col_label = "Season Performance",
+        options = gt::nanoplot_options(
+            data_area_fill_color = "#eabfff",
+            reference_line_color = "#333333",
+            show_data_area = TRUE,
+            show_data_points = FALSE
+        )
+    ) |> 
+    cbbplotR::gt_theme_athletic() |>
+    gt::cols_align(align = "left", columns = c(team, max_score, min_score)) |>
+    gtExtras::gt_hulk_col_numeric(columns = c(avg, avg_last_10,
+                                              max_game, min_game),
+                                  domain = c(0, 100)) |>
+    gtExtras::gt_add_divider(columns = c(record, avg_last_10, max_game), sides = "right", color = "black") |> 
+       gtExtras::gt_add_divider(columns = c(avg), sides = "right",
+                                style = "dotted") |> 
+    gt::tab_header(title = table_title,
+                   subtitle = gt::html("Game Score is from 
+                        barttorvik.com and calculated on a per game basis. An average score is 50. <br>Shows the season average, average of the last 10, the high/low with results, and the season performance to date.")) |>
+    gt::tab_source_note(source_note = gt::html("<hr><br><b>Viz by Fifth Factor + Bless your chart | data from Bart Torvik, cbbdata, and cbbplotR | March 19, 2024</b>")) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "subtitle"),
+      style = gt::cell_text(
+        size = "medium"
+      )
+    ) |> 
+        gt::tab_style(
+      locations = gt::cells_source_notes(),
+      style = gt::cell_text(
+        size = "small"
+      )
+    ) |> 
+      gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    ) -> ncaat_region_table
+
+  ncaat_region_table
+}
+```
+
+### Run and save the function
+
+```{r save-gt, warning=FALSE}
+
+region_tbl(region = "West") -> west 
+
+  gtExtras::gtsave_extra(west,
+                       filename = "nccat_gscore_tbl-w.png",
+                       vheight = 725,
+                       vwidth = 1175)
+
+  region_tbl(region = "East") -> east
+
+  gtExtras::gtsave_extra(east,
+                       filename = "nccat_gscore_tbl-e.png",
+                       vheight = 725,
+                       vwidth = 1175)
+  
+  region_tbl(region = "Midwest") -> midwest 
+
+  gtExtras::gtsave_extra(midwest,
+                       filename = "nccat_gscore_tbl-mw.png",
+                       vheight = 725,
+                       vwidth = 1175)
+  
+  region_tbl(region = "South") -> south 
+
+  gtExtras::gtsave_extra(south,
+                       filename = "nccat_gscore_tbl-s.png",
+                       vheight = 725,
+                       vwidth = 1175)
+  
+  region_tbl(region = "West")
+```

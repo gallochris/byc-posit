@@ -1,0 +1,358 @@
+---
+title: "106: Another drive chart"
+date: "2024-09-03"
+categories:
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Build drive chart using Stat Broadcast
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+usc_lsu<- readr::read_csv("usc_lsu.csv", col_types = readr::cols(time_min_a = readr::col_character(), 
+                                                   time_sec_a = readr::col_character(),
+                                                   time_min_b = readr::col_character(), 
+                                                   time_sec_b = readr::col_character()
+                                                   )
+)
+                       
+
+drives <- usc_lsu |> 
+  dplyr::mutate(time_sec_a = dplyr::if_else(nchar(time_sec_a) == 1, 
+                                                  stringr::str_pad(time_sec_a, width = 2, pad = "0"), 
+                                                  time_sec_a),
+                time_sec_b = dplyr::if_else(nchar(time_sec_b) == 1, 
+                                            stringr::str_pad(time_sec_b, width = 2, pad = "0"), 
+                                            time_sec_b),
+                ) |> 
+  dplyr::mutate(across(where(is.character), ~tidyr::replace_na(., "")),
+                dplyr::across(where(is.numeric), ~tidyr::replace_na(., 0))
+  ) 
+```
+
+### GT Table for drives
+
+```{r gt-table-drives}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/99.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+       <span style='display: block; text-align: left; font-size: 14px;'>
+       <br>
+       <b>Total drives</b>: 10<br>
+       <b>Scoring drives</b>: 4<br>
+       <b>Avg. start</b>: Own 25
+       </span>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>USC 27, LSU 20</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Drive chart showing each team's possessions.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/30.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+              <span style='display: block;  text-align: left; font-size: 14px;'>
+              <br>
+       <b>Total drives</b>: 11<br>
+       <b>Scoring drives</b>: 5<br>
+       <b>Avg. start</b>: Own 28
+       </span>
+     </div>
+   </div>
+  <br>"
+)
+
+
+new_drives <- drives |>
+  dplyr::mutate(
+    team_a = dplyr::if_else(team_a == "", "Duke", team_a),
+    team_b = dplyr::if_else(team_b == "", "Duke", team_b)
+  ) |>
+  cbbplotR::gt_cbb_teams(team_a, team_a, include_name = FALSE) |>
+  cbbplotR::gt_cbb_teams(team_b, team_b, include_name = FALSE) |>
+  dplyr::mutate(
+    sen_a = paste0(desc_a, "<br>", time_min_a, ":", time_sec_a),
+    sen_b = paste0(desc_b, "<br>", time_min_b, ":", time_sec_b),
+    sen_a = dplyr::if_else(sen_a == "<br>:", "", sen_a),
+    sen_b = dplyr::if_else(sen_b == "<br>:", "", sen_b),
+    team_a = # fix the logo to be for COVID
+      dplyr::if_else(
+        team_a == "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/150.png' style='height: 25px; width: auto; vertical-align: -30%;'> ",
+        "<img src='https://i.imgur.com/qFmcbT0.png' style='height: 25px; width: auto; vertical-align: -30%;'> ",
+        team_a
+      ),
+    team_b =
+      dplyr::if_else(
+        team_b == "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/150.png' style='height: 25px; width: auto; vertical-align: -30%;'> ",
+        "<img src='https://i.imgur.com/qFmcbT0.png' style='height: 25px; width: auto; vertical-align: -30%;'> ",
+        team_b
+      )
+  )
+
+lsu_usc_drive_chart <- new_drives |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = c(team_a, team_b)) |>
+  gt::cols_hide(columns = c(time_min_a, time_sec_a, desc_a, desc_b, time_min_b, time_sec_b)) |>
+  gtExtras::gt_merge_stack(
+    col1 = team_a,
+    col2 = sen_a,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = team_b,
+    col2 = sen_b,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = result_b,
+    col2 = points_b,
+    palette = c("black", "#333333"),
+    font_size = c("12px", "10px"),
+    small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = result_a,
+    col2 = points_a,
+    palette = c("black", "#333333"),
+    font_size = c("12px", "10px"),
+    small_cap = FALSE
+  ) |>
+  gt::cols_align(align = "left",
+                 columns = c(team_a, team_b, result_a, result_b)) |>
+  gt::fmt_tf(
+    columns = -c(team_a, sen_a, team_b, sen_b, result_a, result_b),
+    tf_style = "circles",
+    colors = c("green", "red"),
+    na_val = ""
+  ) |>
+  gt::cols_label(
+    team_a = "",
+    result_a = "",
+    zero_a = "0",
+    five_a = "",
+    ten_a = "10",
+    fifteen_a = "",
+    twenty_a = "20",
+    twentyfive_a = "",
+    thirty_a = "30",
+    thirtyfive_a = "",
+    forty_a = "40",
+    fortyfive_a = "",
+    fifty = "50",
+    fortyfive_b = "",
+    forty_b = "40",
+    thirtyfive_b = "",
+    thirty_b = "30",
+    twentyfive_b = "",
+    twenty_b = "20",
+    fifteen_b = "",
+    ten_b = "10",
+    five_b = "",
+    zero_b = "0",
+    result_b = "",
+    team_b = ""
+  ) |>
+  gtExtras::gt_add_divider(
+    columns = c(result_b, fifty),
+    sides = "right",
+    color = "black",
+    weight = gt::px(.5)
+  ) |>
+  gtExtras::gt_add_divider(
+    columns = c(result_a, fifty),
+    sides = "left",
+    color = "black",
+    weight = gt::px(.5)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(5, 7, 12, 18),
+    fill = "#C7BBD7",
+    columns = c(29)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(4, 6, 11, 17, 19),
+    fill = "#E0B2B2",
+    columns = c(6)
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "
+                                       Data from StatBroadcast | Theme from gtExtras and logos from ESPN.com<br>
+                                       Green dots indicate the start of a drive.<br>
+                                       Arrows indicate the length of the drive.<br>
+                                       Red dots indicate end of drive.<br>
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | September 3, 2024</b>"
+    )
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.font.size = gt::px(14),
+    column_labels.text_transform = 'uppercase'
+  ) |>
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("left", "right"),
+    color = "black",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = gt::everything()))) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = c("top", "bottom"),
+      color = 'black',
+      weight = gt::px(1.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = gt::everything())
+  )
+
+gtExtras::gtsave_extra(
+  lsu_usc_drive_chart,
+  filename = "usc_lsu_drives.png",
+  vwidth = 850,
+  expand = 10
+)
+
+
+lsu_usc_drive_chart
+
+```
+
+### Grab FBS vs FBS data
+
+```{r fbs-data, message=FALSE, warning=FALSE}
+
+home_games <- cfbfastR::cfbd_game_info(year = 2024, week = 1) |> 
+  dplyr::mutate(result = dplyr::if_else(home_points > away_points, "W", "L")) |> 
+  dplyr::rename(team = home_team, opp = away_team, 
+                conf = home_conference, opp_conf = away_conference,
+                team_points = home_points, opp_points = away_points) |>
+  dplyr::select(game_id, week, team, opp, conf, opp_conf, result)
+  
+
+away_games <- cfbfastR::cfbd_game_info(year = 2024, week = 1) |> 
+  dplyr::mutate(result = dplyr::if_else(away_points > home_points, "W", "L")) |> 
+  dplyr::rename(team = away_team, opp = home_team, 
+                conf = away_conference, opp_conf = home_conference) |>
+  dplyr::select(game_id, week, team, opp, conf, opp_conf, result)
+
+
+game_summary <- home_games |> 
+  dplyr::bind_rows(away_games) |> 
+  dplyr::filter(conf != opp_conf) |>
+  dplyr::group_by(conf, opp_conf) |>
+  dplyr::summarise(
+    games = dplyr::n(),
+    wins = sum(result == "W"),
+    losses = sum(result == "L")
+  ) |>
+  dplyr::mutate(result = paste0(wins, "-", losses))
+
+
+
+game_summary |> 
+  dplyr::filter(!conf %in% c("Big South-OVC", "CAA", 
+                             "MEAC", "MVFC", "Patriot", 
+                             "NEC", "Southern", "FCS Independents",
+                             "Southland", "SWAC", "UAC")) |> 
+  dplyr::filter(!opp_conf %in% c("Big South-OVC", "CAA", 
+                             "MEAC", "MVFC", "Patriot", 
+                             "NEC", "Southern",  "FCS Independents",
+                             "Southland", "SWAC", "UAC")) |> 
+  dplyr::mutate(conf = dplyr::case_match(conf,
+                                         "American Athletic" ~ "American",
+                                         "Pac-12" ~ "Pac-2",
+                                         "Conference USA" ~ "CUSA",
+                                         "FBS Independents" ~ "INDIE",
+                                         "Mid-American" ~ "MAC",
+                                         "Mountain West" ~ "MW",
+                                         conf ~ conf  )) |> 
+  dplyr::mutate(opp_conf = dplyr::case_match(opp_conf,
+                                             "American Athletic" ~ "American",
+                                             "Pac-12" ~ "Pac-2",
+                                             "Conference USA" ~ "CUSA",
+                                             "FBS Independents" ~ "INDIE",
+                                             "Mid-American" ~ "MAC",
+                                             "Mountain West" ~ "MW",
+                                             opp_conf ~ opp_conf  )) |> 
+  dplyr::select(conf, opp_conf, result) |> 
+  tidyr::pivot_wider(
+    names_from = opp_conf,
+    values_from = result,
+    values_fill = "0-0"
+  )  |> 
+  dplyr::filter(conf != "Big Sky") |> 
+  dplyr::select(-c(`Big Sky`)) |>  # remove big sky to keep Pac2 alive 
+  dplyr::ungroup() -> conferences
+
+# build the matrix and make order updates
+conf_matrix <- as.matrix(conferences[, -1])
+rownames(conf_matrix) <- conferences$conf
+
+# this is only for non-conference, so replace with "-" when ACC vs ACC, etc. 
+for (i in 1:nrow(conf_matrix)) {
+  if (rownames(conf_matrix)[i] %in% colnames(conf_matrix)) {
+    conf_matrix[i, rownames(conf_matrix)[i]] <- "-"
+  }
+}
+
+conf_matrix_alpha <- conf_matrix[, sort(colnames(conf_matrix))]
+
+conferences_alpha <- data.frame(conf = rownames(conf_matrix_alpha), conf_matrix_alpha, check.names = FALSE)
+
+# reset row names
+rownames(conferences_alpha) <- NULL
+
+conferences <- conferences_alpha
+```
+
+### GT table for FBS vs FBS
+
+```{r gt-tbl-confs, warning=FALSE}
+
+conferences |> 
+  gt::gt() |> 
+  gtExtras::gt_theme_dot_matrix() |> 
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#EEEEEE',
+    table.font.size = gt::px(14),
+    column_labels.text_transform = 'uppercase'
+  ) |>
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("left"),
+    color = "#eeeeee",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(
+    columns = gt::everything()
+  ))) |> 
+  gt::cols_label(
+    conf = ""
+  ) |> 
+  gt::tab_header(title = gt::html("<b>Head-to-Head Records Between FBS Conferences through September 3, 2024</b><hr>")) |> 
+  gt::tab_source_note(source_note = gt::html("Data via cfbfastR through September 2, 2024 | Highlights the games between the 'Power 4'<br>
+  This only includes the <b>results</b> in individual games non-conference games against FBS opponents. It doesn't factor in location, opponent strength, or any other power/metric ratings.<br>
+  <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | September 3, 2024</b>")) |> 
+  gtExtras::gt_highlight_rows(rows = c(1, 3, 4, 10), fill = "#FFFEE0", 
+                              columns = c(2,4,5,11)) -> conf_tbl 
+
+gtExtras::gtsave_extra(conf_tbl, 
+                       filename = "conf_week_1_tbl.png",
+                       vwidth = 650,
+                       expand = 10)
+
+conf_tbl
+
+```

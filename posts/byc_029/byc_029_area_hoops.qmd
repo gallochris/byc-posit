@@ -1,0 +1,312 @@
+---
+title: "029: Posessions together"
+date: "2023-05-03"
+categories:
+  - geom_area
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(ggthemes)
+library(ggtext)
+```
+
+### Load data + modify tier function
+
+```{r data-load, message=FALSE}
+# load csv
+# schedule <- get_team_schedule(season = "2022-23", team.name = "North Carolina")
+
+# play_by_play <- get_play_by_play(schedule$Game_ID)
+
+# lineups <- get_lineups(play_by_play_data = play_by_play)
+
+# no_rj <- get_player_combos(Lineup_Data = lineups, n = 5, min_mins = 0, Included = "CALEB.LOVE", Excluded = "RJ.DAVIS")
+
+# no_rj %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina     582
+
+# no_caleb <- get_player_combos(Lineup_Data = lineups, n = 5, min_mins = 0, Excluded = "CALEB.LOVE", Included = "RJ.DAVIS")
+
+# no_caleb %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina     495
+
+# both <- get_player_combos(Lineup_Data = lineups, n = 5, min_mins = 0, Included = c("CALEB.LOVE", "RJ.DAVIS"))
+
+# both %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina    3501
+
+# neither <- get_player_combos(Lineup_Data = lineups, n = 5, min_mins = 0, Excluded = c("CALEB.LOVE", "RJ.DAVIS"))
+
+# neither %>% filter(Team == "North Carolina") %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina      92
+
+# schedule_hub_one <- get_team_schedule(season = "2021-22", team.name = "North Carolina")
+
+# pbp_hub_one <- get_play_by_play(schedule_hub_one$Game_ID)
+
+# lineups_hub_one <- get_lineups(play_by_play_data = pbp_hub_one)
+
+# no_rj_hub_one <- get_player_combos(Lineup_Data = lineups_hub_one, n = 5, min_mins = 0, Included = "CALEB.LOVE", Excluded = "RJ.DAVIS")
+
+# no_rj_hub_one %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina     702
+
+# no_caleb_hub_one <- get_player_combos(Lineup_Data = lineups_hub_one, n = 5, min_mins = 0, Excluded = "CALEB.LOVE", Included = "RJ.DAVIS")
+
+# no_caleb_hub_one %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina     630
+
+# both_hub_one <- get_player_combos(Lineup_Data = lineups_hub_one, n = 5, min_mins = 0, Included = c("CALEB.LOVE", "RJ.DAVIS"))
+
+# both_hub_one  %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina    3990
+
+# neither_hub_one <- get_player_combos(Lineup_Data = lineups_hub_one, n = 5, min_mins = 0, Excluded = c("CALEB.LOVE", "RJ.DAVIS"))
+
+# neither_hub_one %>% filter(Team == "North Carolina") %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina     232
+
+# schedule_roy <- get_team_schedule(season = "2020-21", team.name = "North Carolina")
+
+# pbp_roy <- get_play_by_play(schedule_roy$Game_ID)
+
+# lineups_roy <- get_lineups(play_by_play_data = pbp_roy)
+
+# no_rj_roy <- get_player_combos(Lineup_Data = lineups_roy, n = 5, min_mins = 0, Included = "CALEB.LOVE", Excluded = "RJ.DAVIS")
+
+# no_rj_roy %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina    1800
+
+# no_caleb_roy <- get_player_combos(Lineup_Data = lineups_roy, n = 5, min_mins = 0, Excluded = "CALEB.LOVE", Included = "RJ.DAVIS")
+
+# no_caleb_roy %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina    1163
+
+# both_roy <- get_player_combos(Lineup_Data = lineups_roy, n = 5, min_mins = 0, Included = c("CALEB.LOVE", "RJ.DAVIS"))
+
+# both_roy  %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina    1136
+
+# neither_roy <- get_player_combos(Lineup_Data = lineups_roy, n = 5, min_mins = 0, Excluded = c("CALEB.LOVE", "RJ.DAVIS"))
+
+# neither_roy %>% filter(Team == "North Carolina") %>% summarise(total_p = sum(oPOSS) + sum(dPOSS))
+
+# A tibble: 1 × 2
+# Team           total_p
+# <chr>            <dbl>
+#  1 North Carolina      77
+
+hello <- tibble::tribble(
+  ~ type,
+  ~ poss,
+  ~ season,
+  "Love",
+  582,
+  2023,
+  "Davis",
+  495,
+  2023,
+  "Both",
+  3501,
+  2023,
+  "Neither",
+  92,
+  2023,
+  "Love",
+  702,
+  2022,
+  "Davis",
+  630,
+  2022,
+  "Both",
+  3990,
+  2022,
+  "Neither",
+  232,
+  2022,
+  "Love",
+  1800,
+  2021,
+  "Davis",
+  1163,
+  2021,
+  "Both",
+  1136,
+  2021,
+  "Neither",
+  77,
+  2021
+)
+
+pct <- hello %>%
+  group_by(season) %>%
+  mutate(
+    pct = (poss / sum(poss) * 100),
+    label = case_match(
+      type,
+      "Both" ~ "Together ON Court",
+      "Neither" ~ "Together OFF Court",
+      "Love" ~ "Love WITHOUT Davis",
+      "Davis" ~ "Davis WITHOUT Love"
+    )
+  ) 
+```
+
+### Build the area chart
+
+```{r area-chart, warning=FALSE}
+# add subtitle
+subtitle = "Percentage of possessions played:  \n<span style='color:#a46c2c'>Together ON Court</span>  \n <span style='color:#2c64a4'>Together OFF Court</span>  \n<span style='color:#64a42c;'>Love WITHOUT Davis</span>  \n<span style='color:#6c2ca4'>Davis WITHOUT Love</span>"
+
+# build plot
+pct %>%
+  mutate(type = fct_relevel(type, c("Both", "Neither", "Love", "Davis"))) %>%
+  ggplot(aes(
+    x = season,
+    y = pct,
+    group = type,
+    fill = type
+  )) +
+  geom_area(alpha = 0.8) +
+  scale_fill_manual(
+    "",
+    values = c(
+      "Both" = "#a46c2c",
+      "Neither" = "#2c64a4",
+      "Love" = "#64a42c",
+      "Davis" = "#6c2ca4"
+    ),
+    breaks = c("Both", "Neither", "Love", "Davis"),
+    labels = c(
+      "Together ON Court",
+      "Together OFF Court",
+      "Love WITHOUT Davis",
+      "Davis WITHOUT Love"
+    )
+  ) +
+  scale_x_continuous(breaks = seq(2021, 2023, 1)) +
+  theme_wsj() +
+  theme(
+    legend.position = "none",
+    plot.subtitle = element_textbox_simple(
+      hjust = 0.5,
+      size = 12,
+      lineheight = 1,
+      face = "bold",
+      margin = margin(t = 6, b = 5)
+    ),
+    plot.caption = element_text(
+      hjust = 1,
+      size = 10,
+      lineheight = 0.35,
+      face = "bold",
+      margin = margin(t = 20)
+    ),
+  ) +
+  coord_flip() +
+  labs(
+    x = "",
+    y = "% of Possessions",
+    title = "Caleb Love and RJ Davis  \nplayed A LOT together",
+    subtitle = subtitle,
+    caption = "dadgumboxscores | May 3, 2023 | data via bigballR"
+  ) -> pct_plot
+
+
+# add annotations
+pct_plot_text <- pct_plot +
+  annotate(
+    geom = "text",
+    x = 2021.05,
+    y = 85,
+    color = "floral white",
+    label = "27.2%",
+    size = 6,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  annotate(
+    geom = "text",
+    x = 2022.05,
+    y = 85,
+    color = "floral white",
+    label = "71.8%",
+    size = 6,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  annotate(
+    geom = "text",
+    x = 2022.9,
+    y = 85,
+    color = "floral white",
+    label = "75.0%",
+    size = 6,
+    fontface = 'bold',
+    family = 'mono'
+  )
+
+# save it
+ggsave(
+  "pct.png",
+  pct_plot_text,
+  w = 6.5,
+  h = 10.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+pct_plot_text
+```
+
+#### 

@@ -1,0 +1,382 @@
+---
+title: "126: Rebounds and Turnovers"
+date: "2025-01-21"
+categories:
+  - geom_smooth
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+unc_factors <- cbbdata::cbd_torvik_game_factors(team = "North Carolina") |> 
+  dplyr::filter(year > 2017) 
+
+rebound_data <- unc_factors |>
+  dplyr::arrange(date) |>
+  dplyr::mutate(
+    off_or_roll = zoo::rollmean(off_or, k = 5, fill = NA, align = 'center'),
+    def_or_roll = zoo::rollmean(def_or, k = 5, fill = NA, align = 'center')
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(off_or, def_or, off_or_roll, def_or_roll),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(
+    is_rolling = stringr::str_detect(metric, "_roll$"),
+    base_metric = stringr::str_remove(metric, "_roll$"),
+    team_type = dplyr::case_when(
+      stringr::str_detect(base_metric, "^off_") ~ "Offense",
+      stringr::str_detect(base_metric, "^def_") ~ "Defense"
+    )
+  ) |>
+  # Remove NA values for the rolling averages
+  dplyr::filter(!(is_rolling & is.na(value)))
+
+turnover_data <- unc_factors |>
+  dplyr::arrange(date) |>
+  dplyr::mutate(
+    off_to_roll = zoo::rollmean(off_to, k = 5, fill = NA, align = 'center'),
+    def_to_roll = zoo::rollmean(def_to, k = 5, fill = NA, align = 'center')
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(off_to, def_to, off_to_roll, def_to_roll),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(
+    is_rolling = stringr::str_detect(metric, "_roll$"),
+    base_metric = stringr::str_remove(metric, "_roll$"),
+    team_type = dplyr::case_when(
+      stringr::str_detect(base_metric, "^off_") ~ "Offense",
+      stringr::str_detect(base_metric, "^def_") ~ "Defense"
+    )
+  ) |>
+  # Remove NA values for the rolling averages
+  dplyr::filter(!(is_rolling & is.na(value)))
+
+# labels to use for both plots
+custom_breaks <- as.Date(c("2018-01-01", "2019-01-01", "2020-01-01", 
+                           "2021-01-01", "2022-01-01", "2023-01-01", 
+                           "2024-01-01", "2025-01-01"))
+custom_labels <- c("2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025")
+
+```
+
+### Rebound plot
+
+```{r rebound-plot, warning=FALSE, message=FALSE}
+
+rebound_plot <- ggplot2::ggplot(rebound_data, 
+                                ggplot2::aes(x = date, y = value, 
+                                color = team_type, fill = team_type)) +
+  ggplot2::geom_point(
+    data = ~ dplyr::filter(., !is_rolling),
+    alpha = 0.3,
+    size = 1
+  ) +
+  ggplot2::stat_smooth(
+    data = ~ dplyr::filter(., is_rolling),
+    method = "loess",
+    span = 0.70,
+    alpha = 0.2,
+    se = TRUE
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::labs(
+    title = "North Carolina: Rebounding Rates Since 2017-18 Season",
+    subtitle = "Shows <span style='color:#56a0d3;'>offensive</span> and <span style='color:red;'>defensive</span> rebounding rates with five-game rolling average since start of the 2017-18 season.",
+    caption = "Data via barttorvik.com | Viz by Chris at Bless your Chart"
+  ) +
+  ggplot2::theme(
+    plot.subtitle = ggtext::element_markdown(),
+    legend.position = "none",
+    plot.caption = ggtext::element_markdown(size = 8)
+  ) +
+  ggplot2::scale_color_manual(
+    values = c("Offense" = "#56a0d3", "Defense" = "red")
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c("Offense" = "#56a0d3", "Defense" = "red") 
+  ) +
+  ggplot2::scale_x_date(
+    breaks = custom_breaks,
+    labels = custom_labels,
+    limits = as.Date(c("2017-11-01", "2025-01-30"))
+  ) +
+  ggplot2::geom_vline(xintercept = as.Date("2021-10-31"), linetype = "dashed", 
+                      color = "#868686") +
+  ggplot2::scale_y_continuous(breaks = seq(0, 65, 5),
+                              limits = c(0, 65)
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = as.Date("2019-06-25"),
+    y = 60,
+    color = "#868686",
+    fill = "floralwhite",
+    label = "Roy Williams  \nAverages  \n37.0 (offense)  \n24.4 (defense)",
+    size = 3,
+    family = 'mono',
+    fontface = 'bold'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = as.Date("2023-06-25"),
+    y = 60,
+    color = "#868686",
+    fill = "floralwhite",
+    label = "Hubert Davis \nAverages  \n30.8 (offense)  \n23.2 (defense)",
+    size = 3,
+    family = 'mono',
+    fontface = 'bold'
+  ) 
+
+ggplot2::ggsave(
+    "rebound_plot.png",
+    rebound_plot,
+    w = 10,
+    h = 7.5,
+    dpi = 600,
+    bg = "white",
+    type = 'cairo'
+)
+
+rebound_plot
+```
+
+### Turnover plot
+
+```{r turnover-plot, warning=FALSE, message=FALSE}
+
+turnover_plot <- ggplot2::ggplot(turnover_data, 
+                                 ggplot2::aes(x = date, y = value, 
+                                color = team_type, fill = team_type)) +
+  ggplot2::geom_point(
+    data = ~ dplyr::filter(., !is_rolling),
+    alpha = 0.3,
+    size = 1
+  ) +
+  ggplot2::stat_smooth(
+    data = ~ dplyr::filter(., is_rolling),
+    method = "loess",
+    span = 0.70,
+    alpha = 0.2,
+    se = TRUE
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::labs(
+    title = "North Carolina: Turnover Rates Since 2017-18 Season",
+    subtitle = "Shows <span style='color:#56a0d3;'>offensive</span> and <span style='color:red;'>defensive</span> turnover rates with five-game rolling average since start of the 2017-18 season.",
+    caption = "Data via barttorvik.com | Viz by Chris at Bless your Chart"
+  ) +
+  ggplot2::theme(
+    plot.subtitle = ggtext::element_markdown(),
+    legend.position = "none",
+    plot.caption = ggtext::element_markdown(size = 8)
+  ) +
+  ggplot2::scale_color_manual(
+    values = c("Offense" = "#56a0d3", "Defense" = "red")
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c("Offense" = "#56a0d3", "Defense" = "red")
+  ) +
+  ggplot2::scale_x_date(
+    breaks = custom_breaks,
+    labels = custom_labels,
+    limits = as.Date(c("2017-11-01", "2025-01-30"))
+  ) +
+  ggplot2::geom_vline(xintercept = as.Date("2021-10-31"), linetype = "dashed", 
+                      color = "#868686") +
+  ggplot2::scale_y_continuous(breaks = seq(0, 40, 5),
+                              limits = c(0, 40)
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = as.Date("2019-06-25"),
+    y = 36,
+    color = "#868686",
+    fill = "floralwhite",
+    label = "Roy Williams  \nAverages  \n17.9 (offense)  \n17.3 (defense)",
+    size = 3,
+    family = 'mono',
+    fontface = 'bold'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = as.Date("2023-06-25"),
+    y = 36,
+    color = "#868686",
+    fill = "floralwhite",
+    label = "Hubert Davis \nAverages  \n15.2 (offense)  \n14.5 (defense)",
+    size = 3,
+    family = 'mono',
+    fontface = 'bold'
+  ) 
+
+
+ggplot2::ggsave(
+    "turnover_plot.png",
+    turnover_plot,
+    w = 10,
+    h = 7.5,
+    dpi = 600,
+    bg = "white",
+    type = 'cairo'
+)
+
+turnover_plot
+```
+
+### Adjusted efficiency plot
+
+```{r adj-plot, warning=FALSE, message=FALSE}
+
+adj_data <- unc_factors |>
+  dplyr::arrange(date) |>
+  dplyr::mutate(
+    adj_o_roll = zoo::rollmean(adj_o, k = 5, fill = NA, align = 'center'),
+    adj_d_roll = zoo::rollmean(adj_d, k = 5, fill = NA, align = 'center')
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(adj_o, adj_d, adj_o_roll, adj_d_roll),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(
+    is_rolling = stringr::str_detect(metric, "_roll$"),
+    base_metric = stringr::str_remove(metric, "_roll$"),
+    team_type = dplyr::case_when(
+      stringr::str_detect(base_metric, "adj_o") ~ "Offense",
+      stringr::str_detect(base_metric, "adj_d") ~ "Defense"
+    )
+  ) |>
+  # Remove NA values for the rolling averages
+  dplyr::filter(!(is_rolling & is.na(value)))
+
+# Create rebound plot
+ggplot2::ggplot(adj_data, 
+                                ggplot2::aes(x = date, y = value, 
+                                             color = team_type, fill = team_type)) +
+  ggplot2::geom_point(
+    data = ~ dplyr::filter(., !is_rolling),
+    alpha = 0.3,
+    size = 1
+  ) +
+  ggplot2::stat_smooth(
+    data = ~ dplyr::filter(., is_rolling),
+    method = "loess",
+    span = 0.70,
+    alpha = 0.2,
+    se = TRUE
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::labs(
+    title = "North Carolina: Adjusted Efficiency Since 2017-18 Season",
+    subtitle = "Shows <span style='color:#56a0d3;'>offensive</span> and <span style='color:red;'>defensive</span> adjusted efficiency over a five-game rolling average since start of the 2017-18 season.",
+    caption = "Data via barttorvik.com | Viz by Chris at Bless your Chart"
+  ) +
+  ggplot2::theme(
+    plot.subtitle = ggtext::element_markdown(),
+    legend.position = "none",
+    plot.caption = ggtext::element_markdown(size = 8)
+  ) +
+  ggplot2::scale_color_manual(
+    values = c("Offense" = "#56a0d3", "Defense" = "red")
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c("Offense" = "#56a0d3", "Defense" = "red") 
+  ) +
+  ggplot2::scale_x_date(
+    breaks = custom_breaks,
+    labels = custom_labels,
+    limits = as.Date(c("2017-11-01", "2025-01-30"))
+  ) +
+  ggplot2::geom_vline(xintercept = as.Date("2021-10-31"), linetype = "dashed", 
+                      color = "#868686") +
+  ggplot2::scale_y_continuous(breaks = seq(60, 160, 20),
+                              limits = c(60, 160)
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = as.Date("2019-06-25"),
+    y = 150,
+    color = "#868686",
+    fill = "floralwhite",
+    label = "Roy Williams  \nAverages  \n113.8 (offense)  \n94.4 (defense)",
+    size = 3,
+    family = 'mono',
+    fontface = 'bold'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = as.Date("2023-06-25"),
+    y = 150,
+    color = "#868686",
+    fill = "floralwhite",
+    label = "Hubert Davis \nAverages  \n114.8 (offense)  \n95.2 (defense)",
+    size = 3,
+    family = 'mono',
+    fontface = 'bold'
+  ) -> adj_plot
+
+
+ggplot2::ggsave(
+  "adj_plot.png",
+  adj_plot,
+  w = 10,
+  h = 7.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+adj_plot
+```
+
+### Records and SVI calculation
+
+```{r records-svi, warning=FALSE, message=FALSE}
+
+unc_factors |> 
+    dplyr::filter(off_efg < def_efg) |> 
+    dplyr::group_by(coach) |> 
+    dplyr::summarise(
+        w = sum(result == "W"), 
+        l = sum(result == "L"),
+        games = dplyr::n(),
+        win_pct = w / games
+    )
+
+get_svi <- function(team_name) {
+    years <- 2018:2025  # Define the range of years
+    results <- purrr::map_dfr(years, function(year) {
+        cbbdata::cbd_torvik_team_factors(year = year) |> 
+            dplyr::filter(team == team_name) |> 
+            dplyr::mutate(
+                to_pct = tov_rate / 100,
+                or_pct = oreb_rate / 100,
+                d_to_pct = def_tov_rate / 100,
+                d_or_pct = dreb_rate / 100
+            ) |> 
+            dplyr::group_by(year) |> 
+            dplyr::summarise(
+                svi = ((100 - (100 * to_pct)) + (or_pct * (0.561 * (100 - (100 * to_pct))))),
+                def_svi = ((100 - (100 * d_to_pct)) + (d_or_pct * (0.561 * (100 - (100 * d_to_pct))))),
+                .groups = "drop"
+            ) |> 
+            dplyr::mutate(diff = svi - def_svi) |> 
+            dplyr::arrange(-diff)
+    })
+    return(results)
+}
+
+write.csv(get_svi("North Carolina"), "svi.csv")
+```

@@ -1,0 +1,367 @@
+---
+title: "158: Conference data and underdog winners"
+date: "2025-10-21"
+categories:
+  - gtUtils
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+```
+
+### Double-digit dogs
+
+```{r dd-tbl, warning=FALSE, message=FALSE}
+
+dd_dogs <- readr::read_csv("dd-dogs.csv")
+
+dogs <- dd_dogs |>
+  dplyr::arrange(Spread) |>
+  dplyr::mutate(fweek = paste0("Week", " ", Week)) |>
+  dplyr::select(fweek, Date, Team, Opponent, Location, Spread, fscore)
+
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Double-digit favorites that have lost outright</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>2025 season through Week 8 games showing double-digit favorites that have lost outright.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+
+dd_tbl <- dogs |>
+  cbbplotR::gt_cbb_teams(Team, Team) |>
+  cbbplotR::gt_cbb_teams(Opponent, Opponent) |>
+  dplyr::select(fweek, Date, Spread, Team, Opponent, Location, fscore) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::fmt_markdown(columns = c(Team, Opponent)) |>
+  gtExtras::gt_merge_stack(col1 = Date, col2 = fweek) |>
+  gtExtras::gt_merge_stack(col1 = fscore, col2 = Location) |>
+  gt::cols_align(columns = c(Team, Opponent), align = "left") |>
+  gt::cols_align(columns = c(Spread), align = "right") |>
+  gtUtils::gt_column_subheaders(
+    Date =  list(heading = "Date", subtitle = "Week"),
+    fscore =  list(heading = "Final Score", subtitle = "Location"),
+    Spread = list(heading = "Point Spread", subtitle = "Favored by?"),
+    Team =  list(heading = "Favorite", subtitle = "Losing Team"),
+    Location =  list(heading = "Location", subtitle = "Home/Away"),
+    Opponent =  list(heading = "Underdog", subtitle = "Opponent (Winning team)"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via TeamRankings.com BetIQ | theme via {gtUtils} <br>
+        Data for 2025 season through Week 8 or October 18 games.<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(14)
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  )
+
+gt_save_crop(dd_tbl,
+             file = "dd_tbl.png",
+             whitespace = 60,
+             bg = "#FFFDF5")
+
+dd_tbl
+```
+
+### Conference fun 
+
+```{r conf-tbl, warning=FALSE, message=FALSE}
+
+conf_stats <- tibble::tibble(
+  Conf = c(
+    "SEC",
+    "Big 10",
+    "Big 12",
+    "ACC",
+    "American",
+    "Mountain West",
+    "Sun Belt",
+    "MAC",
+    "CUSA"
+  ),
+  Teams = c(16, 18, 16, 17, 14, 12, 14, 13, 12),
+  `vs FBS` = c(
+    "34-5 (0.872)",
+    "30-8 (0.789)",
+    "22-9 (0.710)",
+    "20-16 (0.556)",
+    "19-15 (0.559)",
+    "14-19 (0.424)",
+    "12-28 (0.300)",
+    "5-31 (0.139)",
+    "7-23 (0.233)"
+  ),
+  `vs P4` = c(
+    "9-3 (0.750)",
+    "5-5 (0.500)",
+    "8-6 (0.571)",
+    "4-12 (0.250)",
+    "6-11 (0.353)",
+    "4-11 (0.267)",
+    "1-16 (0.059)",
+    "1-23 (0.042)",
+    "0-11 (0.000)"
+  ),
+  `Avg %tile` = c(.846, .732, .683, .596, .403, .368, .283, .208, .171),
+  Games = c(30, 36, 32, 29, 25, 19, 22, 21, 17),
+  `Home%` = c(.633, .500, .625, .379, .600, .684, .591, .714, .471),
+  `Avg Pts` = c(49.0, 49.4, 55.6, 53.5, 59.2, 63.7, 58.8, 46.6, 49.3),
+  `Avg Diff` = c(10.0, 15.6, 14.6, 13.0, 19.2, 12.6, 14.0, 15.9, 14.2)
+) |>
+  dplyr::select(
+    conf = Conf,
+    teams = Teams,
+    games = Games,
+    home_wp = `Home%`,
+    avg_diff = `Avg Diff`,
+    avg_total = `Avg Pts`,
+    `vs FBS`,
+    `vs P4`,
+    fplus = `Avg %tile`
+  ) |>
+  dplyr::mutate(
+    fbs_rec = stringr::str_extract(`vs FBS`, "\\d+-\\d+"),
+    p4_rec = stringr::str_extract(`vs P4`, "\\d+-\\d+"),
+    fbs_pct = as.numeric(stringr::str_extract(`vs FBS`, "(?<=\\()\\d+\\.\\d+(?=\\))")),
+    p4_pct = as.numeric(stringr::str_extract(`vs P4`, "(?<=\\()\\d+\\.\\d+(?=\\))"))
+  ) |>
+  dplyr::select(-`vs FBS`, -`vs P4`)
+
+
+conf_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>FBS conference performance through Week 8</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Average team quality (percentile), overall records against FBS/P4 opponents, and conference play stats (home advantage, scoring, competitiveness).</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+
+conf_tbl <- conf_stats |>
+  dplyr::mutate(teams = paste0(teams, " ", "teams"),
+                games = paste0(games, " ", "games")) |>
+  dplyr::select(
+    conf,
+    teams,
+    fplus,
+    fbs_rec,
+    fbs_pct,
+    p4_rec,
+    p4_pct,
+    games,
+    home_wp,
+    avg_diff,
+    avg_total
+  ) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gtExtras::gt_merge_stack(
+    col1 = conf,
+    col2 = teams,
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = fbs_pct,
+    col2 = fbs_rec,
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = p4_pct,
+    col2 = p4_rec,
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = home_wp,
+    col2 = games,
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |>
+  gt::cols_align(conf, align = "left") |>
+  gtUtils::gt_column_subheaders(
+    fbs_pct =  list(heading = "vs FBS", subtitle = "W-L (pct)"),
+    p4_pct =  list(heading = "vs P4", subtitle = "W-L (pct)"),
+    fplus =  list(heading = "Avg F+", subtitle = "Percentile"),
+    conf =  list(heading = "Conference", subtitle = "# of teams"),
+    home_wp = list(heading = "Home Win%", subtitle = "# of games"),
+    avg_diff =  list(heading = "Avg Margin", subtitle = "Differential"),
+    avg_total =  list(heading = "Avg Total", subtitle = "Combined Points"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::tab_spanner(columns = c(games, home_wp, avg_diff, avg_total),
+                  label = "League Play Only") |>
+  gt::tab_spanner(columns = c(fplus, fbs_pct, p4_pct), label = "Non-Conference") |>
+  gt::tab_header(title = gt::html(conf_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via collegefootballdata.com, bcftoys.com, and ESPN+ | theme via {gtUtils} <hr>
+        F+ percentiles are computed by Brian Fremeau's FEI ratings and Bill Connelly's SP+ ratings<br>
+        P4 conferences: SEC, Big Ten, ACC, Big 12<br>
+        Excludes Pac-12 conference (Oregon State, Washington State) and FBS Independents (Notre Dame, UConn)<br>
+        Data for 2025 season through Week 8 or October 18 games.<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gtExtras::gt_add_divider(columns = home_wp,
+                           sides = "left",
+                           color = "black") |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(14)
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |>
+  gt::fmt_percent(fplus, decimals = 1) |> 
+  gt::data_color(
+    columns = c(fplus, fbs_pct, p4_pct),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(0, .9),
+    alpha = 0.6,
+  ) |>
+  gt::data_color(
+    columns = c(home_wp),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.25, .75),
+    alpha = 0.6,
+  ) |>
+  gt::data_color(
+    columns = c(avg_diff),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#008837", "#a6dba0", "#f7f7f7", "#c2a5cf", "#7b3294"),
+    domain = c(9.5, 20),
+    alpha = 0.6,
+  ) |>
+  gt::data_color(
+    columns = c(avg_total),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#2166ac", "#4393c3", "#d1e5f0", "#fddbc7",                         "#f4a582", "#d6604d", "#b2182b"),
+    domain = c(45, 65),
+    alpha = 0.6,
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_options(table.width = gt::px(625))
+
+gt_save_crop(conf_tbl,
+             file = "conf_tbl.png",
+             whitespace = 60,
+             bg = "#FFFDF5")
+
+conf_tbl
+```

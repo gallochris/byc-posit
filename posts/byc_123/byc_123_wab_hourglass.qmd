@@ -1,0 +1,175 @@
+---
+title: "123: Hourglass of WAB"
+date: "2025-01-03"
+categories:
+  - geom_jitter
+  - cbbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r wab-data, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+# majority of data wrangling done via evdevbyc repo
+# see https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/wab_logs.R
+
+conf_wab <- readr::read_csv("conf_wab.csv")
+
+```
+
+```{r hourglass-plot, warning=FALSE}
+
+labels <- data.frame(
+  x = 1:6,
+  y = 1.1,
+  label = c(
+    "11 teams  \n220 games",
+    "18 teams  \n360 games",
+    "11 teams  \n220 games",
+    "18 teams  \n360 games",
+    "16 teams  \n320 games",
+    "16 teams  \n288 games"
+  )
+)
+
+hourglass_plot <- conf_wab |>
+  dplyr::filter(conf %in% c("MWC", "ACC", "BE", "B10", "B12", "SEC")) |>
+  tidyr::pivot_longer(cols = c(wabW, wabL),
+                      names_to = "wab_type",
+                      values_to = "wabopp") |>
+  dplyr::mutate(conf = factor(conf, levels = c("MWC", "ACC", "BE", "B10", "B12", "SEC"))) |>
+  dplyr::distinct(conf, wabopp) |>
+  ggplot2::ggplot(ggplot2::aes(x = conf, y = wabopp, fill = conf)) +
+  ggplot2::geom_violin(alpha = 0.5) +
+  ggplot2::geom_jitter(
+    show.legend = FALSE,
+    height = 0,
+    width = 0.10,
+    size = 3,
+    alpha = 0.6,
+    color = "#333333"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::labs(
+    title = "Conference Hourglass: Available WAB in League Play",
+    subtitle = "Shows the wins-above-baseline values available in conference games in a win (postive value) or loss (negative value)",
+    x = "",
+    y = "WAB Value",
+    caption = "Chart by Chris at Bless your chart | data via barttorvik.com and cbbplotR | January 3, 2025"
+  ) +
+  ggplot2::scale_x_discrete(limits = c("MWC", "ACC", "BE", "B10", "B12", "SEC"),
+                            position = "top") +
+  ggplot2::theme(
+    axis.text.x = cbbplotR::element_cbb_conferences(size = 0.55),
+    legend.position = "none"
+  ) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+  ggplot2::scale_y_continuous(limits = c(-1, 1.2), breaks = seq(-1, 1, 0.25)) +
+  ggplot2::geom_text(
+    data = labels,
+    ggplot2::aes(x = x, y = y, label = label),
+    size = 3.5,
+    color = "#333333",
+    family = "Roboto Condensed",
+    fontface = "bold",
+    inherit.aes = FALSE
+  )
+ 
+ggplot2::ggsave(
+  "hourglass_plot.png",
+  hourglass_plot,
+  w = 10,
+  h = 7.5,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+hourglass_plot
+```
+
+### Team comparison 
+
+```{r carolina-plot, warning=FALSE}
+
+team_plot <- conf_wab |>
+  dplyr::filter(team %in% c("North Carolina", "South Carolina")) |>
+  tidyr::pivot_longer(cols = c(wabW, wabL),
+                      names_to = "wab_type",
+                      values_to = "wabopp") |>
+  dplyr::mutate(team = factor(team, levels = c("North Carolina", "South Carolina"))) |>
+  ggplot2::ggplot(ggplot2::aes(x = team, y = wabopp, fill = team)) +
+   ggplot2::geom_violin(alpha = 0.5, width = 0.5) +
+  ggplot2::geom_jitter(
+    show.legend = FALSE,
+    height = 0,
+    width = 0.07,
+    size = 3,
+    alpha = 0.6,
+    color = "#333333"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::labs(
+    title = "Team Hourglass: Available WAB in Conference Games",
+    subtitle = "Shows the wins-above-baseline values available in conference games in a win (postive value) or loss (negative value)",
+    x = "",
+    y = "WAB Value",
+    caption = "Chart by Chris at Bless your chart | data via barttorvik.com and cbbplotR | January 3, 2025"
+  ) +
+  ggplot2::scale_x_discrete(limits = c("North Carolina", "South Carolina"),
+                            position = "top") +
+  ggplot2::theme(
+    axis.text.x = cbbplotR::element_cbb_teams(size = 0.85),
+    legend.position = "none"
+  ) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+  ggplot2::scale_y_continuous(limits = c(-1, 1.2), breaks = seq(-1, 1, 0.25)) +
+   ggplot2::scale_fill_manual(
+    values = c("North Carolina" = "#56a0d3", "South Carolina" = "#73000A")
+  ) +
+   ggplot2::annotate(
+    "label",
+    x = 1,
+    y = 1.15,
+    label = "8-6  \n7.0 WAB+  \n-11.0 WAB-",
+    size = 3.5,
+    color = "#333333",
+    fill = "#56a0d3",
+    alpha = 0.3,
+    family = "Roboto Condensed",
+    fontface = "bold"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2,
+    y = 1.15,
+    label = "10-3  \n10.1 WAB+  \n-7.1 WAB-",
+    size = 3.5,
+    color = "#333333",
+    fill = "#73000A",
+    alpha = 0.3,
+    family = "Roboto Condensed",
+    fontface = "bold"
+  ) 
+ 
+ggplot2::ggsave(
+  "team_plot.png",
+  team_plot,
+  w = 10,
+  h = 7.5,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+team_plot
+
+
+```

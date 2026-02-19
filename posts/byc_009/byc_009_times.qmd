@@ -1,0 +1,89 @@
+---
+title: "009: Football games are too long"
+date: "2023-01-02"
+categories:
+  - gt_plt_bar
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(cfbplotR)
+library(gt)
+library(gtExtras)
+```
+
+### Load data
+
+```{r load-data, message = FALSE}
+times <- tibble::tribble(
+    ~Opponent,~Hours,~Minutes,
+    "Florida A&M",3,24,
+    "Appalachian State",4,10,
+    "Georgia State",3,31,
+    "Notre Dame",3,30,
+    "Virginia Tech",3,13,
+    "Miami",3,34,
+    "Duke",3,35,
+    "Pittsburgh",3,40,
+    "Virginia",3,20,
+    "Wake Forest",3,40,
+    "Georgia Tech",3,16,
+    "NC State",3,57,
+    "Clemson",3,23,
+    "Oregon",3,32
+)
+
+```
+
+### Manipulate data
+
+```{r data-manipulate}
+
+times <- times %>%
+  mutate(
+    total_mins = (Hours * 60) + Minutes,
+    logo = Opponent,
+    avg = mean(total_mins)
+  ) 
+```
+
+### Make the table with bar chart and logos
+
+```{r gt-table, warning=FALSE}
+times_table <- times %>%
+  select(logo, Opponent, Hours, Minutes, total_mins) %>%
+  arrange(-total_mins) %>%
+  gt() %>%
+  cols_label(
+    logo = "",
+    total_mins = "",) %>%
+  gt_fmt_cfb_logo(columns = "logo") %>%
+  gt_plt_bar(
+    column = total_mins,
+    color = "#56a0d3",
+    keep_column = FALSE,
+    width = 35
+  ) %>%
+  tab_header(title = "Carolina Length of Football Games in 2022") %>%
+  tab_source_note(source_note = "@dadgumboxscores | January 2, 2023")  %>%
+  # adjust font sizes
+  tab_options (source_notes.font.size = px(10),
+               table.font.size = px(12),
+  ) %>%
+  gt_theme_nytimes()
+
+gtsave(times_table,
+       'times_table.png',
+       vwidth = 600,
+       vheight = 600)
+
+times_table
+```
+
+### 

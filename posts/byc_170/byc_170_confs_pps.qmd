@@ -1,0 +1,279 @@
+---
+title: "170: Conferences and points-per-shot"
+date: "2026-01-23"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+
+# load data
+unc_shots <- readr::read_csv("unc-shots.csv")
+
+
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### UNC points per shot
+
+```{r pps-table, warning=FALSE, message=FALSE}
+
+ss_wide <- unc_shots |>
+  dplyr::mutate(
+    two_point_rate = two_point_rate * 100,
+    three_point_rate = three_point_rate * 100
+  ) |>
+  dplyr::group_by(opp) |>
+  dplyr::mutate(
+    date = max(date, na.rm = TRUE),
+    score = dplyr::first(score[!is.na(score)])
+  ) |>
+  dplyr::ungroup() |>
+  tidyr::pivot_wider(
+    id_cols = c(opp, date, score),
+    names_from = side,
+    values_from = c(
+      two_point_per_shot, two_point_makes_attempts,
+      three_point_per_shot, three_point_makes_attempts
+    )
+  ) |>
+  dplyr::arrange(date)
+
+pps_tbl <- ss_wide |>
+  dplyr::mutate(
+    result = dplyr::if_else(
+      opp %in% c("Kansas", "Kentucky", "Ohio St."),
+      "Wins", "Losses"
+    )
+  ) |> 
+  cbbplotR::gt_cbb_teams(opp, opp) |>
+  gt::gt(groupname_col = "result") |>
+  gt::cols_hide(date) |> 
+  gtUtils::gt_theme_savant() |>
+  gt::fmt_markdown(opp) |>
+  gt::fmt_number(
+    columns = c(two_point_per_shot_Offense, two_point_per_shot_Defense,
+                three_point_per_shot_Offense, three_point_per_shot_Defense),
+    decimals = 2
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = opp,
+    col2 = score,
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = two_point_per_shot_Offense,
+    col2 = two_point_makes_attempts_Offense,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = two_point_per_shot_Defense,
+    col2 = two_point_makes_attempts_Defense,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = three_point_per_shot_Offense,
+    col2 = three_point_makes_attempts_Offense,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = three_point_per_shot_Defense,
+    col2 = three_point_makes_attempts_Defense,
+    palette = c("black", "#333333")
+  ) |>
+  gt::cols_align(align = "left", columns = opp) |>
+  gt::cols_add(diff_gap = "", .before = three_point_per_shot_Offense) |>
+  gtUtils::gt_column_subheaders(
+    two_point_per_shot_Offense = list(heading = "PPS", subtitle = "2PTM-2PTA"),
+    two_point_per_shot_Defense = list(heading = "PPS", subtitle = "2PTM-2PTA"),
+    three_point_per_shot_Offense = list(heading = "PPS", subtitle = "3PTM-2PTA"),
+    three_point_per_shot_Defense = list(heading = "PPS", subtitle = "3PTM-2PTA"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::cols_label(
+    opp = "",
+    diff_gap = ""
+  ) |>
+  gt::tab_spanner(label = "2PT Offense", columns = two_point_per_shot_Offense) |>
+  gt::tab_spanner(label = "2PT Defense", columns = two_point_per_shot_Defense) |>
+  gt::tab_spanner(label = "3PT Offense", columns = three_point_per_shot_Offense) |>
+  gt::tab_spanner(label = "3PT Defense", columns = three_point_per_shot_Defense) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_column_spanners()
+    )
+  ) |>
+  gt::tab_header(
+    title = "Quality opponents are outscoring Carolina from the 3PT line",
+    subtitle = gt::html("Carolina is 3-4 against kenpom Tier A opponents so far during the 2025-26 season.<br>These opponents have combined to score 1.33 points per 3PT shot to Carolina's 0.95 points per 3PT shot.")
+  ) |>
+  gtUtils::gt_538_caption(
+    "Chart shows the points-per-shot for 2PTers and 3PTers.<br>
+    Data via kenpom.com + barttorvik.com | theme via {gtUtils} and logos from ESPN",
+    "<b>Table by Chris at Bless your chart</b>"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = c(two_point_per_shot_Offense),
+    rows = c(1, 2, 4, 6, 7),
+    fill = "#56a0d3",
+    alpha = 0.6
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = c(two_point_per_shot_Defense),
+    rows = c(3, 5),
+    fill = "lightpink",
+    alpha = 0.6
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    columns = c(three_point_per_shot_Offense),
+    rows = c(3, 4),
+    fill = "#56a0d3",
+    alpha = 0.6
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = c(three_point_per_shot_Defense),
+    rows = c(1, 2, 5, 6, 7),
+    fill = "lightpink",
+    alpha = 0.6
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(600))
+
+gt_save_crop(pps_tbl,
+             file = "pps_tbl.png",
+             whitespace = 60,
+             bg = "white")
+
+
+pps_tbl
+
+```
+
+### 
+
+### Conf tbl
+
+```{r conf-tbl, warning=FALSE, message=FALSE}
+
+powers <- readr::read_csv("power-conf.csv") |> 
+  dplyr::select(-...1)
+
+conf_tbl <- powers |>
+    dplyr::mutate(
+      teams = dplyr::case_match(conf,
+          "B10" ~ "18 teams",
+          "ACC" ~ "18 teams", 
+          "MWC" ~ "12 teams", 
+          "SEC" ~ "16 teams", 
+          "B12" ~ "16 teams", 
+          "BE" ~ "11 teams")
+    ) |> 
+    cbbplotR::gt_cbb_conferences(conf, conf, include_name = FALSE) |> 
+    dplyr::arrange(home_win_pct) |> 
+    gt::gt() |> 
+    gt::fmt_markdown(columns = c(conf, home_wins, away_wins)) |> 
+    gtUtils::gt_theme_savant() |>
+    gtExtras::gt_merge_stack(
+        col1 = home_win_pct,
+        col2 = home_rec,
+        palette = c("black", "#333333")
+    ) |>
+    gtExtras::gt_merge_stack(
+        col1 = conf,
+        col2 = teams,
+        palette = c("black", "#333333")
+    ) |>
+    gt::cols_align(align = "left", columns = conf) |>
+    gtUtils::gt_column_subheaders(
+        home_win_pct = list(heading = "Home Win %", subtitle = "W-L"),
+        away_wins = list(heading = "Best Road Wins", subtitle = "WAB (Wins-Above-Bubble)"),
+        home_wins = list(heading = "Best Home Wins", subtitle = "WAB (Wins-Above-Bubble)"),
+        heading_color = "black",
+        subtitle_color = "gray"
+    ) |> 
+    gt::cols_label(
+        conf = ""
+    ) |>
+    gt::cols_hide(columns = c(games_remaining, avg_margin)) |> 
+    gt::tab_style(
+        style = list(gt::cell_borders(
+            sides = c("left", "right", "top", "bottom"),
+            color = "black",
+            weight = gt::px(2)
+        )),
+        locations = list(
+            gt::cells_body(),
+            gt::cells_column_labels(),
+            gt::cells_column_spanners()
+        )
+    ) |>
+    gt::data_color(
+    columns = c(home_win_pct),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(35, 75),
+    alpha = 0.6,
+  ) |> 
+    gt::tab_header(
+        title = gt::html("It <em>pays</em> to win on the road in conference play"),
+        subtitle = gt::html("Shows home win percentage and <em>best</em> wins at home and on the road using Wins-Above-Bubble in league play for the six <em>power</em> conferences through January 23 games.")
+    ) |>
+    gtUtils::gt_538_caption(
+        "Top 3 wins at home and on road shown per conference (ties in WAB are not included)<br>
+        Data via barttorvik.com | theme via {gtUtils} and logos from ESPN",
+        "<b>Table by Chris at Bless your chart</b>"
+    ) |> 
+    
+      gtUtils::gt_border_bars_bottom(c("#0d1e2d", "#c1d6e2",
+                                   "#f07e1d")) |> 
+  gt::tab_options(table.width = gt::px(490))
+
+gt_save_crop(conf_tbl,
+             file = "conf_tbl.png",
+             whitespace = 60,
+             bg = "white")
+
+conf_tbl
+```

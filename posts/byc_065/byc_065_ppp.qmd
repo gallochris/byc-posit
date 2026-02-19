@@ -1,0 +1,85 @@
+---
+title: "065: PPP Table"
+date: "2024-01-02"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Data 
+
+```{r load-data, message = FALSE}
+## first ppp under 1
+cbbdata::cbd_torvik_game_stats(team = "North Carolina") -> unc_facts
+
+unc_ppp <- unc_facts |> 
+  dplyr::arrange(date) |> 
+  dplyr::group_by(year) |> 
+  dplyr::mutate(games = dplyr::n(),
+                season_game_no = dplyr::row_number()) |>  # Number within each season
+  dplyr::filter(off_ppp < 100) |> 
+  dplyr::slice(1) |> 
+  dplyr::select(date, games, year, type, opp, result, off_ppp, season_game_no, pts, opp_pts) |> 
+  dplyr::mutate(score = paste0(result, ",", "", pts, "-", opp_pts),
+                game = season_game_no,
+                off_ppp = off_ppp/100) |> 
+  dplyr::select(year, date, opp, score, off_ppp, game, games, season_game_no) |> 
+  dplyr::ungroup() |> 
+  dplyr::add_row(year = 2009, opp = "Not found!", date = as.Date("2009-04-06"), game = 38, games = 38, season_game_no = 38,
+                 score = "All games over 1 PPP") |> 
+  dplyr::add_row(year = 2024, opp = "Not found!", date = as.Date("2024-01-02"), game = 13, games = 13, season_game_no = 13,
+                 score = "All games over 1 PPP") |> 
+  dplyr::arrange(-year) |> 
+  dplyr::mutate(dplyr::across(everything(), ~ replace(.x, is.na(.x), ""))) |> 
+  dplyr::mutate(game = as.numeric(game),
+                games = as.numeric(games), 
+                season_game_no = as.numeric(season_game_no))
+```
+
+### GT Table
+
+```{r gt-table, warning=FALSE}
+unc_ppp |> 
+  dplyr::mutate(date = format(as.Date(date), "%b. %d, %Y")) |> 
+  gt::gt() |> 
+  gt::cols_label(year = "Season", 
+                 date = "Date", 
+                 opp = "Opponent", 
+                 score = "Result",
+                 off_ppp = "PPP",
+                 game = "Game #", 
+                 games = "") |> 
+  gt::data_color(columns = c(game),
+                 colors = scales::col_numeric(
+                   c(
+                     "#ffb6c1",
+                     "#fff1f3",
+                     "#d2f8d2",
+                     "#b0f3b0"
+                   ),
+                   domain = c(1, 38)
+                 )) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1, 16),
+    fill = "#d0e4f3",
+    bold_target_only = TRUE,
+    target_col = c(score),
+  ) |> 
+  gtExtras::gt_plt_bullet(column = games, target = season_game_no, width = 45,
+                          palette = c("#56a0d3", "black")) |> 
+  cbbdata::gt_theme_athletic() |> 
+  gt::tab_header(title = "North Carolina: Number of games before scoring  \n
+                 under 1 point per possession in a game each season since 2008", 
+                 subtitle = "Carolina has yet to score under 1 point per possession through 13 games of the 2024 season.") |> 
+  gt::tab_source_note(source_note = "Bless your chart | data via cbbdata | January 2, 2024")  -> ppp_tbl 
+
+gtExtras::gtsave_extra(ppp_tbl, filename = "ppp_table.png", vheight = 975, vwidth = 900)
+
+ppp_tbl
+```
+
+### 

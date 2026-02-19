@@ -1,0 +1,205 @@
+Rank,Institution,Conference,Division,fall_final,w_cc_rank,w_cc_pts,m_cc_rank,m_cc_pts,w_fh_rank,w_fh_pts,fb_rank,fb_pts,w_soc_rank,w_soc_pts,m_soc_rank,m_soc_pts,w_vb_rank,w_vb_pts
+1,North Carolina,ACC,FBS,382.5,5,75,10,67.5,1,100,51,25,2,90,33,25,0,0
+2,Stanford,Pac-12,FBS,330,13,63,4,80,0,0,0,0,17,50,9,64,5,73
+3,BYU,WCC,FBS,314.5,8,70.5,3,85,0,0,26,45,9,64,0,0,17,50
+4,Ohio State,Big Ten,FBS,313,15,60,0,0,0,0,4,80,17,50,17,50,5,73
+5,Syracuse,ACC,FBS,310.5,23,51,12,64.5,5,70,51,25,0,0,1,100,0,0
+6,Penn State,Big Ten,FBS,309,32,26,0,0,3,83,7,72,9,64,0,0,9,64
+6,Pittsburgh,ACC,FBS,309,0,0,32,27,0,0,22,52,9,64,3,83,3,83
+8,Texas,Big 12,FBS,298,31,43,18,56,0,0,25,49,17,50,0,0,1,100
+9,Virginia,ACC,FBS,297,9,69,22,52,9,53,0,0,5,73,17,50,0,0
+10,Alabama,SEC,FBS,290,3,85,27,47,0,0,5,75,3,83,0,0,0,0
+11,Arkansas,SEC,FBS,272,21,53,23,51,0,0,26,45,5,73,0,0,17,50
+12,Washington,Pac-12,FBS,264,17,57,14,61.5,0,0,8,70.5,0,0,17,50,33,25
+13,Notre Dame,ACC,FBS,261,7,72,15,60,0,0,18,56,5,73,0,0,0,0
+14,Florida State,ACC,FBS,258.5,18,56,32,27,0,0,10,67.5,3,83,0,0,33,25
+15,Oregon,Pac-12,FBS,251.5,14,61.5,16,58.5,0,0,16,58.5,0,0,0,0,5,73
+16,Wisconsin,Big Ten,FBS,246.5,19,55,6,73.5,0,0,26,45,0,0,0,0,5,73
+17,Duke,ACC,FBS,244,32,26,32,27,0,0,26,45,5,73,5,73,0,0
+18,Michigan,Big Ten,FBS,235,22,52,29,45,9,53,3,85,0,0,0,0,0,0
+19,Wake Forest,ACC,FBS,223,0,0,5,75,9,53,26,45,33,25,33,25,0,0
+20,UCLA,Pac-12,FBS,217,0,0,0,0,0,0,21,53,1,100,9,64,0,0
+21,North Carolina State,ACC,FBS,216,1,100,11,66,0,0,51,25,33,25,0,0,0,0
+22,Louisville,ACC,FBS,213,0,0,0,0,9,53,26,45,0,0,33,25,2,90
+23,Georgetown,Big East,FCS,210.5,10,67.5,31,43,0,0,0,0,17,50,17,50,0,0
+24,TCU,Big 12,FBS,204,0,0,0,0,0,0,2,90,9,64,0,0,17,50
+25,Tennessee,SEC,FBS,203.5,32,26,20,54,0,0,6,73.5,33,25,0,0,33,25
+26,Georgia,SEC,FBS,200,0,0,0,0,0,0,1,100,17,50,0,0,17,50
+27,Northern Arizona,Big Sky,FCS,198.5,6,73.5,1,100,0,0,0,0,33,25,0,0,0,0
+28,Northwestern,Big Ten,FBS,198,30,44,0,0,2,90,0,0,9,64,0,0,0,0
+29,Oklahoma State,Big 12,FBS,195,4,80,2,90,0,0,51,25,0,0,0,0,0,0
+30,LSU,SEC,FBS,186,32,26,0,0,0,0,15,60,17,50,0,0,17,50
+31,Maryland,Big Ten,FBS,178,0,0,0,0,3,83,26,45,0,0,17,50,0,0
+32,Colorado,Pac-12,FBS,161.5,11,66,8,70.5,0,0,0,0,0,0,0,0,33,25
+33,Oregon State,Pac-12,FBS,157,24,50,0,0,0,0,17,57,0,0,17,50,0,0
+34,Kentucky,SEC,FBS,153,0,0,0,0,0,0,51,25,0,0,9,64,9,64
+35,Clemson,ACC,FBS,139.5,0,0,0,0,0,0,12,64.5,33,25,17,50,0,0
+36,USC,Pac-12,FBS,138,0,0,0,0,0,0,13,63,33,25,0,0,17,50
+37,Minnesota,Big Ten,FBS,135,32,26,0,0,0,0,26,45,0,0,0,0,9,64
+38,Memphis,American,FBS,134,0,0,0,0,0,0,26,45,9,64,33,25,0,0
+39,Harvard,Ivy League,FCS,133,32,26,17,57,0,0,0,0,17,50,0,0,0,0
+39,Tulsa,American,FBS,133,0,0,9,69,0,0,0,0,0,0,9,64,0,0
+41,Montana State,Big Sky,FCS,132,0,0,25,49,0,0,0,0,0,0,0,0,0,0
+42,Michigan State,Big Ten,FBS,131,20,54,32,27,0,0,0,0,17,50,0,0,0,0
+43,Utah,Pac-12,FBS,130.5,12,64.5,0,0,0,0,11,66,0,0,0,0,0,0
+44,New Hampshire,America East,FCS,128,0,0,0,0,0,0,0,0,33,25,17,50,0,0
+45,UCF,American,FBS,125,0,0,0,0,0,0,51,25,17,50,0,0,17,50
+46,Portland,WCC,DI,123,0,0,0,0,0,0,0,0,17,50,5,73,0,0
+46,Princeton,Ivy League,FCS,123,32,26,30,44,9,53,0,0,0,0,0,0,0,0
+48,Samford,SoCon,FCS,120,0,0,0,0,0,0,0,0,33,25,0,0,33,25
+49,Air Force,Mountain West,FBS,117,0,0,7,72,0,0,26,45,0,0,0,0,0,0
+50,Iowa,Big Ten,FBS,115,0,0,0,0,5,70,25,45,0,0,0,0,0,0
+50,South Carolina,SEC,FBS,115,0,0,0,0,0,0,23,51,9,64,0,0,0,0
+52,Houston,American,FBS,109,0,0,0,0,0,0,26,45,0,0,0,0,9,64
+52,Marshall,Sun Belt,FBS,109,0,0,0,0,0,0,26,45,0,0,9,64,0,0
+54,Creighton,Big East,DI,108,0,0,0,0,0,0,0,0,0,0,3,83,33,25
+54,San Diego,WCC,FCS,108,0,0,0,0,0,0,0,0,0,0,33,25,3,83
+56,Delaware,CAA,FCS,106,0,0,0,0,9,53,0,0,0,0,0,0,0,0
+57,Mississippi State,SEC,FBS,105,0,0,0,0,0,0,19,55,17,50,0,0,0,0
+58,Iowa State,Big 12,FBS,103,32,26,32,27,0,0,0,0,0,0,0,0,17,50
+59,Ole Miss,SEC,FBS,101,32,26,24,50,0,0,51,25,0,0,0,0,0,0
+59,SMU,American,FBS,101,32,26,0,0,0,0,51,25,0,0,17,50,0,0
+61,South Dakota State,Summit,FCS,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+62,Utah State,Mountain West,FBS,98,0,0,26,48,0,0,51,25,0,0,0,0,33,25
+63,California Baptist,WAC,DI,97,29,45,32,27,0,0,0,0,0,0,33,25,0,0
+63,West Virginia,Big 12,FBS,97,27,47,0,0,0,0,0,0,17,50,0,0,0,0
+65,Tulane,American,FBS,96,0,0,32,27,0,0,9,69,0,0,0,0,0,0
+66,Colorado State,Mountain West,FBS,95,25,49,28,46,0,0,0,0,0,0,0,0,0,0
+66,Western Kentucky,Conference USA,FBS,95,0,0,0,0,0,0,26,45,0,0,0,0,17,50
+68,Cornell,Ivy League,FCS,91,0,0,32,27,0,0,0,0,0,0,9,64,0,0
+68,Toledo,MAC,FBS,91,28,46,0,0,0,0,26,45,0,0,0,0,0,0
+70,Indiana,Big Ten,FBS,90,0,0,0,0,0,0,0,0,0,0,2,90,0,0
+70,New Mexico,Mountain West,FBS,90,2,90,0,0,0,0,0,0,0,0,0,0,0,0
+70,North Dakota State,Summit,FCS,90,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+73,Baylor,Big 12,FBS,89,0,0,0,0,0,0,51,25,0,0,0,0,9,64
+73,Florida,SEC,FBS,89,0,0,0,0,0,0,51,25,0,0,0,0,9,64
+75,Providence,Big East,DI,85.5,16,58.5,32,27,0,0,0,0,0,0,0,0,0,0
+76,Incarnate Word,Southland,FCS,83,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+77,Furman,SoCon,FCS,79,32,26,0,0,0,0,0,0,0,0,0,0,0,0
+78,Liberty,ASUN,FBS,78,0,0,0,0,9,53,51,25,0,0,0,0,0,0
+78,Miami (OH),MAC,FBS,78,0,0,0,0,9,53,51,25,0,0,0,0,0,0
+78,Southeastern Louisiana,Southland,FCS,78,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+78,Texas A&M,SEC,FBS,78,32,26,32,27,0,0,0,0,33,25,0,0,0,0
+82,Auburn,SEC,FBS,77,0,0,32,27,0,0,0,0,0,0,0,0,17,50
+83,Lipscomb,ASUN,DI,76,32,26,0,0,0,0,0,0,0,0,17,50,0,0
+83,Pennsylvania,Ivy League,FCS,76,32,26,0,0,0,0,0,0,0,0,17,50,0,0
+85,Fairleigh Dickinson,Northeast,DI,75,0,0,0,0,0,0,0,0,33,25,33,25,33,25
+85,High Point,Big South,DI,75,0,0,0,0,0,0,0,0,0,0,17,50,33,25
+85,Kansas,Big 12,FBS,75,0,0,0,0,0,0,51,25,0,0,0,0,17,50
+85,Purdue,Big Ten,FBS,75,0,0,0,0,0,0,51,25,0,0,0,0,17,50
+85,Quinnipiac,MAAC,DI,75,0,0,0,0,0,0,0,0,33,25,33,25,33,25
+85,Rice,Conference USA,FBS,75,0,0,0,0,0,0,51,25,0,0,0,0,17,50
+85,Saint Louis,Atlantic 10,DI,75,0,0,0,0,0,0,0,0,33,25,17,50,0,0
+85,Washington State,Pac-12,FBS,75,0,0,0,0,0,0,51,25,0,0,0,0,17,50
+93,North Carolina Greensboro,SoCon,DI,73,0,0,0,0,0,0,0,0,0,0,5,73,0,0
+93,Utah Valley,WAC,DI,73,26,48,0,0,0,0,0,0,33,25,0,0,0,0
+93,Vermont,America East,DI,73,0,0,0,0,0,0,0,0,0,0,5,73,0,0
+96,Albany,America East,FCS,70,0,0,0,0,5,70,0,0,0,0,0,0,0,0
+96,Buffalo,MAC,FBS,70,0,0,0,0,0,0,26,45,33,25,0,0,0,0
+96,Holy Cross,Patriot,FCS,70,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+96,New Mexico State,WAC,FBS,70,0,0,0,0,0,0,26,45,33,25,0,0,0,0
+96,Sacramento State,Big Sky,FCS,70,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+96,Saint Joseph's,Atlantic 10,DI,70,0,0,0,0,5,70,0,0,0,0,0,0,0,0
+96,William & Mary,CAA,FCS,70,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+103,FIU,Conference USA,FBS,64,0,0,0,0,0,0,0,0,0,0,9,64,0,0
+103,Marquette,Big East,DI,64,0,0,0,0,0,0,0,0,0,0,0,0,9,64
+103,Nebraska,Big Ten,FBS,64,0,0,0,0,0,0,0,0,0,0,0,0,9,64
+103,UC Irvine,Big West,DI,64,0,0,0,0,0,0,0,0,9,64,0,0,0,0
+103,Western Michigan,MAC,FBS,64,0,0,0,0,0,0,0,0,0,0,9,64,0,0
+108,Gonzaga,WCC,DI,63,0,0,13,63,0,0,0,0,0,0,0,0,0,0
+109,Kansas State,Big 12,FBS,61.5,0,0,0,0,0,0,14,61.5,0,0,0,0,0,0
+110,Villanova,Big East,FCS,55,0,0,19,55,0,0,0,0,0,0,0,0,0,0
+111,Troy,Sun Belt,FBS,54,0,0,0,0,0,0,20,54,0,0,0,0,0,0
+112,Butler,Big East,FCS,53,0,0,21,53,0,0,0,0,0,0,0,0,0,0
+112,Gardner-Webb,Big South,FCS,53,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+112,Montana,Big Sky,FCS,53,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+112,Richmond,Atlantic 10,FCS,53,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+112,Weber State,Big Sky,FCS,53,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+117,Loyola Chicago,Atlantic 10,DI,52,0,0,32,27,0,0,0,0,0,0,0,0,33,25
+118,Akron,MAC,FBS,50,0,0,0,0,0,0,0,0,0,0,17,50,0,0
+118,Bowling Green,MAC,FBS,50,0,0,0,0,0,0,51,25,0,0,0,0,33,25
+118,Brown,Ivy League,FCS,50,0,0,0,0,0,0,0,0,17,50,0,0,0,0
+118,Denver,Summit,DI,50,0,0,0,0,0,0,0,0,0,0,17,50,0,0
+118,Elon,CAA,FCS,50,0,0,0,0,0,0,0,0,0,0,33,25,0,0
+118,Florida Gulf Coast,ASUN,DI,50,0,0,0,0,0,0,0,0,33,25,0,0,33,25
+118,Fresno State,Mountain West,FBS,50,0,0,0,0,0,0,24,50,0,0,0,0,0,0
+118,Georgia Tech,ACC,FBS,50,0,0,0,0,0,0,0,0,0,0,0,0,17,50
+118,Hofstra,CAA,DI,50,0,0,0,0,0,0,0,0,33,25,33,25,0,0
+118,Missouri State,Missouri Valley,FCS,50,0,0,0,0,0,0,0,0,33,25,33,25,0,0
+118,Northern Iowa,Missouri Valley,FCS,50,0,0,0,0,0,0,0,0,0,0,0,0,17,50
+118,Rutgers,Big Ten,FBS,50,0,0,0,0,0,0,0,0,33,25,33,25,0,0
+118,San Jose State,Mountain West,FBS,50,0,0,0,0,0,0,51,25,33,25,0,0,0,0
+118,Santa Clara,WCC,DI,50,0,0,0,0,0,0,0,0,17,50,0,0,0,0
+118,South Florida,American,FBS,50,0,0,0,0,0,0,0,0,0,0,17,50,0,0
+118,UTSA,Conference USA,FBS,50,0,0,0,0,0,0,51,25,33,25,0,0,0,0
+118,Vanderbilt,SEC,FBS,50,0,0,0,0,0,0,0,0,17,50,0,0,0,0
+118,Xavier,Big East,DI,50,0,0,0,0,0,0,0,0,17,50,0,0,0,0
+136,Boise State,Mountain West,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,East Carolina,American,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,Eastern Michigan,MAC,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,Middle Tennessee State,Conference USA,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,Ohio,MAC,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,Southern Mississippi,Sun Belt,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,Texas Tech,Big 12,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+136,UAB,Conference USA,FBS,45,0,0,0,0,0,0,26,45,0,0,0,0,0,0
+144,Arkansas State,Sun Belt,FBS,27,0,0,32,27,0,0,0,0,0,0,0,0,0,0
+144,Iona,MAAC,DI,27,0,0,32,27,0,0,0,0,0,0,0,0,0,0
+144,La Salle,Atlantic 10,DI,27,0,0,32,27,0,0,0,0,0,0,0,0,0,0
+144,Wichita State,American,DI,27,0,0,32,27,0,0,0,0,0,0,0,0,0,0
+148,Bradley,Missouri Valley,DI,26,32,26,0,0,0,0,0,0,0,0,0,0,0,0
+148,Columbia,Ivy League,FCS,26,32,26,0,0,0,0,0,0,0,0,0,0,0,0
+148,Northeastern,CAA,DI,26,32,26,0,0,0,0,0,0,0,0,0,0,0,0
+151,Arizona State,Pac-12,FBS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Ball State,MAC,FBS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Bucknell,Patriot,FCS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,California,Pac-12,FBS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Cincinnati,American,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Cleveland State,Horizon League,DI,25,0,0,0,0,0,0,0,0,0,0,33,25,0,0
+151,Coastal Carolina,Sun Belt,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Colgate,Patriot,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Davidson,Atlantic 10,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,Delaware State,MEAC,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Eastern Kentucky,ASUN,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,Florida A&M,SWAC,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Fordham,Atlantic 10,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,Georgia Southern,Sun Belt,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Hawaii,Big West,FBS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Idaho,Big Sky,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,Illinois,Big Ten,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Jackson State,SWAC,FCS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,James Madison,Sun Belt,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Lamar,Southland,FCS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Lehigh,Patriot,FCS,25,0,0,0,0,17,25,0,0,0,0,0,0,0,0
+151,Louisiana,Sun Belt,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Loyola Marymount,WCC,DI,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Miami (FL),ACC,FBS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Missouri,SEC,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Navy,Patriot,FBS,25,0,0,0,0,0,0,0,0,0,0,33,25,0,0
+151,North Dakota,Summit,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,North Texas,Conference USA,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Northern Colorado,Big Sky,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Oklahoma,Big 12,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Old Dominion,Sun Belt,FBS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Omaha,Summit,DI,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Pepperdine,WCC,DI,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Radford,Big South,DI,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Rider,MAAC,DI,25,0,0,0,0,17,25,0,0,0,0,0,0,0,0
+151,Saint Francis (PA),Northeast,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,San Diego State,Mountain West,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Seton Hall,Big East,DI,25,0,0,0,0,0,0,0,0,0,0,33,25,0,0
+151,SIU Edwardsville,OVC,DI,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,South Alabama,Sun Belt,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,South Dakota,Summit,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Southeast Missouri State,OVC,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+151,Stephen F. Austin,WAC,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Tennessee State,OVC,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Towson,CAA,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,UC Riverside,Big West,DI,25,0,0,0,0,0,0,0,0,0,0,33,25,0,0
+151,UConn,Big East,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,UMBC,America East,DI,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,UNLV,Mountain West,FBS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Virginia Tech,ACC,FBS,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Wisconsin Milwaukee,Horizon League,DI,25,0,0,0,0,0,0,0,0,33,25,0,0,0,0
+151,Wright State,Horizon League,DI,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25
+151,Wyoming,Mountain West,FBS,25,0,0,0,0,0,0,51,25,0,0,0,0,0,0
+151,Yale,Ivy League,FCS,25,0,0,0,0,0,0,0,0,0,0,0,0,33,25

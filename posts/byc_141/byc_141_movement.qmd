@@ -1,0 +1,518 @@
+---
+title: "141: Player movement"
+date: "2025-05-01"
+categories:
+  - flexoki
+  - waffle
+  - gt
+  - ggdist
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load cbbdata
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+cbbdata::cbd_torvik_player_season() -> player_df 
+
+multi_team_players <- player_df |>
+  dplyr::filter(year < 2016) |> 
+  dplyr::filter(!is.na(min) & min > 29.9) |>
+  dplyr::group_by(id, player) |>
+  dplyr::summarise(team_count = dplyr::n_distinct(team), .groups = "drop") |>
+  dplyr::filter(team_count > 1) |> 
+    dplyr::arrange(-team_count)
+
+
+  
+pmove_plot <- player_df |>
+  dplyr::filter(year >= 2010 & min > 29.9) |>
+  dplyr::mutate(period = dplyr::case_when(
+    year >= 2010 & year < 2015 ~ "2010–2015",
+    year >= 2015 & year < 2020 ~ "2015–2020",
+    year >= 2020 & year < 2025 ~ "2020–2025",
+    TRUE ~ NA_character_
+  )) |>
+  dplyr::filter(!is.na(period)) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    team_count = dplyr::n_distinct(team),
+    periods = paste(unique(period), collapse = ", "),
+    .groups = "drop"
+  ) |>
+  tidyr::separate_rows(periods, sep = ", ") |>
+  dplyr::mutate(
+    team_bucket = dplyr::case_when(
+      team_count == 0 ~ "0",
+      team_count == 1 ~ "1",
+      team_count == 2 ~ "2",
+      team_count >= 3 ~ "3+"
+    )
+  ) |>
+  dplyr::count(periods, team_bucket, name = "num_players") |>
+  dplyr::group_by(periods) |>
+  dplyr::mutate(
+    total_players = sum(num_players),
+    percentage = num_players / total_players * 100
+  ) |>
+  dplyr::ungroup() -> pcounts
+
+
+# nfl readr
+draft <- nflreadr::load_draft_picks() 
+
+# NFL draft scratch pad
+hux_tbl <- draft |>
+    dplyr::filter(pick == 1, season > 2009, position == "QB") |>
+    dplyr::select(season, team, player = pfr_player_name, college) |>
+    dplyr::arrange(-season) |> 
+    huxtable::as_hux() |>
+    huxtable::set_caption("Quarterbacks selected 1st overall since 2010") |>
+    huxtable::set_caption_pos("topcenter") |>
+    huxtable::set_bold(1, huxtable::everywhere, TRUE) |>
+    huxtable::set_align(1, huxtable::everywhere, "center") |>
+    huxtable::set_col_width(c(0.1, 0.1, 0.25, 0.25, 0.3)) |>
+    huxtable::theme_article()
+
+
+```
+
+### Waffle chart
+
+```{r pmovement-chart, warning=FALSE, message=FALSE}
+
+pmove_plot <- pcounts |> 
+  dplyr::mutate(
+    pct = round(percentage),
+    pct = dplyr::if_else(pct == 19, 20, pct)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(fill = team_bucket, values = pct)) + 
+  waffle::geom_waffle(
+    color = "floral white", 
+    size = 0.25, 
+    n_rows = 10, 
+    flip = TRUE,  
+    radius = ggplot2::unit(4, "pt"), 
+    height = 0.9, 
+    width = 0.9
+  ) +
+  ggplot2::facet_wrap(~periods, nrow = 1, strip.position = "top") +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "3+" = "#89341c",
+      "2" = "#e4572e",
+      "1" = "#ef9a82"
+    )
+  ) +
+  ggplot2::coord_equal() +
+  ggplot2::labs(
+    title = "<img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png' width='15'/> The Era of Player Movement <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png' width='15'/>",
+    subtitle = "Percentage of players from each time period that have played at least 30% of possible minutes
+  for <span style='color:#ef9a82;'><b>one team</b></span>, <span style='color:#e4572e;'><b>two teams</b></span>, 
+  or <span style='color:#89341c;'><b>three or more teams</b></span>.<br>",
+    caption = "Each square represents **1% of D-I men's basketball players** who logged **at least 30% of possible minutes** with one, 
+    two, or three+ teams over a six-season span since 2010. For example, **~89% stayed with one team from 2010–15**, compared 
+    to **~70% from 2020–25**. The 2019–20 season was cut short by COVID-19, which led to an extra year of eligibility. Prior to the
+    2021–22 season, NCAA made it possible for players to transfer without losing a year of eligibility.<br>
+    <br>
+    **Data via cbbdata and barttorkvik.com, theme from {flexoki} package <br>Viz by Chris at Bless your Chart**"
+  ) +
+  flexoki::theme_flexoki_light() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(hjust = 0.5, size =16),
+    plot.subtitle = ggtext::element_textbox_simple(color = "#222222", margin = ggplot2:::margin(t = 5)),
+    plot.caption = ggtext::element_textbox_simple(color = "#222222", margin = ggplot2:::margin(t = 5)),
+    axis.text.x = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    axis.ticks = ggplot2::element_blank(),
+    strip.text = ggplot2::element_text(size = 14, face = "bold")
+  )
+
+
+ggplot2::ggsave(
+  "movement_plot.png",
+  pmove_plot,
+  w = 9,
+  h = 6.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+pmove_plot
+```
+
+### NFL Draft QBs
+
+```{r nfl-qbs, warning=FALSE, message=FALSE}
+
+draft <- nflreadr::load_draft_picks() |> 
+  dplyr::mutate(type = dplyr::if_else(position == "QB", "QB", "Non-QB"),
+                flip_order = max(pick) - pick 
+                + min(pick))
+
+qb_counts <- draft |>
+  dplyr::filter(season > 2003 & round ==1) |> 
+  dplyr::group_by(season) |>
+  dplyr::summarise(
+    qb_count = sum(position == "QB"),
+    avg_pick = mean(pick)
+  )
+
+dplot <- draft |> 
+dplyr::filter(season > 2009 & round == 1) |> 
+ggplot2::ggplot(ggplot2::aes(x = season, order = flip_order, fill = type)) +
+  ggdist::geom_dots(layout = "bar", group = NA, color = NA) +
+  ggplot2::scale_fill_manual(
+    values = c("QB" = "#e4572e", "Non-QB" = "#6a7fd1")
+  ) +
+  ggplot2::scale_x_continuous(breaks = seq(2010, 2024, 1)) +
+  ggplot2::scale_y_continuous(limits = c(-0.05, 1.10)) +
+  ggplot2::labs(
+    title = "NFL Draft Since 2010  \n<span style='color:#e4572e;'>Quarterbacks</span>  \nSelected in the 1st Round",
+    subtitle = "Each dot represents 1st round draft picks since 2010.  \nDots are ordered by overall pick position and quarterbacks are highlighted.",
+    x = "",
+    y = "",
+    caption = "Patriots forfeited 1st round pick in 2016 & Dolphins forfeited 1st round pick in 2023  \nViz by Chris at Bless your chart | data via nflreadr | April 28, 2025"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 8.5,
+      lineheight = 1.5,
+      family = "Roboto Condensed"
+    ),
+    legend.position = "none",
+    axis.text.x = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major = ggplot2::element_blank(),
+    plot.caption = ggplot2::element_text(face = "plain", size = 7.5, "Roboto Condensed")
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2022,
+    y = 1.075,
+    color = "#333333",
+    fill = "#e4572e",
+    label = "QB selected 1st overall  \n in 12 of the last 16 drafts",
+    size = 3,
+    fontface = 'bold',
+    family = 'Roboto condensed',
+    alpha = 0.3
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#e4572e",
+    x = 2024.4,
+    y = 1.025,
+    xend = 2024.5,
+    yend = 0.92,
+    curvature = -.3,
+    linewidth = 0.8,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm")),
+    alpha = 0.3
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#6a7fd1",
+    x = 2014.2,
+    y = 1.03,
+    xend = 2021.9,
+    yend = 0.91,
+    curvature = -.2,
+    linewidth = 0.8,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm")),
+    alpha = 0.3
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2012,
+    y = 1.075,
+    color = "#333333",
+    fill = "#6a7fd1",
+    label = "Only 1 QB selected \nin 1st round in  \n2013 and 2022 drafts",
+    size = 3,
+    fontface = 'bold',
+    family = 'Roboto condensed',
+    alpha = 0.3
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#6a7fd1",
+    x = 2011.5,
+    y = 1.025,
+    xend = 2013,
+    yend = 0.91,
+    curvature = .2,
+    linewidth = 0.8,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm")),
+    alpha = 0.3
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(y =  0.95, label = season),
+    color = "#333333",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = 0.3
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(y =  -0.05, label = season),
+    color = "#333333",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = 0.3
+  ) 
+
+
+ggplot2::ggsave(
+  "dplot.png",
+  dplot,
+  w = 5,
+  h = 9.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+dplot
+
+```
+
+### ACC baseball standings
+
+```{r acc-base, warning=FALSE, message=FALSE}
+
+teams <- tibble::tibble(baseballr:::rds_from_url(
+  "https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
+  ) |> 
+  dplyr::filter(year == 2025 & division == 1)
+
+
+acc_ids <- teams |> 
+  dplyr::filter(conference == "ACC") |> 
+  dplyr::pull(team_id)
+
+
+acc_results <- function(id) {
+  collegebaseball::ncaa_schedule(team_id = id, year = 2025) |>
+    dplyr::filter(home_team_conference == "ACC" & away_team_conference == "ACC") |>
+    dplyr::filter(!is.na(home_team_score))
+}
+
+acc_scores <- lapply(acc_ids, acc_results)
+
+acc_results_2025 <- as.data.frame(do.call(rbind, acc_scores)) |>
+  dplyr::distinct(contest_id, .keep_all = TRUE )  
+
+home_diffs <- acc_results_2025 |>
+  dplyr::mutate(h_diff = home_team_score - away_team_score) |>
+  dplyr::group_by(home_team) |>
+  dplyr::summarize(home_diff = sum(h_diff)) |>
+  dplyr::rename(team = home_team)
+
+
+away_diffs <- acc_results_2025 |>
+  dplyr::mutate(a_diff = away_team_score - home_team_score) |>
+  dplyr::group_by(away_team) |>
+  dplyr::summarize(away_diff = sum(a_diff)) |>
+  dplyr::rename(team = away_team)
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team")|>
+  dplyr::mutate(full_diff = (home_diff + away_diff))|>
+  dplyr::select(team, full_diff, home_diff, away_diff)
+
+home_results <- acc_results_2025 |>
+  dplyr::mutate(h_result = dplyr::if_else(home_team_score > away_team_score, "W", "L")) |>
+  dplyr::group_by(home_team, h_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = h_result,
+    values_from = n)|>
+  dplyr::rename(team = home_team, h_w = W, h_l = L)
+
+away_results <- acc_results_2025 |>
+  dplyr::mutate(a_result = dplyr::if_else(away_team_score > home_team_score, "W", "L")) |>
+  dplyr::group_by(away_team, a_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = a_result,
+    values_from = n) |>
+  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+  dplyr::mutate(across(everything(), ~ replace(.x, is.na(.x), 0))) 
+
+
+full_recs <- merge(home_results, away_results, by = "team") |>
+  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l))|>
+  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+
+leader_wins <- max(diffs_recs$W)
+leader_losses <- min(diffs_recs$L[diffs_recs$W == leader_wins])
+
+# pivot to find record in last 10 ACC games
+games_long <- acc_results_2025 |>
+  dplyr::select(date, contest_id, home_team, away_team, home_team_score, away_team_score) |>
+  dplyr::mutate(home_team = dplyr::if_else(home_team == "Miami (FL) ", "Miami (FL)", 
+                 home_team),
+                away_team = dplyr::if_else(away_team == "Miami (FL) ", "Miami (FL)", 
+                away_team) 
+                ) |> 
+  dplyr::mutate(
+    team_home = home_team,
+    team_away = away_team
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(home_team, away_team),
+    names_to = "home_away",
+    values_to = "team"
+  ) |>
+  dplyr::mutate(
+    opponent = ifelse(home_away == "home_team", team_away, team_home),
+    team_score = ifelse(home_away == "home_team", home_team_score, away_team_score),
+    opp_score = ifelse(home_away == "home_team", away_team_score, home_team_score),
+    result = dplyr::case_when(
+      team_score > opp_score ~ "W",
+      team_score < opp_score ~ "L",
+      TRUE ~ "T"
+    ),
+    run_diff = team_score - opp_score
+  ) |>
+  dplyr::arrange(team, date)
+
+# last 10 games 
+last_10 <- games_long |>
+    dplyr::group_by(team) |>
+    dplyr::slice_tail(n = 10) |>
+    dplyr::summarize(
+        last10_wins = sum(result == "W"),
+        last10_losses = sum(result == "L"),
+        last10_diff = sum(run_diff),
+        .groups = "drop"
+    ) |>
+    dplyr::mutate(last10_rec = paste0(last10_wins, "-", last10_losses))
+
+
+standings <- diffs_recs |>
+    dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l)
+  ) |> 
+  dplyr::left_join(last_10, by = "team"
+  ) |> 
+  dplyr::select(
+    last10_rec,
+    last10_diff,
+    overall_rec, 
+    full_diff,
+    Win_Pct,
+    GB,
+    team
+  )
+
+standings |>
+  dplyr::mutate(repeat_team = team) |>
+  dplyr::relocate(repeat_team, .before = last10_rec) |>
+  cbbplotR::gt_cbb_teams(team, team, logo_height = 20, include_name = FALSE) |>
+  cbbplotR::gt_cbb_teams(repeat_team,
+                         repeat_team,
+                         logo_height = 20,
+                         include_name = FALSE) |>
+  dplyr::arrange(GB, -Win_Pct, -full_diff) |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = c(repeat_team, team)) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::fmt(
+    columns = c(full_diff, last10_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::data_color(
+    columns = c(full_diff, last10_diff),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    alpha = 0.5
+  ) |>
+  gtUtils::gt_color_pills(
+    Win_Pct,
+    domain = c(.1, .9),
+    format_type = "number",
+    digits = 3,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000"),
+    pill_height = 15,
+  ) |>
+  gtExtras::gt_add_divider(columns = last10_diff,
+                           sides = "right",
+                           color = "black") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::tab_spanner(columns = c(last10_rec, last10_diff),
+                  label = "Last 10 Games") |>
+  gt::tab_spanner(columns = c(overall_rec, Win_Pct, full_diff, GB),
+                  label = "Overall") |>
+  gt::cols_label(
+    repeat_team = "",
+    last10_rec = "W-L",
+    last10_diff = "+/-",
+    overall_rec = "W-L",
+    Win_Pct = "Win %",
+    full_diff = "+/-",
+    GB = "GB",
+    team = "",
+  ) |>
+  gt::tab_header(title = gt::md("**ACC Baseball Standings**"),
+                 subtitle = "Records and run differentials from last 10 games and regular season.") |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "Through April 27 games games<br><b>Table by Chris at Bless your Chart <br> data via baseballR + stats.ncaa.org</b>"
+    )
+  ) |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#EEEEEE',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'uppercase'
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(weight = 850, )
+  ) |>
+  gt::tab_options(table.width = gt::px(450)) -> acc_tbl
+
+
+gtUtils::gt_save_crop(acc_tbl,
+                      file = "acc_tbl.png",
+                      whitespace = 30,
+                      bg = "white")
+
+acc_tbl
+```

@@ -1,0 +1,677 @@
+---
+title: "113: Charting drives"
+date: "2024-10-21"
+categories:
+  - ggplot2_arrow
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch data from cfbfastR
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+uga_drives <- cfbfastR::cfbd_drives(week = 8, year = 2024) |>
+  dplyr::filter(game_id == "401628398") |>
+  dplyr::mutate(
+    available_yards = dplyr::if_else(yards < 0, 0, yards / start_yards_to_goal),
+    time_seconds_elapsed = stringr::str_pad(time_seconds_elapsed, width = 2, pad = "0"),
+    yds_play = round(yards / plays, 2),
+    points = end_offense_score - start_offense_score,
+    drive_start = start_yards_to_goal,
+    drive_end = dplyr::if_else(
+      offense == "Georgia" & end_yardline != 0,
+      100 - end_yardline,
+      end_yardline
+    ),
+    drive_end = dplyr::if_else(offense == "Georgia" &
+                                 end_yardline == 0, 100, end_yardline)
+  ) |>
+  dplyr::select(
+    offense,
+    defense,
+    drive_number,
+    qrt = start_period,
+    time_minutes_elapsed,
+    time_seconds_elapsed,
+    drive_start,
+    drive_end,
+    plays,
+    yards,
+    drive_result,
+    points,
+    yds_play,
+    available_yards,
+  ) |>
+  dplyr::mutate(
+    half = dplyr::case_match(qrt, 1 ~ "1st half", 2 ~ "1st half", 3 ~ "2nd half", 4 ~ "2nd half"),
+    off_team = offense
+  ) |> 
+  cbbplotR::gt_cbb_teams(offense,
+                         offense,
+                         logo_height = 25,
+                         include_name = FALSE) |> 
+  dplyr::filter(half == "1st half")
+
+# Add summary stats 
+summary_stats <- uga_drives |>
+  dplyr::group_by(off_team, offense) |>
+  dplyr::summarise(
+    plays = sum(plays),
+    yards = sum(yards),
+    points = sum(points),
+    off_drive_num = "",
+    drive_start = (100 - mean(drive_start)),
+    sum_minutes = sum(as.numeric(time_minutes_elapsed)),
+    sum_seconds = sum(as.numeric(time_seconds_elapsed)),
+    total_minutes = sum_minutes + (sum_seconds %/% 60),
+    drive_result = paste0(sprintf("%.1f", sum(points) / (dplyr::n(
+      
+    ) - 1)), " ppd"),
+    total_seconds = sum_seconds %% 60,
+    time_clock = sprintf("%02d:%02d", total_minutes, total_seconds),
+    yds_play = mean(yds_play),
+    available_yards = mean(available_yards),
+  ) |>
+    dplyr::select(
+    off_team,
+    offense,
+    off_drive_num,
+    plays,
+    yards,
+    points,
+    drive_start,
+    time_clock,
+    drive_result,
+    yds_play,
+    available_yards
+  ) |>
+  dplyr::mutate(half = "Summary")
+
+drive_data <- uga_drives |>
+  dplyr::mutate(
+    qrt = factor(half, levels = c("1st half", "2nd half")),
+    time_clock = paste0(time_minutes_elapsed, ":", time_seconds_elapsed)
+  ) |>
+  dplyr::select(offense, half, drive_number, plays, yards, points, everything()) |>
+  dplyr::arrange(half, drive_number) |>
+  dplyr::group_by(offense) |>
+  dplyr::mutate(off_drive_num = as.character(dplyr::row_number()), ) |>
+  dplyr::ungroup()
+
+
+all_drive_data <- dplyr::bind_rows(drive_data, summary_stats)
+```
+
+### GT theme: custom
+
+```{r gt-theme-box-score, warning=FALSE}
+
+gt_theme_boxscore <-  function(gt_object, ...) {
+  stopifnot(
+    `'gt_object' must be a 'gt_tbl', have you accidentally passed raw data?` = "gt_tbl" %in%
+      class(gt_object)
+  )
+  
+  table_id <- subset(gt_object[["_options"]], parameter == "table_id")$value[[1]]
+  data <- subset(gt_object[["_data"]])
+  
+  if (is.na(table_id)) {
+    table_id <- gt::random_id()
+    opt_position <- which("table_id" %in% gt_object[["_options"]][["parameter"]])[[1]]
+    gt_object[["_options"]][["value"]][[opt_position]] <- table_id
+  }
+  
+  table <- gt_object |>
+    gt::opt_table_font(font = list(gt::google_font("News Cycle"), gt::default_fonts()),
+                       weight = 500) |>
+    gt::tab_style(locations = gt::cells_body(),
+                  style = list(gt::cell_text(
+                    font = gt::google_font("News Cycle"),
+                    size = gt::px(10)
+                  ))) |>
+    gt::tab_style(
+      locations = gt::cells_column_labels(columns = gt::everything()),
+      style = list(
+        gt::cell_text(
+          font = gt::google_font("News Cycle"),
+          weight = 650,
+          size = gt::px(12),
+          color = "#333333"
+        )
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_title("title"),
+      style = gt::cell_text(
+        font = gt::google_font("News Cycle"),
+        weight = 650,
+        size = gt::px(16),
+        align = "left"
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_title("subtitle"),
+      style = gt::cell_text(
+        font = gt::google_font("News Cycle"),
+        weight = 500,
+        size = gt::px(14),
+        align = "left"
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_column_spanners(),
+      style = gt::cell_text(
+        font = gt::google_font("News Cycle"),
+        weight = 650,
+        size = gt::px(12)
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_row_groups(),
+      style = list(
+        gt::cell_text(
+          font = gt::google_font("News Cycle"),
+          weight = 650,
+          size = gt::px(10),
+          color = "#333333"
+        ),
+        gt::cell_fill(color = "#E8EBF5")
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_source_notes(),
+      style = gt::cell_text(
+        font = gt::google_font("News Cycle"),
+        size = gt::px(9.5)
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_row_groups(),
+      style = gt::cell_text(
+        weight = "bold",
+        font = gt::google_font("News Cycle"),
+        size = gt::px(12)
+      )
+    ) |>
+    # footnote
+    gt::tab_style(
+      locations = gt::cells_footnotes(),
+      style = gt::cell_text(
+        font = gt::google_font("News Cycle"),
+        size = gt::px(9.5)
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_body(rows = 1:(nrow(data) - 1)),
+      style = gt::cell_borders(
+        sides = "bottom",
+        color = "#000000",
+        weight = gt::px(1)
+      )
+    ) |>
+    gt::tab_options(
+      data_row.padding = 2,
+      table_body.hlines.color = "transparent",
+      column_labels.border.top.style = "none",
+      column_labels.border.bottom.style = "none",
+      row_group.border.top.style = "none",
+      row_group.border.top.color = "black",
+      row_group.border.bottom.width = gt::px(1),
+      row_group.border.bottom.color = "black",
+      row_group.border.bottom.style = "solid",
+      row_group.padding = gt::px(1.5),
+      heading.align = "center",
+      heading.border.bottom.style = "none",
+      table_body.border.top.style = "none",
+      table_body.border.bottom.color = "white",
+      table.border.bottom.style = "none",
+      table.border.top.style = "none",
+      source_notes.border.lr.style = "none"
+    )
+  return(table)
+}
+
+
+```
+
+### Make stacked GT table for drive chart
+
+```{r gt-stack-tables, warning=FALSE}
+
+all_drive_data |>
+  dplyr::filter(off_team == "Georgia") |>
+  dplyr::relocate(drive_start, .before = plays) |>
+  dplyr::relocate(off_drive_num, .before = drive_start) |>
+  dplyr::relocate(time_clock, .before = points) |>
+  gt::gt(
+    groupname_col = c("offense"),
+    process_md = TRUE,
+    row_group_as_column = FALSE,
+  ) |>
+  gt::fmt_markdown(offense) |>
+  gt::cols_hide(
+    columns = c(
+      off_team,
+      drive_number,
+      defense,
+      drive_end,
+      qrt,
+      half,
+      time_minutes_elapsed,
+      time_seconds_elapsed
+    )
+  ) |>
+  gt::fmt_number(columns = c(yds_play), decimals = 1) |>
+  gt::fmt_number(columns = c(drive_start), decimals = 0) |>
+  gt_theme_boxscore() |>
+  gt::cols_label(
+    offense = "",
+    off_drive_num = "",
+    drive_start = "Start",
+    plays = "Plays",
+    yards = "Yards",
+    points = "Points",
+    time_clock = "Time",
+    drive_result = "Pts/Drive",
+    yds_play = "Yds/Play",
+    available_yards = "Yds/Pct"
+  ) |>
+  gtExtras::gt_add_divider(columns = drive_result,
+                           sides = "left",
+                           color = "black") |>
+  gt::fmt_percent(available_yards, decimals = 1) |>
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_body(
+      columns = c(
+        plays,
+        yards,
+        points,
+        time_clock,
+        drive_start,
+        yds_play,
+        available_yards,
+        drive_result,
+        drive_number
+      ),
+      rows = qrt == "Summary"
+    )
+  ) |>
+  gtExtras::gt_highlight_rows(rows = half == "Summary", fill = "#fffec8") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::cols_align(offense, align = "left") |>
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_body(columns = available_yards, rows = available_yards == 1)
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_body(
+      columns = drive_result,
+      rows = drive_result %in% c("TD", "FG", "FUMBLE", "INT", "INT RETURN")
+    )
+  ) |>
+  gt::tab_header(title = "Georgia dominates Texas in 1st half: 23-0",
+                 subtitle = "1st half drive chart. Final score: UGA 30, Texas 15") |>
+  gt::tab_options(table.width = gt::px(400)) -> gt_dc_tab_1
+
+all_drive_data |>
+  dplyr::filter(off_team == "Texas") |>
+  dplyr::relocate(drive_start, .before = plays) |>
+  dplyr::relocate(off_drive_num, .before = drive_start) |>
+  dplyr::relocate(time_clock, .before = points) |>
+  gt::gt(
+    groupname_col = c("offense"),
+    process_md = TRUE,
+    row_group_as_column = FALSE,
+  ) |>
+  gt::fmt_markdown(offense) |>
+  gt::cols_hide(
+    columns = c(
+      off_team,
+      drive_number,
+      defense,
+      drive_end,
+      qrt,
+      half,
+      time_minutes_elapsed,
+      time_seconds_elapsed
+    )
+  ) |>
+  gt::fmt_number(columns = c(yds_play), decimals = 1) |>
+  gt::fmt_number(columns = c(drive_start), decimals = 0) |>
+  gt_theme_boxscore() |>
+  gt::cols_label(
+    offense = "",
+    off_drive_num = "",
+    drive_start = "Start",
+    plays = "Plays",
+    yards = "Yards",
+    points = "Points",
+    time_clock = "Time",
+    drive_result = "Pts/Drive",
+    yds_play = "Yds/Play",
+    available_yards = "Yds/Pct"
+  ) |>
+  gtExtras::gt_add_divider(columns = drive_result,
+                           sides = "left",
+                           color = "black") |>
+  gt::fmt_percent(available_yards, decimals = 1) |>
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_body(
+      columns = c(
+        plays,
+        yards,
+        points,
+        time_clock,
+        drive_start,
+        yds_play,
+        available_yards,
+        drive_result,
+        drive_number
+      ),
+      rows = qrt == "Summary"
+    )
+  ) |>
+  gtExtras::gt_highlight_rows(rows = half == "Summary", fill = "#fffec8") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::cols_align(offense, align = "left") |>
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_body(columns = available_yards, rows = available_yards == 1)
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(weight = "bold")),
+    locations = gt::cells_body(
+      columns = drive_result,
+      rows = drive_result %in% c("TD", "FG", "FUMBLE", "INT", "INT RETURN")
+    )
+  ) |>
+  gtUtils::gt_538_caption(
+    top_caption = "Points per drive (ppd) based on drive results. Available yards using the start as the
+  distance to the goal. Summary stats shows average start, yds/play, and available yards percentage.",
+    bottom_caption = "Data via {cfbfastR}, built with {gtUtils} | Table by Chris at Bless your chart"
+  ) |>
+  gt::tab_options(table.width = gt::px(400))  -> gt_dc_tab_2
+
+gtUtils::gt_stack_tables(list(gt_dc_tab_1, gt_dc_tab_2)) -> tabs
+
+gtUtils::gt_save_crop(tabs,
+                      file = "drive_table.png",
+                      whitespace = 40,
+                      bg = "white")
+
+tabs
+```
+
+### Load USC drive
+
+```{r usc-drives}
+# make data based off play-by-play
+# https://www.espn.com/college-football/playbyplay/_/gameId/401628521
+usc_drives <- tibble::tribble(
+  ~team_name, ~drive_num, ~plays, ~yards, ~start_yd, ~end_yd, ~result, 
+  "Maryland",1,9,30,97,67,"DOWNS",
+  "USC",4,4,9,33,24,"BLOCKED FG",
+  "Maryland",7,5,47,53,0,"TOUCHDOWN"
+)  |> 
+  dplyr::mutate(start_yd = dplyr::if_else(
+                team_name == "Maryland", 100-start_yd,
+                start_yd
+              ),
+              end_yd = dplyr::if_else(
+                team_name == "Maryland", 100-end_yd,
+                end_yd
+              ))
+```
+
+### Custom ggplot2 theme
+
+```{r theme-me,  warning=FALSE, message=FALSE}
+
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      panel.grid.minor = ggplot2::element_line(color = "gray", linetype = "dotted"),  # Customize minor grid lines
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+} 
+```
+
+### Make USC plot
+
+```{r usc-plot, warning=FALSE, message=FALSE}
+
+# set colors
+terps_color <- "#FFD520"
+usc_color <- "#990000"
+
+# set titles
+usc_scoring_title <- "<span style='font-family: mono; fontface: bolder'><span style='color:#000000'>Maryland 29</span><br>
+<span style='color:#990000;'>USC 28</span>"
+
+caption <- "<span style='font-family: mono; fontface: bold'> Shows drive sequence at end of 4th quarter before Maryland gained lead<br><br>
+Bless your chart | data via cfbfastR</span>"
+
+usc_drive_colors <- c("Maryland" = terps_color, "USC" = usc_color)
+
+usc_drive_plot <- ggplot2::ggplot(usc_drives) +
+  ggplot2::geom_segment(
+    ggplot2::aes(
+      x = drive_num,
+      xend = drive_num,
+      y = start_yd,
+      yend = end_yd,
+      color = team_name
+    ),
+    size = 1.5,
+    arrow = ggplot2::arrow(type = "closed", length = ggplot2::unit(0.07, "inches"))
+  ) +
+  ggplot2::scale_y_reverse(
+    limits = c(120, -20),
+    breaks = seq(-20, 120, 10),
+    labels = rev(
+      c(
+        "",
+        "",
+        "0",
+        "10",
+        "20",
+        "30",
+        "40",
+        "50",
+        "40",
+        "30",
+        "20",
+        "10",
+        "0",
+        "",
+        ""
+      )
+    )
+  ) +
+  ggplot2::scale_x_reverse(
+    limits = c(20, -4),
+    breaks = seq(20, -4, -1),
+    expand = c(0, -0.5)
+  ) +
+  ggplot2::coord_flip() +
+  ggplot2::scale_color_manual(values = usc_drive_colors) +
+  theme_me() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    panel.grid.major.x = ggplot2::element_line(color = "#E6E6E6", size = 0.5),
+    panel.grid.minor.x = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.minor.y = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_blank(),
+    axis.title.x = ggplot2::element_text(size = 14, face = "bold")
+  ) +
+  ggplot2::geom_hline(yintercept = c(-10, -20, 110, 120), color = "floral white") +
+  ggplot2::geom_vline(xintercept = 12,
+                      color = "#333333",
+                      linetype = "dashed") +
+  ggplot2::labs(
+    x = "",
+    y = "Yard line",
+    title = "",
+    caption = caption
+  ) +
+  ggtext::geom_richtext(
+    x = 1.8,
+    y = -50,
+    label = usc_scoring_title,
+    fill = "floral white",
+    label.color = NA,
+    size = 5,
+    label.padding = ggplot2::unit(c(0.7, 4.5, 0.7, 4.5), "lines")
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    x = 0,
+    y = c(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0),
+    label =  c("0", "10", "20", "30", "40", "50", "40", "30", "20", "10", "0"),
+    color = "#333333",
+    size = 4,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    x = 16,
+    y = c(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0),
+    label =  c("0", "10", "20", "30", "40", "50", "40", "30", "20", "10", "0"),
+    color = "#333333",
+    size = 4,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  )   +
+  ggplot2::annotate(
+    geom = "label",
+    x = 3,
+    y = 5,
+    label =  "Maryland  \n9 plays, 30 yards  \nDOWNS | 2:48",
+    color = "#333333",
+    fill = terps_color,
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 5,
+    y = 50,
+    label =  "USC  \n4 plays, 9 yards  \nBLOCKED FG | 1:34",
+    color = "#333333",
+    fill = usc_color,
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#333333",
+    x = 4.5,
+    y = 24,
+    xend = 7.2,
+    yend = 46,
+    curvature = -.6,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm"), )
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 14,
+    y = 30,
+    label =  "USC led 28-22 with 2:48 remaining  \nStarted a drive on Maryland 33  \n9 plays later, USC lost the game",
+    fill = usc_color,
+    color = "#333333",
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 9,
+    y = 70,
+    label =  "Maryland  \n5 plays, 47 yards  \nTOUCHDOWN | 0:53",
+    color = "#333333",
+    fill = terps_color,
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = -1,
+    y = 114,
+    team = "USC",
+    height = .075,
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = -1,
+    y = -14,
+    team = "Maryland",
+    height = .075,
+  )
+
+
+ggplot2::ggsave(
+  "usc_drive_plot.png",
+  usc_drive_plot,
+  h = 6.85,
+  w = 6.85,
+  dpi = 600,
+  type = 'cairo'
+)
+
+usc_drive_plot
+```

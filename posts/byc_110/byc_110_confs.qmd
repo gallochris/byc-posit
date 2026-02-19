@@ -1,0 +1,93 @@
+---
+title: "110: Conference summary"
+date: "2024-09-29"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch and scrape data
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+conf_sum_data <- readr::read_csv("conf_sum.csv") |> 
+  dplyr::select(-1)
+```
+
+### GT Table
+
+```{r gt-table-confs}
+
+conf_chart <- conf_sum_data |>
+  dplyr::mutate(
+    conf = dplyr::case_match(
+      conf,
+      "Sun Belt" ~ "SB",
+      "Mountain West" ~ "MWC",
+      "Big Ten" ~ "B10",
+      "Big 12" ~ "B12",
+      "American" ~ "Amer",
+      conf ~ conf
+    )
+  ) |>
+  cbbplotR::gt_cbb_conferences(conf, logo_height = 14) |>
+  dplyr::arrange(avg_diff) |>
+  dplyr::relocate(home_win_pct, .before = close_pct) |>
+  gt::gt() |>
+  gtUtils::gt_theme_sofa() |>
+  gt::fmt_markdown(conf) |>
+  gt::cols_align(conf, align = "left") |>
+  gt::fmt_percent(columns = c(close_pct, blowout_pct, home_win_pct),
+                  decimals = 1) |>
+  gt::fmt_number(avg_diff, decimals = 1) |>
+  gtUtils::gt_column_subheaders(
+    avg_diff = list(heading = "AVG", subtitle = "Margin of victory"),
+    close_pct = list(heading = "Close", subtitle = "< 7.5 points"),
+    blowout_pct = list(heading = "Blowout", subtitle = "> 17.5 points"),
+    home_win_pct = list(heading = "Home", subtitle = "Win %"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(conf = "", games = "Games") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gtUtils::gt_color_pills(
+    avg_diff,
+    fill_type = "rank",
+    rank_order = "asc",
+    digits = 1,
+    domain = c(1, 40),
+    palette = "ggsci::blue_material"
+  ) |>
+  gt::tab_header(
+    "2024 FBS Conference Play",
+    "Games, average
+                 margin of victory, home win percentage, close game and blowout percentages."
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via cfbfastR, theme via {gtUtils}, and logos from ESPN.com. <br>2024 season data through September 28 games.
+    <br>Close games margin of victory under 7.5 points<br>
+    Blowout margin of victory over 17.5 points",
+    "Table by Chris (@dadgumboxscores) + Bless your chart"
+  )
+
+
+gtUtils::gt_save_crop(
+  conf_chart,
+  file = "conf_chart.png",
+  whitespace = 60,
+  bg = "#F0EAD6"
+)
+
+conf_chart
+```
+
+### 

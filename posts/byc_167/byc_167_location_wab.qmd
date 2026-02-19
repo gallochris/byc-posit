@@ -1,0 +1,270 @@
+---
+title: "167: WAB by location"
+date: "2026-01-07"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+library(glue)
+library(gt)
+
+# load data
+wab_data <- readr::read_csv("wab-data.csv")
+
+# function to save table 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# adjust headers 
+gt_column_subheaders <- function(gt_table,
+                                 heading_color = "black",
+                                 subtitle_color = "#808080",
+                                 heading_weight = "bold",
+                                 subtitle_weight = "normal",
+                                 ...) {
+
+  subheaders <- list(...)
+  all_col_names <- colnames(gt_table[['_data']])
+
+  for (col_name in all_col_names) {
+
+    subtitle_info <- subheaders[[col_name]] %||% list(subtitle = "&nbsp;", heading = col_name)
+    subtitle <- subtitle_info$subtitle
+    new_header_title <- subtitle_info$heading
+
+    label_html <- htmltools::HTML(glue(
+      "<div style='line-height: 0.75; margin-bottom: -2px;'>
+        <span style='font-size: 20px; font-weight: {heading_weight}; color: {heading_color};'>
+          {new_header_title}
+        </span>
+        <br>
+        <span style='font-size: 14px; font-weight: {subtitle_weight}; color: {subtitle_color};'>
+          {subtitle}
+        </span>
+      </div>"
+    ))
+
+    gt_table <- gt_table %>%
+      cols_label(!!sym(col_name) := label_html)
+  }
+
+  gt_table
+}
+```
+
+### WAB by location table 
+
+```{r wab-tbl, warning=FALSE, message=FALSE}
+
+wab_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Top Wins by Location using WAB <br>so far during 2025-26 season</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows games by location with highest wins-above-bubble value. <br>Only includes games played <em>before</em> January 6, 2026</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+wab_tbl <- wab_data |> 
+  dplyr::filter(game_type == "played", wab > 0.60) |> 
+    cbbplotR::gt_cbb_teams(team, team, logo_height = 20, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(opp, opp, logo_height = 20, include_name = FALSE) |>
+  dplyr::mutate(
+    winner_score = stringr::str_split_i(score, "-", 1),
+    loser_score = stringr::str_split_i(score, "-", 2),
+    wab_range = dplyr::case_when(
+      wab >= 0.90 ~ "0.90+ and up",
+      wab >= 0.85 ~ "0.85 to 0.90",
+      wab >= 0.80 ~ "0.80 to 0.85",
+      wab >= 0.75 ~ "0.75 to 0.80",
+      wab >= 0.70 ~ "0.70 to 0.75",
+      wab >= 0.65 ~ "0.65 to 0.70",
+      wab >= 0.60 ~ "0.60 to 0.65"
+    ),
+    wab_range = factor(wab_range, levels = c(
+      "0.90+ and up", "0.85 to 0.90", "0.80 to 0.85", "0.75 to 0.80", 
+      "0.70 to 0.75", "0.65 to 0.70", "0.60 to 0.65"
+    )),
+    location_full = dplyr::case_when(
+      location == "A" ~ "Away",
+      location == "H" ~ "Home",
+      location == "N" ~ "Neutral"
+    ),
+    wab_display = sprintf("%.2f", wab)
+  ) |> 
+  dplyr::arrange(-wab) |> 
+  dplyr::group_by(wab_range, location_full) |> 
+  dplyr::mutate(
+    game_num = dplyr::row_number(),
+    game_result = paste0("**+", wab_display, "**", " | ", team, " ", winner_score, "-", loser_score, " ", opp)
+  ) |> 
+  dplyr::summarise(
+    games = paste(game_result, collapse = "  \n"),
+    .groups = "drop"
+  ) |> 
+    tidyr::pivot_wider(names_from = location_full, values_from = games, values_fill = "") |> 
+  dplyr::mutate(
+    Away = dplyr::na_if(Away, ""),
+    Home = dplyr::na_if(Home, ""),
+    Neutral = dplyr::na_if(Neutral, "")
+  ) |>
+  dplyr::select(WAB = wab_range, Away, Home, Neutral) |> 
+    dplyr::ungroup() |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_savant() |>  
+  gt::fmt_markdown(columns = c(Away, Home, Neutral)) |> 
+  gt::sub_missing(columns = c(Away, Home, Neutral), missing_text = "") |> 
+  gt::cols_align(align = "left", columns = c(Away, Home, Neutral)) |> 
+  gt_column_subheaders(
+      WAB = list(heading = "WAB", subtitle = "Wins-Above-Bubble"),
+      Away = list(heading = "Road Wins", subtitle = "35 total games"),
+      Home = list(heading = "Home Wins", subtitle = "8 total games"),
+      Neutral = list(heading = "Neutral Site Wins", subtitle = "28 total games")
+  ) |> 
+  gt::tab_header(title = gt::html(wab_header)) |> 
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via barttorvik.com and WAB values calculated via Torvik ratings | theme via {gtUtils} <br>
+        Winning games on the road is useful to building a resume!<br>
+        Data only for games played before January 6, 2026<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#0d1e2d", "#c1d6e2",
+                                   "#f07e1d")) |> 
+  gt::tab_options(table.width = gt::px(625)) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(size = gt::px(16)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(weight = "bold"
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = "WAB"
+    )
+  ) |> 
+   gt::tab_style(
+    style = gt::cell_text(size = gt::px(35)),
+    locations = gt::cells_column_labels()
+  ) |>
+   gt::tab_style(
+      locations = gt::cells_footnotes(),
+      style = gt::cell_text(
+        font = gt::google_font("News Cycle"),
+        size = gt::px(10.5)
+      )
+    ) |>
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 1,
+    fill = "#1a9641",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 2,
+    fill = "#1da748",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 3,
+    fill = "#20b74f",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 4,
+    fill = "#23c857",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 5,
+    fill = "#47df77",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 6,
+    fill = "#69e590",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = 1,
+    rows = 7,
+    fill = "#8aeba8",
+    alpha = 0.4
+  ) 
+  
+gt_save_crop(
+  wab_tbl,
+  file = "wabl_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+wab_tbl
+  
+```
+
+### 

@@ -1,0 +1,953 @@
+---
+title: "168: CFP linescores"
+date: "2026-01-10"
+categories:
+  - gtUtils
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+library(glue)
+library(gt)
+
+# load data
+cfbpl <- readr::read_csv("cfbpl.csv")
+
+pbp <- readr::read_csv("pbp.csv")
+
+# function to save table 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# adjust headers 
+gt_column_subheaders <- function(gt_table,
+                                 heading_color = "black",
+                                 subtitle_color = "#808080",
+                                 heading_weight = "bold",
+                                 subtitle_weight = "normal",
+                                 ...) {
+
+  subheaders <- list(...)
+  all_col_names <- colnames(gt_table[['_data']])
+
+  for (col_name in all_col_names) {
+
+    subtitle_info <- subheaders[[col_name]] %||% list(subtitle = "&nbsp;", heading = col_name)
+    subtitle <- subtitle_info$subtitle
+    new_header_title <- subtitle_info$heading
+
+    label_html <- htmltools::HTML(glue(
+      "<div style='line-height: 0.75; margin-bottom: -2px;'>
+        <span style='font-size: 20px; font-weight: {heading_weight}; color: {heading_color};'>
+          {new_header_title}
+        </span>
+        <br>
+        <span style='font-size: 14px; font-weight: {subtitle_weight}; color: {subtitle_color};'>
+          {subtitle}
+        </span>
+      </div>"
+    ))
+
+    gt_table <- gt_table %>%
+      cols_label(!!sym(col_name) := label_html)
+  }
+
+  gt_table
+}
+```
+
+### Blowout table
+
+```{r blow-tbl, warning=FALSE, message=FALSE}
+
+fball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>College Football Playoffs: Average Margin of Victory by Round</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'><br>
+       Shows the average margin of victory by each round in the CFP Era.</span>
+     </div>
+     <div>
+       <img src='https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_of_college_football_playoff.svg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+gt_table <- cfbpl |> 
+  dplyr::mutate(
+    season = Season,
+    winner = Team,
+    win_pts = Pts,
+    loser = Opp., 
+    loser_pts = PtsO, 
+    diff = PtDif...14, 
+    round = Round...16
+  ) |> 
+  dplyr::mutate(
+    winner = dplyr::case_match(winner,
+                               "Miami (FL)" ~ "Miami",
+                               "Texas Christian" ~ "TCU",
+                               .default = winner
+    ),
+    loser = dplyr::case_match(loser,
+                              "Texas Christian" ~ "TCU",
+                              .default = loser
+    )
+  ) |> 
+  cbbplotR::gt_cbb_teams(winner, winner, 
+                         include_name = FALSE, 
+                         logo_height = 15) |> 
+  cbbplotR::gt_cbb_teams(loser, loser, 
+                         include_name = FALSE,
+                         logo_height = 15) |> 
+  dplyr::mutate(
+    score_sen = paste0(winner, " ", win_pts, "-", loser_pts, " ", loser)
+  ) |> 
+  dplyr::group_by(season, round) |> 
+  dplyr::summarise(
+    avg_diff = round(mean(diff), 1),
+    score_sen = paste(score_sen, collapse = "<br>"),
+    .groups = "drop"
+  ) |> 
+  tidyr::pivot_wider(
+    names_from = season,
+    values_from = c(avg_diff, score_sen),
+    names_sep = "_"
+  ) |> 
+  dplyr::mutate(
+    dplyr::across(
+      dplyr::starts_with("avg_diff_"),
+      ~ dplyr::if_else(is.na(.x), "—", as.character(.x))
+    ),
+    dplyr::across(
+      dplyr::starts_with("score_sen_"),
+      ~ tidyr::replace_na(.x, "") 
+    )
+  ) |> 
+  dplyr::arrange(round) |> 
+  dplyr::select(
+    round,
+    dplyr::starts_with("avg_diff_2025"), dplyr::starts_with("score_sen_2025"),
+    dplyr::starts_with("avg_diff_2024"), dplyr::starts_with("score_sen_2024"),
+    dplyr::starts_with("avg_diff_2023"), dplyr::starts_with("score_sen_2023"),
+    dplyr::starts_with("avg_diff_2022"), dplyr::starts_with("score_sen_2022"),
+    dplyr::starts_with("avg_diff_2021"), dplyr::starts_with("score_sen_2021"),
+    dplyr::starts_with("avg_diff_2020"), dplyr::starts_with("score_sen_2020"),
+    dplyr::starts_with("avg_diff_2019"), dplyr::starts_with("score_sen_2019"),
+    dplyr::starts_with("avg_diff_2018"), dplyr::starts_with("score_sen_2018"),
+    dplyr::starts_with("avg_diff_2017"), dplyr::starts_with("score_sen_2017"),
+    dplyr::starts_with("avg_diff_2016"), dplyr::starts_with("score_sen_2016"),
+    dplyr::starts_with("avg_diff_2015"), dplyr::starts_with("score_sen_2015"),
+    dplyr::starts_with("avg_diff_2014"), dplyr::starts_with("score_sen_2014")
+  ) |> 
+  dplyr::mutate(
+    round = dplyr::case_match(round,
+            1 ~ "1st Round  \nSemifinals",
+            2 ~ "Quarterfinals",
+            3 ~ "Semifinals", 
+            4 ~ "Championship")
+  ) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(columns = gt::everything()) |> 
+  gtUtils::gt_column_subheaders(
+    avg_diff_2025 = list(heading = "2025", subtitle = "12 teams"),
+    avg_diff_2024 = list(heading = "2024", subtitle = "12 teams"),
+    avg_diff_2023 = list(heading = "2023", subtitle = "4 teams"),
+    avg_diff_2022 = list(heading = "2022", subtitle = "4 teams"),
+    avg_diff_2021 = list(heading = "2021", subtitle = "4 teams"),
+    avg_diff_2020 = list(heading = "2020", subtitle = "4 teams"),
+    avg_diff_2019 = list(heading = "2019", subtitle = "4 teams"),
+    avg_diff_2018 = list(heading = "2018", subtitle = "4 teams"),
+    avg_diff_2017 = list(heading = "2017", subtitle = "4 teams"),
+    avg_diff_2016 = list(heading = "2016", subtitle = "4 teams"),
+    avg_diff_2015 = list(heading = "2015", subtitle = "4 teams"),
+    avg_diff_2014 = list(heading = "2014", subtitle = "4 teams"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  )
+
+
+for(year in 2025:2014) {
+  gt_table <- gt_table |> 
+    gtExtras::gt_merge_stack(
+      col1 = !!rlang::sym(paste0("avg_diff_", year)),
+      col2 = !!rlang::sym(paste0("score_sen_", year)),
+      palette = c("black", "#666666"),  
+      small_cap = FALSE,
+      font_size = c("16px", "10px")
+    )
+}
+
+year_cols <- paste0("avg_diff_", 2025:2014)
+
+blow_tbl <- gt_table |> 
+  gt::cols_align(
+    align = "center",
+    columns = dplyr::all_of(year_cols)
+  ) |> 
+  gt::cols_label(
+    round = "Round"
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_text(align = "center"),
+    locations = gt::cells_body(columns = dplyr::all_of(year_cols))
+  ) |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  # Row 1 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 2,
+    fill = "#F2D4C2",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = c(4, 10, 12, 14, 16, 20),  # Consolidated
+    fill = "#E8B5A0",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 6,
+    fill = "#8FA3B8",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 8,
+    fill = "#6B8CAE",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 18,
+    fill = "#B8C5D6",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 22,
+    fill = "#C17B7B",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 24,
+    fill = "#D49080",
+    alpha = 0.4
+  ) |> 
+  # Row 2 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 2,
+    columns = 4,
+    fill = "#F2D4C2",
+    alpha = 0.4
+  ) |> 
+   gtExtras::gt_highlight_rows(
+    rows = 2,
+    columns = 2,
+    fill = "#E8B5A0",
+    alpha = 0.4
+  ) |> 
+  # Row 3 highlights
+   gtExtras::gt_highlight_rows(
+    rows = 3,
+    columns = 2,
+    fill = "#E8B5A0",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 3,
+    columns = 4,
+    fill = "#B8C5D6",
+    alpha = 0.4
+  ) |> 
+  # Row 4 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = c(4, 10, 14),
+    fill = "#F2D4C2",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = c(6, 16, 24),
+    fill = "#D49080",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = 8,
+    fill = "red",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = 12,  # Removed duplicate
+    fill = "#C17B7B",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = c(18, 20, 22),
+    fill = "#6B8CAE",
+    alpha = 0.4
+  ) |> 
+  gt::tab_header(title = gt::html(fball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via Stathead  | sports-reference.com | theme via {gtUtils} <br>
+        Data for 2025 season through Semifinals of CFP<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#C28C19", "#130C0E"))
+
+gt_save_crop(
+  blow_tbl,
+  file = "blowout_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+blow_tbl
+```
+
+### 
+
+### Linescores 
+
+```{r linescores-tbl, warning=FALSE, message=FALSE}
+
+miami_line_score <- tibble::tribble(
+  ~team,        ~inning_1, ~desc_1, ~inning_2, ~desc_2, ~inning_3, ~desc_3, ~inning_4, ~desc_4, ~inning_5, ~desc_5, ~inning_6, ~desc_6, ~inning_7, ~desc_7, ~inning_8, ~desc_8, ~inning_9, ~desc_9, ~inning_10, ~desc_10, ~inning_11, ~desc_11, ~points, ~fdowns, ~turnovers,
+  "Miami",      3,   "FG",      0,  "PUNT",       7, "TD",        7,  "TD",       0, "PUNT",        0,  "HALF",        0, "FGA",    0, "INT",    0,  "PUNT",       7,  "TD",        7,  "TD",        31,      28,      1,
+  "Ole Miss",   0, "PUNT",        0, "PUNT",         7,   "TD",      3,  "FG",       0,  "PUNT",       3, "FG",        0, "FGA",     3, "FG",      3, "FG",          8, "TD",          0, "HALF",         27,      23,      0
+)
+
+miami_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+        <img src='https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_of_college_football_playoff.svg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Miami 31, Ole Miss 27</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Possession-by-possession line score for CFP Semifinal.<br>January 8, 2026 | State Farm Stadium, Glendale, Arizona</span>
+     </div>
+     <div>
+        <img src='https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_of_college_football_playoff.svg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+
+um_tbl <- miami_line_score |>
+  dplyr::rename_with( ~ stringr::str_remove(.x, "inning_"),
+                      dplyr::starts_with("inning_")) |>
+  cbbplotR::gt_cbb_teams(team, team)  |>
+  gt::gt()  |>
+  gtExtras::gt_merge_stack(
+    col1 = "1",
+    col2 = "desc_1",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "2",
+    col2 = "desc_2",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "3",
+    col2 = "desc_3",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "4",
+    col2 = "desc_4",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "5",
+    col2 = "desc_5",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "6",
+    col2 = "desc_6",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "7",
+    col2 = "desc_7",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "8",
+    col2 = "desc_8",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "9",
+    col2 = "desc_9",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "10",
+    col2 = "desc_10",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "11",
+    col2 = "desc_11",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_add_divider(columns = c(desc_6, desc_11),
+                           sides = "right", color = "black") |> 
+  gt::sub_missing(missing_text = "-") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gt::cols_align(columns = c(2:22), align = "center") |>
+  gt::tab_header(title = gt::html(miami_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>Miami advances to National Title game</b> | <b>Season records</b>: MIAMI 13-2 | OLE MISS 13-2<br><br>
+        <hr>
+        <b>Time of Possession</b>: MIAMI 41:22, OLE MISS 18:38<br>
+        <b>Avg Starting Field Position</b>: MIAMI own 28, OLE MISS own 24<br>
+        <b>Yards per play</b>: MIAMI 5.2, OLE MISS 6.6<br>
+        <b>MIAMI Drive outcomes</b>: TD (4), PUNT (3), INT (1), FG (1), FGA (1), HALF (1)<br> 
+        <b>OLE MISS Drive Outcomes</b>: FG (4), PUNT (3), TD (2), FGA (1), HALF (1)<br>
+        <b>3rd down conversions</b>: MIAMI 11-19, OLE MISS 2-10<br>
+        <b>Avg 3rd down distance</b>: MIAMI 7.6, OLE MISS 6.6<br>
+        <b>Penalties (total-yards)</b>: MIAMI 10-74, OLE MISS 3-34<br>
+        <b>Explosive plays (20+ yard gains)</b> MIAMI 2 (all passing), OLE MISS 6 (5 passing, 1 rushing)<br>
+        <b>F (First Downs)</b> MIAMI 28 (14 passing, 11 rushing, 3 penalty), OLE MISS 23 (14 passing, 5 rushing, 4 penalty)<br>
+        <b>T (Turnovers)</b> MIAMI 1 (Interception), OLE MISS 0 <br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |> 
+  gt::cols_label(
+    team = "",
+    points = "P",
+    fdowns = "F",
+    turnovers = "T"
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+    table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(2, 6, 8, 20, 22, 23, 24, 25),
+    fill = "#F47321",
+    alpha = 0.6
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(6, 8,12, 16, 18, 20, 26),
+    fill = "#CE1126",
+    alpha = 0.6
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  gt::tab_spanner(label = "1st Half", columns = c(2:12)) |>
+  gt::tab_spanner(label = "2nd Half", columns = c(13:22)) |>
+  gtExtras::gt_add_divider(columns = c(5), sides = "right",
+                           color = "black", weight = 0.5) |>
+  gtUtils::gt_border_bars_bottom(c("#C28C19", "#130C0E"))
+
+gt_save_crop(um_tbl,
+             file = "linescore_um.png",
+             whitespace = 60,
+             bg = "white")
+
+### iu table 
+
+iu_line_score <- tibble::tribble(
+  ~team,        ~inning_1, ~desc_1, ~inning_2, ~desc_2, ~inning_3, ~desc_3, ~inning_4, ~desc_4, ~inning_5, ~desc_5, ~inning_6, ~desc_6, ~inning_7, ~desc_7, ~inning_8, ~desc_8, ~inning_9, ~desc_9, ~inning_10, ~desc_10, ~inning_11, ~desc_11, ~inning_12, ~desc_12, ~points, ~fdowns, ~turnovers,
+  "Indiana",    7,         "PICK 6", 7,         "TD",    0,         "PUNT",  7,         "TD",    7,         "TD",    7,         "TD",    "-", "-", 7,         "TD",  0,         "PUNT",  0, "PUNT", 7,         "TD",    7,          "TD",         56,      18,      0,
+  "Oregon",     0,         "INT",    7,         "TD",    0,         "PUNT",  0,         "FMBL",  0,         "PUNT",  0,         "FMBL",  "0",         "FGA",   8,         "TD",    0,         "DOWNS", 0,          "PUNT",   0,          "DOWNS",  7,          "TD",     22,      19,      3
+)
+
+
+iu_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+        <img src='https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_of_college_football_playoff.svg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Indiana 56, Oregon 22 </span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Possession-by-possession line score for CFP Semifinal.<br>January 9, 2026 | 	Mercedes-Benz Stadium, Atlanta, Georgia</span>
+     </div>
+     <div>
+        <img src='https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_of_college_football_playoff.svg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+
+
+iu_tbl <- iu_line_score |>
+  dplyr::rename_with( ~ stringr::str_remove(.x, "inning_"),
+                      dplyr::starts_with("inning_")) |>
+  cbbplotR::gt_cbb_teams(team, team)  |>
+  gt::gt()  |>
+  gtExtras::gt_merge_stack(
+    col1 = "1",
+    col2 = "desc_1",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "2",
+    col2 = "desc_2",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "3",
+    col2 = "desc_3",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "4",
+    col2 = "desc_4",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "5",
+    col2 = "desc_5",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "6",
+    col2 = "desc_6",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "7",
+    col2 = "desc_7",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "8",
+    col2 = "desc_8",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "9",
+    col2 = "desc_9",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "10",
+    col2 = "desc_10",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "11",
+    col2 = "desc_11",
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = "12",
+    col2 = "desc_12",
+    palette = c("black", "#333333")
+  ) |>
+  gt::sub_missing(missing_text = "-") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gt::cols_align(columns = c(2:24), align = "center") |>
+  gt::tab_header(title = gt::html(iu_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>Indiana advances to National Title game</b> | <b>Season records</b>: IU 15-0 | ORE 13-2<br><br>
+        <hr>
+        <b>Time of Possession</b>: IU 31:13, ORE 28:27<br>
+        <b>Avg Starting Field Position</b>: IU own 45, ORE own 22<br>
+        <b>Yards per play</b>: IU 6.0, ORE 5.7<br>
+        <b>IU Drive outcomes</b>: TD (7), PUNT (3), PICK 6 (1), HALF (1)<br> 
+        <b>ORE Drive Outcomes</b>: TD (3), PUNT (3), FUMBLE (2), DOWNS (2), INT (1), FGA (1)<br>
+        <b>3rd down conversions</b>: IU 11-14, ORE 8-13<br>
+        <b>Avg 3rd down distance</b>: IU 4.3, ORE 7.5<br>
+        <b>Penalties (total-yards)</b>: IU 5-23, ORE 5-43<br>
+        <b>Explosive plays (20+ yard gains)</b> IU 6 (3 rushing, 2 passing, 1 pick six), ORE 5 (4 passing, 1 rushing)<br>
+        <b>F (First Downs)</b> IU 18 (9 passing, 8 rushing, 1 penalty), ORE 19 (15 passing, 3 rushing, 1 penalty)<br>
+        <b>T (Turnovers)</b> IU 0, ORE 3 (2 fumbles, 1 interception returned for touchdown)<br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |> 
+  gt::cols_label(
+    team = "",
+    points = "P",
+    fdowns = "F",
+    turnovers = "T"
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+    table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(2, 4, 8, 10, 12, 16, 22, 24, 26, 28),
+    fill = "#990000",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(4, 16, 24, 27),
+    fill = "#154733",
+    alpha = 0.4
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  gt::tab_spanner(label = "1st Half", columns = c(2:14)) |>
+  gt::tab_spanner(label = "2nd Half", columns = c(16:24)) |>
+  gtExtras::gt_add_divider(columns = c(5), sides = "right",
+                           color = "black", weight = 0.5) |>
+  gtUtils::gt_border_bars_bottom(c("#C28C19", "#130C0E"))
+
+gt_save_crop(iu_tbl,
+             file = "linescore_iu.png",
+             whitespace = 60,
+             bg = "white")
+
+
+iu_tbl
+```
+
+### 5 minute segments 
+
+```{r five-min, message=FALSE, warning=FALSE}
+
+# fetch schedule 
+# schedule <- bigballR::get_team_schedule(season = "2025-26", team.name = "North Carolina")
+
+# fetch pbp 
+# pbp <- bigballR::get_play_by_play(schedule$Game_ID)
+
+# find scores by 5 min, could make this any increment? 
+scores_by_5min_span <- pbp |>
+  dplyr::mutate(
+    Minute_Mark = dplyr::case_when(
+      Game_Seconds <= 300 ~ 5,
+      Game_Seconds <= 600 ~ 10,
+      Game_Seconds <= 900 ~ 15,
+      Game_Seconds <= 1200 ~ 20,
+      Game_Seconds <= 1500 ~ 25,
+      Game_Seconds <= 1800 ~ 30,
+      Game_Seconds <= 2100 ~ 35,
+      Game_Seconds <= 2400 ~ 40,
+      TRUE ~ NA_real_
+    )
+  ) |>
+  dplyr::filter(!is.na(Minute_Mark)) |>
+  dplyr::group_by(ID, Minute_Mark) |>
+  dplyr::arrange(Game_Seconds, .by_group = TRUE) |>
+  dplyr::slice(dplyr::n()) |>
+  dplyr::ungroup() |>
+  dplyr::group_by(ID) |>
+  dplyr::mutate(
+    Prev_Home_Score = dplyr::lag(Home_Score, default = 0),
+    Prev_Away_Score = dplyr::lag(Away_Score, default = 0),
+    Home_Points_In_Span = Home_Score - Prev_Home_Score,
+    Away_Points_In_Span = Away_Score - Prev_Away_Score,
+    UNC_Opponent = dplyr::if_else(Home == "North Carolina", Away, Home),
+    UNC_Points_In_Span = dplyr::if_else(
+      Home == "North Carolina",
+      Home_Points_In_Span,
+      Away_Points_In_Span
+    ),
+    Opponent_Points_In_Span = dplyr::if_else(
+      Home == "North Carolina",
+      Away_Points_In_Span,
+      Home_Points_In_Span
+    ),
+    UNC_Span_Diff = UNC_Points_In_Span - Opponent_Points_In_Span
+  ) |>
+  dplyr::ungroup()
+
+# pivot data wider and manually choose Tier A opponents 
+unc_spans_wide <- scores_by_5min_span |>
+  dplyr::filter(UNC_Opponent %in% c("Kansas", "Michigan St.", "Kentucky", "Ohio St.", "SMU")) |>
+  dplyr::select(
+    UNC_Opponent,
+    Minute_Mark,
+    UNC_Span_Diff,
+    UNC_Points_In_Span,
+    Opponent_Points_In_Span
+  ) |>
+  tidyr::pivot_wider(
+    names_from = Minute_Mark,
+    values_from = c(UNC_Span_Diff, UNC_Points_In_Span, Opponent_Points_In_Span),
+    names_sep = "_"
+  ) |>
+  dplyr::mutate(
+    score_5 = paste0(UNC_Points_In_Span_5, "-", Opponent_Points_In_Span_5),
+    score_10 = paste0(UNC_Points_In_Span_10, "-", Opponent_Points_In_Span_10),
+    score_15 = paste0(UNC_Points_In_Span_15, "-", Opponent_Points_In_Span_15),
+    score_20 = paste0(UNC_Points_In_Span_20, "-", Opponent_Points_In_Span_20),
+    score_25 = paste0(UNC_Points_In_Span_25, "-", Opponent_Points_In_Span_25),
+    score_30 = paste0(UNC_Points_In_Span_30, "-", Opponent_Points_In_Span_30),
+    score_35 = paste0(UNC_Points_In_Span_35, "-", Opponent_Points_In_Span_35),
+    score_40 = paste0(UNC_Points_In_Span_40, "-", Opponent_Points_In_Span_40),
+    diff_t = rowSums(dplyr::across(dplyr::starts_with("UNC_Span_Diff_")), na.rm = TRUE)
+  ) |>
+  dplyr::rename_with(
+    ~ stringr::str_replace(.x, "UNC_Span_Diff_", "diff_"),
+    starts_with("UNC_Span_Diff_")
+  )
+
+# make a total row because grand_summary_rows is not fun!
+totals_row <- unc_spans_wide |>
+  dplyr::summarise(dplyr::across(where(is.numeric), \(x) sum(x, na.rm = TRUE))) |>
+  dplyr::mutate(
+    UNC_Opponent = "North Carolina",
+    opp_desc = "",
+    score_5  = paste0(UNC_Points_In_Span_5, "-", Opponent_Points_In_Span_5),
+    score_10 = paste0(UNC_Points_In_Span_10, "-", Opponent_Points_In_Span_10),
+    score_15 = paste0(UNC_Points_In_Span_15, "-", Opponent_Points_In_Span_15),
+    score_20 = paste0(UNC_Points_In_Span_20, "-", Opponent_Points_In_Span_20),
+    score_25 = paste0(UNC_Points_In_Span_25, "-", Opponent_Points_In_Span_25),
+    score_30 = paste0(UNC_Points_In_Span_30, "-", Opponent_Points_In_Span_30),
+    score_35 = paste0(UNC_Points_In_Span_35, "-", Opponent_Points_In_Span_35),
+    score_40 = paste0(UNC_Points_In_Span_40, "-", Opponent_Points_In_Span_40)
+  )
+
+# make the table 
+
+diff_tbl <- unc_spans_wide |> 
+dplyr::bind_rows(totals_row) |>
+  dplyr::mutate(
+    opp_desc = dplyr::case_match(
+      UNC_Opponent,
+      "Kansas" ~ "W, 87-74 (Home)",
+      "Michigan St." ~ "L, 74-58 (Neutral)",
+      "Kentucky" ~ "W, 67-64 (Away)",
+      "Ohio St." ~ "W, 71-70 (Neutral)",
+      "SMU" ~ "L, 97-83 (Away)",
+      .default = "" # leave total blank 
+    )
+  ) |>
+  cbbplotR::gt_cbb_teams(UNC_Opponent, UNC_Opponent) |>
+  dplyr::mutate(UNC_Opponent = stringr::str_replace(UNC_Opponent,
+                                    "North Carolina", "Totals")) |>
+  gt::gt() |>
+  gtUtils::gt_theme_athletic() |>
+  gt::fmt_markdown(UNC_Opponent) |>
+  # this is very un-DRY (so much repetition)
+  gtExtras::gt_merge_stack(
+    col1 = UNC_Opponent,
+    col2 = opp_desc,
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_5,
+    col2 = score_5,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_10,
+    col2 = score_10,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_15,
+    col2 = score_15,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_20,
+    col2 = score_20,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_25,
+    col2 = score_25,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_30,
+    col2 = score_30,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_35,
+    col2 = score_35,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_40,
+    col2 = score_40,
+    palette = c("black", "#333333")
+  ) |>
+  # add a gap column for visual reasons 
+  gt::cols_align(align = "left", columns = UNC_Opponent) |> 
+  gt::cols_add(diff_gap = "", .before = diff_25) |>
+  gt::cols_label(
+    UNC_Opponent = "",
+    diff_5 = "0-5",
+    diff_10 = "5-10",
+    diff_15 = "10-15",
+    diff_20 = "15-20",
+    diff_gap = "",
+    diff_25 = "20-25",
+    diff_30 = "25-30",
+    diff_35 = "30-35",
+    diff_40 = "35-40",
+    diff_t = "TOTAL"
+  ) |>
+  gt::tab_spanner(label = "1st Half",
+                  columns = c(diff_5, diff_10, diff_15, diff_20)) |>
+  gt::tab_spanner(label = "2nd Half",
+                  columns = c(diff_25, diff_30, diff_35, diff_40)) |>
+  gt::fmt(
+    columns = c(
+      diff_5,
+      diff_10,
+      diff_15,
+      diff_20,
+      diff_25,
+      diff_30,
+      diff_35,
+      diff_40,
+      diff_t
+    ),
+    fns = function(x)
+      ifelse(x > 0, paste0("+", x), as.character(x))
+  ) |>
+  gt::data_color(
+    columns = c(
+      diff_5,
+      diff_10,
+      diff_15,
+      diff_20,
+      diff_25,
+      diff_30,
+      diff_35,
+      diff_40,
+      diff_t
+    ),
+    colors = scales::col_bin(
+      bins = c(-Inf, 0, Inf),
+      palette = c("#ffe7e7", "#d0e4f3")
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups(),
+      gt::cells_column_spanners()
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_body(columns = diff_t)
+  ) |>
+  gt::tab_header(title = "North Carolina: Point differential by 5-minute segment against kenpom Tier A opponents", 
+                 subtitle = "Carolina is 3-2 against five kenpom Tier A opponents so far in the 2025-26 season.") |>
+  gtUtils::gt_538_caption(
+    "Data via {bigallR} and kenpom.com, theme via {gtUtils} and logos from ESPN.",
+    "<b>Table by Chris at Bless your chart</b>"
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(650)) |>
+  gt::cols_hide(starts_with("UNC_Points_In_Span_") |
+                  starts_with("Opponent_Points_In_Span_"))
+
+
+gt_save_crop(
+  diff_tbl,
+  file = "diff_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+```

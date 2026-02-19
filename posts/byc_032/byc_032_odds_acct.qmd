@@ -1,0 +1,152 @@
+---
+title: "032: ACC Baseball Tournament pool play"
+date: "2023-05-22"
+categories:
+  - ggalluvial
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(ggthemes)
+library(gt)
+library(gtExtras)
+library(cfbplotR)
+library(ggtext)
+library(ggalluvial)
+```
+
+### Load data
+
+```{r data-load, message=FALSE}
+# compile results from wikipedia: https://en.wikipedia.org/wiki/2017_Atlantic_Coast_Conference_baseball_tournament
+pools <- tibble::tribble(
+  ~year,~freq,~type,
+  2017,4,"2-0",
+  2017,0,"1-1",
+  2018,4,"2-0",
+  2018,0,"1-1",
+  2019,3,"2-0",
+  2019,1,"1-1",
+  2021,2,"2-0",
+  2021,2,"1-1",
+  2022,4,"2-0",
+  2022,0,"1-1"
+  )
+
+# scrape semis from wikipedia
+past_semis <- tibble::tribble(
+~year,~seed,~team,~win,
+2017,2,"North Carolina","no",
+2017,6,"Miami","no",
+2017,8,"Florida State","yes",
+2017,9,"Duke","no",
+2018,2,"Clemson","no",
+2018,5,"Louisville","no",
+2018,6,"Florida State","yes",
+2018,12,"Pittsburgh","no",
+2019,2,"Georgia Tech","no",
+2019,3,"NC State","no",
+2019,5,"North Carolina","yes",
+2019,12,"Boston College","no",
+2021,2,"Georgia Tech","no",
+2021,3,"NC State","no",
+2021,8,"Virginia","no",
+2021,9,"Duke","yes",
+2022,4,"Notre Dame","no",
+2022,8,"North Carolina","yes",
+2022,10,"NC State","no",
+2022,11,"Pittsburgh","no"
+)
+
+```
+
+### Build the alluvial chart
+
+```{r gg-alluvial, warning=FALSE}
+# make plot 
+ggplot(data = pools,
+       aes(axis1 = year, axis2 = type, y = freq)) +
+  geom_alluvium(aes(fill = type)) +
+  geom_stratum() +
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("Year", "Pool Winner Record"),
+                   expand = c(0.15, 0.05)) +
+  scale_fill_manual(values = c("#2c7bb6", "#d7191c")) +
+  theme_fivethirtyeight() +
+  theme(
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown(),
+    text = element_text(family = "Arial"),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(
+    title = "ACC Baseball Tournament  \n<span style='color:#d7191c;'>17 of 20</span> Pool Play Winners have won both games",
+    subtitle = "Pool Play format started in 2017. No tournament was played in 2020.",
+    caption = "dadgumboxscores | May 22, 2023 | data via wikipedia"
+  ) -> alluv_plot
+
+# save it
+ggplot2::ggsave(
+  "alluv_plot.png",
+  alluv_plot,
+  w = 8.5,
+  h = 6.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+alluv_plot
+```
+
+### Make scatter plot
+
+```{r scatter-plot, warning=FALSE}
+# odd table
+past_semis %>% 
+    mutate(alpha = if_else(win == "yes", 1, .9999)) %>% 
+    ggplot(aes(x = year, y = seed)) + 
+    geom_cfb_logos(aes(team = team, alpha = alpha), width = 0.075) +
+    scale_y_reverse(breaks = seq(1, 12, 1), limits = c(12, 1)) + 
+    scale_x_continuous(breaks = seq(2017, 2022, 1)) + 
+    theme_fivethirtyeight() +
+    theme(
+        plot.title = element_markdown(),
+        plot.subtitle = element_markdown(),
+        text = element_text(family = "Arial"),
+        panel.grid = element_blank(),
+    ) +
+    labs(
+        title = "ACC Baseball Tournament under Pool Play format",
+        subtitle = "Shows seeds of teams that advanced to semifinals and highlights the tournament winner",
+        caption = "dadgumboxscores | May 22, 2023 | data via wikipedia"
+    ) +
+    annotate(
+        geom = "text",
+        x = 2020,
+        y = 7,
+        color = "#333333",
+        label = "COVID",
+        size = 6,
+        fontface = 'bold',
+        family = 'mono'
+    ) -> scat_plot 
+
+ggplot2::ggsave(
+  "scat_plot.png",
+  scat_plot,
+  w = 8.5,
+  h = 8.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+scat_plot
+```

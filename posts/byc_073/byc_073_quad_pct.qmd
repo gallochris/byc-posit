@@ -1,0 +1,193 @@
+---
+title: "073: Quadrant percentages"
+date: "2024-01-28"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Data
+
+```{r load-data, message = FALSE}
+# Function to update conference abbreviations to be more friendly 
+conf_name_lookup <- function(conf_var) {
+  conf_var = dplyr::case_match(
+    conf_var,
+    "B12" ~ "Big 12",
+    "BE" ~ "Big East",
+    "P12" ~ "Pac-12",
+    "B10" ~ "Big Ten",
+    "Amer" ~ "American",
+    "SB" ~ "Sun Belt",
+    "Slnd" ~ "Southland",
+    "BW" ~ "Big West",
+    "SC" ~ "Southern",
+    "AE" ~ "America East",
+    "BSth" ~ "Big South",
+    "ASun" ~ "Atlantic Sun",
+    "Pat" ~ "Patriot",
+    "Horz" ~ "Horizon",
+    "BSky" ~ "Big Sky",
+    "OVC" ~ "Ohio Valley",
+    "Sum" ~ "Summit",
+    "A10" ~ "Atlantic 10",
+    "MWC" ~ "Mountain West",
+    "MVC" ~ "Missouri Valley",
+    "NEC" ~ "Northeast",
+    "MAC" ~ "Mid-American",
+    "MAAC" ~ "Metro Atlantic",
+    "ind" ~ "Independent",
+    conf_var ~ conf_var
+  )
+}
+
+# Grab conference records
+conf_data <-
+    cbbdata::cbd_torvik_game_stats(year = 2024, type = "conf")
+
+net_up <-
+    cbbdata::cbd_all_metrics() |> 
+    dplyr::mutate(
+        conf = dplyr::case_match(
+            team,
+            "Tarleton St." ~ "WAC",
+            "Utah Tech" ~ "WAC",
+            "St. Thomas" ~ "Sum",
+            "UC San Diego" ~ "BW",
+            "Bellarmine" ~  "ASun",
+            "Queens" ~  "ASun",
+            "Le Moyne" ~ "NEC",
+            "Lindenwood" ~ "OVC",
+            "Texas A&M Commerce" ~ "Slnd",
+            "Southern Indiana" ~ "OVC",
+            "Stonehill" ~ "NEC",
+            team ~ conf
+        )
+    ) |>
+    dplyr::mutate(conf = conf_name_lookup(conf))
+
+team_net <- net_up |>
+    dplyr::select(team, net = net_rank, conf)
+
+conf_records <- conf_data |>
+    cbbdata::cbd_add_net_quad() |>
+    dplyr::mutate(delta = abs(pts_scored - opp_pts)) |>
+    dplyr::select(-net,-conf) |> # drop these for easier joining 
+    dplyr::left_join(team_net, by = "team") |>
+    dplyr::group_by(conf) |>
+    dplyr::summarise(
+        games_played = dplyr::n(),
+        avg_net = mean(unique(net)),
+        home_wins = sum(result == "W" & location == "H"),
+        home_loss = sum(result == "L" & location == "H"),
+        home_win_pct = (home_wins / (home_wins + home_loss)),
+        avg_diff = mean(delta),
+        q1 = sum(quad == "Quadrant 1") / games_played,
+        q2 = sum(quad == "Quadrant 2") / games_played,
+        q3 = sum(quad == "Quadrant 3") / games_played,
+        q4 = sum(quad == "Quadrant 4") / games_played,
+    ) |>
+    dplyr::arrange(avg_net)
+
+# Grab non-conference records 
+
+non_con_data <-
+    cbbdata::cbd_torvik_game_stats(year = 2024, type = "nc")
+
+non_con_records <- non_con_data |>
+    dplyr::filter(conf != "ind") |> 
+    cbbdata::cbd_add_net_quad() |>
+    dplyr::select(-net,-conf) |> # drop these for easier joining 
+    dplyr::left_join(team_net, by = "team") |>
+    dplyr::group_by(conf) |>
+    dplyr::summarise(
+        games_played = dplyr::n(),
+        avg_net = mean(unique(net)),
+        q1_rec = paste0(sum(quad == "Quadrant 1" & result == "W"), "-",
+                        sum(quad == "Quadrant 1" & result == "L")),
+        q1 = sum(quad == "Quadrant 1") / games_played,
+        q2_rec = paste0(sum(quad == "Quadrant 2" & result == "W"), "-",
+                        sum(quad == "Quadrant 2" & result == "L")),
+        q2 = sum(quad == "Quadrant 2") / games_played,
+        q3_rec = paste0(sum(quad == "Quadrant 3" & result == "W"), "-",
+                        sum(quad == "Quadrant 3" & result == "L")),
+        q3 = sum(quad == "Quadrant 3") / games_played,
+        q4_rec = paste0(sum(quad == "Quadrant 4" & result == "W"), "-",
+                        sum(quad == "Quadrant 4" & result == "L")),
+        q4 = sum(quad == "Quadrant 4") / games_played,
+    ) |>
+    dplyr::arrange(avg_net)
+
+real_nc <- non_con_records |>  
+    dplyr::select(conf, nc_q1 = q1, nc_q2 = q2, 
+                  nc_q3 = q3, nc_q4 = q4) 
+
+quad_table <- conf_records |> 
+  dplyr::select(conf, con_q1 = q1, con_q2 = q2, 
+                con_q3 = q3, con_q4 = q4) |> 
+  dplyr::left_join(real_nc, by = "conf") |> 
+  dplyr::select(conf, con_q1, nc_q1, 
+                con_q2, nc_q2, con_q3, nc_q3, 
+                con_q4, nc_q4) 
+
+```
+
+### GT Table
+
+```{r gt-table, warning=FALSE}
+quad_table |> 
+    gt::gt() |>
+    gt::cols_label(
+        conf = "",
+        con_q1 = "CON",
+        con_q2 = "CON",
+        con_q3 = "CON",
+        con_q4 = "CON",
+        nc_q1 = "NON-CON", 
+        nc_q2 = "NON-CON", 
+        nc_q3 = "NON-CON", 
+        nc_q4 = "NON-CON"
+    ) |>
+    gt::fmt_percent(columns = -c(conf), decimals = 1) |>
+    gt::tab_spanner(label = "Quad 1",
+                    columns = c(con_q1, nc_q1)) |>
+    gt::tab_spanner(label = "Quad 2",
+                    columns = c(con_q2, nc_q2)) |>
+    gt::tab_spanner(label = "Quad 3",
+                    columns = c(con_q3, nc_q3)) |>
+    gt::tab_spanner(label = "Quad 4",
+                    columns = c(con_q4, nc_q4)) |>
+    gtExtras::gt_hulk_col_numeric(columns = -c(conf)) |>
+    gtExtras::gt_theme_dot_matrix() |> 
+    gt::tab_header(title = "Percentage of Conference and Non-Conference Games in each Quadrant by League", 
+                   subtitle = "Shows percentage of conference and non-conference games in each quadrant because teams play different schedules. ") |>
+    gt::tab_source_note(source_note = "Bless your chart | data: cbbdata | January 28, 2024") |>
+    gt::tab_options (
+        source_notes.font.size = gt::px(10),
+        row.striping.background_color = '#EEEEEE',
+        table.font.size = gt::px(12),
+        column_labels.text_transform = 'uppercase'
+    ) |>
+    gt::tab_style(style = list(gt::cell_borders(
+        sides = c("left"),
+        color = "#c1c1c1",
+        weight = gt::px(2)
+    )),
+    locations = list(gt::cells_body(
+        columns = -c(conf)
+    ))) -> quad_gt 
+
+gtExtras::gtsave_extra(quad_gt,
+                       filename = "quad_table.png",
+                       vheight = 875,
+                       vwidth = 650)
+
+quad_gt
+
+```
+
+### 

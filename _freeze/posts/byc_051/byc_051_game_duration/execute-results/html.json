@@ -1,0 +1,16 @@
+{
+  "hash": "53743620486121e2c1bcd0b355789046",
+  "result": {
+    "markdown": "---\ntitle: \"051: FBS game duration update\"\ndate: \"2023-10-08\"\ncategories:\n  - geom_col\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkore_games <- readr::read_csv(\"fbs-week-6.csv\")\n\n# min_model <- lm(formula = minutes ~ total_drives + total_points + point_diff + total_plays + total_turnovers + total_punts, data = kore_games)\n\n\n# kore_games$predicted_minutes <- predict(min_model, kore_games)\n```\n:::\n\n\n### Predicted Minutes Model\n\n\n::: {.cell}\n\n```{.r .cell-code}\nggplot2::ggplot(data = kore_games, \n                ggplot2::aes(y = predicted_minutes, x = minutes)) +\n    ggplot2::geom_point(color = \"#333333\",\n                        fill = \"#c4ced4\",\n                        shape = 21,\n                        size = 1.5,\n                        alpha = .75) +\n    ggplot2::geom_abline(slope = 1, intercept = 0, color = \"#333333\", linetype = \"dashed\") +\n    ggplot2::labs(x = \"Observed Minutes\", y = \"Predicted Minutes\",\n                  title = \"College Football Games: Observed and Predicted Minutes\", subtitle = \"Data from 431 games between at least one FBS team\", \n                  caption = \"Bless your chart | data via SportSource Analytics | October 8, 2023\") + \n    ggthemes::theme_few()  -> fbs_plot\n\nggplot2::ggsave(\n  \"fbs_plot.png\",\n  fbs_plot,\n  w = 6,\n  h = 6,\n  dpi = 600,\n  type = 'cairo'\n)\n\nfbs_plot\n```\n\n::: {.cell-output-display}\n![](byc_051_game_duration_files/figure-html/predicted-minutes-1.png){width=672}\n:::\n:::\n\n\n### \n",
+    "supporting": [
+      "byc_051_game_duration_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

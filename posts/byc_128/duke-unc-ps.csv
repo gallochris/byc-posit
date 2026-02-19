@@ -1,0 +1,16 @@
+﻿date,team,opponent,location,spread,unc_score,duke_score,unc_cover,winner
+3/3/02,N Carolina,Duke,Away,28,68,93,TRUE,Duke
+3/8/02,N Carolina,Duke,Neutral,26,48,60,TRUE,Duke
+1/31/02,N Carolina,Duke,Home,17,58,87,FALSE,Duke
+1/27/99,N Carolina,Duke,Away,16,77,89,TRUE,Duke
+3/6/10,N Carolina,Duke,Away,15,50,82,FALSE,Duke
+2/5/03,N Carolina,Duke,Away,14,74,83,TRUE,Duke
+3/7/99,N Carolina,Duke,Neutral,12,73,96,FALSE,Duke
+3/5/22,N Carolina,Duke,Away,11,94,81,TRUE,North Carolina
+3/4/00,N Carolina,Duke,Away,11,76,90,FALSE,Duke
+3/7/20,N Carolina,Duke,Away,10.5,76,89,FALSE,Duke
+2/13/13,N Carolina,Duke,Away,10.5,68,73,TRUE,Duke
+2/9/11,N Carolina,Duke,Away,10.5,73,79,TRUE,Duke
+2/1/01,N Carolina,Duke,Away,10.5,85,83,TRUE,North Carolina
+2/20/19,N Carolina,Duke,Away,10,88,72,TRUE,North Carolina
+3/6/04,N Carolina,Duke,Away,9.5,65,70,TRUE,Duke

@@ -1,0 +1,355 @@
+---
+title: "124: Slope Net"
+date: "2025-01-10"
+categories:
+  - geom_line
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+# majority of data wrangling done via evdevbyc repo
+# see https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/
+
+twenty <- readr::read_csv("twenty_plus.csv")
+
+# Prepare data for plotting
+data_for_plot <- twenty |> 
+  dplyr::mutate(raw_net_eff = round(raw_net_eff, 1)) |> 
+  tidyr::pivot_longer(
+    cols = c(pts_dif, raw_net_eff),
+    names_to = "metric",
+    values_to = "value"
+  )  |> 
+  dplyr::mutate(color_line = 
+            dplyr::if_else(
+              row_num %in% c(15, 30, 27), "label-games", "games" 
+            )
+      )
+
+
+# prep conference summary data too 
+conf_summary <- readr::read_csv("conf-sum.csv") |> 
+  dplyr::select(-1)
+```
+
+### Custom theme 
+
+```{r theme-me, warning = FALSE}
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      panel.grid.minor = ggplot2::element_line(color = "gray", linetype = "dotted"),  # Customize minor grid lines
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+} 
+
+```
+
+### Slope chart
+
+```{r slope-plot, warning=FALSE}
+
+slope_plot <- data_for_plot |> 
+  ggplot2::ggplot(ggplot2::aes(x = metric, y = value, 
+                               group = row_num)) +
+  ggplot2::geom_line(ggplot2::aes(color = color_line, 
+                                  size = color_line)) +
+  ggplot2::geom_point(ggplot2::aes(color = color_line, 
+                                   size = color_line)) +
+  ggplot2::scale_color_manual(values = c("games" = "lightpink", 
+                                         "label-games" = "lightgreen")) +
+  ggplot2::scale_size_manual(values = c("games" = 0.5, 
+                                        "label-games" = 1.5)) +
+  ggplot2::scale_x_discrete(labels = 
+                              c("pts_dif" = "Points Difference", 
+                                "raw_net_eff" = "Raw Net Efficiency")) +
+  ggplot2::labs(
+    title = "Are all 20-point  \nwins the same?",
+    x = "", y = "",
+    caption = "Data via barttorvik.com | Viz by Chris at Bless your chart | January 10, 2025"
+  ) +
+  ggplot2::scale_y_continuous(limits= c(15, 40)) +
+  theme_me() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(family = "mono"),
+    axis.text.y = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_blank(),
+    axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+    plot.caption = ggtext::element_markdown(family = "mono")
+  ) +
+  ggplot2::annotate(
+    "text", 
+    x = 1,
+    y = 17.5,
+    label = "Margin of  \nVictory",
+    color = "#333333",
+    size = 4,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    "text", 
+    x = 2,
+    y = 17.5,
+    label = "Raw Net Efficiency  \nper 100 possessions",
+    color = "#333333",
+    size = 4,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    "text", 
+    x = 0.94,
+    y = 20,
+    label = "+20",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    "text", 
+    x = 2.09,
+    y = 37.7,
+    label = "+37.7",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    "text", 
+    x = 2.09,
+    y = 29.7,
+    label = "+29.7",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    "text", 
+    x = 2.09,
+    y = 23.5,
+    label = "+23.5",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'mono',
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2.39,
+    y = 37.7,
+    color = "#333333",
+    fill = "lightgreen",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5,
+    label = "Houston 62, Troy 42  \n~55 possessions"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2.39,
+    y = 29.7,
+    color = "#333333",
+    fill = "lightgreen",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5,
+    label = "Texas A&M 80, Texas 60  \n~68 possessions"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2.39,
+    y = 23.6,
+    color = "#333333",
+    fill = "lightgreen",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5,
+    label = "Ohio St. 103, ISU 83  \n79 possessions"
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#333333",
+    x = 1.3,
+    y = 35,
+    xend = 1.5,
+    yend = 25,
+    curvature = -.6,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm"), )
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 1.1,
+    y = 36.6,
+    color = "#333333",
+    fill = "lightpink",
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5,
+    label = "51 different games  \nplayed at a different pace  \nwith different efficiencies"
+  ) 
+
+
+
+ggplot2::ggsave(
+    "slope_plot.png",
+    slope_plot ,
+    h = 8.25,
+    w = 8.25,
+    dpi = 600,
+    type = 'cairo'
+)
+
+slope_plot
+```
+
+### Conference summary 
+
+```{r conf-summary, warning=FALSE}
+
+conf_summary |> 
+  dplyr::filter(conf %in% c("SEC", "Big Ten", 
+                            "Big 12", "Big East", 
+                            "ACC", "Mountain West", 
+                            "WCC", "Atlantic 10", "CUSA", "American")) |> 
+  dplyr::select(-home_wins, -home_games) |> 
+  dplyr::mutate(
+    conf = dplyr::case_match(
+      conf,
+      "Mountain West" ~ "MWC",
+      "Big Ten" ~ "B10",
+      "Big 12" ~ "B12",
+      "American" ~ "Amer",
+      "Big East" ~ "BE",
+      "Atlantic 10" ~ "A10",
+      conf ~ conf
+    )
+  ) |> 
+  cbbplotR::gt_cbb_conferences(conf, logo_height = 14) |>
+  dplyr::arrange(-avg_point_diff) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(conf) |>
+  gtUtils::gt_theme_gtutils() |> 
+  gt::cols_align(conf, align = "left") |>
+  gtUtils::gt_column_subheaders(
+    teams = list(heading = "Teams", subtitle = "Total"),
+    total_games = list(heading = "Games", subtitle = "Total"),
+    avg_point_diff = list(heading = "AVG", subtitle = "Margin of victory"),
+    close_games_pct = list(heading = "Close", subtitle = "< 5.5 points"),
+    blowout_games_pct = list(heading = "Blowout", subtitle = "> 15.5 points"),
+    home_win_pct = list(heading = "Home", subtitle = "Win %"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::cols_label(
+    conf = ""
+  ) |> 
+  gtUtils::gt_color_pills(avg_point_diff,
+                          domain = c(0, 20), format_type = "number", digits = 1,
+                          palette = c("#2ECC71", "#82E0AA", "#F5B041", "#E74C3C")
+  ) |> 
+  gtUtils::gt_color_pills(home_win_pct,
+                          domain = c(0, 1), format_type = "percent", digits = 1,
+                          palette = c("#2ECC71", "#82E0AA", "#F5B041", "#E74C3C"),
+                          reverse = TRUE
+  ) |> 
+  gtUtils::gt_color_pills(close_games_pct,
+                          domain = c(0, .5), format_type = "percent", digits = 1,
+                          palette = c("#2ECC71", "#82E0AA", "#F5B041", "#E74C3C"),
+                          reverse = TRUE
+  ) |> 
+  gtUtils::gt_color_pills(blowout_games_pct,
+                          domain = c(0, .65), format_type = "percent", digits = 1,
+                          palette = c("#2ECC71", "#82E0AA", "#F5B041", "#E74C3C")
+  ) |> 
+  gt::tab_header(
+    title = gt::html("2024-25 Conference Summary through January 9 Games"),
+    subtitle = gt::html(
+      "Total games, average margin of victory, home win percentage, close game and blowout percentages for the top 10 leagues per kenpom.com. Data sorted from highest to lowest margin of victory."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via barttorvik.com, logos via ESPN, and theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_options(table.width = gt::px(600)) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) -> conf_tbl 
+
+gtUtils::gt_save_crop(
+  conf_tbl,
+  file = "conf_chart.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+conf_tbl
+```

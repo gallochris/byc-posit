@@ -1,0 +1,622 @@
+"","year","team","conference","total_wins","total_losses","all_wins"
+"1",2014,"Alabama","SEC",12,2,12
+"2",2014,"Arizona","Pac-12",10,4,10
+"3",2014,"Arizona State","Pac-12",10,3,10
+"4",2014,"Arkansas","SEC",7,6,7
+"5",2014,"Auburn","SEC",8,5,8
+"6",2014,"Baylor","Big 12",11,2,11
+"7",2014,"Boston College","ACC",7,6,7
+"8",2014,"BYU","FBS Independents",8,5,8
+"9",2014,"California","Pac-12",5,7,5
+"10",2014,"Cincinnati","American Athletic",9,4,9
+"11",2014,"Clemson","ACC",10,3,10
+"12",2014,"Colorado","Pac-12",2,10,2
+"13",2014,"Duke","ACC",9,4,9
+"14",2014,"Florida","SEC",7,5,7
+"15",2014,"Florida State","ACC",13,1,13
+"16",2014,"Georgia","SEC",10,3,10
+"17",2014,"Georgia Tech","ACC",11,3,11
+"18",2014,"Houston","American Athletic",8,5,8
+"19",2014,"Illinois","Big Ten",6,7,6
+"20",2014,"Indiana","Big Ten",4,8,4
+"21",2014,"Iowa","Big Ten",7,6,7
+"22",2014,"Iowa State","Big 12",2,10,2
+"23",2014,"Kansas","Big 12",3,9,3
+"24",2014,"Kansas State","Big 12",9,4,9
+"25",2014,"Kentucky","SEC",5,7,5
+"26",2014,"Louisville","ACC",9,4,9
+"27",2014,"LSU","SEC",8,5,8
+"28",2014,"Maryland","Big Ten",7,6,7
+"29",2014,"Miami","ACC",6,7,6
+"30",2014,"Michigan","Big Ten",5,7,5
+"31",2014,"Michigan State","Big Ten",11,2,11
+"32",2014,"Minnesota","Big Ten",8,5,8
+"33",2014,"Mississippi State","SEC",10,3,10
+"34",2014,"Missouri","SEC",11,3,11
+"35",2014,"NC State","ACC",8,5,8
+"36",2014,"Nebraska","Big Ten",9,4,9
+"37",2014,"North Carolina","ACC",6,7,6
+"38",2014,"Northwestern","Big Ten",5,7,5
+"39",2014,"Notre Dame","FBS Independents",8,5,8
+"40",2014,"Ohio State","Big Ten",14,1,14
+"41",2014,"Oklahoma","Big 12",8,5,8
+"42",2014,"Oklahoma State","Big 12",7,6,7
+"43",2014,"Ole Miss","SEC",9,4,9
+"44",2014,"Oregon","Pac-12",13,2,13
+"45",2014,"Oregon State","Pac-12",5,7,5
+"46",2014,"Penn State","Big Ten",7,6,7
+"47",2014,"Pittsburgh","ACC",6,7,6
+"48",2014,"Purdue","Big Ten",3,9,3
+"49",2014,"Rutgers","Big Ten",8,5,8
+"50",2014,"South Carolina","SEC",7,6,7
+"51",2014,"Stanford","Pac-12",8,5,8
+"52",2014,"Syracuse","ACC",3,9,3
+"53",2014,"TCU","Big 12",12,1,12
+"54",2014,"Tennessee","SEC",7,6,7
+"55",2014,"Texas","Big 12",6,7,6
+"56",2014,"Texas A&M","SEC",8,5,8
+"57",2014,"Texas Tech","Big 12",4,8,4
+"58",2014,"UCF","American Athletic",9,4,9
+"59",2014,"UCLA","Pac-12",10,3,10
+"60",2014,"USC","Pac-12",9,4,9
+"61",2014,"Utah","Pac-12",9,4,9
+"62",2014,"Vanderbilt","SEC",3,9,3
+"63",2014,"Virginia","ACC",5,7,5
+"64",2014,"Virginia Tech","ACC",7,6,7
+"65",2014,"Wake Forest","ACC",3,9,3
+"66",2014,"Washington","Pac-12",8,6,8
+"67",2014,"Washington State","Pac-12",3,9,3
+"68",2014,"West Virginia","Big 12",7,6,7
+"69",2014,"Wisconsin","Big Ten",11,3,11
+"70",2015,"Alabama","SEC",14,1,26
+"71",2015,"Arizona","Pac-12",7,6,17
+"72",2015,"Arizona State","Pac-12",6,7,16
+"73",2015,"Arkansas","SEC",8,5,15
+"74",2015,"Auburn","SEC",7,6,15
+"75",2015,"Baylor","Big 12",10,3,21
+"76",2015,"Boston College","ACC",3,9,10
+"77",2015,"BYU","FBS Independents",9,4,17
+"78",2015,"California","Pac-12",8,5,13
+"79",2015,"Cincinnati","American Athletic",7,6,16
+"80",2015,"Clemson","ACC",14,1,24
+"81",2015,"Colorado","Pac-12",4,9,6
+"82",2015,"Duke","ACC",8,5,17
+"83",2015,"Florida","SEC",10,4,17
+"84",2015,"Florida State","ACC",10,3,23
+"85",2015,"Georgia","SEC",10,3,20
+"86",2015,"Georgia Tech","ACC",3,9,14
+"87",2015,"Houston","American Athletic",13,1,21
+"88",2015,"Illinois","Big Ten",5,7,11
+"89",2015,"Indiana","Big Ten",6,7,10
+"90",2015,"Iowa","Big Ten",12,2,19
+"91",2015,"Iowa State","Big 12",3,9,5
+"92",2015,"Kansas","Big 12",0,12,3
+"93",2015,"Kansas State","Big 12",6,7,15
+"94",2015,"Kentucky","SEC",5,7,10
+"95",2015,"Louisville","ACC",8,5,17
+"96",2015,"LSU","SEC",9,3,17
+"97",2015,"Maryland","Big Ten",3,9,10
+"98",2015,"Miami","ACC",8,5,14
+"99",2015,"Michigan","Big Ten",10,3,15
+"100",2015,"Michigan State","Big Ten",12,2,23
+"101",2015,"Minnesota","Big Ten",6,7,14
+"102",2015,"Mississippi State","SEC",9,4,19
+"103",2015,"Missouri","SEC",5,7,16
+"104",2015,"NC State","ACC",7,6,15
+"105",2015,"Nebraska","Big Ten",6,7,15
+"106",2015,"North Carolina","ACC",11,3,17
+"107",2015,"Northwestern","Big Ten",10,3,15
+"108",2015,"Notre Dame","FBS Independents",10,3,18
+"109",2015,"Ohio State","Big Ten",12,1,26
+"110",2015,"Oklahoma","Big 12",11,2,19
+"111",2015,"Oklahoma State","Big 12",10,3,17
+"112",2015,"Ole Miss","SEC",10,3,19
+"113",2015,"Oregon","Pac-12",9,4,22
+"114",2015,"Oregon State","Pac-12",2,10,7
+"115",2015,"Penn State","Big Ten",7,6,14
+"116",2015,"Pittsburgh","ACC",8,5,14
+"117",2015,"Purdue","Big Ten",2,10,5
+"118",2015,"Rutgers","Big Ten",4,8,12
+"119",2015,"South Carolina","SEC",3,9,10
+"120",2015,"Stanford","Pac-12",12,2,20
+"121",2015,"Syracuse","ACC",4,8,7
+"122",2015,"TCU","Big 12",11,2,23
+"123",2015,"Tennessee","SEC",9,4,16
+"124",2015,"Texas","Big 12",5,7,11
+"125",2015,"Texas A&M","SEC",8,5,16
+"126",2015,"Texas Tech","Big 12",7,6,11
+"127",2015,"UCF","American Athletic",0,12,9
+"128",2015,"UCLA","Pac-12",8,5,18
+"129",2015,"USC","Pac-12",8,6,17
+"130",2015,"Utah","Pac-12",10,3,19
+"131",2015,"Vanderbilt","SEC",4,8,7
+"132",2015,"Virginia","ACC",4,8,9
+"133",2015,"Virginia Tech","ACC",7,6,14
+"134",2015,"Wake Forest","ACC",3,9,6
+"135",2015,"Washington","Pac-12",7,6,15
+"136",2015,"Washington State","Pac-12",9,4,12
+"137",2015,"West Virginia","Big 12",8,5,15
+"138",2015,"Wisconsin","Big Ten",10,3,21
+"139",2016,"Alabama","SEC",14,1,40
+"140",2016,"Arizona","Pac-12",3,9,20
+"141",2016,"Arizona State","Pac-12",5,7,21
+"142",2016,"Arkansas","SEC",7,6,22
+"143",2016,"Auburn","SEC",8,5,23
+"144",2016,"Baylor","Big 12",7,6,28
+"145",2016,"Boston College","ACC",7,6,17
+"146",2016,"BYU","FBS Independents",9,4,26
+"147",2016,"California","Pac-12",5,7,18
+"148",2016,"Cincinnati","American Athletic",4,8,20
+"149",2016,"Clemson","ACC",14,1,38
+"150",2016,"Colorado","Pac-12",10,4,16
+"151",2016,"Duke","ACC",4,8,21
+"152",2016,"Florida","SEC",9,4,26
+"153",2016,"Florida State","ACC",10,3,33
+"154",2016,"Georgia","SEC",8,5,28
+"155",2016,"Georgia Tech","ACC",9,4,23
+"156",2016,"Houston","American Athletic",9,4,30
+"157",2016,"Illinois","Big Ten",3,9,14
+"158",2016,"Indiana","Big Ten",6,7,16
+"159",2016,"Iowa","Big Ten",8,5,27
+"160",2016,"Iowa State","Big 12",3,9,8
+"161",2016,"Kansas","Big 12",2,10,5
+"162",2016,"Kansas State","Big 12",9,4,24
+"163",2016,"Kentucky","SEC",7,6,17
+"164",2016,"Louisville","ACC",9,4,26
+"165",2016,"LSU","SEC",8,4,25
+"166",2016,"Maryland","Big Ten",6,7,16
+"167",2016,"Miami","ACC",9,4,23
+"168",2016,"Michigan","Big Ten",10,3,25
+"169",2016,"Michigan State","Big Ten",3,9,26
+"170",2016,"Minnesota","Big Ten",9,4,23
+"171",2016,"Mississippi State","SEC",6,7,25
+"172",2016,"Missouri","SEC",4,8,20
+"173",2016,"NC State","ACC",7,6,22
+"174",2016,"Nebraska","Big Ten",9,4,24
+"175",2016,"North Carolina","ACC",8,5,25
+"176",2016,"Northwestern","Big Ten",7,6,22
+"177",2016,"Notre Dame","FBS Independents",4,8,22
+"178",2016,"Ohio State","Big Ten",11,2,37
+"179",2016,"Oklahoma","Big 12",11,2,30
+"180",2016,"Oklahoma State","Big 12",10,3,27
+"181",2016,"Ole Miss","SEC",5,7,24
+"182",2016,"Oregon","Pac-12",4,8,26
+"183",2016,"Oregon State","Pac-12",4,8,11
+"184",2016,"Penn State","Big Ten",11,3,25
+"185",2016,"Pittsburgh","ACC",8,5,22
+"186",2016,"Purdue","Big Ten",3,9,8
+"187",2016,"Rutgers","Big Ten",2,10,14
+"188",2016,"South Carolina","SEC",6,7,16
+"189",2016,"Stanford","Pac-12",10,3,30
+"190",2016,"Syracuse","ACC",4,8,11
+"191",2016,"TCU","Big 12",6,7,29
+"192",2016,"Tennessee","SEC",9,4,25
+"193",2016,"Texas","Big 12",5,7,16
+"194",2016,"Texas A&M","SEC",8,5,24
+"195",2016,"Texas Tech","Big 12",5,7,16
+"196",2016,"UCF","American Athletic",6,7,15
+"197",2016,"UCLA","Pac-12",4,8,22
+"198",2016,"USC","Pac-12",10,3,27
+"199",2016,"Utah","Pac-12",9,4,28
+"200",2016,"Vanderbilt","SEC",6,7,13
+"201",2016,"Virginia","ACC",2,10,11
+"202",2016,"Virginia Tech","ACC",10,4,24
+"203",2016,"Wake Forest","ACC",7,6,13
+"204",2016,"Washington","Pac-12",12,2,27
+"205",2016,"Washington State","Pac-12",8,5,20
+"206",2016,"West Virginia","Big 12",10,3,25
+"207",2016,"Wisconsin","Big Ten",11,3,32
+"208",2017,"Alabama","SEC",13,1,53
+"209",2017,"Arizona","Pac-12",7,6,27
+"210",2017,"Arizona State","Pac-12",7,6,28
+"211",2017,"Arkansas","SEC",4,8,26
+"212",2017,"Auburn","SEC",10,4,33
+"213",2017,"Baylor","Big 12",1,11,29
+"214",2017,"Boston College","ACC",7,6,24
+"215",2017,"BYU","FBS Independents",4,9,30
+"216",2017,"California","Pac-12",5,7,23
+"217",2017,"Cincinnati","American Athletic",4,8,24
+"218",2017,"Clemson","ACC",12,2,50
+"219",2017,"Colorado","Pac-12",5,7,21
+"220",2017,"Duke","ACC",7,6,28
+"221",2017,"Florida","SEC",4,7,30
+"222",2017,"Florida State","ACC",7,6,40
+"223",2017,"Georgia","SEC",13,2,41
+"224",2017,"Georgia Tech","ACC",5,6,28
+"225",2017,"Houston","American Athletic",7,5,37
+"226",2017,"Illinois","Big Ten",2,10,16
+"227",2017,"Indiana","Big Ten",5,7,21
+"228",2017,"Iowa","Big Ten",8,5,35
+"229",2017,"Iowa State","Big 12",8,5,16
+"230",2017,"Kansas","Big 12",1,11,6
+"231",2017,"Kansas State","Big 12",8,5,32
+"232",2017,"Kentucky","SEC",7,6,24
+"233",2017,"Louisville","ACC",8,5,34
+"234",2017,"LSU","SEC",9,4,34
+"235",2017,"Maryland","Big Ten",4,8,20
+"236",2017,"Miami","ACC",10,3,33
+"237",2017,"Michigan","Big Ten",8,5,33
+"238",2017,"Michigan State","Big Ten",10,3,36
+"239",2017,"Minnesota","Big Ten",5,7,28
+"240",2017,"Mississippi State","SEC",9,4,34
+"241",2017,"Missouri","SEC",7,6,27
+"242",2017,"NC State","ACC",9,4,31
+"243",2017,"Nebraska","Big Ten",4,8,28
+"244",2017,"North Carolina","ACC",3,9,28
+"245",2017,"Northwestern","Big Ten",10,3,32
+"246",2017,"Notre Dame","FBS Independents",10,3,32
+"247",2017,"Ohio State","Big Ten",12,2,49
+"248",2017,"Oklahoma","Big 12",12,2,42
+"249",2017,"Oklahoma State","Big 12",10,3,37
+"250",2017,"Ole Miss","SEC",6,6,30
+"251",2017,"Oregon","Pac-12",7,6,33
+"252",2017,"Oregon State","Pac-12",1,11,12
+"253",2017,"Penn State","Big Ten",11,2,36
+"254",2017,"Pittsburgh","ACC",5,7,27
+"255",2017,"Purdue","Big Ten",7,6,15
+"256",2017,"Rutgers","Big Ten",4,8,18
+"257",2017,"South Carolina","SEC",9,4,25
+"258",2017,"Stanford","Pac-12",9,5,39
+"259",2017,"Syracuse","ACC",4,8,15
+"260",2017,"TCU","Big 12",11,3,40
+"261",2017,"Tennessee","SEC",4,8,29
+"262",2017,"Texas","Big 12",7,6,23
+"263",2017,"Texas A&M","SEC",7,6,31
+"264",2017,"Texas Tech","Big 12",6,7,22
+"265",2017,"UCF","American Athletic",13,0,28
+"266",2017,"UCLA","Pac-12",6,7,28
+"267",2017,"USC","Pac-12",11,3,38
+"268",2017,"Utah","Pac-12",7,6,35
+"269",2017,"Vanderbilt","SEC",5,7,18
+"270",2017,"Virginia","ACC",6,7,17
+"271",2017,"Virginia Tech","ACC",9,4,33
+"272",2017,"Wake Forest","ACC",8,5,21
+"273",2017,"Washington","Pac-12",10,3,37
+"274",2017,"Washington State","Pac-12",9,4,29
+"275",2017,"West Virginia","Big 12",7,6,32
+"276",2017,"Wisconsin","Big Ten",13,1,45
+"277",2018,"Alabama","SEC",14,1,67
+"278",2018,"Arizona","Pac-12",5,7,32
+"279",2018,"Arizona State","Pac-12",7,6,35
+"280",2018,"Arkansas","SEC",2,10,28
+"281",2018,"Auburn","SEC",8,5,41
+"282",2018,"Baylor","Big 12",7,6,36
+"283",2018,"Boston College","ACC",7,5,31
+"284",2018,"BYU","FBS Independents",7,6,37
+"285",2018,"California","Pac-12",7,6,30
+"286",2018,"Cincinnati","American Athletic",11,2,35
+"287",2018,"Clemson","ACC",15,0,65
+"288",2018,"Colorado","Pac-12",5,7,26
+"289",2018,"Duke","ACC",8,5,36
+"290",2018,"Florida","SEC",10,3,40
+"291",2018,"Florida State","ACC",5,7,45
+"292",2018,"Georgia","SEC",11,3,52
+"293",2018,"Georgia Tech","ACC",7,6,35
+"294",2018,"Houston","American Athletic",8,5,45
+"295",2018,"Illinois","Big Ten",4,8,20
+"296",2018,"Indiana","Big Ten",5,7,26
+"297",2018,"Iowa","Big Ten",9,4,44
+"298",2018,"Iowa State","Big 12",8,5,24
+"299",2018,"Kansas","Big 12",3,9,9
+"300",2018,"Kansas State","Big 12",5,7,37
+"301",2018,"Kentucky","SEC",9,4,33
+"302",2018,"Louisville","ACC",2,10,36
+"303",2018,"LSU","SEC",10,3,44
+"304",2018,"Maryland","Big Ten",5,7,25
+"305",2018,"Miami","ACC",7,6,40
+"306",2018,"Michigan","Big Ten",10,3,43
+"307",2018,"Michigan State","Big Ten",7,6,43
+"308",2018,"Minnesota","Big Ten",7,6,35
+"309",2018,"Mississippi State","SEC",8,5,42
+"310",2018,"Missouri","SEC",9,4,36
+"311",2018,"NC State","ACC",9,4,40
+"312",2018,"Nebraska","Big Ten",4,8,32
+"313",2018,"North Carolina","ACC",2,9,30
+"314",2018,"Northwestern","Big Ten",9,5,41
+"315",2018,"Notre Dame","FBS Independents",12,1,44
+"316",2018,"Ohio State","Big Ten",13,1,62
+"317",2018,"Oklahoma","Big 12",12,2,54
+"318",2018,"Oklahoma State","Big 12",7,6,44
+"319",2018,"Ole Miss","SEC",5,7,35
+"320",2018,"Oregon","Pac-12",9,4,42
+"321",2018,"Oregon State","Pac-12",2,10,14
+"322",2018,"Penn State","Big Ten",9,4,45
+"323",2018,"Pittsburgh","ACC",7,7,34
+"324",2018,"Purdue","Big Ten",6,7,21
+"325",2018,"Rutgers","Big Ten",1,11,19
+"326",2018,"South Carolina","SEC",7,6,32
+"327",2018,"Stanford","Pac-12",9,4,48
+"328",2018,"Syracuse","ACC",10,3,25
+"329",2018,"TCU","Big 12",7,6,47
+"330",2018,"Tennessee","SEC",5,7,34
+"331",2018,"Texas","Big 12",10,4,33
+"332",2018,"Texas A&M","SEC",9,4,40
+"333",2018,"Texas Tech","Big 12",5,7,27
+"334",2018,"UCF","American Athletic",12,1,40
+"335",2018,"UCLA","Pac-12",3,9,31
+"336",2018,"USC","Pac-12",5,7,43
+"337",2018,"Utah","Pac-12",9,5,44
+"338",2018,"Vanderbilt","SEC",6,7,24
+"339",2018,"Virginia","ACC",8,5,25
+"340",2018,"Virginia Tech","ACC",6,7,39
+"341",2018,"Wake Forest","ACC",7,6,28
+"342",2018,"Washington","Pac-12",10,4,47
+"343",2018,"Washington State","Pac-12",11,2,40
+"344",2018,"West Virginia","Big 12",8,4,40
+"345",2018,"Wisconsin","Big Ten",8,5,53
+"346",2019,"Alabama","SEC",11,2,78
+"347",2019,"Arizona","Pac-12",4,8,36
+"348",2019,"Arizona State","Pac-12",8,5,43
+"349",2019,"Arkansas","SEC",2,10,30
+"350",2019,"Auburn","SEC",9,4,50
+"351",2019,"Baylor","Big 12",11,3,47
+"352",2019,"Boston College","ACC",6,7,37
+"353",2019,"BYU","FBS Independents",7,6,44
+"354",2019,"California","Pac-12",8,5,38
+"355",2019,"Cincinnati","American Athletic",11,3,46
+"356",2019,"Clemson","ACC",14,1,79
+"357",2019,"Colorado","Pac-12",5,7,31
+"358",2019,"Duke","ACC",5,7,41
+"359",2019,"Florida","SEC",11,2,51
+"360",2019,"Florida State","ACC",6,7,51
+"361",2019,"Georgia","SEC",12,2,64
+"362",2019,"Georgia Tech","ACC",3,9,38
+"363",2019,"Houston","American Athletic",4,8,49
+"364",2019,"Illinois","Big Ten",6,7,26
+"365",2019,"Indiana","Big Ten",8,5,34
+"366",2019,"Iowa","Big Ten",10,3,54
+"367",2019,"Iowa State","Big 12",7,6,31
+"368",2019,"Kansas","Big 12",3,9,12
+"369",2019,"Kansas State","Big 12",8,5,45
+"370",2019,"Kentucky","SEC",8,5,41
+"371",2019,"Louisville","ACC",8,5,44
+"372",2019,"LSU","SEC",15,0,59
+"373",2019,"Maryland","Big Ten",3,9,28
+"374",2019,"Miami","ACC",6,7,46
+"375",2019,"Michigan","Big Ten",9,4,52
+"376",2019,"Michigan State","Big Ten",7,6,50
+"377",2019,"Minnesota","Big Ten",11,2,46
+"378",2019,"Mississippi State","SEC",6,7,48
+"379",2019,"Missouri","SEC",6,6,42
+"380",2019,"NC State","ACC",4,8,44
+"381",2019,"Nebraska","Big Ten",5,7,37
+"382",2019,"North Carolina","ACC",7,6,37
+"383",2019,"Northwestern","Big Ten",3,9,44
+"384",2019,"Notre Dame","FBS Independents",11,2,55
+"385",2019,"Ohio State","Big Ten",13,1,75
+"386",2019,"Oklahoma","Big 12",12,2,66
+"387",2019,"Oklahoma State","Big 12",8,5,52
+"388",2019,"Ole Miss","SEC",4,8,39
+"389",2019,"Oregon","Pac-12",12,2,54
+"390",2019,"Oregon State","Pac-12",5,7,19
+"391",2019,"Penn State","Big Ten",11,2,56
+"392",2019,"Pittsburgh","ACC",8,5,42
+"393",2019,"Purdue","Big Ten",4,8,25
+"394",2019,"Rutgers","Big Ten",2,10,21
+"395",2019,"South Carolina","SEC",4,8,36
+"396",2019,"Stanford","Pac-12",4,8,52
+"397",2019,"Syracuse","ACC",5,7,30
+"398",2019,"TCU","Big 12",5,7,52
+"399",2019,"Tennessee","SEC",8,5,42
+"400",2019,"Texas","Big 12",8,5,41
+"401",2019,"Texas A&M","SEC",8,5,48
+"402",2019,"Texas Tech","Big 12",4,8,31
+"403",2019,"UCF","American Athletic",10,3,50
+"404",2019,"UCLA","Pac-12",4,8,35
+"405",2019,"USC","Pac-12",8,5,51
+"406",2019,"Utah","Pac-12",11,3,55
+"407",2019,"Vanderbilt","SEC",3,9,27
+"408",2019,"Virginia","ACC",9,5,34
+"409",2019,"Virginia Tech","ACC",8,5,47
+"410",2019,"Wake Forest","ACC",8,5,36
+"411",2019,"Washington","Pac-12",8,5,55
+"412",2019,"Washington State","Pac-12",6,7,46
+"413",2019,"West Virginia","Big 12",5,7,45
+"414",2019,"Wisconsin","Big Ten",10,4,63
+"415",2020,"Alabama","SEC",13,0,91
+"416",2020,"Arizona","Pac-12",0,5,36
+"417",2020,"Arizona State","Pac-12",2,2,45
+"418",2020,"Arkansas","SEC",3,7,33
+"419",2020,"Auburn","SEC",6,5,56
+"420",2020,"Baylor","Big 12",2,7,49
+"421",2020,"Boston College","ACC",6,5,43
+"422",2020,"BYU","FBS Independents",11,1,55
+"423",2020,"California","Pac-12",1,3,39
+"424",2020,"Cincinnati","American Athletic",9,1,55
+"425",2020,"Clemson","ACC",10,2,89
+"426",2020,"Colorado","Pac-12",4,2,35
+"427",2020,"Duke","ACC",2,9,43
+"428",2020,"Florida","SEC",8,4,59
+"429",2020,"Florida State","ACC",3,6,54
+"430",2020,"Georgia","SEC",8,2,72
+"431",2020,"Georgia Tech","ACC",3,7,41
+"432",2020,"Houston","American Athletic",3,5,52
+"433",2020,"Illinois","Big Ten",2,6,28
+"434",2020,"Indiana","Big Ten",6,2,40
+"435",2020,"Iowa","Big Ten",6,2,60
+"436",2020,"Iowa State","Big 12",9,3,40
+"437",2020,"Kansas","Big 12",0,9,12
+"438",2020,"Kansas State","Big 12",4,6,49
+"439",2020,"Kentucky","SEC",5,6,46
+"440",2020,"Louisville","ACC",4,7,48
+"441",2020,"LSU","SEC",5,5,64
+"442",2020,"Maryland","Big Ten",2,3,30
+"443",2020,"Miami","ACC",8,3,54
+"444",2020,"Michigan","Big Ten",2,4,54
+"445",2020,"Michigan State","Big Ten",2,5,52
+"446",2020,"Minnesota","Big Ten",3,4,49
+"447",2020,"Mississippi State","SEC",4,7,52
+"448",2020,"Missouri","SEC",5,5,47
+"449",2020,"NC State","ACC",8,4,52
+"450",2020,"Nebraska","Big Ten",3,5,40
+"451",2020,"North Carolina","ACC",8,4,45
+"452",2020,"Northwestern","Big Ten",7,2,51
+"453",2020,"Notre Dame","FBS Independents",10,2,65
+"454",2020,"Ohio State","Big Ten",7,1,82
+"455",2020,"Oklahoma","Big 12",9,2,75
+"456",2020,"Oklahoma State","Big 12",8,3,60
+"457",2020,"Ole Miss","SEC",5,5,44
+"458",2020,"Oregon","Pac-12",4,3,58
+"459",2020,"Oregon State","Pac-12",2,5,21
+"460",2020,"Penn State","Big Ten",4,5,60
+"461",2020,"Pittsburgh","ACC",6,5,48
+"462",2020,"Purdue","Big Ten",2,4,27
+"463",2020,"Rutgers","Big Ten",3,6,24
+"464",2020,"South Carolina","SEC",2,8,38
+"465",2020,"Stanford","Pac-12",4,2,56
+"466",2020,"Syracuse","ACC",1,10,31
+"467",2020,"TCU","Big 12",6,4,58
+"468",2020,"Tennessee","SEC",3,7,45
+"469",2020,"Texas","Big 12",7,3,48
+"470",2020,"Texas A&M","SEC",9,1,57
+"471",2020,"Texas Tech","Big 12",4,6,35
+"472",2020,"UCF","American Athletic",6,4,56
+"473",2020,"UCLA","Pac-12",3,4,38
+"474",2020,"USC","Pac-12",5,1,56
+"475",2020,"Utah","Pac-12",3,2,58
+"476",2020,"Vanderbilt","SEC",0,9,27
+"477",2020,"Virginia","ACC",5,5,39
+"478",2020,"Virginia Tech","ACC",5,6,52
+"479",2020,"Wake Forest","ACC",4,5,40
+"480",2020,"Washington","Pac-12",3,1,58
+"481",2020,"Washington State","Pac-12",1,3,47
+"482",2020,"West Virginia","Big 12",6,4,51
+"483",2020,"Wisconsin","Big Ten",4,3,67
+"484",2021,"Alabama","SEC",13,2,104
+"485",2021,"Arizona","Pac-12",1,11,37
+"486",2021,"Arizona State","Pac-12",8,5,53
+"487",2021,"Arkansas","SEC",9,4,42
+"488",2021,"Auburn","SEC",6,7,62
+"489",2021,"Baylor","Big 12",12,2,61
+"490",2021,"Boston College","ACC",6,6,49
+"491",2021,"BYU","FBS Independents",10,3,65
+"492",2021,"California","Pac-12",5,7,44
+"493",2021,"Cincinnati","American Athletic",13,1,68
+"494",2021,"Clemson","ACC",10,3,99
+"495",2021,"Colorado","Pac-12",4,8,39
+"496",2021,"Duke","ACC",3,9,46
+"497",2021,"Florida","SEC",6,7,65
+"498",2021,"Florida State","ACC",5,7,59
+"499",2021,"Georgia","SEC",14,1,86
+"500",2021,"Georgia Tech","ACC",3,9,44
+"501",2021,"Houston","American Athletic",12,2,64
+"502",2021,"Illinois","Big Ten",5,7,33
+"503",2021,"Indiana","Big Ten",2,10,42
+"504",2021,"Iowa","Big Ten",10,4,70
+"505",2021,"Iowa State","Big 12",7,6,47
+"506",2021,"Kansas","Big 12",2,10,14
+"507",2021,"Kansas State","Big 12",8,5,57
+"508",2021,"Kentucky","SEC",10,3,56
+"509",2021,"Louisville","ACC",6,7,54
+"510",2021,"LSU","SEC",6,7,70
+"511",2021,"Maryland","Big Ten",7,6,37
+"512",2021,"Miami","ACC",7,5,61
+"513",2021,"Michigan","Big Ten",12,2,66
+"514",2021,"Michigan State","Big Ten",11,2,63
+"515",2021,"Minnesota","Big Ten",9,4,58
+"516",2021,"Mississippi State","SEC",7,6,59
+"517",2021,"Missouri","SEC",6,7,53
+"518",2021,"NC State","ACC",9,3,61
+"519",2021,"Nebraska","Big Ten",3,9,43
+"520",2021,"North Carolina","ACC",6,7,51
+"521",2021,"Northwestern","Big Ten",3,9,54
+"522",2021,"Notre Dame","FBS Independents",11,2,76
+"523",2021,"Ohio State","Big Ten",11,2,93
+"524",2021,"Oklahoma","Big 12",11,2,86
+"525",2021,"Oklahoma State","Big 12",12,2,72
+"526",2021,"Ole Miss","SEC",10,3,54
+"527",2021,"Oregon","Pac-12",10,4,68
+"528",2021,"Oregon State","Pac-12",7,6,28
+"529",2021,"Penn State","Big Ten",7,6,67
+"530",2021,"Pittsburgh","ACC",11,3,59
+"531",2021,"Purdue","Big Ten",9,4,36
+"532",2021,"Rutgers","Big Ten",5,8,29
+"533",2021,"South Carolina","SEC",7,6,45
+"534",2021,"Stanford","Pac-12",3,9,59
+"535",2021,"Syracuse","ACC",5,7,36
+"536",2021,"TCU","Big 12",5,7,63
+"537",2021,"Tennessee","SEC",7,6,52
+"538",2021,"Texas","Big 12",5,7,53
+"539",2021,"Texas A&M","SEC",8,4,65
+"540",2021,"Texas Tech","Big 12",7,6,42
+"541",2021,"UCF","American Athletic",9,4,65
+"542",2021,"UCLA","Pac-12",8,4,46
+"543",2021,"USC","Pac-12",4,8,60
+"544",2021,"Utah","Pac-12",10,4,68
+"545",2021,"Vanderbilt","SEC",2,10,29
+"546",2021,"Virginia","ACC",6,6,45
+"547",2021,"Virginia Tech","ACC",6,7,58
+"548",2021,"Wake Forest","ACC",11,3,51
+"549",2021,"Washington","Pac-12",4,8,62
+"550",2021,"Washington State","Pac-12",7,6,54
+"551",2021,"West Virginia","Big 12",6,7,57
+"552",2021,"Wisconsin","Big Ten",9,4,76
+"553",2022,"Alabama","SEC",11,2,115
+"554",2022,"Arizona","Pac-12",5,7,42
+"555",2022,"Arizona State","Pac-12",3,9,56
+"556",2022,"Arkansas","SEC",6,6,48
+"557",2022,"Auburn","SEC",5,7,67
+"558",2022,"Baylor","Big 12",6,7,67
+"559",2022,"Boston College","ACC",3,9,52
+"560",2022,"BYU","FBS Independents",8,5,73
+"561",2022,"California","Pac-12",4,8,48
+"562",2022,"Cincinnati","American Athletic",9,4,77
+"563",2022,"Clemson","ACC",11,3,110
+"564",2022,"Colorado","Pac-12",1,11,40
+"565",2022,"Duke","ACC",9,4,55
+"566",2022,"Florida","SEC",6,7,71
+"567",2022,"Florida State","ACC",10,3,69
+"568",2022,"Georgia","SEC",15,0,101
+"569",2022,"Georgia Tech","ACC",5,7,49
+"570",2022,"Houston","American Athletic",7,5,71
+"571",2022,"Illinois","Big Ten",8,5,41
+"572",2022,"Indiana","Big Ten",4,8,46
+"573",2022,"Iowa","Big Ten",8,5,78
+"574",2022,"Iowa State","Big 12",4,8,51
+"575",2022,"Kansas","Big 12",6,6,20
+"576",2022,"Kansas State","Big 12",10,4,67
+"577",2022,"Kentucky","SEC",7,6,63
+"578",2022,"Louisville","ACC",8,5,62
+"579",2022,"LSU","SEC",9,4,79
+"580",2022,"Maryland","Big Ten",8,5,45
+"581",2022,"Miami","ACC",5,7,66
+"582",2022,"Michigan","Big Ten",13,1,79
+"583",2022,"Michigan State","Big Ten",5,7,68
+"584",2022,"Minnesota","Big Ten",9,4,67
+"585",2022,"Mississippi State","SEC",9,4,68
+"586",2022,"Missouri","SEC",6,6,59
+"587",2022,"NC State","ACC",8,5,69
+"588",2022,"Nebraska","Big Ten",4,8,47
+"589",2022,"North Carolina","ACC",9,5,60
+"590",2022,"Northwestern","Big Ten",1,11,55
+"591",2022,"Notre Dame","FBS Independents",9,4,85
+"592",2022,"Ohio State","Big Ten",11,2,104
+"593",2022,"Oklahoma","Big 12",6,7,92
+"594",2022,"Oklahoma State","Big 12",7,6,79
+"595",2022,"Ole Miss","SEC",8,4,62
+"596",2022,"Oregon","Pac-12",10,3,78
+"597",2022,"Oregon State","Pac-12",10,3,38
+"598",2022,"Penn State","Big Ten",10,2,77
+"599",2022,"Pittsburgh","ACC",9,4,68
+"600",2022,"Purdue","Big Ten",8,5,44
+"601",2022,"Rutgers","Big Ten",4,8,33
+"602",2022,"South Carolina","SEC",8,5,53
+"603",2022,"Stanford","Pac-12",3,9,62
+"604",2022,"Syracuse","ACC",7,6,43
+"605",2022,"TCU","Big 12",13,2,76
+"606",2022,"Tennessee","SEC",11,2,63
+"607",2022,"Texas","Big 12",8,5,61
+"608",2022,"Texas A&M","SEC",5,7,70
+"609",2022,"Texas Tech","Big 12",7,5,49
+"610",2022,"UCF","American Athletic",9,5,74
+"611",2022,"UCLA","Pac-12",9,4,55
+"612",2022,"USC","Pac-12",11,3,71
+"613",2022,"Utah","Pac-12",10,3,78
+"614",2022,"Vanderbilt","SEC",5,7,34
+"615",2022,"Virginia","ACC",3,7,48
+"616",2022,"Virginia Tech","ACC",3,8,61
+"617",2022,"Wake Forest","ACC",7,5,58
+"618",2022,"Washington","Pac-12",11,2,73
+"619",2022,"Washington State","Pac-12",7,5,61
+"620",2022,"West Virginia","Big 12",5,7,62
+"621",2022,"Wisconsin","Big Ten",7,6,83

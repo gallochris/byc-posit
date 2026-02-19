@@ -1,0 +1,172 @@
+---
+title: "076: Lineup data"
+date: "2024-02-11"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Data
+
+```{r load-data, message = FALSE}
+schedule <- bigballR::get_team_schedule(season = "2023-24", team.name = "North Carolina")
+
+schedule |> 
+  dplyr::filter(!is.na(Home_Score)) |> 
+  dplyr::filter(Home %in% c("Boston College", "Clemson", "Florida St.",
+                            "Georgia Tech", "Miami (FL)", "NC State", "Pittsburgh")) |> 
+  dplyr::pull(Game_ID) -> home_ids
+
+schedule |> 
+  dplyr::filter(!is.na(Home_Score)) |> 
+  dplyr::filter(Away %in% c("Clemson", "Florida St.", "Duke", "Louisville", 
+                            "Wake Forest", "Syracuse")) |> 
+  dplyr::pull(Game_ID) -> away_ids
+
+acc_ids <- c(away_ids, home_ids)
+
+acc_only <- schedule |> 
+  dplyr::filter(Game_ID %in% acc_ids)
+
+acc_pbp <-bigballR::get_play_by_play(acc_only$Game_ID)
+
+acc_lineups <- bigballR::get_lineups(play_by_play_data = acc_pbp)
+
+# now cross-check last two lineups 
+
+last_two_pbp <-bigballR::get_play_by_play(acc_only$Game_ID[12:13])
+
+last_two_lineups <- bigballR::get_lineups(play_by_play_data = last_two_pbp)
+
+unc_last_two <- last_two_lineups |> 
+  dplyr::filter(Team == "North Carolina") |> 
+  dplyr::rowwise() |> 
+  dplyr::mutate_at(
+    c("P1", "P2", "P3", "P4", "P5"),
+    ~ stringr::str_to_title(stringr::str_split(., "\\.", simplify = TRUE)) |>
+      stringr::str_c(collapse = " ")
+  ) |> 
+  dplyr::select(P1:P5, Mins) |> 
+  dplyr::mutate(MinPct = Mins / 80) -> no_trimble 
+
+# first 11 games
+first_acc_pbp <-bigballR::get_play_by_play(acc_only$Game_ID[1:11])
+
+first_acc_lineups <- bigballR::get_lineups(play_by_play_data = first_acc_pbp)
+
+unc_first_acc <- first_acc_lineups |> 
+  dplyr::filter(Team == "North Carolina") |> 
+  dplyr::rowwise() |> 
+  dplyr::mutate_at(
+    c("P1", "P2", "P3", "P4", "P5"),
+    ~ stringr::str_to_title(stringr::str_split(., "\\.", simplify = TRUE)) |>
+      stringr::str_c(collapse = " ")
+  ) |> 
+  dplyr::select(P1:P5, Mins) |> 
+  dplyr::mutate(MinPct = Mins / (11*40)) -> with_trimble
+
+with_trimble |> 
+    dplyr::mutate(dplyr::across(c("P1", "P2", "P3", "P4", "P5"),
+                  ~dplyr::case_when(
+                      .x == "Rj Davis" ~ "RJ Davis",
+                      .x == "Jaelyn Withers" ~ "Jae'Lyn Withers",
+                      TRUE ~ .x 
+                  )
+    )
+    ) |> 
+    dplyr::arrange(-Mins) |> 
+    dplyr::ungroup() |> 
+    dplyr::slice(1:5) -> trim_table
+
+# no trimble
+no_trimble |> 
+  dplyr::mutate(dplyr::across(c("P1", "P2", "P3", "P4", "P5"),
+                  ~dplyr::case_when(
+                      .x == "Rj Davis" ~ "RJ Davis",
+                      .x == "Jaelyn Withers" ~ "Jae'Lyn Withers",
+                      TRUE ~ .x 
+                  )
+    )
+    ) |> 
+    dplyr::arrange(-Mins) |> 
+    dplyr::ungroup() -> no_trim_table
+
+
+```
+
+### GT Tables
+
+```{r gt-tables, warning=FALSE}
+
+trim_table |> 
+    gt::gt() |> 
+    gt::cols_label(
+        P1 = 1,
+        P2 = 2,
+        P3 = 3,
+        P4 = 4,
+        P5 = 5,
+        MinPct = "%"
+    ) |> 
+    gt::fmt_number(columns = c(Mins), decimals = 1) |> 
+    gt::fmt_percent(columns = c(MinPct), decimals  = 1) |> 
+    gtExtras::gt_highlight_rows(rows = 2:5, columns = c(P5), bold_target_only = TRUE, 
+                                target_col = c(P5),
+                                fill = "#fffec8") |> 
+    gtExtras::gt_theme_538() |> 
+    gt::tab_header(title = "North Carolina: Top 5 lineups through first 11 ACC games", 
+                   subtitle = "UNC played 60 unique lineups and Seth Trimble was part of four of the five most used linueps.") |> 
+    gt::tab_source_note(source_note = "Bless your chart | data via bigballR") -> first_tbl
+
+gtExtras::gtsave_extra(first_tbl,
+                       filename = "first_table.png",
+                       vheight = 875,
+                       vwidth = 850)
+
+
+no_trim_table |> 
+    dplyr::mutate(row_n = dplyr::row_number()) |> 
+    dplyr::relocate(row_n, .before = c(P1)) |> 
+    gt::gt() |> 
+    gt::cols_label(
+        row_n = "",
+        P1 = 1,
+        P2 = 2,
+        P3 = 3,
+        P4 = 4,
+        P5 = 5,
+        MinPct = "%"
+    ) |> 
+    gt::fmt_number(columns = c(Mins), decimals = 1) |> 
+    gt::fmt_percent(columns = c(MinPct), decimals  = 1) |> 
+    gtExtras::gt_hulk_col_numeric(columns = c(MinPct)) |>  
+    gtExtras::gt_theme_dot_matrix() |> 
+    gt::tab_header(title = "North Carolina: Lineups last two games in ACC play", 
+                   subtitle = "UNC played 22 unique lineups in Seth Trimble's absence.") |> 
+    gt::tab_source_note(source_note = "Bless your chart | data via bigballR") |> 
+   gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'capitalize'
+  ) -> last_tbl
+
+gtExtras::gtsave_extra(last_tbl,
+                       filename = "last_table.png",
+                       vheight = 875,
+                       vwidth = 850)
+
+
+
+first_tbl 
+
+last_tbl
+
+
+```
+
+### 

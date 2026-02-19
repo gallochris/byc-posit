@@ -1,0 +1,151 @@
+---
+title: "099: Ref travel"
+date: "2024-07-10"
+categories:
+  - calendR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### CalendR function
+
+```{r calendR-function, message = FALSE}
+library(calendR)
+
+ref_logs <- readr::read_csv("https://raw.githubusercontent.com/gallochris/cbb_refs/main/R/ref_logs_24.csv?token=GHSAT0AAAAAABWWEORAQNRN3MDRMB3NJL7AZUWQ4TA")
+
+# summary 
+refsum24 = ref_logs |>
+  dplyr::group_by(referee_name) |>
+  dplyr::summarise(
+    games = dplyr::n(),
+    trips = dplyr::n() - sum(dist_miles == 0),
+    rank = dplyr::first(ref_rank),
+    thrill_avg = mean(sort(thrill_score, # compute thrill avg
+                           decreasing = TRUE)[1:min(50, dplyr::n())]),
+    total_miles = round(sum(dist_miles), 1),
+    avg_trip = round(total_miles / trips, 1),
+    trips_around_earth = round(total_miles / 24901, 2),
+    trips_to_moon = round(total_miles / 238900, 3),
+    venues = dplyr::n_distinct(venue),
+    cities = dplyr::n_distinct(location),
+    states = dplyr::n_distinct(state),
+    most_frequent_venue = names(which.max(table(venue))),
+    most_frequent_venue_count = max(table(venue)),
+    ,
+    most_frequent_state = names(which.max(table(state))),
+    most_frequent_state_count = max(table(state)),
+    most_frequent_location_count = max(table(location))
+  ) |>
+  dplyr::arrange(-total_miles)
+
+
+ref_schedule <- function(ref_name) {
+  start <- as.Date("2023-11-01")
+  end <- as.Date("2024-04-30")
+  
+  date_seq <- seq.Date(from = start, to = end, by = "1 day")
+  
+  date_by_day <- data.frame(date = date_seq)
+  
+  ref_dates <- ref_logs |>
+    dplyr::filter(referee_name == ref_name) |>
+    dplyr::full_join(date_by_day, by = "date") |>
+    dplyr::arrange(date)
+  
+  
+  
+  start <- as.Date("2023-11-01")
+  end <- as.Date("2024-04-30")
+  
+  date_seq <- seq.Date(from = start, to = end, by = "1 day")
+  
+  date_by_day <- data.frame(date = date_seq)
+  
+  ref_dates <- ref_logs |>
+    dplyr::filter(referee_name == ref_name) |>
+    dplyr::full_join(date_by_day, by = "date") |>
+    dplyr::arrange(date)
+  
+  
+  events <- ref_dates |>
+    dplyr::pull(conference)
+  
+  pal_count <- ref_dates |>
+    dplyr::count(conference)
+  
+  # colors <- pals::brewer.blues(nrow(pal_count) - 1)
+  colors <- randomcoloR::randomColor((nrow(pal_count)-1), luminosity="light")
+
+  # add subtitle data
+  refsum24 |>
+    dplyr::filter(referee_name == ref_name) -> ref_name_sum
+  
+  ref_subtitle <- paste0(
+    ref_name_sum$games,
+    " Games",
+    " | ~",
+    round(ref_name_sum$total_miles, 0),
+    " Miles | ",
+    ref_name_sum$venues,
+    " Venues"
+  )
+  
+# function  
+  calendR(
+    from = start,
+    # start date
+    to = end,
+    # end date
+    special.days = events,
+    # days for each ref
+    special.col =  colors,
+    # color of days worked by conference
+    legend.pos = "top",
+    # legend position
+    bg.col = "#f5f5f5",
+    # background color of entire calendar
+    low.col = "transparent",
+    # day off is just empty
+    mbg.col = "transparent",
+    # background color of whole calendar
+    col = "#333333",
+    # color of lines on calendar
+    lwd = 0.25,
+    # line width
+    lty = 1,
+    # line type
+    font.style = "bold",
+    font.family = "mono",
+    # font for entire calendar
+    text.size = 12,
+    title = paste0(ref_name, " 2023-24 Season Schedule"),
+    subtitle = ref_subtitle,
+    months.size = 12,
+    # size of month names
+    weeknames = c("M", "T", # abbreviate days of week
+                  "W", "T", "F", "S", "S"),
+    weeknames.size = 8,# size of days of week
+    day.size = 4.5, # size of number on each day
+    orientation = "p", # orientation
+  ) + ggplot2::theme(
+    legend.background = ggplot2::element_blank(),
+    legend.text = ggtext::element_markdown(size = 10, face = "bold"),
+    # hide the legend
+    plot.subtitle =
+      ggtext::element_markdown(size = 12, face = "bold")
+  ) -> schedule_plot
+}
+```
+
+### Run the function as an example
+
+```{r groover-example, message=FALSE, warning=FALSE}
+
+ref_schedule("Ron Groover") -> groover_plot 
+
+groover_plot
+```

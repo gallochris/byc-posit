@@ -1,0 +1,239 @@
+---
+title: "057: ACC football grid"
+date: "2023-11-08"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+acc_sched <- readr::read_csv("acc_sched.csv")
+```
+
+### GT Table
+
+```{r gt-theme, warning=FALSE}
+# function to fetch schedules 
+acc_sched |> 
+  dplyr::arrange(-W, -pd) |> 
+  gt::gt() |>
+  gt::cols_label(
+    # rename columns
+    team_name = "",
+    pd = "+/-",
+  ) |>
+  cfbplotR::gt_fmt_cfb_logo(columns = c("team_name", "1", "2", "3", "4", "5", "6", 
+                                        "7", "8", "9", "10", "11", "12", "13")) |>
+  gt::tab_header(title = "ACC Football Conference Standings: Week-by-Week Schedule and Point Differentials",
+                 subtitle = "Conference wins in green and conference losses in red. Week 11 (this week!) is only week where every team plays a conference opponent.") |> 
+  gt::tab_source_note(source_note = "Bless your chart | data via cfbfastR + cfbplotR")  |>
+  gtExtras::gt_theme_538() |> 
+  gt::tab_spanner(label = "Week of the Season",
+              columns = c("1", "2", "3", "4", "5", "6", 
+                          "7", "8", "9", "10", "11", "12", "13")) |> 
+ gtExtras::gt_hulk_col_numeric(pd, trim = TRUE) |> 
+    gt::fmt(
+    columns = c(pd),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  )  |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `1`,
+      rows = team_name %in% c("Clemson", "Georgia Tech")
+    )
+  ) |> 
+    gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `1`,
+      rows = team_name %in% c("Duke", "Louisville"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `3`,
+      rows = team_name %in% c("Boston College")
+    )
+  )  |>  
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `3`,
+      rows = team_name %in% c("Florida State")
+    )
+  ) |> 
+    gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `4`,
+      rows = team_name %in% c("Florida State", "Louisville", 
+                          "Georgia Tech", "North Carolina",
+                        "NC State")
+    )
+  ) |> 
+      gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `4`,
+      rows = team_name %in% c("Clemson", "Virginia", "Pittsburgh", "Boston College", "Wake Forest")
+    )
+  ) |> 
+        gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `5`,
+      rows = team_name %in% c("NC State", "Pittsburgh", "Virginia", "Syracuse")
+    )
+  ) |> 
+          gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `5`,
+      rows = team_name %in% c("Louisville", "Clemson", "Boston College", "Virginia Tech")
+    )
+  ) |> 
+   gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `6`,
+      rows = team_name %in% c("Florida State", "North Carolina", "Clemson", "Georgia Tech")
+    )
+  ) |>
+     gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `6`,
+      rows = team_name %in% c("Virginia Tech", "Syracuse", "Wake Forest", "Miami")
+    )
+  ) |>
+       gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `7`,
+      rows = team_name %in% c("Syracuse", "Wake Forest", 
+                              "Louisville", "Miami", "NC State")
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `7`,
+      rows = team_name %in% c("Florida State", "Virginia Tech", "Pittsburgh", "North Carolina", "Duke")
+    )
+  ) |>
+    gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `8`,
+      rows = team_name %in% c("Georgia Tech", "Pittsburgh",
+                              "North Carolina", "Duke", "Clemson")
+    )
+  ) |>
+      gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `8`,
+      rows = team_name %in% c("Boston College", "Wake Forest", "Virginia", "Florida State", "Miami")
+    )
+  ) |>
+        gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `9`,
+      rows = team_name %in% c("Virginia Tech", "Florida State", "NC State", "Louisville", "Miami", "Georgia Tech")
+    )
+  ) |>
+       gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `9`,
+      rows = team_name %in% c("Wake Forest", "Clemson", "Duke", "Virginia", "North Carolina", "Syracuse")
+    )
+  ) |>
+         gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `10`,
+      rows = team_name %in% c("Wake Forest", "Syracuse", "Virginia", "Pittsburgh", "Virginia Tech", "Miami")
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `10`,
+      rows = team_name %in% c("Duke", "Boston College", "Georgia Tech", "Florida State", "Louisville", "NC State")
+    )
+  ) |>
+  gt::tab_style(
+  style = list(
+    gt::cell_fill(color = "#ffffd8",)
+  ),
+  locations = gt::cells_body(columns = `11`)
+) |> 
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("left"),
+    color = "#c1c1c1",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = c("W", "L", "pd", "1", "2", "3", "4", "5", "6", 
+                                              "7", "8", "9", "10", "11", "12", "13")))) |> 
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("right"),
+    color = "#c1c1c1",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = c("13")))) -> table_try
+
+gtExtras::gtsave_extra(table_try, filename = "sched_table.png", vheight = 975, vwidth = 975)
+
+table_try
+```
+
+### 

@@ -1,0 +1,393 @@
+---
+title: "134: ACC vs SEC "
+date: "2025-03-07"
+categories:
+  - ggraph
+  - as_gtable
+  - grob
+  - cbbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+# this data is used in the evidence app, saving as a csv for static generation 
+# https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/wab_logs.R
+
+# acc_sec <- games_with_ratings |> 
+#  dplyr::filter(
+#    conf == "SEC" & opp_conf == "ACC"
+#  ) |> 
+#  dplyr::mutate(delta = pts_scored - pts_allowed) |> 
+#  dplyr::select(date, team, opp, conf, opp_conf, result, delta, location,  pts_scored , # pts_allowed)
+
+acc_sec <- readr::read_csv("acc-sec.csv")
+
+# this code is pulled from the evidence app as well 
+games_with_ratings <- readr::read_csv("games_ratings.csv")
+
+game_scores_by_team <- games_with_ratings |> 
+  dplyr::filter(conf %in% c("ACC", "SEC")) |> 
+  dplyr::group_by(team, conf) |> 
+  dplyr::arrange(team, date) |>  #
+  dplyr::mutate(
+    game_index = dplyr::row_number(), 
+    total_games = dplyr::n(),  
+    first_12_avg = ifelse(game_index <= 12, game_score, NA_real_),
+    next_12_avg = ifelse(game_index > 12 & game_index <= 24, game_score, NA_real_),
+    last_6_avg = ifelse(game_index > (total_games - 6), game_score, NA_real_) # unc played 31 games!
+  ) |> 
+  dplyr::summarise(
+    season_avg = mean(game_score),
+    first_12_avg = mean(first_12_avg, na.rm = TRUE),
+    next_12_avg = mean(next_12_avg, na.rm = TRUE),
+    last_6_avg = mean(last_6_avg, na.rm = TRUE),
+    season_perf = list(game_score)
+  ) |> 
+  dplyr::select(team, conf, season_avg, first_12_avg, next_12_avg, last_6_avg, season_perf) |> 
+  dplyr::ungroup()
+
+max_games <- max(purrr::map_int(game_scores_by_team$season_perf, length))
+
+# this is a poorly written function to try to match game lengths
+pad_list <- function(x, length_out) {
+  if (length(x) < length_out) {
+    c(x, rep(NA_real_, length_out - length(x)))
+  } else {
+    x
+  }
+}
+
+# UNC played 31 games, everyone else at 30 - so trying to pad the length
+game_scores_by_team <- game_scores_by_team |> 
+  dplyr::mutate(season_perf = lapply(season_perf, pad_list, length_out = max_games))
+
+```
+
+### Network plot with table
+
+```{r network-plot, warning=FALSE, message=FALSE}
+
+results_table <- acc_sec |> 
+  dplyr::mutate(score_result = dplyr::if_else(
+    pts_scored > pts_allowed, 
+    paste0(team, " ", pts_scored, ", ", opp, " ", pts_allowed),
+    paste0(opp, " ", pts_allowed, ", ", team, " ", pts_scored)
+  )) |> 
+  dplyr::select(delta, score_result) |> 
+  dplyr::arrange(-delta) |> 
+  gt::gt() |> 
+  gt::cols_hide(delta) |> 
+  gt::cols_label(
+    score_result = ""
+  ) |> 
+  gtExtras::gt_theme_dot_matrix() |> 
+  gt::tab_header(title = "Results") |> 
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = 'white',
+    table.font.size = gt::px(10),
+    column_labels.text_transform = 'uppercase',
+    column_labels.font.weight = 'bold'
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_title(groups = "title")
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = c("top"),
+      color = '#efefef',
+      weight = gt::px(0.3),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = gt::everything())
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(31:34),
+    fill = "#99b1db",
+    alpha = 0.4,
+    font_weight = "normal",
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(1:30),
+    fill = "#fdeba9",
+    alpha = 0.4,
+    font_weight = "normal",
+  ) 
+  
+# table to inset in the plot 
+results_table_gtable <- gt::as_gtable(results_table)
+
+# network plot 
+edges <- acc_sec |>
+  dplyr::select(from = team, to = opp) |>
+  dplyr::distinct()
+
+nodes <- tibble::tibble(
+  name = unique(c(edges$from, edges$to)),
+  type = dplyr::if_else(name %in% unique(acc_sec$team[acc_sec$conf == 'SEC']), 'SEC', 'ACC')
+)
+
+graph <- tidygraph::tbl_graph(
+  nodes = nodes,    
+  edges = edges,
+  directed = FALSE
+)
+
+node_positions <- graph |> 
+  ggraph::create_layout(layout = 'stress') |> 
+  dplyr::select(x, y, name)
+
+nodes_with_positions <- dplyr::left_join(nodes, node_positions, by = "name")
+
+net_plot <- graph |>
+  ggraph::ggraph(layout = 'stress') +
+  ggraph::geom_edge_link(
+    ggplot2::aes(alpha = 0.3),
+    color = 'gray50',
+    show.legend = FALSE
+  ) +
+  ggraph::geom_node_point(
+    ggplot2::aes(
+      color = type, 
+      size = 5
+    )
+  ) +
+  cbbplotR::geom_cbb_teams(
+    data = nodes_with_positions,  
+    mapping = ggplot2::aes(
+      x = x,
+      y = y,
+      team = name 
+    ),
+    logo_type = "normal",  
+    show.legend = FALSE
+  ) +
+  ggplot2::scale_color_manual(
+    values = c('SEC' = '#fdeba9', 'ACC' = '#99b1db'),
+    name = 'Conference'
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(
+    title = "SEC vs ACC  \nNetwork of Opponents",
+    subtitle = "SEC teams won 30 of 34 games against ACC teams in non-conference play over the 2024-25 season.  \nAll games played before Christmas 2024.",
+    caption = "Data via barttorvik.com + logos from cbbplotR  \n  \nViz by Chris at Bless your Chart",
+    x = NULL,
+    y = NULL
+  ) +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(hjust = 0.5, size = 14, face = 'bold'),
+    plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)
+  ) +
+    ggplot2::annotation_custom(
+      grob = results_table_gtable, 
+      xmin = -12, xmax = 0, ymin = Inf, ymax = 0
+    ) +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(
+      hjust = 0.5,
+      size = 16,
+      family = "Courier"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 8,
+      lineheight = 1.5,
+      family = "Courier"
+    ),
+    legend.position = "none",
+    panel.grid.major = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    plot.caption = ggtext::element_markdown( size = 6, "Courier"),
+    axis.text.x = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_blank()
+  ) 
+
+ggplot2::ggsave(
+  "net_plot.png",
+  net_plot,
+  w = 10.5,
+  h = 7.5,
+  bg = "white",
+  dpi = 600,
+  type = 'cairo'
+)
+
+net_plot 
+
+```
+
+### Game Score table
+
+```{r game-score-tbl, warning=FALSE, message=FALSE}
+
+acc_sec_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/sec.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>SEC and ACC Men's Basketball Trends</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the average Torvik Game Scores for each team over the course of the 2024-25 season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+acc_sec_tbl <- game_scores_by_team |> 
+  dplyr::arrange(-last_6_avg) |> 
+  cbbplotR::gt_cbb_teams(team, team) |>  
+  gt::gt() |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gt::fmt_markdown(team) |> 
+  gt::cols_hide(conf) |> 
+  gt::cols_align(team, align = "left") |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#fdeba9", alpha = 0.6),  # SEC color
+    locations = gt::cells_body(columns = team, rows = conf == "SEC")
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#99b1db", alpha = 0.6),  # ACC color
+    locations = gt::cells_body(columns = team, rows = conf == "ACC")
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    season_avg = list(heading = "Season", subtitle = "Avg"),
+    first_12_avg = list(heading = "Beginning", subtitle = "1st 12 Games"),
+    next_12_avg = list(heading = "Middle", subtitle = "2nd 12 Games"),
+    last_6_avg = list(heading = "End", subtitle = "Last 6 Games"),
+    season_perf = list(heading = "Season", subtitle = "Performance"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+        gt::cols_nanoplot(
+    columns = season_perf,
+    reference_line = "mean",
+    autohide = TRUE,
+    new_col_label = "Season Performance",
+    missing_vals = "gap",
+    options = gt::nanoplot_options(
+      data_area_fill_color = "#eabfff",
+      reference_line_color = "#333333",
+      show_data_area = TRUE,
+      show_data_points = FALSE
+    )
+  ) |> 
+  gt::cols_label(team = "") |> 
+  gtExtras::gt_add_divider(
+    columns = c(team, last_6_avg),
+    sides = "right",
+    color = "black"
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+   gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = "bold",
+    )
+  ) |>
+  gtUtils::gt_color_pills(season_avg,
+                          domain = c(40, 100), format_type = "number", digits = 1,
+                          palette = c("#d7191c", "#fdae61", 
+                                      "#ffffbf", "#a6d96a", 
+                                      "#1a9641")
+  ) |> 
+  gtUtils::gt_color_pills(first_12_avg,
+                          domain = c(40, 100), format_type = "number", digits = 1,
+                          palette = c("#d7191c", "#fdae61", 
+                                      "#ffffbf", "#a6d96a", 
+                                      "#1a9641")
+  ) |> 
+  gtUtils::gt_color_pills(next_12_avg,
+                          domain = c(40, 100), format_type = "number", digits = 1,
+                          palette = c("#d7191c", "#fdae61", 
+                                      "#ffffbf", "#a6d96a", 
+                                      "#1a9641")
+  ) |> 
+  gtUtils::gt_color_pills(last_6_avg,
+                          domain = c(35, 100), format_type = "number", digits = 1,
+                          palette = c("#d7191c", "#fdae61", 
+                                      "#ffffbf", "#a6d96a", 
+                                      "#1a9641")
+  ) |> 
+  gt::tab_header(title = gt::html(acc_sec_header)) |> 
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via barttorvik.com | theme via {gtUtils} <br>
+        Bart Torvik's Game Score calculates a Barthag for each team for each individual game given adjusted offensive and defensive efficiencies are calculated game-by-game.<br>
+        It can be used to show how a team performs over time.<br>
+        <hr><b>Table by Chris at Bless your chart | data through March 5 games</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::tab_options(table.width = gt::px(725)) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(11.5),
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(
+        color = "#C5C5FF"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  )
+
+gtUtils::gt_save_crop(
+  acc_sec_tbl,
+  file = "acc_sec_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+acc_sec_tbl
+
+```
+
+### 

@@ -1,0 +1,545 @@
+---
+title: "100: 2024 ACC Football"
+date: "2024-07-19"
+categories:
+  - fmt_tf
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load and manipulate data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+cfb_2024_sched <- readr::read_csv("2024_sched_win_totals.csv") 
+
+# find ACC only games plus Notre Dame 
+acc_only <- cfb_2024_sched |>
+  dplyr::filter(conference == "ACC" & conference_game == TRUE)  |>
+  dplyr::mutate(game_played = TRUE) |>
+  dplyr::select(-color)
+
+# grab only the acc teams 
+acc_teams <- unique(acc_only$team_name)
+
+# find the notre dame opponents
+nd <- cfb_2024_sched |> 
+  dplyr::filter(team_name == "Notre Dame") |> 
+  dplyr::filter(opponent %in% acc_teams) |> 
+  dplyr::mutate(game_played = TRUE) |>
+  dplyr::mutate(home_away = ifelse(home_away == "neutral" &  # ATL is not
+                                     opponent == "Georgia Tech", # neutral 
+                                   "away", home_away)) |> 
+  dplyr::select(-color)
+
+# find the teams playing notre dame 
+teams_vs_nd <- cfb_2024_sched |> 
+  dplyr::filter(team_name %in% acc_teams) |> 
+  dplyr::filter(opponent == "Notre Dame") |> 
+  dplyr::mutate(game_played = TRUE) |>
+  dplyr::mutate(home_away = ifelse(home_away == "neutral" &  # ATL is not
+                                     team_name == "Georgia Tech", # neutral 
+                                   "home", home_away)) |> 
+  dplyr::select(-color)
+
+
+acc_plus_nd <- acc_only |> 
+  dplyr::bind_rows(nd) |> 
+  dplyr::bind_rows(teams_vs_nd) |> 
+  dplyr::select(-1) |>  # remove first row
+  dplyr::mutate(
+    strength = win_total / max(win_total) # relative opponent strength
+  )
+
+conf_sos <- acc_plus_nd |>
+  dplyr::group_by(team_name) |>                # Group by each team
+  dplyr::mutate(sos = mean(
+    dplyr::case_when(
+      home_away == "home" ~ strength * 0.9,
+      # Home games
+      home_away == "away" ~ strength * 1.1,
+      # Away games (more difficult)
+      home_away == "neutral" ~ strength * 1    # Neutral games (no change)
+    ),
+    na.rm = TRUE
+  )) |>
+  dplyr::ungroup()
+
+# acc teams plus ND 
+acc_teams_with_nd <- c(acc_teams, "Notre Dame")
+
+# find the teams that are NOT opponents including ND
+avoid_opp <- acc_plus_nd |>
+  dplyr::group_by(team_name) |>
+  dplyr::summarise(not_opp = list(setdiff(acc_teams_with_nd, c(opponent, team_name)))) |>
+  dplyr::ungroup()
+
+
+not_opponents_expanded <- avoid_opp |>
+  tidyr::unnest(not_opp) |>
+  dplyr::rename(not_opp_team = not_opp)
+
+not_opp_with_sos <- not_opponents_expanded |>
+  dplyr::left_join(
+    conf_sos |>
+      dplyr::select(team_name, team_total),
+    by = c("not_opp_team" = "team_name"),
+    relationship = "many-to-many"
+  )
+
+
+delta_sos <- conf_sos |>
+  dplyr::left_join(
+    not_opp_with_sos |>
+      dplyr::group_by(team_name) |>
+      dplyr::summarise(
+        not_opp_sos = mean(team_total, na.rm = TRUE),
+        .groups = 'drop'
+      ),
+    by = "team_name"
+  ) |>
+  dplyr::mutate(sos_delta = not_opp_sos - sos)
+
+
+```
+
+### Base GT table
+
+```{r gt-table, message=FALSE, warning=FALSE}
+acc_sched <- conf_sos |>
+  dplyr::select(team_name, team_total, sos, opponent, game_played) |>
+  tidyr::pivot_wider(names_from = opponent,
+                     values_from = game_played,
+                     values_fill = FALSE)
+
+
+acc_wide_sched <- acc_sched |>
+  dplyr::arrange(-sos)
+
+# Step 3: Reorder columns alphabetically
+opponent_columns <- colnames(acc_wide_sched)[!(colnames(acc_wide_sched) %in%
+                                                 c("team_name", "team_total", "sos"))]
+
+sorted_columns <- c("team_name", "team_total", "sos", sort(opponent_columns))
+
+acc_match_sched <- acc_wide_sched |>
+  dplyr::select(all_of(sorted_columns))
+
+# headers
+md = function(x) {
+  gt::html(x)
+}
+
+team_headers <- c(
+  "North Carolina",
+  "Duke",
+  "Virginia",
+  "Clemson",
+  "Pittsburgh",
+  "Syracuse",
+  "Wake Forest",
+  "Florida State",
+  "NC State",
+  "Virginia Tech",
+  "Georgia Tech",
+  "Boston College",
+  "Miami",
+  "Louisville",
+  "California",
+  "Stanford",
+  "SMU",
+  "Notre Dame"
+)
+
+# cfbplotR urls from https://github.com/Kazink36/cfbplotR/blob/main/data-raw/logo_ref_2.csv
+team_img_urls <- c(
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/153.png", #unc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/150.png", # duke
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/258.png", # uva
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/228.png", # clemson
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/221.png", # pitt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/183.png", # syracuse
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/154.png", # wake
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/52.png", # fsu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/152.png", # state
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/259.png", # va tech
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/59.png", # gt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/103.png", # bc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png", # miami
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/97.png", # lville
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/25.png", # cal
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/24.png", # stanford
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2567.png", # smu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/87.png" # notre dame
+)
+
+add_team_header <- function(team_name, img_url) {
+  gtExtras::img_header(
+    label = "",
+    img_url = img_url,
+    height = 20,
+    palette = c("white")
+  )
+}
+
+team_headers_with_images <- purrr::map2(team_headers, team_img_urls, add_team_header) |> purrr::set_names(team_headers)
+
+# gt
+acc_match_sched |>
+  cbbplotR::gt_cbb_teams(team_name, team_name, include_name = FALSE) |>
+  dplyr::mutate(sos = round(sos, 2)) |>
+  dplyr::arrange(-sos) |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = c(team_name)) |>
+  gt::cols_align(align = "left", columns = 1) |>
+  gt::cols_label(
+    team_name = "",
+    team_total = gt::html("Win<br>Total"),
+    sos = gt::html("SOS<br>ACC Only"),!!!team_headers_with_images
+  ) |>
+    gt::cols_align(align = "center", columns = 3) |>
+  gt::fmt_tf(
+    columns = -c(team_name, -team_total, sos),
+    tf_style = "circles",
+    colors = c("#252525", "lightgray")
+  )  |>
+  gtExtras::gt_add_divider(
+    columns = c(team_name, team_total, sos),
+    sides = "left",
+    color = "black"
+  ) |>
+  gtExtras::gt_add_divider(
+    columns = -c(team_name, team_total),
+    sides = "right",
+    color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2, 7, 18),
+    fill = "#FFFEE0",
+    columns = c(team_name)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(17),
+    fill = "navy",
+    columns = c(team_name),
+    alpha = 0.2
+  ) |>
+  gt::tab_style_body(
+    columns = -c(1:2),
+    style = gt::cell_fill(color = "#cccccc"),
+    fn = function(x)
+      x > 0
+  ) |>
+  gtExtras::gt_hulk_col_numeric(columns = c(team_total)) |>
+  gtExtras::gt_hulk_col_numeric(columns = c(sos), reverse = TRUE) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = c("top"),
+      color = 'black',
+      weight = gt::px(1.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = gt::everything())
+  ) |>
+  gt::tab_options(heading.align = "left") |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(groups = gt::everything()),
+    style = list(
+      gt::cell_text(align = "center"),
+      gt::cell_borders(
+        sides = c("all"),
+        color = "black",
+        weight = gt::px(2)
+      )
+    )
+  ) |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = 'white',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'uppercase',
+    column_labels.font.weight = 'bold'
+  ) -> acc_tbl
+```
+
+### Manually add home/away coloring
+
+```{r home-away}
+
+# this is likely way too much work 
+# gt::fmt_tf is slick, but seems to be a boolean only
+# tried to write a custom function to allow true_val 
+# for any value with TRUE_home or TRUE_away
+# didn't work, so adding these manually 
+# ironically, a good way to check my work too
+acc_tbl |>
+  gt::tab_options(table_body.hlines.color = "black") |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    # GT home games
+    fill = "#d9f0d3",
+    columns = c(7, 11, 12, 14)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    # GT away games
+    fill = "#e7d4e8",
+    columns = c(10, 13, 18, 20)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    # Stanford home games
+    fill = "#d9f0d3",
+    columns = c(10, 16, 20, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    # Stanford away games
+    fill = "#e7d4e8",
+    columns = c(5, 6, 12, 14, 18)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(3),
+    # Duke home games
+    fill = "#d9f0d3",
+    columns = c(8, 13, 16, 20)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(3),
+    # Duke away games
+    fill = "#e7d4e8",
+    columns = c(9, 11, 12, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(4),
+    # UVA home games
+    fill = "#d9f0d3",
+    columns = c(4, 10, 13, 16)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(4),
+    # UVA away games
+    fill = "#e7d4e8",
+    columns = c(6, 14, 15, 20, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(5),
+    # BC home games
+    fill = "#d9f0d3",
+    columns = c(10, 13, 15, 18)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(5),
+    # BC away games
+    fill = "#e7d4e8",
+    columns = c(8, 16, 19, 20)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(6),
+    # FSU home games
+    fill = "#d9f0d3",
+    columns = c(4, 5, 6, 13)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(6),
+    # FSU away games
+    fill = "#e7d4e8",
+    columns = c(7, 11, 14, 16)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(7),
+    # Cal home games
+    fill = "#d9f0d3",
+    columns = c(11, 12, 17, 18)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(7),
+    # Cal away games
+    fill = "#e7d4e8",
+    columns = c(8, 15, 16, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(8),
+    # Pitt home games
+    fill = "#d9f0d3",
+    columns = c(5, 6, 18, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(8),
+    # Pitt away games
+    fill = "#e7d4e8",
+    columns = c(4, 10, 13, 16)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(9),
+    # Lville home games
+    fill = "#d9f0d3",
+    columns = c(9, 11, 15, 16)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(9),
+    # Lville away games
+    fill = "#e7d4e8",
+    columns = c(4, 6, 14, 17, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(10),
+    # Miami home games
+    fill = "#d9f0d3",
+    columns = c(7, 8, 20, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(10),
+    # Miami away games
+    fill = "#e7d4e8",
+    columns = c(5, 9, 10, 18)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(11),
+    # Wake home games
+    fill = "#d9f0d3",
+    columns = c(5, 6, 7, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(11),
+    # Wake away games
+    fill = "#e7d4e8",
+    columns = c(11, 12, 13, 17)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(12),
+    # Clemson home games
+    fill = "#d9f0d3",
+    columns = c(10, 12, 17, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(12),
+    # Clemson away games
+    fill = "#e7d4e8",
+    columns = c(8, 15, 20, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(13),
+    # Syracuse home games
+    fill = "#d9f0d3",
+    columns = c(9, 11, 17, 20)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(13),
+    # Syracuse away games
+    fill = "#e7d4e8",
+    columns = c(4, 5, 12, 15)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(14),
+    # VT home games
+    fill = "#d9f0d3",
+    columns = c(4, 6, 9, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(14),
+    # VT away games
+    fill = "#e7d4e8",
+    columns = c(7, 11, 17, 18)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(15),
+    # NC State home games
+    fill = "#d9f0d3",
+    columns = c(7, 17, 18, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(15),
+    # NC State away games
+    fill = "#e7d4e8",
+    columns = c(5, 6, 9, 13)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(16),
+    # UNC home games
+    fill = "#d9f0d3",
+    columns = c(9, 12, 15, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(16),
+    # UNC away games
+    fill = "#e7d4e8",
+    columns = c(4, 7, 8, 21)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(17),
+    # Domers home games
+    fill = "#d9f0d3",
+    columns = c(8, 10, 17, 19)
+  ) |>
+  gtExtras::gt_highlight_rows(# find all home games
+    rows = c(17),
+    # Domers away games
+    fill = "#e7d4e8",
+    columns = c(9)) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(18),
+    # SMU home games
+    fill = "#d9f0d3",
+    columns = c(4, 5, 8, 15)
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(18),
+    # SMU away games
+    fill = "#e7d4e8",
+    columns = c(7, 10, 17, 19)
+  ) -> home_away_acc_tbl
+```
+
+### Complete table with title and source notes
+
+```{r title-notes}
+
+# add title and custom styles 
+home_away_acc_tbl |>
+  gt::tab_header(
+    title = "2024 ACC Football: Strength of Schedule in Conference Play and League Opponents",
+    subtitle = gt::html(
+      "Shows each team's preseason win total, in-conference strength of schedule, and league opponents for the 2024 regular season.<br>Teams sorted by hardest to easiest league schedule. <br>Green square = home game | Purple square = away game | Gray is for a neutral site game (FSU and GT in Ireland!)"
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<ul><li>Win totals from FanDuel as of July 17, 2024 and schedules from cfbfastR</li><li>SOS is adjusted for home/away/neutral games </li>
+      <li>Uses relative strength based on preseason win totals: opponent_win_total / max(team_win_total)</li>
+                                       <li>Greatness is becoming...Greater? Stanford, Cal, and SMU are new league members</li>
+                                       <li>Notre Dame plays 5 ACC opponents each regular season (only one ACC game away from South Bend this season)</li>
+                                       </ul><hr>
+    <b>Table by Chris (@dadgumboxscores) + Bless your chart | July 21, 2024</b>"
+    )
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_title(groups = "title")
+  )  |> 
+  gt::tab_style(
+    style = gt::cell_borders(weight = gt::px(2),
+                             color = "black",
+                             sides = "bottom"),
+    locations = gt::cells_title(groups = "subtitle")
+  ) |> 
+gt::tab_style(
+    style = gt::cell_borders(weight = gt::px(2),
+                             color = "black",
+                             sides = "bottom"),
+    locations = gt::cells_body(rows = 18)
+  ) -> final_tbl
+
+gtExtras::gtsave_extra(final_tbl,
+                       filename = "acc_sos_tbl.png",
+                       vheight = 650,
+                       vwidth = 850)
+
+final_tbl
+
+```

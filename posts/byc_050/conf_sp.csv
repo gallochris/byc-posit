@@ -1,0 +1,134 @@
+"","team","ranking","conference","off","def","overall_rank"
+"1","Michigan",25,"Big Ten",9,2,117
+"2","Ohio State",24.5,"Big Ten",6,6,116
+"3","Texas",23.1,"Big 12",8,8,115
+"4","Georgia",23,"SEC",11,5,114
+"5","Alabama",22.3,"SEC",13,9,113
+"6","Oregon",22,"Pac-12",3,21,112
+"7","Washington",21.9,"Pac-12",2,30,111
+"8","Notre Dame",20.6,"FBS Independents",16,7,110
+"9","Oklahoma",20.6,"Big 12",4,19,110
+"10","USC",19.8,"Pac-12",1,52,109
+"11","Texas A&M",19.2,"SEC",28,4,108
+"12","Miami",18.5,"ACC",17,13,107
+"13","Penn State",18.2,"Big Ten",30,3,106
+"14","Clemson",17.2,"ACC",26,11,105
+"15","Tennessee",16.3,"SEC",10,32,104
+"16","Kansas State",16.3,"Big 12",7,34,104
+"17","UCLA",16.1,"Pac-12",20,15,103
+"18","Florida State",16.1,"ACC",15,25,103
+"19","Oregon State",15.3,"Pac-12",18,23,102
+"20","Washington State",14.4,"Pac-12",19,26,101
+"21","Kentucky",13.8,"SEC",53,10,100
+"22","Ole Miss",13.7,"SEC",14,47,99
+"23","North Carolina",13.6,"ACC",12,48,98
+"24","LSU",13.4,"SEC",5,64,97
+"25","Wisconsin",13.2,"Big Ten",32,17,96
+"26","Utah",12.5,"Pac-12",54,12,95
+"27","Missouri",12.1,"SEC",33,18,94
+"28","Duke",11.3,"ACC",36,20,93
+"29","Louisville",11.3,"ACC",34,24,93
+"30","UCF",11.2,"Big 12",24,44,92
+"31","Maryland",10.9,"Big Ten",38,22,91
+"32","Texas Tech",10.6,"Big 12",22,49,90
+"33","TCU",10.4,"Big 12",25,45,89
+"34","Florida",8.9,"SEC",40,37,88
+"35","Syracuse",8.7,"ACC",51,29,87
+"36","Auburn",8,"SEC",49,36,86
+"37","Air Force",7.8,"Mountain West",72,14,85
+"38","Iowa",7.1,"Big Ten",117,1,84
+"39","Arkansas",6.6,"SEC",29,67,83
+"40","Tulane",5.7,"American Athletic",44,51,82
+"41","South Carolina",5.6,"SEC",27,78,81
+"42","Fresno State",5.1,"Mountain West",63,38,80
+"43","West Virginia",4.3,"Big 12",62,46,79
+"44","Liberty",4.1,"Conference USA",42,65,78
+"45","Kansas",4,"Big 12",21,94,77
+"46","Minnesota",4,"Big Ten",77,28,77
+"47","Memphis",3.9,"American Athletic",31,80,76
+"48","Cincinnati",3.8,"Big 12",68,40,75
+"49","Arizona",3.7,"Pac-12",23,92,74
+"50","Wake Forest",3.7,"ACC",56,58,74
+"51","BYU",3.6,"Big 12",48,61,73
+"52","Iowa State",3.4,"Big 12",100,16,72
+"53","Boise State",3.3,"Mountain West",39,74,71
+"54","SMU",2.7,"American Athletic",41,72,70
+"55","James Madison",2.5,"Sun Belt",59,60,69
+"56","NC State",2.5,"ACC",83,33,69
+"57","Michigan State",2.5,"Big Ten",86,31,69
+"58","Illinois",2.4,"Big Ten",76,39,68
+"59","Coastal Carolina",2.2,"Sun Belt",47,69,67
+"60","Pittsburgh",2.2,"ACC",66,50,67
+"61","Rutgers",2.2,"Big Ten",74,43,67
+"62","Mississippi State",2.2,"SEC",45,77,67
+"63","Marshall",2,"Sun Belt",88,27,66
+"64","Baylor",1.9,"Big 12",57,68,65
+"65","Troy",1.8,"Sun Belt",84,35,64
+"66","Oklahoma State",1.7,"Big 12",64,56,63
+"67","Toledo",1.4,"Mid-American",50,75,62
+"68","Purdue",1.3,"Big Ten",60,66,61
+"69","Nebraska",0.5,"Big Ten",87,41,60
+"70","South Alabama",0.1,"Sun Belt",70,63,59
+"71","Houston",-0.2,"Big 12",37,100,58
+"72","Virginia Tech",-0.3,"ACC",92,42,57
+"73","Louisiana",-1,"Sun Belt",52,93,56
+"74","California",-1.3,"Pac-12",79,54,55
+"75","UT San Antonio",-1.5,"American Athletic",67,76,54
+"76","Colorado",-2.4,"Pac-12",46,105,53
+"77","Georgia Tech",-2.9,"ACC",65,86,52
+"78","Miami (OH)",-3,"Mid-American",95,55,51
+"79","Georgia Southern",-3.1,"Sun Belt",43,115,50
+"80","Wyoming",-3.1,"Mountain West",97,53,50
+"81","Appalachian State",-3.1,"Sun Belt",55,106,50
+"82","Georgia State",-3.9,"Sun Belt",61,102,49
+"83","Vanderbilt",-4.2,"SEC",58,108,48
+"84","Ohio",-5.1,"Mid-American",106,57,47
+"85","San José State",-5.4,"Mountain West",75,88,46
+"86","Arizona State",-5.8,"Pac-12",89,81,45
+"87","Texas State",-6,"Sun Belt",93,79,44
+"88","UNLV",-6.1,"Mountain West",73,99,43
+"89","Western Kentucky",-6.5,"Conference USA",69,110,42
+"90","Tulsa",-7.1,"American Athletic",71,109,41
+"91","Indiana",-7.4,"Big Ten",94,87,40
+"92","San Diego State",-8,"Mountain West",98,90,39
+"93","Army",-8.2,"FBS Independents",105,83,38
+"94","Virginia",-8.5,"ACC",122,62,37
+"95","Northwestern",-8.7,"Big Ten",116,70,36
+"96","Utah State",-9.1,"Mountain West",82,113,35
+"97","Jacksonville State",-9.2,"Conference USA",107,85,34
+"98","Boston College",-9.4,"ACC",96,101,33
+"99","Louisiana Tech",-9.6,"Conference USA",78,120,32
+"100","Stanford",-9.6,"Pac-12",111,89,32
+"101","Old Dominion",-9.8,"Sun Belt",119,71,31
+"102","North Texas",-9.9,"American Athletic",35,133,30
+"103","Colorado State",-10.1,"Mountain West",109,91,29
+"104","Florida Atlantic",-10.2,"American Athletic",114,84,28
+"105","East Carolina",-10.3,"American Athletic",124,73,27
+"106","South Florida",-10.4,"American Athletic",85,123,26
+"107","Rice",-10.9,"American Athletic",80,125,25
+"108","New Mexico State",-11,"Conference USA",81,130,24
+"109","Arkansas State",-11.1,"Sun Belt",90,117,23
+"110","UAB",-11.3,"American Athletic",99,107,22
+"111","Southern Mississippi",-12.1,"Sun Belt",101,118,21
+"112","Navy",-13,"American Athletic",120,96,20
+"113","Temple",-13.2,"American Athletic",121,95,19
+"114","Buffalo",-13.4,"Mid-American",91,131,18
+"115","Louisiana Monroe",-13.5,"Sun Belt",110,112,17
+"116","Northern Illinois",-13.5,"Mid-American",113,111,17
+"117","New Mexico",-13.7,"Mountain West",102,126,16
+"118","Middle Tennessee",-13.8,"Conference USA",123,98,15
+"119","Bowling Green",-14,"Mid-American",104,128,14
+"120","Hawai'i",-14,"Mountain West",108,122,14
+"121","Central Michigan",-14.6,"Mid-American",112,121,13
+"122","Eastern Michigan",-15.1,"Mid-American",127,104,12
+"123","Akron",-15.4,"Mid-American",130,97,11
+"124","UTEP",-15.8,"Conference USA",128,103,10
+"125","Florida International",-16,"Conference USA",118,119,9
+"126","Western Michigan",-16.2,"Mid-American",115,127,8
+"127","Ball State",-16.8,"Mid-American",125,114,7
+"128","UMass",-17.2,"FBS Independents",103,132,6
+"129","Sam Houston State",-17.8,"Conference USA",133,59,5
+"130","Nevada",-18.1,"Mountain West",126,129,4
+"131","Charlotte",-18.6,"American Athletic",129,124,3
+"132","Connecticut",-19.9,"FBS Independents",131,116,2
+"133","Kent State",-20,"Mid-American",132,82,1

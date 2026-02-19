@@ -1,0 +1,258 @@
+---
+title: "127: Riffs and diffs"
+date: "2025-01-28"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# this code is pulled from the byc repo 
+# https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/conf_standings.R#L11
+# commenting it out, and saving as a CSV for static analysis
+
+# conf_margin |> 
+#  dplyr::mutate(win_pct = wins / (wins + loss), 
+#                total_games = wins+loss) |> 
+#  dplyr::select(team, conf, wins, loss, delta, win_pct, total_games) |> 
+#  dplyr::mutate(delta_per_game = as.numeric(delta / total_games)) -> dpg
+
+# dpg |> 
+#  dplyr::arrange(-delta_per_game) |> 
+#  dplyr::filter(delta_per_game > 18) |> 
+#  dplyr::select(wins, loss, delta, conf, delta_per_game, team) |> 
+#  dplyr::mutate(category = "Best") -> top_five
+
+# dpg |> 
+#  dplyr::arrange(delta_per_game) |> 
+#  dplyr::filter(delta_per_game < -15.3) |> 
+#  dplyr::select(wins, loss, delta, conf, delta_per_game, team) |> 
+#  dplyr::mutate(category = "Worst") -> bottom_five
+
+
+# top_five |>  
+#  dplyr::bind_rows(bottom_five) |> 
+#   dplyr::arrange(-delta_per_game) -> diffs 
+
+diffs <- readr::read_csv("diffs.csv")
+
+# Same for the NET table and road games 
+# pulled from here 
+# net_for_today |> 
+#  dplyr::mutate(road_wp = road_wins / (road_wins + road_losses)) |> 
+#  dplyr::arrange(road_wp) |> 
+#  dplyr::select(team, net, road_wp, road_wins, road_losses) -> net_wp
+
+
+# net_wp |> 
+#  dplyr::filter(road_wp == 1.0) |> 
+#  dplyr::mutate(category = "Undefeated") -> undefeated
+
+# net_wp |> 
+#  dplyr::filter(road_wp == 0) |> 
+#  dplyr::filter(conf %in% c("SEC", "Big 12", 
+#                            "ACC", "Big Ten", 
+#                           "Mountain West", "WCC", 
+#                            "Big East")) |> 
+#  dplyr::mutate(category = "Winless") -> losers
+
+# road_teams <- undefeated |> 
+#  dplyr::bind_rows(losers)
+
+road <- readr::read_csv("rteams.csv") |> 
+  dplyr::select(-1)
+```
+
+### Differential table 
+
+```{r diff_tbl, warning=FALSE, message=FALSE}
+
+diff_tbl <- diffs |>
+  dplyr::select(-1) |> 
+  cbbplotR::gt_cbb_teams(team, team) |>
+  dplyr::relocate(conf, .after = team) |>
+  dplyr::group_by(category) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gtExtras::gt_merge_stack(col1 = team, col2 = conf) |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "right"
+      ),
+      gt::cell_fill(color = "#C5C5FF")
+    )
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.8,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+  gt::cols_label(
+    wins = "W",
+    loss = "L",
+    delta = "+/-",
+    conf = "",
+    delta_per_game = "+/- per game",
+    team = ""
+  ) |>
+  gt::tab_style(style = list(gt::cell_text(font = gt::google_font("Signika Negative"))),
+                locations = gt::cells_body(columns = c(conf, delta_per_game, team))) |>
+  gtUtils::gt_color_pills(
+    delta_per_game,
+    domain = c(-22, 25),
+    format_type = "number",
+    digits = 1,
+    palette = c("lightpink", "lightgreen")
+  ) |>
+  gt::fmt(
+    columns = c(delta),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::cols_align(columns = c(delta_per_game), align = "right") |>
+  gt::cols_align(team, align = "left") |>
+  gt::tab_header(
+    title = gt::html(
+      "Best and Worst Point Differentials in <br>Conference Play through January 27 games"
+    ),
+    subtitle = gt::md(
+      "Shows the five best and five worst teams in point differential by game."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>Data from barttorvik.com + theme from {gtUtils} <br>
+                            Table by Chris at Bless your chart"
+    )
+  ) |>
+  gt::tab_options(table.width = gt::px(450)) 
+
+gtUtils::gt_save_crop(
+  diff_tbl,
+  file = "diff_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+diff_tbl
+```
+
+### Road table 
+
+```{r road-tbl, warning=FALSE, message=FALSE}
+
+road_tbl <- road |>  
+  dplyr::mutate(road_rec = paste0(road_wins, "-", road_losses)) |> 
+  dplyr::select(team, conf, road_rec, net, category) |> 
+  cbbplotR::gt_cbb_teams(team, team) |>
+  dplyr::group_by(category) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gtExtras::gt_merge_stack(col1 = team, col2 = conf) |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(color = "#C5C5FF")
+    )
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.8,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+  gt::cols_label(
+    team = "",
+    conf = "",
+    road_rec = "W-L",
+    net = "NET"
+  ) |>
+  gt::tab_style(style = list(gt::cell_text(font = gt::google_font("Signika Negative"))),
+                locations = gt::cells_body(columns = c(conf, road_rec, net, team))) |>
+  gtUtils::gt_color_pills(
+    net,
+    domain = c(1, 364),
+    format_type = "number",
+    digits = 0,
+    palette = c("lightgreen", "lightpink")
+  ) |>
+  gt::cols_align(columns = c(net), align = "right") |>
+  gt::cols_align(columns = c(team), align = "left") |> 
+  gt::tab_header(
+    title = gt::html(
+      "Best and Worst Road Records<br> through January 27 games"
+    ),
+    subtitle = gt::md(
+      "Shows the five undefeated teams on the road and the 14 teams in a major conference that have yet to win a road game, including the current NET ranking."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>Data from barttorvik.com + theme from {gtUtils} <br>
+                            Table by Chris at Bless your chart"
+    )
+  ) |>
+  gt::tab_options(table.width = gt::px(350)) 
+
+gtUtils::gt_save_crop(
+  road_tbl,
+  file = "road_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+road_tbl
+
+```

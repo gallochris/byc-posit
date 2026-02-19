@@ -1,0 +1,35 @@
+"","date","team","opp","conf","opp_conf","result","delta","location","pts_scored","pts_allowed"
+"1",2024-11-12,"Kentucky","Duke","SEC","ACC","W",5,"N",77,72
+"2",2024-11-13,"Vanderbilt","California","SEC","ACC","W",16,"H",85,69
+"3",2024-11-21,"Texas","Syracuse","SEC","ACC","W",4,"N",70,66
+"4",2024-11-29,"Oklahoma","Louisville","SEC","ACC","W",5,"N",69,64
+"5",2024-12-03,"Tennessee","Syracuse","SEC","ACC","W",26,"H",96,70
+"6",2024-12-03,"Georgia","Notre Dame","SEC","ACC","W",21,"H",69,48
+"7",2024-12-03,"LSU","Florida St.","SEC","ACC","W",10,"H",85,75
+"8",2024-12-03,"Oklahoma","Georgia Tech","SEC","ACC","W",15,"H",76,61
+"9",2024-12-03,"Texas A&M","Wake Forest","SEC","ACC","W",13,"H",57,44
+"10",2024-12-03,"Missouri","California","SEC","ACC","W",5,"H",98,93
+"11",2024-12-04,"Mississippi St.","Pittsburgh","SEC","ACC","W",33,"H",90,57
+"12",2024-12-04,"Florida","Virginia","SEC","ACC","W",18,"H",87,69
+"13",2024-12-10,"Tennessee","Miami FL","SEC","ACC","W",13,"N",75,62
+"14",2024-12-14,"Kentucky","Louisville","SEC","ACC","W",8,"H",93,85
+"15",2024-12-17,"South Carolina","Clemson","SEC","ACC","W",3,"H",91,88
+"16",2024-11-09,"Tennessee","Louisville","SEC","ACC","W",22,"A",77,55
+"17",2024-11-15,"Florida","Florida St.","SEC","ACC","W",13,"A",87,74
+"18",2024-11-15,"Georgia","Georgia Tech","SEC","ACC","W",8,"A",77,69
+"19",2024-11-21,"Tennessee","Virginia","SEC","ACC","W",22,"N",64,42
+"20",2024-11-22,"Mississippi St.","SMU","SEC","ACC","W",5,"A",84,79
+"21",2024-11-22,"LSU","Pittsburgh","SEC","ACC","L",-11,"N",63,74
+"22",2024-11-26,"Auburn","North Carolina","SEC","ACC","W",13,"N",85,72
+"23",2024-11-27,"South Carolina","Virginia Tech","SEC","ACC","W",10,"N",70,60
+"24",2024-11-28,"Florida","Wake Forest","SEC","ACC","W",17,"N",75,58
+"25",2024-12-03,"Kentucky","Clemson","SEC","ACC","L",-4,"A",66,70
+"26",2024-12-03,"Mississippi","Louisville","SEC","ACC","W",23,"A",86,63
+"27",2024-12-03,"Arkansas","Miami FL","SEC","ACC","W",3,"A",76,73
+"28",2024-12-03,"South Carolina","Boston College","SEC","ACC","W",22,"A",73,51
+"29",2024-12-04,"Auburn","Duke","SEC","ACC","L",-6,"A",78,84
+"30",2024-12-04,"Texas","North Carolina St.","SEC","ACC","W",4,"A",63,59
+"31",2024-12-04,"Alabama","North Carolina","SEC","ACC","W",15,"A",94,79
+"32",2024-12-04,"Vanderbilt","Virginia Tech","SEC","ACC","W",16,"A",80,64
+"33",2024-12-14,"LSU","SMU","SEC","ACC","L",-10,"N",64,74
+"34",2024-12-17,"Florida","North Carolina","SEC","ACC","W",6,"N",90,84

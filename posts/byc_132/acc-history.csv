@@ -1,0 +1,41 @@
+﻿year,Season,total_teams,W,L,W-L%,SRS,SOS,AP,ncaa,Regular Season Champ,Tournament Champ,POY
+2024,2023-24 ACC,15,298,218,0.578,11.35,8.31,4,5,UNC,NC State,RJ Davis
+2023,2022-23 ACC,15,281,223,0.558,7.47,5.63,3,5,"Miami (FL), Virginia",Duke,Isaiah Wong
+2022,2021-22 ACC,15,290,224,0.564,9.04,6.78,1,5,Duke,Virginia Tech,Alondes Williams
+2021,2020-21 ACC,15,201,164,0.551,10.17,8.22,3,7,Virginia,Georgia Tech,Moses Wright
+2020,2019-20 ACC,15,276,197,0.584,11.06,7.73,4,0,Florida State,,Tre Jones
+2019,2018-19 ACC,15,316,198,0.615,14.17,9.06,5,7,"UNC, Virginia",Duke,Zion Williamson
+2018,2017-18 ACC,15,315,200,0.612,13.38,8.51,5,9,Virginia,Virginia,Marvin Bagley
+2017,2016-17 ACC,15,320,196,0.62,14.66,9.67,6,9,UNC,Duke,Justin Jackson
+2016,2015-16 ACC,15,317,200,0.613,13.96,9.24,5,7,UNC,UNC,Malcolm Brogdon
+2015,2014-15 ACC,15,316,200,0.612,12.33,8.06,5,6,Virginia,Notre Dame,Jahlil Okafor
+2014,2013-14 ACC,15,300,210,0.588,10.8,7.21,4,6,Virginia,Virginia,T.J. Warren
+2013,2012-13 ACC,12,245,163,0.6,10.1,6.47,2,4,Miami (FL),Miami (FL),"Shane Larkin, Erick Green"
+2012,2011-12 ACC,12,232,166,0.583,8.74,5.76,3,5,UNC,Florida State,Tyler Zeller
+2011,2010-11 ACC,12,241,163,0.597,11.23,6.82,2,4,UNC,Duke,Nolan Smith
+2010,2009-10 ACC,12,260,146,0.64,13.24,7.76,2,6,"Duke, Maryland",Duke,Greivis Vasquez
+2009,2008-09 ACC,12,255,142,0.642,12.49,7.82,5,7,UNC,Duke,Ty Lawson
+2008,2007-08 ACC,12,248,153,0.618,12.32,7.97,3,4,UNC,UNC,Tyler Hansbrough
+2007,2006-07 ACC,12,256,150,0.631,14.34,8.62,2,7,"UNC, Virginia",UNC,Jared Dudley
+2006,2005-06 ACC,12,238,147,0.618,11.53,6.4,3,4,Duke,Duke,J.J. Redick
+2005,2004-05 ACC,11,221,132,0.626,14.5,9.07,4,5,UNC,Duke,J.J. Redick
+2004,2003-04 ACC,9,187,104,0.643,16.56,10.72,6,6,Duke,Maryland,Julius Hodge
+2003,2002-03 ACC,9,170,111,0.605,12.75,7.83,3,4,Wake Forest,Duke,Josh Howard
+2002,2001-02 ACC,9,172,114,0.601,12.99,8.71,2,4,Maryland,Duke,Juan Dixon
+2001,2000-01 ACC,9,176,111,0.613,16.47,10.65,5,6,"Duke, UNC",Duke,"Shane Battier, Joseph Forte"
+2000,1999-00 ACC,9,172,123,0.583,12.49,8.58,2,3,Duke,Duke,Chris Carrawell
+1999,1998-99 ACC,9,187,110,0.63,14.78,9.04,3,3,Duke,Duke,Elton Brand
+1998,1997-98 ACC,9,186,109,0.631,16.05,10.09,3,5,Duke,UNC,Antawn Jamison
+1997,1996-97 ACC,9,184,102,0.643,16.95,10.46,5,6,Duke,UNC,Tim Duncan
+1996,1995-96 ACC,9,164,111,0.596,14.98,10.2,3,6,Georgia Tech,Wake Forest,Tim Duncan
+1995,1994-95 ACC,9,175,102,0.632,17.13,10.6,4,4,"Maryland, UNC, Virginia, Wake Forest",Wake Forest,Joe Smith
+1994,1993-94 ACC,9,171,112,0.604,12.41,8.4,2,5,Duke,UNC,Grant Hill
+1993,1992-93 ACC,9,181,100,0.644,15.41,10.03,5,6,UNC,Georgia Tech,Rodney Rogers
+1992,1991-92 ACC,9,179,106,0.628,13.72,9.06,3,5,Duke,Duke,Christian Laettner
+1991,1990-91 ACC,8,165,89,0.65,15.84,9.55,2,6,Duke,UNC,Rodney Monroe
+1990,1989-90 ACC,8,173,92,0.653,14.9,8.87,3,5,Clemson,Georgia Tech,Dennis Scott
+1989,1988-89 ACC,8,162,94,0.633,14.83,9.06,3,6,NC State,UNC,Danny Ferry
+1988,1987-88 ACC,8,156,96,0.619,13.32,8.14,3,5,UNC,Duke,Danny Ferry
+1987,1986-87 ACC,8,161,89,0.644,13.1,7.01,3,6,UNC,NC State,Horace Grant
+1986,1985-86 ACC,8,178,90,0.664,16.39,9.41,3,6,Duke,Duke,Len Bias
+1985,1984-85 ACC,8,173,90,0.658,13.14,7.36,4,5,"Georgia Tech, UNC, NC State",Georgia Tech,Len Bias

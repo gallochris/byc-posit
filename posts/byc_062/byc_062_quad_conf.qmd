@@ -1,0 +1,132 @@
+---
+title: "062: Quad Conferences"
+date: "2023-12-10"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+quad_conf <- readr::read_csv("quad_conf.csv") |> 
+  dplyr::select(-`...1`)
+
+
+yr_df <- dplyr::tibble(
+  season = c(2022, 2022, 2022, 2023, 2023, 2023),
+  games = c(1662, 1662, 1662, 1736, 1736, 1736),
+  pct = c("Under 3 hours", "3 to 4 hours", "Over 4 hours",
+          "Under 3 hours", "3 to 4 hours", "Over 4 hours"),
+  data = c(3.9,91.1,5.1, 7.5, 89.6, 2.9)
+)
+
+yr_df |> 
+  dplyr::select(-season) |> 
+  tidyr::pivot_wider(names_from = games, values_from = "data") -> plt_bar
+        
+```
+
+### GT Tables
+
+```{r gt-table, warning=FALSE}
+
+quad_table <- quad_conf |> 
+    dplyr::mutate(conf = dplyr::case_match(conf, 
+                "B12" ~ "Big 12",  
+                "BE" ~ "Big East", 
+                "P12" ~ "Pac-12", 
+                "B10" ~ "Big Ten",
+                "Amer" ~ "American",
+                "SB" ~ "Sun Belt",
+                "Slnd" ~ "Southland",
+                "BW" ~ "Big West", 
+                "SC" ~ "Southern",
+                "AE" ~ "America East", 
+                "BSth" ~ "Big South",
+                "ASun" ~ "Atlantic Sun",
+                "Pat" ~ "Patriot",
+                "Horz" ~ "Horizon",
+                "BSky" ~ "Big Sky",
+                "OVC" ~ "Ohio Valley",
+                "Sum" ~ "Summit", 
+                "A10" ~ "Atlantic 10",
+                "MWC" ~ "Mountain West",
+                "MVC" ~ "Missouri Valley",
+                "NEC" ~ "Northeast",
+                "MAC" ~ "Mid-American",
+                "MAAC" ~ "Metro Atlantic",
+                conf ~ conf)) |> 
+    dplyr::arrange(-q1s_per) |> 
+    gt::gt() |> 
+    gt::cols_label(
+      teams = "Teams", 
+      conf = "Conference", 
+      games = "Games",
+      avg_net = "AVG NET", 
+      q1s_per = "Q1s / Team",
+      q1s = "Q1",
+      q2s = "Q2",
+      q3s = "Q3",
+      q4s = "Q4",
+    ) |> 
+    gt::fmt_number(columns = c(avg_net, q1s_per), decimals = 1) |> 
+    gt::fmt_percent(columns = c(q1s, q2s, q3s, q4s), decimals = 1) |> 
+    gt::tab_spanner(label = "Percentage of Games in each Quad", 
+                    columns = c(q1s, q2s, q3s, q4s)) |> 
+    gt::cols_nanoplot(
+        columns = c(q1s, q2s, q3s, q4s),
+        plot_type = "bar",
+        new_col_name = "Quad",
+        new_col_label = "Quadrants",
+        options = gt::nanoplot_options(
+            show_data_line = FALSE,
+            show_data_area = FALSE,
+            data_bar_stroke_color = "transparent",
+            data_bar_fill_color = c("#1b7837", "#d9f0d3",
+                                    "#e7d4e8",  "#762a83")
+        )
+    ) |> 
+    gtExtras::gt_hulk_col_numeric(columns = c(avg_net), 
+                                  reverse = TRUE) |> 
+    gtExtras::gt_hulk_col_numeric(columns = c(q1s,
+                                              q2s, q3s, q4s, q1s_per), trim = TRUE) |> 
+    gtExtras::gt_theme_excel() |> 
+   gt::tab_header(title = "Quadrant Opportunites in Conference Play Only", 
+                  subtitle = "Shows percentage of conference games in each 
+                  quadrant based on NET rankings as of December 11, 2023") |> 
+  gt::tab_source_note(source_note = "Bless your chart | data via cbbdata")
+
+
+# Football chart
+ duration_tbl <-  plt_bar |> 
+  gt::gt() |> 
+  gt::cols_label(pct = "Duration",
+                `1662` = "1662 games",
+                 `1736` = "1736 games") |> 
+  gt::tab_spanner(label = "2022",
+                  columns = c(`1662`)) |>
+  gt::tab_spanner(label = "2023",
+                  columns = c(`1736`)) |>
+  gtExtras::gt_theme_538() |> 
+  gt::tab_header(title = "College football game duration: 2022 vs 2023", 
+  subtitle = "Percentage of games including at least one FBS team 
+             that lasted under 3 hours, between 3 and 4 hours, and over 4 hours")   |> 
+  gt::tab_source_note(source_note = "Bless your chart | December 10, 2023") 
+
+
+ quad_table
+ 
+ duration_tbl
+
+ 
+gtExtras::gtsave_extra(quad_table, filename = "quad_table.png", vheight = 975, vwidth = 975)
+
+gtExtras::gtsave_extra(duration_tbl, filename = "dur_table.png", vheight = 475, vwidth = 375)
+```
+
+### 

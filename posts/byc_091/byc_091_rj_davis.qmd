@@ -1,0 +1,102 @@
+---
+title: "091: RJ Davis / College Careers"
+date: "2024-05-05"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+unc_career_stats <- readr::read_csv("https://gist.githubusercontent.com/gallochris/5dfa0c1a19443e5c6b3bf792429bcb7d/raw/bb21c2398a8a96c9620934278ec4949da153e164/unc_career_stats_2024.csv") |> 
+  dplyr::select(-...1)
+
+# make a tibble of RJ's potential counting stats
+
+rj_davis <- tibble::tribble(
+    ~Stat,~Rank,~RJ,~Record,~Player,
+    "3PT Makes","2nd",274,299,"Marcus Paige",
+    "FG Attempts","3rd",1661,1752,"Tyler Hansbrough",
+    "Minutes","5th",4410,4770,"Armando Bacot",
+    "Points","5th",2088,2872,"Tyler Hansbrough",
+    "3PT Attempts","2nd",737,798,"Marcus Paige",
+    "Games","22nd",138,169,"Armando Bacot",
+) |> 
+  dplyr::mutate(Delta = Record - RJ) |> 
+  dplyr::arrange(Delta)
+```
+
+### GT Table for RJ
+
+```{r gt-table, warning = FALSE}
+
+
+rj_davis |> 
+  dplyr::select(Stat, Rank, RJ, Delta, Record, Player) |> 
+  gt::gt() |> 
+  gt::cols_label(
+    "RJ" = "Total",
+    "Delta" = "+/-",
+  ) |> 
+  gt::tab_spanner(label = "RJ Davis",
+                  columns = c(Rank, RJ)) |>
+  gt::tab_spanner(label = "Record Holder",
+                  columns = c(Record, Player)) |>
+  cbbplotR::gt_theme_athletic() |> 
+    gtExtras::gt_add_divider(columns = Record, sides = c("left"),
+                           color = "black") |> 
+      gtExtras::gt_add_divider(columns = RJ, sides = c("right"),
+                           color = "black") |> 
+  gt::cols_align(align = "left", columns = c(Stat, Player)) |> 
+  gt::cols_align(align = "right", columns = c(Rank, RJ, Record, Delta)) |> 
+  gt::data_color(
+    columns = Delta,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = "GnBu"
+) |> 
+   gt::tab_header(
+    title = gt::md(
+      "<img src='https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F06e2bb6c-409b-4673-9aa0-dbda687436b4_352x404.png' style='height:60px;'> **RJ Davis may break lots of UNC records next season**"
+    ),
+    subtitle = gt::html("Shows the career records in various <b>counting stats</b> and where RJ Davis ranks in UNC history today.")
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "Data via goheels.com <br> <b>Bless your chart + @dadgumboxscores | May 5, 2024</b>"
+    )
+  ) |>
+
+  gt::tab_style(
+    locations = gt::cells_title(groups = "subtitle"),
+    style = gt::cell_text(
+      size = "small"
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      size = "x-small"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  )  -> rj_tbl
+
+gtExtras::gtsave_extra(rj_tbl,
+                       filename = "rj_table.png",
+                       vheight = 875,
+                       vwidth = 875)
+
+ rj_tbl
+```
+
+### 

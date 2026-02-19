@@ -1,0 +1,239 @@
+---
+title: "040: FBS Coaching Tenures"
+date: "2023-07-21"
+categories:
+  - cfbfastR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch the data
+
+```{r data-load, message=FALSE}
+cfbfastR::cfbd_team_info() |> 
+  dplyr::select(team_id, school, conference) -> schools
+
+# fetch all coaches since mack brown 1.0 or the 1988 season 
+cfbfastR::cfbd_coaches(min_year = 1988) -> coach_table
+
+# add the conference with the school 
+all_coaches <- dplyr::left_join(schools, coach_table, by = "school")
+
+# 
+# wait we need to filter out coaches that left this past season
+no_longer_coaching <- c("Pat Fitzgerald", 
+                        "Ken Niumatalolo", 
+                        "David Shaw", 
+                        "Paul Chryst", 
+                        "Philip Montgomery", 
+                        "Seth Littrell", 
+                        "Jeff Brohm", 
+                        "Luke Fickell",
+                        "Herm Edwards", 
+                        "Jamey Chadwell", 
+                        "Scott Frost", 
+                        "Sean Lewis", 
+                        "Geoff Collins", 
+                        "Hugh Freeze", 
+                        "Will Healy", 
+                        "Scott Satterfield", 
+                        "Jeff Tedford",
+                        "Jake Spavital",
+                        "Tim Lester"
+)
+
+# find the most tenured coaches 
+most_tenure <- all_coaches |>
+  dplyr::mutate(coach_name = paste(first_name, last_name, sep = " ")) |> 
+  dplyr::group_by(coach_name, school, conference) |>
+  dplyr::filter(max(year) == 2022 & year > 1998) |>
+  dplyr::count(name = "total_seasons") |> 
+  dplyr::mutate(total_seasons = dplyr::if_else(coach_name == "Greg Schiano", 3, total_seasons)) |> 
+  dplyr::mutate(total_seasons = dplyr::if_else(coach_name == "Brady Hoke", 3, total_seasons)) |>
+  dplyr::mutate(total_seasons = dplyr::if_else(coach_name == "Curt Cignetti", 4, total_seasons)) |>
+  dplyr::filter(!coach_name %in% no_longer_coaching) |> 
+  dplyr::filter(total_seasons > 3) |> 
+  dplyr::arrange(-total_seasons) |> 
+  dplyr::ungroup()
+
+# now just the acc coaches
+acc_only <- all_coaches |>
+  dplyr::mutate(coach_name = paste(first_name, last_name, sep = " ")) |>
+  dplyr::filter(conference == "ACC" & year > 2004) |>
+  dplyr::group_by(school) |>
+  dplyr::summarize(
+    total_coaches = dplyr::n_distinct(coach_name),
+    unique_coaches = unique(coach_name) |> toString()
+  ) |>
+  dplyr::arrange(-total_coaches)
+```
+
+### GT Athletic Theme
+
+```{r gt-athletic-theme, warning=FALSE}
+
+# gt theme from andrew https://gist.github.com/andreweatherman/3874a59a1f7b4af97e3699e4ece94579
+gt_theme_athletic <- function(gt_object, ...) {
+  
+  gt_object |> 
+    # set table font
+    gt::opt_table_font(
+      font = list(
+        gt::google_font('Spline Sans Mono'),
+        gt::default_fonts()
+      ),
+      weight = 500
+    ) |> 
+    # set the column label font and style
+    gt::tab_style(
+      locations = gt::cells_column_labels(
+        columns = gt::everything()
+      ),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 650,
+        size = gt::px(14),
+        transform = 'uppercase', # column labels to uppercase
+        align = 'left'
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title('title'),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 650
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title('subtitle'),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 500
+      )
+    ) |>
+    # set think black column sep.
+    gt::tab_style(
+      style = gt::cell_borders(sides = 'left', weight = gt::px(0.5), color = 'black'),
+      locations = gt::cells_body(
+        # everything but the first column
+        columns = c(-names(gt_object[['_data']])[1])
+      )
+    ) |> 
+    # set thin dotted row sep.
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'dotted'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    )|>
+    # left align cell text
+    gt::cols_align(
+      align = 'left',
+      columns = gt::everything()
+    ) |> 
+    gt::tab_options(
+      table.font.size = 14,
+      column_labels.border.bottom.width = 2,
+      column_labels.border.bottom.color = 'black',
+      column_labels.border.top.color = 'white',
+      row_group.border.bottom.color = 'white',
+      table.border.top.style = 'none',
+      table.border.bottom.style = 'none',
+      heading.border.bottom.style = 'none',
+      heading.align = 'left',
+      heading.title.font.size = gt::px(30),
+      source_notes.border.lr.style = 'none',
+      source_notes.font.size = 10
+    ) |> 
+    # remove the border from the bottom cell
+    gt::opt_css(
+      "tbody tr:last-child {
+    border-bottom: 2px solid #ffffff00;
+      }
+    ",
+      add = TRUE
+    )
+  
+}
+
+```
+
+### GT table for tenures
+
+```{r gt-table, warning=FALSE}
+# make the tenure table! 
+most_tenure |> 
+  dplyr::select(school, coach_name, total_seasons) |> 
+  dplyr::slice(1:24) |> 
+  gt::gt() |> 
+  gt::cols_label(
+    school = "Team",
+    coach_name = "Coach",
+    total_seasons = "Seasons",
+  ) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = c("school")) |> 
+  gt::tab_spanner(label = "Current Tenure",
+                  columns = c(total_seasons)) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(7, 8, 13, 18, 19),
+    fill = "#ffdddd",
+    bold_target_only = TRUE,
+    target_col = c(coach_name),
+  ) |> 
+  gt_theme_athletic()-> first_tab
+
+most_tenure |> 
+  dplyr::select(school, coach_name, total_seasons) |> 
+  dplyr::slice(25:47) |> 
+  gt::gt() |> 
+  gt::cols_label(
+    school = "Team",
+    coach_name = "Coach",
+    total_seasons = "Seasons",
+  ) |> 
+  cfbplotR::gt_fmt_cfb_logo(columns = c("school")) |> 
+  gt::tab_spanner(label = "Current Tenure",
+                  columns = c(total_seasons)) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(16),
+    fill = "#ffdddd",
+    bold_target_only = TRUE,
+    target_col = c(coach_name),
+  ) |> 
+  gt::tab_footnote(footnote = 
+                     gt::md(
+                       "Brown has coached at UNC for 14 seasons<br>Current tenure is four seasons"
+                     ),
+                   locations = gt::cells_body(
+                     columns = coach_name,
+                     rows = coach_name %in% c("Mack Brown")
+                   ))|> 
+  gt_theme_athletic()-> second_tab
+
+
+listed_tables <- list(first_tab, second_tab)
+
+obj <- htmltools::div(
+  style = "padding: 20px;",
+  gt::html("<span style='font-size:15pt; font-weight:bold; font-family: \"Spline Sans Mono\", monospace;'><center>Longest Tenured FBS Coaches</center></span>"),
+  gt::html("<span style='font-size:12pt; font-weight:normal; font-family: \"Spline Sans Mono\", monospace;'><center>Coaches with four or more consecutive seasons.</center></span>"),
+  style = "<br>",
+  gt::html("<span style='font-size:9.5pt; font-weight:light; font-family: \"Spline Sans Mono\", monospace;'><center>Bless your chart | July 24, 2023 | data via cfbfastR </center></span>"),
+  gtExtras::gt_two_column_layout(listed_tables)
+)
+
+gtExtras::gtsave_extra(obj, 
+                       filename = "coaching-table.png",
+                       vwidth = 725, vheight = 800
+                       )
+
+first_tab 
+second_tab
+```
+
+### 
+
+### 

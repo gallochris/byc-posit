@@ -1,0 +1,364 @@
+---
+title: "151: Elevator mediocrity"
+date: "2025-08-26"
+categories:
+  - geom_beeswarm
+  - ggvenn
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# gt save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) %>%
+    magick::image_trim() %>%
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) %>%
+    magick::image_write(file)
+  unlink(tmp)
+}
+###
+
+unc_fball <- readr::read_csv("uncfball_1975.csv")
+
+
+unc_fball |> 
+    dplyr::filter(Year > 1998) |> 
+    dplyr::summarise(
+        w = sum(W),
+        l = sum(L),
+        t = sum(T),
+        avg = mean(W), 
+        avgg = mean(L)
+    )
+
+
+# penalties via cfbstats
+pens <- tibble::tibble(
+  year = c(2024, 2023, 2022, 2021, 2020, 2019),
+  yards_per_game = c(64.0, 66.3, 55.1, 69.2, 67.6, 53.9),
+  rank = c(114, 125, 75, 118, 109, 70),
+  teams = c(134, 133, 131, 130, 127, 130)
+)
+
+# Calculate percentile using dplyr (lower rank = worse = lower percentile)
+pen_data <- pens |>
+  dplyr::mutate(
+    percentile = round((teams - rank) / teams * 100, 1)
+  )
+
+
+# blocked punts 
+# last_six_pbp <- cfbfastR::load_cfb_pbp(
+#    seasons = c(2019, 2020, 2021, 2022, 2023, 2024),
+#    dbConnection = NULL,
+#    tablename = NULL
+# ) |> 
+#    dplyr::filter(
+#        punt_blocked  == 1
+#    )
+
+# last_six_pbp |> 
+#    dplyr::group_by(pos_team) |> 
+#    dplyr::summarise(
+#        total = dplyr::n(),
+#       punt_td = sum(play_type == "Blocked Punt Touchdown")
+#    ) |> 
+#    dplyr::arrange(-total) -> all_blocked_punts
+
+all_blocked_punts <- readr::read_csv("blocked_punts.csv")
+```
+
+### Elevator plot
+
+```{r elevator-plot, warning=FALSE, message=FALSE}
+
+coaching_records <- data.frame(
+  Coach = c("Carl Torbush\n(1997-2000)", "John Bunting\n(2001-2006)", "Butch Davis\n(2007-2010)", 
+            "Everett Withers\n(2011)", "Larry Fedora\n(2011-2018)", "Mack Brown 2.0\n(2019-2024)"),
+  Record = c("17-18\n.486", "27-45\n.375", "28-23\n.549", "7-6\n.538", "45-43\n.511", "44-33\n.571"),
+  stringsAsFactors = FALSE
+)
+
+main_plot <- unc_fball |>
+  dplyr::filter(Year > 1998) |> 
+  ggplot2::ggplot(ggplot2::aes(y = Year)) +
+  ggplot2::geom_vline(xintercept = c(0, 12), color = "gray40", size = 1.5, alpha = 0.7) +
+  ggplot2::geom_segment(ggplot2::aes(x = pmin(W, L), xend = pmax(W, L), yend = Year), 
+                        color = "gray60", size = 1) +
+  ggplot2::geom_point(ggplot2::aes(x = W), color = "#56a0d3", size = 3, shape = 15) +
+  ggplot2::geom_point(ggplot2::aes(x = L), color = "#F08080", size = 3, shape = 15) +
+  ggplot2::scale_y_continuous(breaks = seq(1999, 2024, 1), limits = c(1998.5, 2030), labels = function(x) paste0("'", sprintf("%02d", x %% 100))) +
+  ggplot2::scale_x_continuous(breaks = seq(0, 12, 1), 
+                              limits = c(0, 12)) +
+  ggplot2::labs(
+    title = "Carolina football is trapped in an elevator of mediocrity<br>
+    <span style='color: #56a0d3;'>Ups (wins)</span> and 
+    <span style='color:#F08080;'>downs (losses)</span> over past 25 years",
+    subtitle = "UNC is 160-164 over the past 25 seasons<br> 
+    An average of 6.2 wins and 6.3 losses over six <em>different</em> head coaches.",
+    x = "# of Wins or Losses",
+    y = "",
+    caption = "data via sportsreference.com | Viz by Chris at Bless your Chart"
+  ) +
+  ggplot2::coord_flip() +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(family = "Roboto Condensed"),
+    plot.subtitle = ggtext::element_markdown(family = "Roboto Condensed"),
+    axis.title = ggplot2::element_text(family = "Roboto Condensed"),
+    axis.text = ggplot2::element_text(family = "Roboto Condensed"),
+    axis.text.x = ggplot2::element_text(angle = 35, hjust = 1, size = 8)
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    y = 2028,   
+    x = 10.5,           
+    team = "North Carolina",
+    height = 0.09
+  ) +
+  ggplot2::geom_hline(yintercept = c(2000.5, 2006.5, 2010.5, 2011.5,
+                                     2018.5, 2024.5),
+                      linetype = "dotted", color = "gray60") +
+  ggplot2::annotation_custom(
+    grob = gridExtra::tableGrob(
+      coaching_records,
+      rows = NULL,
+      theme = gridExtra::ttheme_minimal(
+        core = list(
+          fg_params = list(fontfamily = "Roboto Condensed", fontsize = 6.5),
+          bg_params = list(fill = c("white", "gray95"), alpha = 0.8)
+        ),
+        colhead = list(
+          fg_params = list(fontfamily = "Roboto Condensed", fontsize = 7.5, 
+                           fontface = "bold"),
+          bg_params = list(fill = "#56a0d3", alpha = 0.3)
+        )
+      )
+    ),
+    ymin = 2027, ymax = 2029.5, xmin = 3, xmax = 10.5  # Positioned under the logo
+  )
+
+ggplot2::ggsave(
+  "el_plot.png",
+  main_plot,
+  w =8,
+  h = 8,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+main_plot
+```
+
+### Penalties and Punts
+
+```{r pens-punt-tbl, warning=FALSE, message=FALSE}
+
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina's penalty yards per game since 2019</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the team's ranking and percentile in penalty yards per game since the 2019 season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png' 
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+pen_tbl <- pen_data |> 
+  dplyr::mutate(
+    rank_teams = paste0(rank, " out of ", teams)
+  ) |> 
+  dplyr::select(
+    year, yards_per_game, percentile, rank_teams
+  ) |> 
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |> 
+  gtExtras::gt_merge_stack(
+    col1 = yards_per_game,
+    col2 = rank_teams,
+        palette = c("black", "#333333")
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    year = list(heading = "Season", subtitle = "Year"),
+    yards_per_game = list(heading = "Yards per Game", subtitle = "# of out FBS teams"),
+    percentile = list(heading = "Percentile", subtitle = "Out of FBS teams"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+    gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |> 
+  gtExtras::gt_add_divider(
+    columns = c(year),
+    sides = "right",
+    color = "black"
+  ) |> 
+  gtUtils::gt_color_pills(percentile, format = "percent", scale_percent = FALSE, domain = c(0,100),
+                          digits = 1) |> 
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via cfbstats.com | theme via {gtUtils} <br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+    gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |> 
+  gt::tab_options(table.width = gt::px(475)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  )
+
+
+gt_save_crop(
+  pen_tbl,
+  file = "pen_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+pen_tbl
+
+# punt table
+punt_tbl_terminal <- all_blocked_punts |> 
+  dplyr::select(-1) |> 
+  dplyr::filter(total > 6) |> 
+  dplyr::filter(!pos_team %in% c("Harvard", "Princeton")) |> 
+  gt::gt() |> 
+  gt::tab_header(
+    title = gt::md("**╔════════════════════════════════════════════════════════╗**<br>**║        MOST BLOCKED PUNTS ALLOWED SINCE 2019          ║**<br>**╚════════════════════════════════════════════════════════╝**")
+  ) |> 
+  gt::tab_spanner(
+    label = gt::md("**┌─ TOTAL ─┐**<br>Blocked punt"),
+    columns = total
+  ) |>
+  gt::tab_spanner(
+    label = gt::md("**┌─ TOUCHDOWNS ─┐**<br>Blocked for TD"),
+    columns = punt_td
+  ) |>
+  gt::cols_label(
+    pos_team = gt::md("**TEAM**"),
+    total = "",
+    punt_td = gt::md("")
+  ) |>
+  # Black background with green text for everything
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = "Courier New", weight = "bold", color = "#00FF00"),
+      gt::cell_fill(color = "black"),
+      gt::cell_borders(sides = "all", color = "#00FF00", weight = gt::px(1))
+    ),
+    locations = gt::cells_column_labels()
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = "Courier New", color = "#00FF00"),
+      gt::cell_fill(color = "black"),
+      gt::cell_borders(sides = "all", color = "#00FF00", weight = gt::px(1))
+    ),
+    locations = gt::cells_body()
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = "Courier New", weight = "bold", color = "#00FF00"),
+      gt::cell_fill(color = "black")
+    ),
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = "Courier New", weight = "bold", color = "#00FF00"),
+      gt::cell_fill(color = "black"),
+      gt::cell_borders(sides = "all", color = "#00FF00", weight = gt::px(1))
+    ),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_footnote(
+    footnote = gt::md("Data via cfbfastR + collegefootballdata.com | data includes FBS vs FCS games <br> <br>Table by Chris at Bless your chart"
+  )) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = "Courier New", color = "#00FF00"),
+      gt::cell_fill(color = "black")
+    ),
+    locations = gt::cells_footnotes()
+  ) |>
+  gt::opt_table_font(font = "Courier New") |>
+  gt::tab_options(
+    table.background.color = "black",
+    table.border.top.style = "solid",
+    table.border.bottom.style = "solid",
+    table.border.left.style = "solid",
+    table.border.right.style = "solid",
+    table.border.top.width = gt::px(2),
+    table.border.bottom.width = gt::px(2),
+    table.border.left.width = gt::px(2),
+    table.border.right.width = gt::px(2),
+    table.border.top.color = "#00FF00",
+    table.border.bottom.color = "#00FF00",
+    table.border.left.color = "#00FF00",
+    table.border.right.color = "#00FF00"
+  )
+
+gt_save_crop(
+  punt_tbl_terminal,
+  file = "punt_tbl_terminal.png",
+  whitespace = 40,
+  bg = "black"
+)
+
+punt_tbl_terminal
+
+```
+
+### 
+
+### 
+
+### 

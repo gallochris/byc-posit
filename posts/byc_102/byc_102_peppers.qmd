@@ -1,0 +1,119 @@
+---
+title: "102: Julius Peppers"
+date: "2024-07-31"
+categories:
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Make data
+
+```{r load-data, message = FALSE, warning=FALSE}
+# scrape data manually via goheels.com 
+# https://s3.us-east-2.amazonaws.com/sidearm.nextgen.sites/unc.sidearmsports.com/documents/2013/3/4/PeppersJ_2002bio.pdf?timestamp=20170525102835
+pep <- tibble::tribble(
+  ~year,~g1,~g2,~g3,~g4,~g5,~g6,~g7,~g8,~g9,~g10,
+  1999,"football","football","football","football","football","football","football","football","football","football",
+  1999,"football","pepper-hot","pepper-hot","pepper-hot","pepper-hot","basketball","basketball","basketball","pepper-hot","basketball",
+  2000,"basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball", 
+  2000,"basketball","basketball","basketball","basketball","basketball", "basketball","basketball","basketball","basketball","basketball",
+  2000,"basketball","basketball","basketball","basketball","basketball", "basketball","basketball","pepper-hot","pepper-hot","pepper-hot",
+  2000,"football","football","football","football","football","football","football","football","football","football",
+  2000,"football","pepper-hot","pepper-hot","pepper-hot","pepper-hot","pepper-hot","pepper-hot","pepper-hot","pepper-hot","basketball",
+  2001,"basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball",
+  2001,"basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball","basketball",
+  2001,"basketball","basketball","basketball","basketball","football","football","football","football","football","football",
+  2001,"football","football","football","football","football","football","football","pepper-hot","pepper-hot","pepper-hot",
+ )
+
+```
+
+### GT Table
+
+```{r gt-table, message=FALSE, warning=FALSE}
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F573406b8-7d83-417d-a986-41d05604566b_900x698.jpeg'
+       style='height: 90px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Julius Peppers</span><span style='display: block; font-weight: bold; text-align: center; font-size: 18px;'>Dominant Two-Sport Athlete</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Peppers played in 35 football games and 56 basketball games from 1999 to 2001 at North Carolina.</span>
+     </div>
+     <div>
+       <img src='https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F77203f97-5d4c-4670-9647-4d772c18c492_900x698.jpeg' 
+       style='height: 90px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+       <hr>"
+)
+
+
+pep |> 
+  gt::gt() |> 
+  gt::fmt_icon(columns = -c(year),
+               fill_color = list("football" = "#825736", 
+                                 "basketball" = "#F88158",
+                                 "pepper-hot" = "#e6e6e6")) |> 
+  gt::cols_label(
+    year = "",
+    g1 = "",
+    g2 = "",
+    g3 = "",
+    g4 = "",
+    g5 = "",
+    g6 = "",
+    g7 = "",
+    g8 = "",
+    g9 = "",
+    g10 = ""
+  ) |> 
+  gt::tab_spanner(columns = c(year), 
+                  label = "Year") |> 
+  gt::tab_spanner(columns = -c(year),
+                  label = gt::html("Football & Basketball Games Played<br><span style='font-weight: normal; text-transform: none;'>Each square represents a game played</span>")) |> 
+  gtExtras::gt_theme_nytimes() |> 
+    gt::tab_header(title = gt::html(custom_header)) |> 
+  gt::tab_source_note(source_note = gt::html(
+    "<hr>
+    <b>Peppers accolades at North Carolina</b>
+    <ul>
+    <li>2001 unanimous first-team football All-America, won the Chuck Bednarik and Lombardi Award, and Bill Willis Trophy.</li>
+    <li>Played in 56 of a possible 69 games over two basketball seasons, including key minutes en route to 2000 Final Four.</li>
+    <li>Drafted 2nd overall in 2002 NFL Draft and inducted in Pro Football Hall of Fame in 2024.</li>
+    </ul>
+    <hr>
+    Data via goheels.com, photos from the Associated Press
+    <hr>
+    <b>Table by Chris (@dadgumboxscores) + Bless your chart</b>"
+  )
+  ) |> 
+  gt::cols_align(
+    align = c("center"),
+    columns = everything()
+  ) |> 
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = 'white',
+    table.font.size = gt::px(16),
+    column_labels.text_transform = 'uppercase',
+    column_labels.font.weight = 'bold'
+  ) -> pep_tbl
+  
+
+
+gtExtras::gtsave_extra(pep_tbl,
+                       filename = "pep-tbl.png",
+                       vwidth = 675,
+                       expand = 10)
+
+pep_tbl
+
+```
+
+### 

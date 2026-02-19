@@ -1,0 +1,137 @@
+"","team","most_sim_final","shared_fbs","jaccard"
+"1","Arizona","TCU",8,0.571428571428571
+"2","Cincinnati","Kansas State",8,0.571428571428571
+"3","Louisiana","Texas State",8,0.571428571428571
+"4","TCU","Arizona",8,0.571428571428571
+"5","Kansas State","Cincinnati",8,0.571428571428571
+"6","Texas State","Louisiana",8,0.571428571428571
+"7","Rutgers","Wisconsin",8,0.533333333333333
+"8","Wisconsin","Rutgers",8,0.533333333333333
+"9","Michigan","UCLA",8,0.5
+"10","UCLA","Michigan",8,0.5
+"11","App State","Georgia Southern",7,0.466666666666667
+"12","Arizona State","BYU, Kansas State",7,0.466666666666667
+"13","Arkansas State","Southern Miss",7,0.466666666666667
+"14","Army","Temple",7,0.466666666666667
+"15","BYU","Kansas, Kansas State, Arizona State",7,0.466666666666667
+"16","Charlotte","UTSA",7,0.466666666666667
+"17","Delaware","Kennesaw State",7,0.466666666666667
+"18","Eastern Michigan","Toledo",7,0.466666666666667
+"19","Florida Atlantic","Memphis",7,0.466666666666667
+"20","Houston","Kansas State",7,0.466666666666667
+"21","Jacksonville State","Louisiana Tech",7,0.466666666666667
+"22","James Madison","Marshall",7,0.466666666666667
+"23","Michigan State","Nebraska",7,0.466666666666667
+"24","Middle Tennessee","Western Kentucky",7,0.466666666666667
+"25","Minnesota","Penn State",7,0.466666666666667
+"26","Navy","UAB",7,0.466666666666667
+"27","Oklahoma","Vanderbilt",7,0.466666666666667
+"28","Rice","South Florida",7,0.466666666666667
+"29","UCF","Utah, Arizona, TCU",7,0.466666666666667
+"30","Georgia Southern","App State",7,0.466666666666667
+"31","Iowa State","Arizona",7,0.466666666666667
+"32","Utah","Arizona, TCU, UCF",7,0.466666666666667
+"33","Southern Miss","Arkansas State",7,0.466666666666667
+"34","Temple","Army",7,0.466666666666667
+"35","Kansas","BYU",7,0.466666666666667
+"36","UTSA","Charlotte",7,0.466666666666667
+"37","Kennesaw State","Delaware",7,0.466666666666667
+"38","Toledo","Eastern Michigan",7,0.466666666666667
+"39","Memphis","Florida Atlantic",7,0.466666666666667
+"40","Louisiana Tech","Jacksonville State",7,0.466666666666667
+"41","Marshall","James Madison",7,0.466666666666667
+"42","Nebraska","Michigan State",7,0.466666666666667
+"43","Western Kentucky","Middle Tennessee",7,0.466666666666667
+"44","Penn State","Minnesota",7,0.466666666666667
+"45","UAB","Navy",7,0.466666666666667
+"46","Vanderbilt","Oklahoma",7,0.466666666666667
+"47","South Florida","Rice",7,0.466666666666667
+"48","East Carolina","Tulane",7,0.4375
+"49","Illinois","Michigan",7,0.4375
+"50","Tennessee","Texas",7,0.4375
+"51","Tulane","East Carolina",7,0.4375
+"52","Texas","Tennessee",7,0.4375
+"53","Air Force","Fresno State, Nevada, San Diego State",6,0.375
+"54","Akron","Kent State",6,0.375
+"55","Arkansas","Florida, Oklahoma, Texas A&M",6,0.375
+"56","Auburn","South Carolina, Tennessee",6,0.375
+"57","Ball State","Buffalo, Miami (OH), Northern Illinois",6,0.375
+"58","Baylor","Iowa State, Kansas, Texas Tech",6,0.375
+"59","Boise State","Hawai'i, New Mexico, San José State",6,0.375
+"60","Boston College","Miami, Syracuse",6,0.375
+"61","Bowling Green","Buffalo, Central Michigan",6,0.375
+"62","California","Wake Forest",6,0.375
+"63","Coastal Carolina","Georgia State, Old Dominion",6,0.375
+"64","Colorado State","Nevada, San Diego State, San José State",6,0.375
+"65","Duke","North Carolina",6,0.375
+"66","Florida International","Jacksonville State, Louisiana Tech, Middle Tennessee",6,0.375
+"67","Fresno State","New Mexico, San Diego State, UNLV",6,0.375
+"68","Georgia State","Old Dominion, Coastal Carolina",6,0.375
+"69","Hawai'i","Nevada, New Mexico, San José State",6,0.375
+"70","Indiana","Rutgers, Washington",6,0.375
+"71","Iowa","Oregon",6,0.375
+"72","LSU","Missouri, South Carolina",6,0.375
+"73","Liberty","Middle Tennessee, UTEP, Western Kentucky",6,0.375
+"74","Maryland","Ohio State",6,0.375
+"75","Massachusetts","Toledo, Eastern Michigan",6,0.375
+"76","Miami","Pittsburgh, Boston College",6,0.375
+"77","Miami (OH)","Ohio, Ball State",6,0.375
+"78","Missouri State","New Mexico State, Delaware, Jacksonville State",6,0.375
+"79","NC State","Syracuse, Wake Forest",6,0.375
+"80","New Mexico","UNLV, Wyoming, Boise State",6,0.375
+"81","North Carolina","SMU, Duke",6,0.375
+"82","Northern Illinois","Western Michigan, Ball State",6,0.375
+"83","Northwestern","Ohio State, Michigan State",6,0.375
+"84","Ohio State","Rutgers, Washington, Maryland",6,0.375
+"85","Oklahoma State","UCF, Arizona, Kansas",6,0.375
+"86","Ole Miss","Tennessee",6,0.375
+"87","Oregon","Purdue, Illinois, Iowa",6,0.375
+"88","San Diego State","UNLV, Utah State, Air Force",6,0.375
+"89","San José State","UNLV, Boise State, Colorado State",6,0.375
+"90","South Alabama","Troy, UL Monroe",6,0.375
+"91","Texas A&M","Vanderbilt, Arkansas",6,0.375
+"92","Texas Tech","UCF, West Virginia, Arizona",6,0.375
+"93","Troy","UL Monroe, South Alabama",6,0.375
+"94","UTEP","Western Kentucky, Florida International, Liberty",6,0.375
+"95","Utah State","Wyoming, Colorado State, San Diego State",6,0.375
+"96","Nevada","Air Force, Colorado State, Hawai'i",6,0.375
+"97","UNLV","Air Force, Fresno State, New Mexico",6,0.375
+"98","Kent State","Akron",6,0.375
+"99","Florida","Arkansas",6,0.375
+"100","South Carolina","Auburn, LSU",6,0.375
+"101","Buffalo","Ball State, Bowling Green",6,0.375
+"102","Wyoming","Boise State, Hawai'i, New Mexico",6,0.375
+"103","Syracuse","Boston College, NC State",6,0.375
+"104","Central Michigan","Bowling Green",6,0.375
+"105","Wake Forest","California, NC State",6,0.375
+"106","Old Dominion","Coastal Carolina, Georgia State, James Madison",6,0.375
+"107","New Mexico State","Delaware, Florida International, Jacksonville State",6,0.375
+"108","Ohio","Eastern Michigan, Miami (OH)",6,0.375
+"109","Purdue","Illinois, Oregon",6,0.375
+"110","Washington","Indiana, Ohio State",6,0.375
+"111","West Virginia","Kansas State, Texas Tech",6,0.375
+"112","Missouri","LSU",6,0.375
+"113","Pittsburgh","Miami",6,0.375
+"114","SMU","North Carolina",6,0.375
+"115","Western Michigan","Northern Illinois",6,0.375
+"116","UL Monroe","South Alabama, Troy",6,0.375
+"117","Colorado","TCU, Texas Tech, Arizona State",6,0.352941176470588
+"118","Louisville","Stanford",6,0.352941176470588
+"119","Sam Houston","Western Kentucky, Delaware, Kennesaw State",6,0.352941176470588
+"120","Stanford","Syracuse, Louisville, NC State",6,0.352941176470588
+"121","USC","Indiana, Minnesota, Northwestern",6,0.352941176470588
+"122","Alabama","Kentucky, Oklahoma, Vanderbilt",5,0.294117647058824
+"123","Clemson","Pittsburgh, Syracuse, Wake Forest",5,0.294117647058824
+"124","Florida State","Georgia Tech, Louisville, Miami",5,0.294117647058824
+"125","Georgia","Kentucky, Oklahoma, Vanderbilt",5,0.294117647058824
+"126","Georgia Tech","North Carolina, Florida State",5,0.294117647058824
+"127","Kentucky","Mississippi State, Oklahoma, Alabama",5,0.294117647058824
+"128","North Texas","Rice, South Florida, UTSA",5,0.294117647058824
+"129","Virginia","Virginia Tech, Wake Forest, California",5,0.294117647058824
+"130","Mississippi State","Arkansas, Florida, Kentucky",5,0.294117647058824
+"131","Tulsa","Army, East Carolina, Florida Atlantic",5,0.294117647058824
+"132","Virginia Tech","Duke, NC State, Pittsburgh",5,0.294117647058824
+"133","Notre Dame","Pittsburgh",5,0.277777777777778
+"134","Oregon State","Oklahoma State",4,0.235294117647059
+"135","UConn","Navy",4,0.222222222222222
+"136","Washington State","California, Fresno State",3,0.166666666666667

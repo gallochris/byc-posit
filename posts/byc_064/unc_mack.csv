@@ -1,0 +1,61 @@
+﻿G,Segment,Season,Date,Time,Day,School,,Opponent,Conf,,Pts,Opp,W,L,Streak,Notes,Diff
+1,1 to 4,2019,31-Aug-19,,Sat,North Carolina,N,South Carolina,SEC,W,24,20,1,0,W 1,"Bank of America Stadium - Charlotte, North Carolina",4
+2,1 to 4,2019,7-Sep-19,,Sat,North Carolina,,Miami (FL),ACC,W,28,25,2,0,W 2,"Kenan Memorial Stadium - Chapel Hill, North Carolina",3
+3,1 to 4,2019,13-Sep-19,,Fri,North Carolina,@,Wake Forest,ACC,L,18,24,2,1,L 1,"BB&T Field - Winston-Salem, North Carolina",-6
+4,1 to 4,2019,21-Sep-19,,Sat,North Carolina,,Appalachian State,Sun Belt,L,31,34,2,2,L 2,"Kenan Memorial Stadium - Chapel Hill, North Carolina",-3
+5,5 to 8,2019,28-Sep-19,,Sat,North Carolina,,(1) Clemson,ACC,L,20,21,2,3,L 3,"Kenan Memorial Stadium - Chapel Hill, North Carolina",-1
+6,5 to 8,2019,5-Oct-19,,Sat,North Carolina,@,Georgia Tech,ACC,W,38,22,3,3,W 1,"Bobby Dodd Stadium - Atlanta, Georgia",16
+7,5 to 8,2019,19-Oct-19,,Sat,North Carolina,@,Virginia Tech,ACC,L,41,43,3,4,L 1,"Lane Stadium - Blacksburg, Virginia",-2
+8,5 to 8,2019,26-Oct-19,,Sat,North Carolina,,Duke,ACC,W,20,17,4,4,W 1,"Kenan Memorial Stadium - Chapel Hill, North Carolina",3
+9,9+,2019,2-Nov-19,,Sat,North Carolina,,Virginia,ACC,L,31,38,4,5,L 1,"Kenan Memorial Stadium - Chapel Hill, North Carolina",-7
+10,9+,2019,14-Nov-19,,Thu,North Carolina,@,Pitt,ACC,L,27,34,4,6,L 2,"Heinz Field - Pittsburgh, Pennsylvania",-7
+11,9+,2019,30-Nov-19,,Sat,North Carolina,@,North Carolina State,ACC,W,41,10,6,6,W 2,"Carter-Finley Stadium - Raleigh, North Carolina",31
+12,9+,2019,27-Dec-19,12:00 PM,Fri,North Carolina,N,Temple,American,W,55,13,7,6,W 3,"Military Bowl (Navy-Marine Corps Memorial Stadium - Annapolis, Maryland)",42
+13,1 to 4,2020,12-Sep-20,3:30 PM,Sat,(18) North Carolina,,Syracuse,ACC,W,31,6,1,0,W 1,,25
+14,1 to 4,2020,3-Oct-20,12:00 PM,Sat,(12) North Carolina,@,Boston College,ACC,W,26,22,2,0,W 2,,4
+15,1 to 4,2020,10-Oct-20,7:30 PM,Sat,(8) North Carolina,,(19) Virginia Tech,ACC,W,56,45,3,0,W 3,,11
+16,1 to 4,2020,17-Oct-20,12:00 PM,Sat,(5) North Carolina,@,Florida State,ACC,L,28,31,3,1,L 1,,-3
+17,5 to 8,2020,24-Oct-20,8:00 PM,Sat,(14) North Carolina,,(23) North Carolina State,ACC,W,48,21,4,1,W 1,,27
+18,5 to 8,2020,31-Oct-20,12:00 PM,Sat,(15) North Carolina,@,Virginia,ACC,L,41,44,4,2,L 1,,-3
+19,5 to 8,2020,7-Nov-20,12:00 PM,Sat,North Carolina,@,Duke,ACC,W,56,24,5,2,W 1,,32
+20,5 to 8,2020,14-Nov-20,3:30 PM,Sat,North Carolina,,Wake Forest,ACC,W,59,53,6,2,W 2,,6
+21,9+,2020,27-Nov-20,3:30 PM,Fri,(25) North Carolina,,(2) Notre Dame,ACC,L,17,31,6,3,L 1,,-14
+22,9+,2020,12-Dec-20,8:00 PM,Sat,(20) North Carolina,@,(9) Miami (FL),ACC,W,62,26,8,3,W 2,,36
+23,9+,2020,2-Jan-21,,Sat,(14) North Carolina,N,(5) Texas A&M,SEC,L,27,41,8,4,L 1,"Orange Bowl (Hard Rock Stadium - Miami Gardens, Florida)",-14
+24,1 to 4,2021,3-Sep-21,6:00 PM,Fri,(10) North Carolina,@,Virginia Tech,ACC,L,10,17,0,1,L 1,,-7
+25,1 to 4,2021,11-Sep-21,7:30 PM,Sat,(24) North Carolina,,Georgia State,Sun Belt,W,59,17,1,1,W 1,,42
+26,1 to 4,2021,18-Sep-21,7:30 PM,Sat,(21) North Carolina,,Virginia,ACC,W,59,39,2,1,W 2,,20
+27,1 to 4,2021,25-Sep-21,7:30 PM,Sat,(21) North Carolina,N,Georgia Tech,ACC,L,22,45,2,2,L 1,"Mercedes-Benz Stadium - Atlanta, Georgia",-23
+28,5 to 8,2021,2-Oct-21,12:00 PM,Sat,North Carolina,,Duke,ACC,W,38,7,3,2,W 1,,31
+29,5 to 8,2021,9-Oct-21,3:30 PM,Sat,North Carolina,,Florida State,ACC,L,25,35,3,3,L 1,,-10
+30,5 to 8,2021,16-Oct-21,3:30 PM,Sat,North Carolina,,Miami (FL),ACC,W,45,42,4,3,W 1,,3
+31,5 to 8,2021,30-Oct-21,7:30 PM,Sat,North Carolina,@,(11) Notre Dame,Ind,L,34,44,4,4,L 1,,-10
+32,9+,2021,6-Nov-21,12:00 PM,Sat,North Carolina,,(10) Wake Forest,ACC,W,58,55,5,4,W 1,,3
+33,9+,2021,11-Nov-21,7:30 PM,Thu,North Carolina,@,(25) Pitt,ACC,L,23,30,5,5,L 1,,-7
+34,9+,2021,26-Nov-21,7:00 PM,Fri,North Carolina,@,(24) North Carolina State,ACC,L,30,34,6,6,L 1,,-4
+35,9+,2021,30-Dec-21,11:30 AM,Thu,North Carolina,N,South Carolina,SEC,L,21,38,6,7,L 2,"Duke's Mayo Bowl (Bank of America Stadium - Charlotte, North Carolina)",-17
+36,1 to 4,2022,3-Sep-22,12:00 PM,Sat,North Carolina,@,Appalachian State,Sun Belt,W,63,61,2,0,W 2,,2
+37,1 to 4,2022,10-Sep-22,12:00 PM,Sat,North Carolina,@,Georgia State,Sun Belt,W,35,28,3,0,W 3,,7
+38,1 to 4,2022,24-Sep-22,3:30 PM,Sat,North Carolina,,Notre Dame,Ind,L,32,45,3,1,L 1,,-13
+39,5 to 8,2022,1-Oct-22,3:30 PM,Sat,North Carolina,,Virginia Tech,ACC,W,41,10,4,1,W 1,,31
+40,5 to 8,2022,8-Oct-22,4:00 PM,Sat,North Carolina,@,Miami (FL),ACC,W,27,24,5,1,W 2,,3
+41,5 to 8,2022,15-Oct-22,8:00 PM,Sat,North Carolina,@,Duke,ACC,W,38,35,6,1,W 3,,3
+42,5 to 8,2022,29-Oct-22,8:00 PM,Sat,(21) North Carolina,,Pitt,ACC,W,42,24,7,1,W 4,,18
+43,9+,2022,5-Nov-22,12:00 PM,Sat,(17) North Carolina,@,Virginia,ACC,W,31,28,8,1,W 5,,3
+44,9+,2022,12-Nov-22,7:30 PM,Sat,(15) North Carolina,@,Wake Forest,ACC,W,36,34,9,1,W 6,,2
+45,9+,2022,19-Nov-22,5:30 PM,Sat,(13) North Carolina,,Georgia Tech,ACC,L,17,21,9,2,L 1,,-4
+46,9+,2022,25-Nov-22,3:30 PM,Fri,(18) North Carolina,,North Carolina State,ACC,L,27,30,9,3,L 2,,-3
+47,9+,2022,3-Dec-22,8:00 PM,Sat,(24) North Carolina,N,(10) Clemson,ACC,L,10,39,9,4,L 3,ACC Championship Game,-29
+48,9+,2022,28-Dec-22,8:00 PM,Wed,North Carolina,N,(15) Oregon,Pac-12,L,27,28,9,5,L 4,Holiday Bowl,-1
+49,1 to 4,2023,2-Sep-23,7:30 PM,Sat,(21) North Carolina,N,South Carolina,SEC,W,31,17,1,0,W 1,,14
+50,1 to 4,2023,9-Sep-23,5:15 PM,Sat,(17) North Carolina,,Appalachian State,Sun Belt,W,40,34,2,0,W 2,,6
+51,1 to 4,2023,16-Sep-23,3:30 PM,Sat,(20) North Carolina,,Minnesota,Big Ten,W,31,13,3,0,W 3,,18
+52,1 to 4,2023,23-Sep-23,8:00 PM,Sat,(17) North Carolina,@,Pitt,ACC,W,41,24,4,0,W 4,,17
+53,5 to 8,2023,7-Oct-23,3:30 PM,Sat,(14) North Carolina,,Syracuse,ACC,W,40,7,5,0,W 5,,33
+54,5 to 8,2023,14-Oct-23,7:30 PM,Sat,(12) North Carolina,,(25) Miami (FL),ACC,W,41,31,6,0,W 6,,10
+55,5 to 8,2023,21-Oct-23,6:30 PM,Sat,(10) North Carolina,,Virginia,ACC,L,27,31,6,1,L 1,,-4
+56,5 to 8,2023,28-Oct-23,8:00 PM,Sat,(17) North Carolina,@,Georgia Tech,ACC,L,42,46,6,2,L 2,,-4
+57,9+,2023,11-Nov-23,8:00 PM,Sat,(24) North Carolina,,Duke,ACC,W,47,45,8,2,W 2,,2
+58,9+,2023,18-Nov-23,3:30 PM,Sat,(22) North Carolina,@,Clemson,ACC,L,20,31,8,3,L 1,,-11
+59,9+,2023,25-Nov-23,8:00 PM,Sat,North Carolina,@,North Carolina State,ACC,L,20,39,8,4,L 2,,-19
+60,9+,2023,27-Dec-23,5:30 PM,Wed,North Carolina,N,West Virginia,Big 12,L,10,30,8,5,L 3,Duke's Mayo Bowl,-20

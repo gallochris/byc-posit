@@ -1,0 +1,637 @@
+---
+title: "128: Duke possession plot"
+date: "2025-01-31"
+categories:
+  - gtUtils
+  - geom_tile
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load possession data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# this data is from betiq from teamrankings 
+# https://betiq.teamrankings.com/college-basketball/betting-trends/custom-trend-tool/?select_team=N+Carolina&select_opp=Duke
+duke_unc <- readr::read_csv("duke-unc-ps.csv") |> 
+  dplyr::filter(spread > 9.5) |> 
+  dplyr::mutate(
+        date = format(lubridate::mdy(date), "%B %d, %Y"),
+        score = dplyr::if_else(
+            unc_score > duke_score, 
+            paste0("UNC ", unc_score, ", Duke ", duke_score),
+            paste0("Duke ", duke_score, ", UNC ", unc_score)
+        ),
+        location = dplyr::case_when(
+            location == "Away" ~ "Cameron Indoor Stadium",
+            location == "Neutral" & spread == 26.0 ~ "Charlotte Coliseum",
+            location == "Neutral" & spread == 12.0 ~ "Charlotte Coliseum",
+            location == "Home" ~ "Dean E. Smith Center",
+            TRUE ~ location
+        )
+    ) |> 
+    cbbplotR::gt_cbb_teams(winner, winner, include_name = FALSE) |> 
+    dplyr::select(date, winner, score, location, spread, unc_cover)
+
+```
+
+### Load run data from bigballR
+
+```{r run-data, warning=FALSE, message=FALSE}
+# big assist from Connor over at https://github.com/cobrastats
+# commenting out all the code, and saving as a CSV to make the data static
+# sched <- bigballR::get_team_schedule(team.name="North Carolina",season="2024-25")
+# pbp <- bigballR::get_play_by_play(sched$Game_ID) |> 
+#   dplyr::filter(Shot_Value %in% c(1,2,3) & Event_Result=="made")
+
+# run_pbp <- pbp |>
+#   dplyr::group_by(ID) |>
+#   dplyr::arrange(Game_Seconds) |>
+#   dplyr::mutate(run = cumsum(Event_Team != lag(Event_Team, default = first(Event_Team))) + 1) |>
+#   dplyr::ungroup()
+
+# # Calculate scoring runs
+
+# shots <- run_pbp |>
+#   dplyr::group_by(ID,run) |>
+#   dplyr::summarise(run_team = first(Event_Team),
+#                    def_team = if_else(run_team==first(Home),first(Away),first(Home)),
+#                    run_length = sum(Shot_Value),
+#                    start_score = if_else(run_team==first(Home),paste0(first(Home_Score)-first(Shot_Value),"-",first(Away_Score)),
+#                                          paste0(first(Away_Score)-first(Shot_Value),"-",first(Home_Score))),
+#                    end_score = if_else(run_team==first(Home),paste0(last(Home_Score),"-",last(Away_Score)),
+#                                        paste0(last(Away_Score),"-",last(Home_Score))),
+#                    run_start = paste0(first(Half_Status),"H-",first(Time)),
+#                    run_end = paste0(last(Half_Status),"H-",last(Time))) |>
+#   dplyr::arrange(desc(run_length)) |>
+#   dplyr::select(-run) |>
+#   dplyr::ungroup()
+
+# run_data <- shots |> 
+#   dplyr::filter(run_length > 5) |> 
+#   dplyr::group_by(
+#     opponent = dplyr::if_else(run_team == "North Carolina", def_team, run_team),
+#     run_by_nc = run_team == "North Carolina"
+#   ) |> 
+#   dplyr::summarise(
+#     total_run_points = sum(run_length),
+#     avg_run_length = mean(run_length),
+#     n_runs = dplyr::n(),
+#   ) |> 
+#   tidyr::pivot_wider(
+#     names_from = run_by_nc,
+#     values_from = c(total_run_points, avg_run_length, n_runs),
+#     names_glue = "{ifelse(run_by_nc == TRUE, 'unc', 'opp')}_{.value}",
+#     values_fill = 0
+#   ) |> 
+#   dplyr::mutate(
+#     point_diff = unc_total_run_points - opp_total_run_points,
+#     run_diff = unc_n_runs - opp_n_runs
+#   ) |> 
+#   # Order by opponent run points
+#   dplyr::arrange(desc(opp_total_run_points)) |> 
+#   dplyr::select(opponent, 
+#                 opp_n_runs, 
+#                 opp_avg_run_length,
+#                 opp_total_run_points, 
+#                 point_diff,
+#                 run_diff, 
+#                 unc_n_runs,
+#                 unc_avg_run_length,
+#                 unc_total_run_points)
+
+run_data <- readr::read_csv("runs_data.csv") |> 
+  dplyr::select(-1)
+```
+
+### Point spread table
+
+```{r duke_ps, warning=FALSE, message=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina as a double-digit underdog against Duke</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Since 1998, North Carolina is 9-5 against the spread with three outright wins as a double-digit underdog against Duke. The Blue Devils host UNC Saturday, and opened as a 13.5 point favorite per vegasinsider.com.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/150.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+duke_tbl <- duke_unc |>
+  dplyr::select(date, location, spread, unc_cover, score, winner) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gtExtras::gt_merge_stack(
+    col1 = date,
+    col2 = location,
+    palette = c("black", "#707070")
+  ) |>
+  gt::fmt_markdown(winner) |>
+  gt::fmt_tf(
+    columns = unc_cover,
+    tf_style = "check-mark",
+    colors = c("#56a0d3", "#003087"),
+  ) |>
+  gt::fmt(
+    columns = c(spread),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gtUtils::gt_column_subheaders(
+    date = list(heading = "Date", subtitle = "Location"),
+    winner = list(heading = "Winner", subtitle = "Outright"),
+    score = list(heading = "Score", subtitle = "Final"),
+    spread = list(heading = "Spread", subtitle = "UNC as Underdog"),
+    unc_cover = list(heading = "Cover?", subtitle = "UNC"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via TeamRankings.com's BetIQ tool, theme via {gtUtils} and logos from ESPN.<hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(550)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(font = gt::google_font("Signika Negative"))),
+    locations = gt::cells_body(columns = everything())
+  ) |>
+  gt::cols_align(columns = c(winner, spread), align = "right") |>
+  gt::cols_align(columns = c(date, score, unc_cover), align = "left") |>
+  gtExtras::gt_highlight_rows(rows = c(8, 13, 14), fill = "#d0e4f3") |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      color = "#003087"
+    )),
+    locations = gt::cells_body(columns = c(score), rows = c(1:7, 9:11))
+  ) |>
+  gt::tab_style(style = list(gt::cell_text(
+    font = gt::google_font("Signika Negative"),
+    color = "#56a0d3"
+  )),
+  locations = gt::cells_body(columns = c(spread)))
+
+
+gtUtils::gt_save_crop(duke_tbl,
+                      file = "duke_unc.png",
+                      whitespace = 60,
+                      bg = "#FFFDF5")
+
+duke_tbl
+```
+
+### Run data table
+
+```{r run-tbl, warning=FALSE, message=FALSE}
+
+run_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina: Scoring Spurts by Opponent</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows scoring runs of 6+ points or more in a given game. <br>Carolina is 13-9 overall and 6-4 in the ACC through January 28 games.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+run_tbl <- run_data |>
+  cbbplotR::gt_cbb_teams(opponent, opponent) |>
+  gt::gt() |>
+  gt::cols_hide(run_diff) |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::fmt_markdown(opponent) |>
+  gt::fmt(
+    columns = c(point_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gtUtils::gt_column_subheaders(
+    opp_n_runs = list(heading = "#", subtitle = "6+ points"),
+    opp_avg_run_length = list(heading = "Avg", subtitle = "Points"),
+    opp_total_run_points = list(heading = "Total", subtitle = "From spurts"),
+    point_diff = list(heading = "+/-", subtitle = "From Runs"),
+    unc_n_runs = list(heading = "#", subtitle = "6+ points"),
+    unc_avg_run_length = list(heading = "Avg", subtitle = "Points"),
+    unc_total_run_points = list(heading = "Total", subtitle = "From spurts"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::tab_header(title = gt::html(run_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via bigballR + theme via {gtUtils} and logos from ESPN.<hr><b>Table by Chris at Bless your chart | data through January 28 games</b>"
+      )
+  ) |>
+  gt::tab_spanner(label = "Opponent Spurts", columns = starts_with("opp_")) |>
+  gt::tab_spanner(label = "UNC Spurts", columns = starts_with("unc_")) |>
+  gt::fmt_number(columns = c(unc_avg_run_length, opp_avg_run_length),
+                 decimals = 1) |>
+  gt::data_color(columns = c(point_diff),
+                 colors = scales::col_bin(
+                   bins = c(-Inf, 0, Inf),
+                   palette = c("#ffe7e7", "#d0e4f3")
+                 )) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(675)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gtExtras::gt_add_divider(columns = point_diff,
+                           sides = "left",
+                           color = "black") |>
+  gtExtras::gt_add_divider(columns = point_diff,
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(font = gt::google_font("Signika Negative"))),
+    locations = gt::cells_body(columns = everything())
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::cols_align(columns = c(opponent), align = "left") |>
+  gt::cols_label(opponent = "") |>
+  gtExtras::gt_highlight_rows( # this is silly 
+    rows = c(1, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 21, 22),
+    columns = c(opponent),
+    fill = "#d0e4f3"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2:7, 13, 14, 20),
+    columns = c(opponent),
+    fill = "#ffe7e7"
+  )
+
+gtUtils::gt_save_crop(run_tbl,
+                      file = "run_unc.png",
+                      whitespace = 60,
+                      bg = "#FFFDF5")
+
+run_tbl
+```
+
+### Height table 
+
+```{r duke-ht, warning=FALSE, message=FALSE}
+# pull CSVs down from kenpom 
+# could do this via hoopR, but just grabbed CSVs because I want to look at data first
+# duke_ht <- summary25_1_ |> 
+#    dplyr::left_join(height25, by = "TeamName") |> 
+#    dplyr::select(team = TeamName, 
+#                  adjem = AdjEM, 
+#                  size = Size,
+#                  sizerk = SizeRank)
+
+# save as csv 
+# write.csv(duke_ht, "duke_ht.csv")
+
+# load data
+duke_ht <- readr::read_csv("duke_ht.csv")
+
+# add theme 
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+}
+
+# make the plot
+duke_is_tall <- duke_ht |>
+  ggplot2::ggplot(ggplot2::aes(x = size, y = sizerk)) +
+  ggplot2::geom_point(
+    color = "#acacac",
+    fill = "#c4ced4",
+    shape = 21,
+    size = 1,
+    alpha = .75
+  ) +
+  ggplot2::scale_x_continuous(limits = c(74, 80), breaks = seq(74, 80, 1)) +
+  ggplot2::scale_y_reverse(
+    limits = c(370, 1),
+    breaks = c(370, 300, 200, 100, 1),
+    labels = c("Shortest", "300", "200", "100", "Tallest")
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 76.28,
+    y = 322,
+    team = "North Carolina",
+    height = .10,
+    alpha = .7
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 79.73,
+    y = 1,
+    team = "Duke",
+    height = .10,
+    alpha = .7
+  ) +
+  theme_me() +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      size = 18,
+      face = 'bold',
+      family = 'mono'
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      size = 10,
+      family = "mono",
+      face = "bold"
+    ),
+    plot.caption = ggtext::element_markdown(size = 7, family = 'mono'),
+    axis.text.x = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    ),
+    axis.text.y = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    )
+  ) +
+  ggplot2::labs(
+    x = "Average Height (inches)",
+    y = "D-I Rank in Height",
+    title = "North Carolina and Duke are not the same size this season",
+    subtitle = "Shows average height in inches and D-I rank out of 364 teams using data from kenpom.com",
+    caption = "Viz by Chris at Bless your chart | data via kenpom | January 31, 2025"
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 77,
+    y = 322,
+    label =  "UNC  \nAvg Height: 76.3  \nD-I Rank: 322",
+    fill = "#56a0d3",
+    color = "#333333",
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 79.7,
+    y = 40,
+    label =  "Duke  \nAvg Height: 79.7  \nD-I Rank: 1",
+    fill = "#00539B",
+    color = "#333333",
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = .3,
+    hjust = 0.5
+  )
+
+
+# save plot
+ggplot2::ggsave(
+  "duke_is_tall_plot.png",
+  duke_is_tall,
+  w = 10.5,
+  h = 8.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+
+duke_is_tall
+```
+
+###  Tempo plot 
+
+```{r tempo_plot, warning=FALSE, message=FALSE}
+
+# this is a refresh of an old plot, see previous code here:
+# https://cjg.quarto.pub/bless-your-chart/posts/byc_074/byc_074_davis_schyer.html
+
+# saved the data as a CSV to make it easier to pull statically
+unc_duke_tempo <- readr::read_csv("unc_duke_tempo.csv")
+
+my_fill <- ggplot2::aes(fill = ggplot2::after_scale(ggplot2::alpha(colour, 0.6)))
+
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+}
+
+# combine the datasets
+
+tempo_plot <- unc_duke_tempo |>
+  ggplot2::ggplot(ggplot2::aes(x = coach, y = tempo)) +
+  ggplot2::geom_jitter(
+    shape = 21,
+    width = .065,
+    size = 2,
+    ggplot2::aes(colour = factor(year), !!!my_fill)
+  ) +
+  theme_me() +
+  ggplot2::labs(
+    x = "",
+    y = "Tempo",
+    title = "Tempo under Hubert Davis and Jon Scheyer",
+    subtitle = "<span style='color: #1b9e77;'>2021-22</span> <span style='color: #d95f02;'>2022-23</span>  <span style='color: #7570b3;'>2023-24</span>
+                <span style='color: #e7298a;'>2024-25</span>",
+    "Viz by Chris at Bless your chart | data via kenpom | January 31, 2025"
+  ) +
+  ggplot2::scale_x_discrete(
+    position = "top",
+    labels =
+      c(
+        "Hubert Davis  \nMedian Tempo: 71  \n131 games",
+        "",
+        "Jon Scheyer  \nMedian Tempo: 66  \n92 games"
+      )
+  ) +
+  ggplot2::scale_y_continuous(limits = c(55, 85), breaks = seq(55, 85, 5)) +
+  ggplot2::scale_color_manual(values = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a")) +
+  ggplot2::geom_hline(yintercept = 70,
+                      linetype = "dashed",
+                      color = "#333333") +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(
+      size = 18,
+      face = 'bold',
+      family = 'mono'
+    ),
+    strip.text.x = ggtext::element_markdown(
+      size = 12,
+      face = 'bold',
+      family = 'mono'
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      size = 10,
+      family = "mono",
+      face = "bold"
+    ),
+    plot.caption = ggtext::element_markdown(size = 7, family = 'mono'),
+    axis.text.x = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    ),
+    axis.text.y = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    )
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2.5,
+    y = 65,
+    label = "Both games in 2023-24 \nplayed at ~65  \npossessions  \nDuke won both",
+    size = 3.5,
+    color = "#333333",
+    fill = "#00539B",
+    family = "mono",
+    fontface = "bold",
+    alpha = .5
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 1.5,
+    y = 73,
+    label = "Both games in 2024-25 \nplayed above 70  \npossessions  \nUNC won both",
+    size = 3.5,
+    color = "#333333",
+    fill = "#56a0d3",
+    family = "mono",
+    fontface = "bold",
+    alpha = .3
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.5,
+    y = 82.5,
+    team = "Duke",
+    height = .18,
+    alpha = .3
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1.5,
+    y = 82.5,
+    team = "North Carolina",
+    height = .20,
+    alpha = .3
+  )
+
+ggplot2::ggsave(
+  "scheyer_davis.png",
+  tempo_plot,
+  w = 8,
+  h = 10.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+tempo_plot
+```

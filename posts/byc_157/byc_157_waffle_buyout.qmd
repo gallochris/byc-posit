@@ -1,0 +1,266 @@
+---
+title: "157: Waffle chart"
+date: "2025-10-15"
+categories:
+  - geom_waffle
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+```
+
+### Waffle plot
+
+```{r waffle-plot, warning=FALSE, message=FALSE}
+
+coaching_data <- readr::read_csv("coaching-data.csv")
+
+waffle_data_top20 <- coaching_data |>
+  dplyr::mutate(
+    total_pay_num = readr::parse_number(total_pay),
+    buyout_num = readr::parse_number(buyout)
+  ) |>
+  dplyr::filter(!is.na(total_pay_num), !is.na(buyout_num)) |>
+  dplyr::arrange(dplyr::desc(total_pay_num)) |>
+  dplyr::slice_head(n = 20) |>
+  dplyr::arrange(dplyr::desc(buyout_num)) |>
+  dplyr::mutate(
+    salary_squares = round(total_pay_num / 1e6),
+    buyout_squares = round(buyout_num / 1e6),
+    # adjust james franklin
+    coach_label = dplyr::case_when(
+      coach == "James Franklin" ~ "James Franklin (Fired)<br>Penn State",
+      TRUE ~ stringr::str_c(coach, "<br>", team)
+    )
+  )
+
+# order by buyout
+coach_order_levels <- unique(waffle_data_top20$coach_label)
+
+# pivot data
+waffle_data_top20 <- waffle_data_top20 |>
+  dplyr::select(coach_label, salary_squares, buyout_squares) |>
+  tidyr::pivot_longer(
+    cols = c(salary_squares, buyout_squares),
+    names_to = "metric",
+    values_to = "n"
+  ) |>
+  dplyr::mutate(
+    metric = dplyr::case_when(
+      metric == "salary_squares" ~ "Annual Salary",
+      metric == "buyout_squares" ~ "Contract Buyout"
+    ),
+    coach_label = factor(coach_label, levels = coach_order_levels)
+  )
+
+waffle_plot_top20 <- waffle_data_top20 |>
+  ggplot2::ggplot(ggplot2::aes(fill = metric, values = n)) +
+  waffle::geom_waffle(
+    color = "white", 
+    size = 0.3, 
+    n_rows = 10,
+    flip = TRUE,
+    radius = grid::unit(3, "pt"),
+    height = 0.9,
+    width = 0.9
+  ) +
+  ggplot2::facet_wrap(~coach_label, ncol = 4, strip.position = "top") +
+  ggplot2::scale_x_discrete(expand = c(0, 0)) +
+  ggplot2::scale_y_continuous(
+    labels = function(x) x * 10,
+    expand = c(0, 0)
+  ) +
+  ggplot2::scale_fill_manual(
+    "",
+    values = c("Annual Salary" = "#E69F00", "Contract Buyout" = "#0072B2")
+  ) +
+  ggplot2::labs(
+    title = "2025 College Football Head Coaches Salaries & Buyouts <br>",
+    subtitle = "Each square represents $1 million<br>Ordered by contract buyout amount (blue)<br>Several coaches from a private school are excluded due to non-public salary data.<br>Higher buyouts indicate longer contracts, but buyout terms vary and don't always reflect immediate payment obligations.<br>",
+    x = "",
+    y = "Millions ($)",
+    caption = "Data via sportsdata.usatoday.com<br>Viz by Chris at Bless your Chart"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.box.spacing = grid::unit(0, "cm"),
+    legend.margin = ggplot2::margin(t = 0, b = 10),
+    legend.text = ggplot2::element_text(size = 10),
+    strip.text = ggtext::element_markdown(size = 11,
+                                          margin = ggplot2::margin(b = 5)),
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5,
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 10,
+      lineheight = 1.2
+    ),
+    plot.caption = ggtext::element_markdown(),
+    panel.spacing.x = grid::unit(1.25, "lines"),
+    panel.spacing.y = grid::unit(1.25, "lines"),
+    axis.text.y = ggtext::element_markdown(
+      size = 8
+    ),
+    plot.margin = grid::unit(c(0.5, 0.5, 0.5, 0.5), "cm")
+  )
+
+waffle_plot_top20
+
+ggplot2::ggsave(
+  "coaching_waffle_top20.png",
+  waffle_plot_top20,
+  w = 8,
+  h = 10,
+  dpi = 300,
+  type = 'cairo',
+  bg = "white"
+)
+
+```
+
+### Line score 
+
+```{r lscore, warning=FALSE, message=FALSE}
+
+line_score <- tibble::tribble(
+  ~team,     ~inning_1, ~inning_2, ~inning_3, ~inning_4, ~inning_5, ~inning_6, ~inning_7, ~inning_8, ~inning_9, ~inning_10, ~points, ~fdowns, ~turnovers,
+  "Georgia",         0,         0,         0,        "3",         0,         7,         3,         0,         7,          0,       20,      21,          1,
+  "Auburn",          7,         3,         0,        "F",         0,         0,         0,         0,         0,          0,       10,      18,          1
+)
+uga_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/61.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Georgia 20, Auburn 10</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Possession-by-possession line score and relevant stats.<br>October 11, 2025 | 	Jordan-Hare Stadium, Auburn, AL</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+
+uga_tbl <- line_score |>
+  dplyr::rename_with( ~ stringr::str_remove(.x, "inning_"),
+                      dplyr::starts_with("inning_")) |>
+  cbbplotR::gt_cbb_teams(team, team)  |>
+  gt::gt()  |>
+  gt::sub_missing(missing_text = "-") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+   gt::cols_align(columns = 5, align = "center") |>
+  gt::tab_header(title = gt::html(uga_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>Season records</b>: UGA 5-1 (3-1 SEC), AUB 3-3 (0-3 SEC)<br><br>
+        <b>Avg Starting Field Position</b>: UGA own 32, AUB own 26<br>
+        <b>Yards per play</b>: UGA 4.3, AUB 4.1<br>
+        <b>UGA Drive outcomes</b>:PUNT (3), TD (2), FG (2), FGA (1), DOWNS (1), HALF (1)<br> 
+        <b>AUB Drive Outcomes</b>: PUNT (4), TD (1), FG (1), DOWNS (2), FUMBLE (1) HALF (1)<br>
+        <b>3rd down conversions</b>: UGA 5-15, AUB 8-17<br>
+        <b>Avg 3rd down distance</b>: UGA 7.8, AUB 4.9<br>
+        <b>Penalties (total-yards)</b>: UGA 6-60, AUB 11-90<br>
+        <b>Explosive plays (20+ yard gains)</b> UGA 2 (all passing), AUB 1 (rushing)<br>
+        <b>F (First Downs)</b> UGA 21 (13 passing, 4 rushing, 4 penalty), AUB 18 (10 rushing, 5 passing, 3 penalty)<br>
+        <b>T (Turnovers)</b> UGA 1 (missed 45-yard field goal), AUB 1 (fumble on goal line on UGA 1)<br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::cols_label(
+    team = "",
+    points = "P",
+    fdowns = "F",
+    turnovers = "T"
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+     table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(5, 7, 8, 10, 12, 13),
+    fill = "#f892a7"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(2, 3),
+    fill = "#feba9c"
+  ) |>
+    gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(5),
+    fill = "#f892a7"
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+   gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  gt::tab_spanner(label = "1st Half", columns = c(2:5)) |>
+  gt::tab_spanner(label = "2nd Half", columns = c(6:11)) |>
+  gtExtras::gt_add_divider(columns = c(5), sides = "right",
+                           color = "black", weight = 0.5) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc"))
+
+gt_save_crop(uga_tbl,
+             file = "linescore_uga.png",
+             whitespace = 60,
+             bg = "white")
+
+uga_tbl
+
+```

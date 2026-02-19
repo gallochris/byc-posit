@@ -1,0 +1,54 @@
+---
+title: "051: FBS game duration update"
+date: "2023-10-08"
+categories:
+  - geom_col
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+kore_games <- readr::read_csv("fbs-week-6.csv")
+
+# min_model <- lm(formula = minutes ~ total_drives + total_points + point_diff + total_plays + total_turnovers + total_punts, data = kore_games)
+
+
+# kore_games$predicted_minutes <- predict(min_model, kore_games)
+```
+
+### Predicted Minutes Model
+
+```{r predicted-minutes, warning=FALSE}
+ggplot2::ggplot(data = kore_games, 
+                ggplot2::aes(y = predicted_minutes, x = minutes)) +
+    ggplot2::geom_point(color = "#333333",
+                        fill = "#c4ced4",
+                        shape = 21,
+                        size = 1.5,
+                        alpha = .75) +
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "#333333", linetype = "dashed") +
+    ggplot2::labs(x = "Observed Minutes", y = "Predicted Minutes",
+                  title = "College Football Games: Observed and Predicted Minutes", subtitle = "Data from 431 games between at least one FBS team", 
+                  caption = "Bless your chart | data via SportSource Analytics | October 8, 2023") + 
+    ggthemes::theme_few()  -> fbs_plot
+
+ggplot2::ggsave(
+  "fbs_plot.png",
+  fbs_plot,
+  w = 6,
+  h = 6,
+  dpi = 600,
+  type = 'cairo'
+)
+
+fbs_plot
+  
+  
+```
+
+### 

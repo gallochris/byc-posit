@@ -1,0 +1,41 @@
+﻿sport,div_one,gender,type
+Baseball,11.7,male,Equivalency
+Basketball,13,male,Head Count
+"XC, Track and Field",12.6,male,Equivalency
+Fencing,4.5,male,Equivalency
+Football (FBS),85,male,Head Count
+Golf,4.5,male,Equivalency
+Gymnastics,6.3,male,Head Count
+Ice Hockey,18,male,Equivalency
+Lacrosse,12.6,male,Equivalency
+Rifle,3.6,male,Equivalency
+Skiing,6.3,male,Equivalency
+Soccer,9.9,male,Equivalency
+Swimming & Diving,9.9,male,Equivalency
+Tennis,4.5,male,Equivalency
+Volleyball,4.5,male,Equivalency
+Water Polo,4.5,male,Equivalency
+Wrestling,9.9,male,Equivalency
+Basketball,15,female,Head Count
+Beach Volleyball,6,female,Equivalency
+Bowling,5,female,Equivalency
+"XC, Track and Field",18,female,Equivalency
+Equestrian,15,female,Equivalency
+Fencing,5,female,Equivalency
+Field Hockey,12,female,Equivalency
+Golf,6,female,Equivalency
+Gymnastics,12,female,Equivalency
+Ice Hockey,18,female,Equivalency
+Lacrosse,12,female,Equivalency
+Rifle,3.6,female,Equivalency
+Rowing,20,female,Equivalency
+Rugby,12,female,Equivalency
+Skiing,7,female,Equivalency
+Soccer,14,female,Equivalency
+Softball,12,female,Equivalency
+Swimming & Diving,14,female,Equivalency
+Tennis,8,female,Head Count
+Triathlon,6.5,female,Equivalency
+Volleyball,12,female,Head Count
+Water Polo,8,female,Equivalency
+Wrestling,10,female,Equivalency

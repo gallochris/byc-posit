@@ -1,0 +1,176 @@
+---
+title: "078: ACC Road records"
+date: "2024-02-22"
+categories:
+  - gt_table
+  - geom_tile
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+cbbdata::cbd_torvik_game_stats(type = "conf") |> 
+  dplyr::filter(conf == "ACC") |> 
+  dplyr::group_by(team, year) |> 
+  dplyr::summarise(
+    away_wins = sum(result == "W" & location == "A"),
+    away_loss = sum(result == "L" & location == "A"),
+    away_wp = away_wins / (away_wins + away_loss)
+  ) |> 
+  dplyr::group_by(year) |> 
+  dplyr::slice_max(order_by = away_wp, n = 1, with_ties = TRUE) |> 
+  dplyr::summarise(
+    team = paste(team, collapse = ", "),
+    away_wins = max(away_wins),
+    away_loss = max(away_loss),
+    away_wp = max(away_wp)
+  ) |> 
+  dplyr::filter(year != 2024) -> acc_road
+
+acc_reg_winners <- tibble::tribble(
+  ~year,~winner,~same,
+  2008,"North Carolina","Yes",
+  2009,"North Carolina","Yes",
+  2010,"Duke, Maryland","Yes",
+  2011,"North Carolina","Yes",
+  2012,"North Carolina","No",
+  2013, "Miami FL","Yes",
+  2014,"Virginia","Yes",
+  2015,"Virginia","Yes",
+  2016,"North Carolina","Yes",
+  2017,"North Carolina","Yes",
+  2018,"Virginia","Yes",
+  2019,"Virginia, North Carolina","Yes",
+  2020,"Florida State","No",
+  2021,"Virginia","Yes",
+  2022,"Duke","Yes",
+  2023,"Miami FL, Virginia","Yes",
+)  |> 
+  dplyr::mutate(same = dplyr::if_else(same == "Yes", 
+                                      "arrows-left-right", "x"))
+
+# acc reg szn 
+
+acc_reg_szn <- acc_reg_winners |> 
+  dplyr::left_join(acc_road, by = "year")
+
+## acc possessions
+acc_poss <- readr::read_csv("https://gist.githubusercontent.com/gallochris/38a0da6c27978383e6b9502f14d2b1ca/raw/57ef9b85f48bbc2248bb9d9f7e2b7630f1e32ae6/unc_acc_poss.csv")
+
+```
+
+### GT Table
+
+```{r gt-acc-tbl, warning = FALSE}
+
+title <- cbbplotR::gt_cbb_logo_title(title = 'ACC Regular Season Champions and Best Road Records Since 2008',
+                           subtitle = 'The team with the best road record has won at least a share of the regular season title 14 of the last 16 seasons.',
+                           type = 'conference',
+                           value = 'ACC',
+                           logo_height = 65)
+
+
+acc_reg_szn |> 
+  gt::gt() |> 
+  gt::fmt_icon(columns = c(same), rows = c(1:4, 6:12, 14:16), 
+               stroke_color = "green", fill_color = c( "green")
+  ) |> 
+  gt::fmt_icon(columns = c(same), rows = c(5, 13), 
+               stroke_color = "red", fill_color = c( "red")
+  ) |> 
+  gtExtras::gt_highlight_rows(rows = c(5, 13), fill = "#fffec8") |> 
+  gt::cols_label(
+    year = "Season", 
+    winner = "Champion(s)", 
+    same = "",
+    team = "Team(s)",
+    away_wins = "W",
+    away_loss = "L", 
+    away_wp = "Win %"
+  ) |> 
+  gt::fmt_number(columns = c(away_wp), decimals = 3) |> 
+  gt::tab_spanner(columns = c(team, away_wins, away_loss,
+                              away_wp), label = "Best Road Record") |> 
+  gt::tab_header(title = gt::html(title)) |> 
+  gt::tab_source_note(source_note = "Bless your chart | data via cbbdata + cbbplotR | February 22, 2024") |> 
+  cbbplotR::gt_theme_athletic() -> acc_gt_tbl
+  
+gtExtras::gtsave_extra(acc_gt_tbl,
+                       filename = "acc_table.png",
+                       vheight = 875,
+                       vwidth = 850)
+
+acc_gt_tbl
+
+```
+
+### 
+
+### Geom tile possession chart
+
+```{r geom-tile, warning=FALSE}
+
+cuse_poss <- acc_poss |> 
+  dplyr::filter(ID == 5618376) |> 
+  dplyr::mutate(scoring = dplyr::if_else(PTS > 0, TRUE, FALSE))
+
+# idea is to use geom_tile to show different empty or scoring possessions 
+# tricky part is Poss_Num is sort of double-counting? 
+# adjusting the x axis manually with labels to try and clear it up 
+# basically think you can divide by 2? 
+
+# find half time 
+row_index <- which(cuse_poss$Half_Status == 2)[1]
+
+first_poss_num <- cuse_poss$Poss_Num[row_index] /2
+
+cuse_plot <- cuse_poss |> 
+    ggplot2::ggplot(ggplot2::aes(x = Poss_Num/2, y = Poss_Team, fill = scoring)) +
+    ggplot2::geom_tile(width = 0.75, height = 0.25) +
+    ggplot2::scale_fill_manual(values = c("lightpink", "lightgreen")) +
+    ggplot2::scale_x_continuous(breaks = seq(0, 70, 5), limits = c(0, 66)) +
+    ggplot2::geom_vline(xintercept = first_poss_num, linetype = "dashed", color = "#333333") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(legend.position = "none",
+                   axis.text.y = cbbplotR::element_cbb_teams(size = 0.9)) +
+    ggplot2::labs(x = "Possessions", y = "", 
+                  title = "Syracuse 86, North Carolina 79",
+                  subtitle ="Green tile represents scoring possession  \nPink tile represents empty possession", caption = "Bless your chart & Fifth Factor | data via bigballR")
+
+
+ggplot2::ggsave(
+  "cuse-plot.png",
+  cuse_plot,
+  w = 6,
+  h = 4,
+  dpi = 300,
+  type = 'cairo'
+)
+
+cuse_plot
+
+```
+
+### Road records since 2012 - UVA
+
+```{r uva-data, warning=FALSE}
+
+since_uva <- cbbdata::cbd_torvik_game_stats(type = "conf", team = "North Carolina") |> dplyr::filter(location == "A" & year > 2012) |> 
+  dplyr::group_by(opp) |> 
+  dplyr::summarise(
+    W = sum(result == "W"), 
+    L = sum(result == "L"),
+    win_pct = W / (W+L)
+  ) |> 
+  dplyr::arrange(win_pct)
+
+since_uva
+
+
+```

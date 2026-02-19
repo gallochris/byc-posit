@@ -1,0 +1,274 @@
+---
+title: "154: Blocking punts"
+date: "2025-09-18"
+categories:
+  - gtUtils
+  - grandsummary
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# commenting out scripts to fetch data from collegefootballdata.com and cfbfastR 
+# blocked_punts <- cfbfastR::load_cfb_pbp(
+#  seasons = c(2016:2025),
+#  dbConnection = NULL,
+#  tablename = NULL ) |> 
+#  dplyr::filter(
+#    punt_blocked  == 1
+#  )
+
+# all_games <- purrr::map_dfr(2016:2025, get_games) |> 
+#  dplyr::filter(
+#    homeClassification == "fbs" & awayClassification == # "fbs"
+#  )
+
+# bp_results <- blocked_punts |>
+#  dplyr::inner_join(
+#    all_games,
+#    by = c("game_id" = "id")
+#  ) |> 
+#  dplyr::select(
+#    game_id,
+#    year,
+#    pos_team,
+#    def_pos_team,
+#    homeTeam,
+#    homePoints,
+#    awayTeam,
+#    awayPoints,
+#    play_type,
+#    play_text,
+#    EPA,
+#    wpa,
+#  )
+
+# bp_wl <- bp_results |>
+#  dplyr::mutate(
+    # Who actually won the game?
+#    winner = dplyr::case_when(
+#      homePoints > awayPoints ~ homeTeam,
+#      awayPoints > homePoints ~ awayTeam,
+#      TRUE ~ NA_character_   # ties are basically extinct but just in case
+ #   ),
+    # Did the blocking team win?
+#    result = dplyr::case_when(
+#      def_pos_team == winner ~ "Win",
+#      !is.na(winner) ~ "Loss",
+#      TRUE ~ "Tie"
+#    ),
+#    point_diff = dplyr::case_when(
+#      def_pos_team == homeTeam ~ homePoints - awayPoints,
+#      def_pos_team == awayTeam ~ awayPoints - homePoints,
+#      TRUE ~ NA_real_
+#    ),
+#    touchdown = dplyr::if_else(play_type == "Blocked Punt Touchdown",
+#    TRUE, FALSE)
+#  )
+
+
+# bp_update <- bp_wl |>
+  # Collapse to one row per blocking team per game
+#  dplyr::group_by(year, game_id, def_pos_team) |>
+#  dplyr::summarize(
+#    result = dplyr::first(result),   # same result no matter how many punts
+#    point_diff = dplyr::first(point_diff),
+#    touchdown = any(touchdown),      # TRUE if at least one blocked punt TD
+#    .groups = "drop"
+#  )
+
+# Now summarize by year
+# bp_summary <- bp_update |>
+#  dplyr::group_by(year) |>
+#  dplyr::summarize(
+#    win = sum(result == "Win", na.rm = TRUE),
+#    loss = sum(result == "Loss", na.rm = TRUE),
+#    win_pct = win / (win + loss),
+#    win_touchdown = sum(result == "Win" & touchdown, na.rm = TRUE),
+#    loss_touchdown = sum(result == "Loss" & touchdown, na.rm = TRUE),
+#    win_pct_touchdown = win_touchdown / (win_touchdown + loss_touchdown),
+#    .groups = "drop"
+#  )
+
+# load summary for csv for easier quarto processing 
+bp_summary <- readr::read_csv("bp_summary.csv")
+
+
+```
+
+### Blocked punts table
+
+```{r bp-tbl, warning=FALSE, message=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Block a punt . .. <br>win what percent of the time? </span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Shows win percentage by season when a team blocks a punt or when a team blocks a punt for a touchdown since 2016.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+bp_tbl <- bp_summary |>
+  dplyr::select(-1) |>
+  dplyr::arrange(year) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::grand_summary_rows(
+    columns = c(win, loss, win_touchdown, loss_touchdown),
+    fns = list(" " = ~ sum(., na.rm = TRUE))
+  ) |>
+  gt::grand_summary_rows(columns = c(win_pct), fns = list(" " = ~ round(
+    sum(win, na.rm = TRUE) / sum(c(win, loss), na.rm = TRUE), 3
+  ))) |>
+  gt::grand_summary_rows(columns = c(win_pct_touchdown),
+                         fns = list(" " = ~ round(
+                           sum(win_touchdown, na.rm = TRUE) / sum(c(win_touchdown, loss_touchdown), na.rm = TRUE), 3
+                         ))) |>
+  gt::grand_summary_rows(columns = c(year), fns = list(" " = ~ "Overall")) |>
+  gt::fmt_number(columns = c(win_pct, win_pct_touchdown),
+                 decimals = 3) |>
+  gt::cols_label(
+    year = "Season",
+    win = "W",
+    loss = "L",
+    win_pct = "Win %",
+    win_touchdown = "W",
+    loss_touchdown = "L",
+    win_pct_touchdown = "Win %",
+  ) |>
+  gt::cols_align(columns = c(win, win_touchdown), align = "right") |>
+  gt::cols_align(columns = c(loss, loss_touchdown), align = "left") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gtExtras::gt_add_divider(columns = c(win_pct),
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_spanner(
+    columns = c(win_touchdown, loss_touchdown, win_pct_touchdown),
+    label = "Blocked Punt for Touchdown"
+  ) |>
+  gt::data_color(
+    columns = c(win_pct, win_pct_touchdown),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.3, .9),
+    alpha = 0.6,
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via collegefootballdata.com + cfbfastR | theme via {gtUtils} <br>
+        25 games included a team blocking 2 punts, the blocking team won 16 of those 25 games (64%). <br>
+        Data for 2025 season through September 13 games.<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gt::tab_options(table.width = gt::px(550)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(14)
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  # Format the grand summary percentages
+  gt::fmt_number(
+    columns = c(win_pct, win_pct_touchdown),
+    rows = gt::everything(),
+    decimals = 3
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = "bold",
+        size = gt::px(14)
+      ),
+      gt::cell_fill(color = "#f0f0f0")
+    ),
+    locations = gt::cells_grand_summary()
+  )
+
+gt_save_crop(bp_tbl,
+             file = "bp_tbl.png",
+             whitespace = 40,
+             bg = "#FFFDF5")
+
+bp_tbl
+
+```
+
+### 
+
+### 
+
+### 
+
+### 

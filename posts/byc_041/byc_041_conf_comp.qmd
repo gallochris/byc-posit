@@ -1,0 +1,216 @@
+---
+title: "041: Conference Composition"
+date: "2023-08-01"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch the data
+
+```{r data-load, message=FALSE}
+# pull in the teams 
+cfbfastR::cfbd_team_info(year = 2023) -> teams
+
+
+# first we need to clean up the time zone data! 
+teams_with_tz <- teams |> 
+                 dplyr::mutate(timezone = dplyr::case_match(timezone, 
+                                  "America/Boise" ~ "America/Denver",
+                                  "America/Phoenix" ~ "America/Denver",
+                                  "America/Detroit" ~ "America/New_York",
+                                  "America/Kentucky/Louisville" ~ "America/New_York",
+                                  "America/Indiana/Indianapolis" ~ "America/New_York",
+                                  .default = timezone
+  )) |> 
+    dplyr::mutate(timezone = dplyr::case_match(school, 
+                          "Hawai'i" ~ "Pacific/Honolulu",
+                          "Rutgers" ~ "America/New_York",
+                          "South Alabama" ~ "America/Chicago",
+                          "UAB" ~ "America/Chicago",
+                          "UNLV" ~ "America/Los_Angeles",
+                          .default = timezone))
+
+# ok now we need to update with the realignment changes 
+# also account for independents (not perfect, but sigh)
+teams_realign <- teams_with_tz |> 
+  dplyr::mutate(conference = dplyr::case_match(school, 
+                                             "USC" ~ "Big Ten",
+                                             "UCLA" ~ "Big Ten",
+                                             "Colorado" ~ "Big 12",
+                                             "Oklahoma" ~ "SEC",
+                                             "Texas" ~ "SEC",
+                                             .default = conference
+                                             )) |> 
+  dplyr::mutate(conference = dplyr::if_else(school == "Notre Dame", "ACC", conference)) |> 
+  dplyr::filter(conference != "FBS Independents")
+  
+
+# now we need to add the public and private types 
+types <- readr::read_csv("school_types.csv")
+          
+
+# combine the data to include the type (public or private)
+complete_teams <- dplyr::left_join(teams_realign, types, by = "school")
+```
+
+### GT Athletic Theme
+
+```{r gt-athletic-theme, warning=FALSE}
+
+# gt theme from andrew https://gist.github.com/andreweatherman/3874a59a1f7b4af97e3699e4ece94579
+gt_theme_athletic <- function(gt_object, ...) {
+  
+  gt_object |> 
+    # set table font
+    gt::opt_table_font(
+      font = list(
+        gt::google_font('Spline Sans Mono'),
+        gt::default_fonts()
+      ),
+      weight = 500
+    ) |> 
+    # set the column label font and style
+    gt::tab_style(
+      locations = gt::cells_column_labels(
+        columns = gt::everything()
+      ),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 650,
+        size = gt::px(14),
+        transform = 'uppercase', # column labels to uppercase
+        align = 'left'
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title('title'),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 650
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title('subtitle'),
+      style = gt::cell_text(
+        font = gt::google_font('Work Sans'),
+        weight = 500
+      )
+    ) |>
+    # set think black column sep.
+    gt::tab_style(
+      style = gt::cell_borders(sides = 'left', weight = gt::px(0.5), color = 'black'),
+      locations = gt::cells_body(
+        # everything but the first column
+        columns = c(-names(gt_object[['_data']])[1])
+      )
+    ) |> 
+    # set thin dotted row sep.
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'dotted'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    )|>
+    # left align cell text
+    gt::cols_align(
+      align = 'left',
+      columns = gt::everything()
+    ) |> 
+    gt::tab_options(
+      table.font.size = 14,
+      column_labels.border.bottom.width = 2,
+      column_labels.border.bottom.color = 'black',
+      column_labels.border.top.color = 'white',
+      row_group.border.bottom.color = 'white',
+      table.border.top.style = 'none',
+      table.border.bottom.style = 'none',
+      heading.border.bottom.style = 'none',
+      heading.align = 'left',
+      heading.title.font.size = gt::px(30),
+      source_notes.border.lr.style = 'none',
+      source_notes.font.size = 10
+    ) |> 
+    # remove the border from the bottom cell
+    gt::opt_css(
+      "tbody tr:last-child {
+    border-bottom: 2px solid #ffffff00;
+      }
+    ",
+      add = TRUE
+    )
+  
+}
+
+```
+
+### GT table for tenures
+
+```{r gt-table, warning=FALSE}
+# count members in each conference and time zones!
+complete_teams |>
+  dplyr::group_by(conference) |>
+  dplyr::summarize(
+    members = dplyr::n(),
+    time_zones = dplyr::n_distinct(timezone),
+    states = dplyr::n_distinct(state),
+    num_public = sum(type == "public"),
+    num_private = sum(type == "private")
+  ) -> conf_table
+
+
+# make the table 
+conf_table |>
+  dplyr::arrange(-members) |>
+  dplyr::mutate(logo = conference) |>
+  dplyr::select(logo,
+                conference,
+                members,
+                num_public,
+                num_private,
+                states,
+                time_zones) |>
+  gt::gt() |>
+  gt::cols_label(
+    logo = "",
+    conference = "Conference",
+    members = "Schools",
+    time_zones = "Time Zones",
+    num_public = "Public",
+    num_private = "Private",
+  ) |>
+  cfbplotR::gt_fmt_cfb_logo(columns = c("logo")) |>
+  gt::tab_spanner(label = "Geography",
+                  columns = c(time_zones, states)) |>
+  gt::tab_spanner(label = "Institution",
+                  columns = c(num_public, num_private)) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(3),
+    fill = "#ffdddd",
+    bold_target_only = TRUE,
+    target_col = c(num_private),
+  ) |>
+  gt::tab_header(title = "2024 Conference Composition as of August 1, 2023",
+                 subtitle = "Projects the composition of each conference at the start of the 2024 athletic season. Excludes part-time members for certain sports.") |>
+  gt::tab_source_note(source_note = "Bless your chart | data via cfbfastR + ncaa.org")  |>
+  # adjust font sizes
+  gt::tab_options (source_notes.font.size = gt::px(10),
+                   table.font.size = gt::px(12),) |>
+  gt_theme_athletic() -> conf_comp_table
+
+
+gtExtras::gtsave_extra(conf_comp_table,
+             "conf_comp.png",
+             vwidth = 825,
+             vheight = 825)
+
+conf_comp_table
+```
+
+### 
+
+### 

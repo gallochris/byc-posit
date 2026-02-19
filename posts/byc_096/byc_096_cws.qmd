@@ -1,0 +1,197 @@
+---
+title: "096: CWS Common Opponents"
+date: "2024-06-13"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+
+library(cbbplotR)
+# data from https://d1baseball.com/team/ncstate/
+# make the table manually
+cws_opps <- tibble::tribble(
+  ~team,~"Tennessee",~"Florida St.",~"Virginia",~"North Carolina",~"Texas A&M",~"Florida",~"Kentucky",~"North Carolina St.",
+  "Tennessee","--","--","--","--","1-0<br> +3","2-1<br> +16", "2-1<br> +5", "--", 
+  "Florida St.","--","--","1-0<br> +5", "--", "--", "3-0<br> +30", "--", "1-1<br> +6",
+  "Virginia","--", "0-1<br> -5", "--", "2-1<br> +3", "--", "--", "--", "1-2<br> -6",
+  "North Carolina","--", "--", "1-2<br> -3", "--", "--", "--", "--", "1-2<br> +9",
+  "Texas A&M", "0-1<br> -3", "--", "--", "--", "--", "1-2<br> 0", "--", "--",
+  "Florida", "1-2<br> -16", "0-3<br> -30", "--", "--", "2-1<br> 0", "--", "1-2<br> +6", "--",
+  "Kentucky", "1-2<br> -5", "--", "--", "--", "--", "2-1<br> -6", "--", "--",
+  "NC State", "--", "1-1<br> -6", "2-1<br> +6", "2-1<br> -9", "--", "--", "--", "--"
+)
+    
+```
+
+### Make the GT table with header function
+
+```{r func-table, message=FALSE, warning=FALSE}
+
+# function 
+md = function(x) {
+  gt::html(x
+           
+  )
+}
+
+team_headers <- c(
+  "Tennessee","Florida St.",
+  "Virginia","North Carolina",
+  "Texas A&M","Florida",
+  "Kentucky","North Carolina St."
+)
+
+# cfbplotR urls from https://github.com/Kazink36/cfbplotR/blob/main/data-raw/logo_ref_2.csv
+team_img_urls <- c(
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/52.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/258.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/153.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/152.png"
+)
+
+add_team_header <- function(team_name, img_url) {
+  gtExtras::img_header(
+    label = "",
+    img_url = img_url,
+    height = 25,
+    palette = c("white")
+  )
+}
+
+# add teams headers
+team_headers_with_images <- purrr::map2(team_headers, team_img_urls, add_team_header) |>
+  purrr::set_names(team_headers)
+
+ncaa_title <- cbbplotR::gt_cbb_logo_title(title = '2024 College World Series: Records against rest of field',
+                               subtitle = "Shows each team's record against other CWS participants during the 2024 season.<br> 
+                               Read the table left-to-right. If a team did not play another team, a dash is shown.",
+                               logo_link = "https://www.ncaa.com/_flysystem/public-s3/2023-07/MCWS%20No%20Date%20Logo.png",
+                               logo_height = 75)
+
+# set palette colors - this is comically manual, confident this is not
+# the best way to do this 
+cws_opps |>
+  cbbplotR::gt_cbb_teams(team, team) |>
+  gt::gt() |>
+  gt::cols_align(columns = -c(team), 'center') |>
+  gt::cols_align(columns = c(team), 'left') |>
+  gt::fmt_markdown(everything()) |>
+  gt::cols_label(team = "", !!!team_headers_with_images) |>
+  gt::tab_header(title = gt::html(ncaa_title)) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>
+                                       Data from D1Baseball.com | Logos from cbbplotR<br>
+                                       Overall run differentials shown as negative or positive for all games played. The location of games played is not shown.
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | June 13, 2024</b>"
+    )
+  ) |>
+  cbbplotR::gt_theme_savant() |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      color = 'black',
+      weight = gt::px(1.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = gt::everything())
+  ) |>
+  gt::tab_options(heading.align = "left", ) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(groups = gt::everything()),
+    style = list(
+      gt::cell_text(align = "center"),
+      gt::cell_borders(
+        sides = c("top", "right"),
+        color = "black",
+        weight = gt::px(2)
+      )
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ff9999")),
+    locations = gt::cells_body(columns = 2, rows = c(6, 7))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ff9999")),
+    locations = gt::cells_body(columns = 3, rows = c(6))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ff9999")),
+    locations = gt::cells_body(columns = 4, rows = c(4))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ff9999")),
+    locations = gt::cells_body(columns = 7, rows = c(5))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ff9999")),
+    locations = gt::cells_body(columns = 8, rows = c(6))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ff9999")),
+    locations = gt::cells_body(columns = 9, rows = c(3, 4))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ffb7b7")),
+    locations = gt::cells_body(columns = 2, rows = c(5))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#ffb7b7")),
+    locations = gt::cells_body(columns = 3, rows = c(3))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#EEEEEE")),
+    locations = gt::cells_body(columns = 3, rows = c(8))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#EEEEEE")),
+    locations = gt::cells_body(columns = 9, rows = c(2))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#a5ffa5")),
+    locations = gt::cells_body(columns = 4, rows = c(2, 8))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#a5ffa5")),
+    locations = gt::cells_body(columns = 5, rows = c(3, 8))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#a5ffa5")),
+    locations = gt::cells_body(columns = 6, rows = c(1, 6))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#a5ffa5")),
+    locations = gt::cells_body(columns = 7, rows = c(1, 7))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#a5ffa5")),
+    locations = gt::cells_body(columns = 8, rows = c(1))
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#7FFF7F")),
+    locations = gt::cells_body(columns = 7, rows = c(2))
+  )  -> cws_com
+
+
+
+gtExtras::gtsave_extra(cws_com,
+                       filename = "cws_tbl.png",
+                       vheight = 650,
+                       vwidth = 650)
+
+cws_com
+
+```

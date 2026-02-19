@@ -1,0 +1,175 @@
+---
+title: "074: Duke/UNC Tempo"
+date: "2024-02-01"
+categories:
+  - geom_jitter
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Data
+
+```{r load-data, message = FALSE}
+# Function to update conference abbreviations to be more friendly 
+duke_factors <- cbbdata::cbd_torvik_game_factors(team = "Duke") |> 
+  dplyr::filter(year > 2022) |> 
+  dplyr::select(date, year, coach, team, opp, result, tempo, loc, result,
+                pts_scored, pts_allowed) |> 
+  dplyr::filter(opp != "North Carolina")
+
+cbbdata::cbd_torvik_game_factors(team = "Duke") |> 
+  dplyr::group_by(coach, year) |> 
+  dplyr::summarise(
+    total_games = dplyr::n(), 
+    under = sum(tempo < 70),
+    under_pct = under/total_games
+  )
+
+# UNC exploratory 
+unc_factors <- cbbdata::cbd_torvik_game_factors(team = "North Carolina") |> 
+  dplyr::filter(year > 2021) |> 
+  dplyr::select(date, year, coach, team, opp, result, tempo, loc, result,
+                pts_scored, pts_allowed) |> 
+  dplyr::filter(opp != "Duke")
+
+cbbdata::cbd_torvik_game_factors(team = "North Carolina") |> 
+  dplyr::group_by(coach, year) |> 
+  dplyr::summarise(
+    total_games = dplyr::n(), 
+    under = sum(tempo < 70),
+    under_pct = under/total_games
+  )
+
+# Duke 
+duke_only <- cbbdata::cbd_torvik_game_factors(team = "North Carolina") |> 
+  dplyr::filter(opp == "Duke" & year == 2023) |> 
+  dplyr::select(date, year, coach, team, opp, result, tempo, loc, result,
+                pts_scored, pts_allowed) |> 
+  dplyr::mutate(coach = dplyr::if_else(coach == 'Hubert Davis',
+                                       "Ike", coach))
+```
+
+### Jitter plot
+
+```{r jitter-plot, warning=FALSE}
+# Plot functions 
+my_fill <- ggplot2::aes(fill = ggplot2::after_scale(ggplot2::alpha(colour, 0.6)))
+
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+} 
+
+# combine the datasets 
+
+unc_duke_tempo <- dplyr::bind_rows(unc_factors, duke_factors,
+                                   duke_only)
+
+unc_duke_tempo |> 
+  ggplot2::ggplot(ggplot2::aes(x = coach, y = tempo)) + 
+  ggplot2::geom_jitter(shape = 21, width = .065, size = 2,
+                 ggplot2::aes(colour = factor(year),!!!my_fill)) +
+  theme_me() +
+  ggplot2::labs(x = "", y = "Tempo", 
+                title = "Tempo under Hubert Davis and Jon Scheyer",
+                subtitle = "<span style='color: #1b9e77;'>2021-22</span> <span style='color: #d95f02;'>2022-23</span>  <span style='color: #7570b3;'>2023-24</span>") +
+  ggplot2::scale_x_discrete(position = "top", labels = 
+                              c("Hubert Davis  \nMedian Tempo: 70.5  \n93 games", "",
+                                "Jon Scheyer  \nMedian Tempo: 66.4  \n56 games")) +
+  ggplot2::scale_y_continuous(limits = c(55, 85), 
+                              breaks = seq(55, 85, 5)) +
+  ggplot2::scale_color_manual(values = c("#1b9e77", "#d95f02", 
+                                         "#7570b3")) +
+  ggplot2::geom_hline(yintercept = 70, linetype = "dashed",
+                      color = "#333333") +
+  ggplot2::theme(legend.position = "none", 
+                 plot.title = ggtext::element_markdown(size = 18, face ='bold', family = 'mono'),
+                 strip.text.x = ggtext::element_markdown(size = 12, 
+                                                         face ='bold', family = 'mono'),
+                 plot.subtitle = ggtext::element_markdown(size = 10, family = "mono", face = "bold"),
+                 plot.caption = ggtext::element_markdown(size = 7, family = 'mono'),
+                 axis.text.x = ggtext::element_markdown(size = 12, family = 'mono', face ='bold'),  
+                 axis.text.y = ggtext::element_markdown(size = 12, family = 'mono', face ='bold')
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#56a0d3",
+    x = 1.1,
+    y = 70,
+    xend = 1.9,
+    yend = 67,
+    curvature = -.3,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm"))
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#003087",
+    x = 2.9,
+    y = 59,
+    xend = 2.05,
+    yend = 64,
+    curvature = -.3,
+    arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm"))
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2.03,
+    y = 73,
+    label = "Both games last season played  \nat ~65 possessions and Duke won both",
+    size = 3.5,
+    color = "#333333",
+    fill = "floralwhite",
+    family = "mono",
+    fontface = "bold"
+  ) + 
+  ggplot2::annotate(cfbplotR::GeomCFBlogo,x = 2.5, 
+                    y = 82.5,team = "Duke",height = .18, alpha = .3) +
+  ggplot2::annotate(cfbplotR::GeomCFBlogo,x = 1.5, 
+                    y = 82.5, team = "North Carolina",height = .20,
+                    alpha = .3) -> hubert_jon 
+
+
+ggplot2::ggsave(
+  "scheyer_davis.png",
+  hubert_jon,
+  w = 8,
+  h = 10.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+
+hubert_jon
+
+
+```
+
+### 

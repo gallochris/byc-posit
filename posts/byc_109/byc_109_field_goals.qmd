@@ -1,0 +1,224 @@
+---
+title: "109: Field goals"
+date: "2024-09-23"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch and scrape data
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+cfbfastR::load_cfb_pbp(
+  seasons = c(2022, 2023, 2024),
+  dbConnection = NULL,
+  tablename = NULL
+) |> 
+  dplyr::filter(
+    fg_inds == 1
+  )-> full_pbp
+
+# grab only fbs vs fbs games 
+years <- 2022:2024
+fbs_only <- purrr::map_dfr(years, ~ cfbfastR::cfbd_game_info(year = .x) |> 
+                             dplyr::filter(!is.na(home_points)) |> 
+                             dplyr::filter(home_division == "fbs" &
+                                             away_division == "fbs") |> 
+                             dplyr::select(game_id))
+
+fbs_games <- fbs_only |> 
+  dplyr::pull(game_id)
+
+# clean pbp 
+fgs_clean <- full_pbp |> 
+  dplyr::mutate(kicker_player_name = play_text |> 
+         stringr::str_extract(".\\D+(?= )")) |> 
+  dplyr::mutate(fgm = dplyr::if_else(fg_made == TRUE, 1, 0))  |>  
+  dplyr::mutate(fga = dplyr::if_else(fg_made == (TRUE | FALSE), 1, 1))  |> 
+  # columns we want
+ dplyr::select(year, id_play, week, game_id, pos_team, 
+               def_pos_team, pos_team_score, def_pos_team_score, 
+               kicker_player_name, yds_fg, pts_scored, fgm, fga, fg_make_prob, 
+               fg_inds, FG_before, play_text, EPA, wpa, half, period, 
+               clock.minutes, clock.seconds, down, distance, yards_to_goal, 
+               fg_made, play_type) |> 
+  dplyr::filter(game_id %in% fbs_games)
+
+fg_data <- fgs_clean |> 
+  dplyr::group_by(year) |> 
+  dplyr::summarise(
+    total_fga = dplyr::n(),
+    total_fgm = sum(fg_made == TRUE),
+    total_pct = total_fgm / total_fga,
+    long_fgm = sum(fg_made == TRUE & yds_fg > 49),
+    long_fga = sum(yds_fg > 49, na.rm = TRUE),
+    long_pct = long_fgm / long_fga,
+    med_fgm = sum(fg_made == TRUE & (yds_fg > 29 & yds_fg < 50)),
+    med_fga = sum((yds_fg > 29 & yds_fg < 50), na.rm = TRUE),
+    med_pct = med_fgm / med_fga,
+    short_fgm = sum(fg_made == TRUE & yds_fg < 30),
+    short_fga = sum(yds_fg < 30, na.rm = TRUE),
+    short_pct = short_fgm / short_fga
+  )
+
+fg_data_total <- fg_data |> 
+  dplyr::select(year, starts_with("total")) |> 
+  dplyr::mutate(category = "All") |> 
+  dplyr::select(year,
+                fgm = total_fgm,
+                fga = total_fga,
+                fg_pct = total_pct,
+                category)
+
+fg_data_long <- fg_data |> 
+  dplyr::select(year, starts_with("long")) |> 
+  dplyr::mutate(category = "50+") |> 
+  dplyr::select(year,
+                fgm = long_fgm,
+                fga = long_fga,
+                fg_pct = long_pct,
+                category)
+
+fg_data_med <- fg_data |> 
+  dplyr::select(year, starts_with("med")) |> 
+  dplyr::mutate(category = "30-49") |> 
+  dplyr::select(year,
+                fgm = med_fgm,
+                fga = med_fga,
+                fg_pct = med_pct,
+                category)
+
+fg_data_short <- fg_data |> 
+  dplyr::select(year, starts_with("short")) |> 
+  dplyr::mutate(category = "0-29") |> 
+  dplyr::select(year,
+                fgm = short_fgm,
+                fga = short_fga,
+                fg_pct = short_pct,
+                category)
+```
+
+### Punt blocked
+
+```{r fetch-punt-blocks}
+
+last_six_pbp <- cfbfastR::load_cfb_pbp(
+    seasons = c(2019, 2020, 2021, 2022, 2023, 2024),
+    dbConnection = NULL,
+    tablename = NULL
+) |> 
+    dplyr::filter(
+        punt_blocked  == 1
+    )
+
+last_six_pbp |> 
+    dplyr::group_by(pos_team) |> 
+    dplyr::summarise(
+        total = dplyr::n(),
+        punt_td = sum(play_type == "Blocked Punt Touchdown")
+    ) |> 
+    dplyr::arrange(-total) -> all_blocked_punts
+```
+
+### GT Table for field goals
+
+```{r gt-table-field-goals}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Are college kickers getting more . . . <em>accurate?</em></span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows field goal makes, attempts, and percentages for all yardage and 50 yards plus since 2022.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+fg_tbl <- fg_data_total |> 
+  dplyr::bind_rows(fg_data_long) |> 
+  dplyr::bind_rows(fg_data_med) |> 
+  dplyr::bind_rows(fg_data_short) |> 
+  dplyr::arrange(-year) |> 
+  dplyr::group_by(category) |>
+  gt::gt() |> 
+  gtUtils::gt_theme_savant() |>
+  gt::cols_align(columns = c(-year), "center") |>
+  gt::tab_options(column_labels.border.top.style = "none") |>
+  gt::cols_label(year = "",
+                 fgm = "FGM",
+                 fga = "FGA",
+                 fg_pct = "FG %") |> 
+   gtExtras::gt_highlight_rows(
+    rows = c(2),
+    fill = "#ffff9f",
+    bold_target_only = TRUE,
+    target_col = c(year, fg_pct),
+  ) |> 
+  gt::fmt_percent(columns = fg_pct, decimals = 1) |> 
+  gtUtils::gt_538_caption(
+    "<hr>Data via cfbfastR, theme via {gtUtils}, and logos from ESPN.com. <br>2024 season data through September 21 games.<br>Data is only for field goals within games between two FBS teams.",
+    "Table by Chris (@dadgumboxscores) + Bless your chart"
+  ) |> 
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_options(table.width = gt::px(550)) |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) 
+
+gtUtils::gt_save_crop(fg_tbl,
+                      file = "fg_tbl.png",
+                      whitespace = 40,
+                      bg = "white")
+
+fg_tbl
+```
+
+### GT table for blocked punts
+
+```{r gt-punt-blocked}
+punt_tbl <- all_blocked_punts |> 
+    dplyr::filter(total > 5) |> 
+    dplyr::filter(!pos_team %in% c("Harvard", "Princeton")) |> 
+    cbbplotR::gt_cbb_teams(pos_team, pos_team) |> 
+    gt::gt() |> 
+    gt::fmt_markdown(pos_team) |> 
+    gtUtils::gt_theme_gtutils() |> 
+    gt::cols_align(pos_team, align = "left") |> 
+    gtUtils::gt_538_caption(
+        "<hr>Data via cfbfastR, theme via {gtUtils}, and logos from ESPN.com. <br>2024 season data through September 21 games. Includes FBS vs FCS games.<br>",
+        "Table by Chris (@dadgumboxscores) + Bless your chart"
+    ) |> 
+    gt::tab_header(title = "Most blocked punts allowed since 2019 season") |> 
+    gtUtils::gt_column_subheaders(
+        total = list(heading = "Total", subtitle = "Blocked punt"),
+        punt_td = list(heading = "Touchdowns", subtitle = "Blocked for TD"),
+        heading_color = "black",
+        subtitle_color = "gray"
+    ) |> 
+    gt::cols_label(
+        pos_team = ""
+    ) 
+    
+
+gtUtils::gt_save_crop(punt_tbl,
+                      file = "punt_tbl.png",
+                       whitespace = 40,
+                       bg = "#FFFDF5")
+
+punt_tbl
+```

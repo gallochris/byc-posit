@@ -1,0 +1,123 @@
+---
+title: "090: NFL QBs College Record"
+date: "2024-04-23"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+# use previous scraped data from drafthistory.com 
+# add records from sports-reference manually in csv
+# load in csv 
+library(cbbplotR)
+qbs <- readr::read_csv("qbs.csv")
+
+qbs |> 
+  dplyr::mutate(win_pct = win / (win +loss)) |> 
+  dplyr::select(-draft_round, -position) |> 
+  dplyr::arrange(-win_pct) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::slice(1:19) -> first_tab 
+
+qbs |> 
+  dplyr::mutate(win_pct = win / (win +loss)) |> 
+  dplyr::select(-draft_round, -position) |> 
+  dplyr::arrange(-win_pct) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::slice(20:38) -> second_tab 
+  
+tabs <- dplyr::bind_cols(first_tab, second_tab) 
+```
+
+### NFL QB Table
+
+```{r gt-table, warning = FALSE}
+tabs |> 
+  gt::gt() |> 
+  gt::fmt_markdown(team...5) |> 
+  gt::fmt_markdown(team...13) |> 
+  gt::cols_label(
+    draft_year...1 = "Year",
+    draft_round_pick...2 = "Pick",
+    player...3 = "QB",
+    draft_team...4 = "NFL Team",
+    team...5 = "College",
+    win...6 = "W",
+    loss...7 = "L",
+    win_pct...8 = "Win %",
+    draft_year...9 = "Year",
+    draft_round_pick...10 = "Pick",
+    player...11 = "QB",
+    draft_team...12 = "NFL Team",
+    team...13 = "College",
+    win...14 = "W",
+    loss...15 = "L",
+    win_pct...16 = "Win %"
+  ) |> 
+  gt::fmt_number(columns = c(win_pct...8, win_pct...16), decimals = 3) |> 
+  gt::tab_spanner(label = "College Team W-L",
+                  columns = c(team...5, win...6, loss...7, win_pct...8)) |>
+  gt::tab_spanner(label = "College Team W-L ",
+                  columns = c(team...13, win...14, loss...15, win_pct...16)) |>
+  cbbplotR::gt_theme_athletic() |> 
+  gtExtras::gt_add_divider(columns = draft_year...9, sides = "left",
+                           color = "black") |> 
+  gt::cols_align(align = "left", columns = c(player...3, draft_team...4, 
+                                             player...11, draft_team...12, 
+                                             team...5, team...13)) |> 
+  gt::cols_align(align = "right", columns = c(draft_year...1, draft_round_pick...2,
+                                              win...6, loss...7, win_pct...8,
+                                              draft_year...9, draft_round_pick...10, 
+                                              win...14, loss...15, win_pct...16)) |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(win_pct...8), domain = c(.4, 1.0)) |>
+  gtExtras::gt_hulk_col_numeric(columns = c(win_pct...16), domain = c(.4, 1.0)) |>
+  gt::tab_header(
+    title = "Top Ten NFL QB Draft Picks Since 2004 and College Team Record in Draft Year",
+    subtitle = "Shows the college team record for each quarterback in its draft year that was selected in the top ten of the NFL Draft since 2004."
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "Data via drafthistory.com and sports-reference.com <br><br> <b>Bless your chart + @dadgumboxscores | April 23, 2024</b>"
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_title(groups = "subtitle"),
+    style = gt::cell_text(
+      size = "small"
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      size = "x-small"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(9, 11, 14),
+    columns = c(draft_year...9, draft_round_pick...10, 
+                player...11, team...13, win...14, loss...15),
+    fill = "#fffec8"
+  ) -> nfl_qb_tbl
+
+gtExtras::gtsave_extra(nfl_qb_tbl,
+                       filename = "nfl_qb_table.png",
+                       vheight = 875,
+                       vwidth = 1250)
+
+nfl_qb_tbl
+```
+
+### 

@@ -1,0 +1,340 @@
+---
+title: "122: Three topics"
+date: "2024-12-13"
+categories:
+  - gtUtils
+  - cfbfastR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r bball-fball-dc-data, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+dc_data <- readr::read_csv("np-dc-data.csv") |> 
+  dplyr::select(team = school, top_ten)
+
+# list out the teams
+dc_teams <- dc_data |> 
+  dplyr::pull(team)
+
+# comment out cfbfastR function 
+# get_cfb_records <- function(years = 1993:2024) {
+#  purrr::map_dfr(years, cfbfastR::cfbd_game_records)
+# }
+
+# all_records <- get_cfb_records()
+
+fb_records <- readr::read_csv("fb_records.csv")
+
+fb_data <- fb_records |> 
+  dplyr::filter(team %in% dc_teams) |> 
+  dplyr::mutate(
+    fb_win_pct = (total_wins + 0.5 * total_ties) / (total_wins + total_losses + total_ties)
+  ) |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarise(
+    all_fb_win_pct = list(fb_win_pct),
+    overall_fb_win_pct = sum(total_wins + 0.5 * total_ties, na.rm = TRUE) / 
+                      sum(total_wins + total_losses + total_ties, na.rm = TRUE),
+  )
+
+bball_wins <- readr::read_csv("bball-wins.csv") |> 
+  dplyr::rename(team = Team, bball_win_pct = `W/L%`) |> 
+  dplyr::mutate(team = dplyr::if_else(team == "Louisiana State", "LSU", team)) |> 
+  dplyr::filter(team %in% dc_teams)
+
+# combine data 
+all_sports <- dc_data |> 
+      dplyr::left_join(bball_wins, by = "team") |> 
+  dplyr::left_join(fb_data, by = "team") |> 
+  dplyr::select(team, top_ten, bball_win_pct, overall_fb_win_pct, all_fb_win_pct) |> 
+  dplyr::arrange(-top_ten)
+
+```
+
+```{r cup-tbl, warning=FALSE}
+
+column_headers <- c("bball_win_pct", "overall_fb_win_pct")
+
+img_urls <- c(
+  "https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png",
+  "https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png"
+)
+
+add_header <- function(col_name, img_url) {
+  gtExtras::img_header(
+    label = "",
+    img_url = img_url,
+    height = 25,
+    palette = c("white")
+  )
+}
+
+col_headers_with_images <- purrr::map2(column_headers, img_urls, add_header) |>
+  purrr::set_names(column_headers)
+
+
+cup_tbl <- all_sports |>
+  dplyr::filter(top_ten > 14.5) |>
+  dplyr::arrange(-top_ten) |>
+  cbbplotR::gt_cbb_teams(team, team) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gt::cols_label(team = "", !!!col_headers_with_images) |>
+  gtUtils::gt_color_pills(
+    bball_win_pct,
+    domain = c(.3, .85),
+    format_type = "percent",
+    digits = 1,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000"),
+  ) |>
+  gtUtils::gt_color_pills(
+    overall_fb_win_pct,
+    domain = c(.3, .85),
+    format_type = "percent",
+    digits = 1,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000"),
+  ) |>
+  gt::cols_nanoplot(
+    columns = all_fb_win_pct,
+    reference_line = .5,
+    autohide = TRUE,
+    autoscale = TRUE,
+    options = gt::nanoplot_options(
+      data_area_fill_color = "lightpink",
+      reference_line_color = "#333333",
+      show_data_area = TRUE,
+      data_line_type = "curved",
+      show_data_points = FALSE
+    )
+  ) |>
+  gt::cols_label(
+    team = "",
+    top_ten = "Top 10s",
+     nanoplots = "Football Win %: 1993 to 2024"
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(team, bball_win_pct),
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_header(title = gt::html("Win percentage in football and men's basketball since 1993-94 for public schools with most Top 10 Finishes in Directors' Cup<hr>")) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from wikipedia.com, stathead.com, {cfbfastR}, and theme for {gtUtils}. Idea from Neil Paine.<br>The Directors' Cup is a competition between athletic departments that ranks schools based on performance across all men’s and women’s varsity sports<br>
+                <hr><b>Table by Chris at Bless your chart | December 13, 2024</b>"
+      )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(font = gt::google_font("Signika Negative"))),
+    locations = gt::cells_body(columns = team)
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+    gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |> 
+  gtExtras::gt_highlight_rows(rows = c(2),
+                              columns = c(1:4),
+                              fill = "#FFFFC5") |>
+  gt::tab_options(table.width = gt::px(725))
+    
+
+ gtUtils::gt_save_crop(
+  cup_tbl,
+  file = "cup_tbl.png",
+  whitespace = 30,
+  bg = "#FFFDF5"
+ )
+
+ cup_tbl
+```
+
+### Add data for cfb conferences
+
+```{r cfb-conf-data, warning=FALSE}
+
+ffhome_games <- cfbfastR::cfbd_game_info(year = 2024) |>
+  dplyr::filter(!is.na(home_points)) |>
+  dplyr::mutate(result = dplyr::if_else(home_points > away_points, "W", "L")) |>
+  dplyr::rename(
+    team = home_team,
+    opp = away_team,
+    conf = home_conference,
+    opp_conf = away_conference,
+    team_points = home_points,
+    opp_points = away_points
+  ) |>
+  dplyr::select(game_id, week, team, opp, conf, opp_conf, result)
+
+# Away results
+ffaway_games <- cfbfastR::cfbd_game_info(year = 2024) |>
+  dplyr::filter(!is.na(home_points)) |>
+  dplyr::mutate(result = dplyr::if_else(away_points > home_points, "W", "L")) |>
+  dplyr::rename(
+    team = away_team,
+    opp = home_team,
+    conf = away_conference,
+    opp_conf = home_conference
+  ) |>
+  dplyr::select(game_id, week, team, opp, conf, opp_conf, result)
+
+# First find total teams in each conference 
+total_conf_teams <- ffhome_games |>
+  dplyr::bind_rows(ffaway_games) |>
+  dplyr::filter(conf %in% c("ACC", "SEC", "Big 12", "Big Ten")) |> 
+  dplyr::group_by(conf) |>
+  dplyr::summarise(
+    total_teams = dplyr::n_distinct(team)
+  ) |> 
+  dplyr::mutate(
+    conf_games = dplyr::if_else(conf == "Big Ten", 9, 8)
+  )
+
+
+# Now find non conference games 
+fbs_conf <- c("Mountain West", "Big Ten", "ACC", "Mid-American",
+              "Big 12", "Sun Belt", "SEC", "American Athletic", 
+              "Conference USA", "Pac-12", "FBS Independents")
+
+ffgames <- ffhome_games |>
+  dplyr::bind_rows(ffaway_games) |>
+  dplyr::filter(conf != opp_conf) |> 
+  dplyr::mutate(
+    fbs_conf = dplyr::if_else(opp_conf %in% fbs_conf, "FBS", "Non-FBS")
+  ) 
+
+sec_games <- ffgames |> 
+  dplyr::filter(conf %in% c("SEC")) |> 
+  dplyr::group_by(conf, opp_conf, fbs_conf) |> 
+  dplyr::summarise(
+    total_games = dplyr::n()  # Total number of games
+  ) 
+```
+
+### CFB Conference table 
+
+```{r sec-tbl}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/sec.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 18px;'>SEC Non-Conference games by opponent conference during the 2024 season</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Shows the total number of games against each opponent's conference grouped by FBS or non-FBS.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+sec_tbl <- sec_games |>
+  dplyr::group_by(fbs_conf) |> 
+  dplyr::arrange(-total_games) |> 
+  gt::gt() |> 
+  gt::cols_hide(conf) |> 
+  gtExtras::gt_theme_dot_matrix() |>  
+  gtExtras::gt_add_divider(columns = c(opp_conf),
+                           sides = "right",
+                           color = "black") |>
+  gt::cols_align(columns = c(opp_conf),
+                 align = "left") |> 
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from {cfbfastR} and theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart | December 13, 2024</b>"
+      )
+  ) |>
+  gt::cols_label(
+    opp_conf = "",
+    total_games = "Total Games",
+  ) |> 
+   gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#EEEEEE',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'uppercase',
+    column_labels.font.weight = "bold",
+    column_labels.font.size = gt::px(12),
+    table.width = gt::px(450)
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Courier"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(
+        color = "#C5C5FF"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Courier"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Courier")
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(opp_conf)
+    )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#22356B", "#ffffff", "#FBCE28")) 
+  
+
+
+ gtUtils::gt_save_crop(
+  sec_tbl,
+  file = "sec_tbl.png",
+  whitespace = 30,
+  bg = "#FFFDF5"
+ )
+
+ sec_tbl
+```

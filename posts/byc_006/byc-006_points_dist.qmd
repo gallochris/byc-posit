@@ -1,0 +1,113 @@
+---
+title: "006: Hoops points distribution"
+date: "2022-12-13"
+categories:
+  - gt_plt_bar_stack
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=16}
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(cfbplotR)
+library(janitor)
+```
+
+### Load data and make data
+
+```{r load-data-examples, message = FALSE}
+# data was manually created from kenpom
+season <- tibble::tribble(
+  ~Season,~Games,~Type,~Values,
+  "2021-22",39,"Threes",32.4,
+  "2021-22",39,"Twos",49.2,
+  "2021-22",39,"Free Throws",18.4,
+  "2022-23",11,"Threes",23.6,
+  "2022-23",11,"Twos",51.9,
+  "2022-23",11,"Free Throws",24.5
+)
+
+# load csv from sportsreference
+assists <- read_csv('assists_turnovers.csv')
+```
+
+### Manipulate data and make tables
+
+```{r make-the-table, warning=FALSE}
+# season table
+season_tb <- season %>%
+  group_by(Season) %>%
+  summarize(list_data = list(Values)) %>%
+  arrange(Season)
+
+join_season <- season %>%
+  group_by(Season) %>%
+  summarize(Games = Games[1])
+
+final_season <- merge(season_tb, join_season, by = "Season") %>%
+  select(Season, Games, list_data)
+
+ff <- final_season %>%
+  gt() %>%
+  gt_plt_bar_stack(
+    column = list_data,
+    width = 50,
+    labels = c("Threes", "Twos", "Free Throws"),
+    palette = c("#d38956", "#56a0d3", "#d356a0"),
+    fmt_fn = scales::label_number(accuracy = 0.1)
+  ) %>%
+  gt_theme_nytimes() %>%
+  # set title + caption + subtitle
+  tab_header(title = "Points distribution under Hubert Davis",
+             subtitle = "Percentage of points scored from three-pointers, two-pointers, and free throws.") %>%
+  tab_source_note(source_note = "@dadgumboxscores | December 14, 2022")  %>%
+  # fix font of source note
+  tab_options (source_notes.font.size = px(10),
+               table.font.size = px(12)) 
+
+ff
+
+# assists data
+to_a <- assists %>%
+  slice(1:11) %>%
+  mutate(Opp = if_else(Opp == "College of Charleston", "Charleston", Opp)) %>%
+  mutate("AST:TO" = (AST - TOV),
+         logo = Opp) %>%
+  adorn_totals() %>%
+  mutate(logo = if_else(logo == "-", 'North Carolina', logo)) %>%
+  select(G, Opp, logo, `W/L`, FG, FGA, AST, TOV, `AST:TO`) %>%
+  gt() %>%
+  gt_fmt_cfb_logo(columns = "logo") %>%
+  cols_label(Opp = "Opponent",
+             logo = "",
+             G = "",
+             FG = "FGM") %>%
+  fmt(
+    columns = c(`AST:TO`),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) %>%
+  gt_highlight_rows(
+    rows = c(2, 4, 5, 10, 11),
+    fill = "#d0e4f3",
+    bold_target_only = TRUE,
+    target_col = c(`AST:TO`),
+  ) %>%
+  gt_theme_nytimes() %>%
+  # set title + caption + subtitle
+  tab_header(title = "Made Field Goals and Assist to Turnover Ratio") %>%
+  tab_source_note(source_note = "@dadgumboxscores | December 14, 2022")  %>%
+  # fix font of source note
+  tab_options (source_notes.font.size = px(10),
+               table.font.size = px(12))
+
+to_a
+
+```

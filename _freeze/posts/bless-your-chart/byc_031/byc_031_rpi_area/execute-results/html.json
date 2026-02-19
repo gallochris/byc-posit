@@ -1,0 +1,16 @@
+{
+  "hash": "f259a721c64bbe6411d6840a673be9c2",
+  "result": {
+    "markdown": "---\ntitle: \"031: RPI Area charts\"\ndate: \"2023-05-14\"\ncategories:\n  - geom_area\n  - ggthemes\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nrpi_ranks <- function(url) {\n  \n  rpi_page <- read_html(url)\n  \n  rpi_rk <- rpi_page %>%\n    html_nodes(\"table\") %>%\n    .[1] %>%\n    html_table(fill = TRUE)\n  \n  rpi_table <- as.data.frame(rpi_rk) \n  \n  rpi_table <- rpi_table %>% \n    mutate(record = str_split(WL, \"-\", simplify = T),\n           wins = record[,1],\n           losses = record[,2]\n    ) %>%\n    filter(Conference == \"ACC\") %>%\n    select(Team, Conference, RPI)\n}\n\n# april 16\nrpi_one <- rpi_ranks(url = \"https://stats.ncaa.org/selection_rankings/nitty_gritties/31809\") %>% mutate(date = 1)\n\n# april 23\nrpi_two <- rpi_ranks(url = \"https://stats.ncaa.org/selection_rankings/nitty_gritties/31949\") %>% mutate(date = 2)\n\n# april 30\nrpi_three <- rpi_ranks(url = \"https://stats.ncaa.org/selection_rankings/nitty_gritties/32129\") %>% mutate(date = 3)\n\n# may 7 \nrpi_four <- rpi_ranks(url = \"https://stats.ncaa.org/selection_rankings/nitty_gritties/32142\") %>% mutate(date = 4)\n\n# may 15\nrpi_five <- rpi_ranks(url = \"https://stats.ncaa.org/selection_rankings/nitty_gritties/32428\") %>% mutate(date = 5)\n\nall_rpi <- bind_rows(rpi_one, rpi_two, rpi_three, rpi_four, rpi_five) %>% \n           mutate(Team = if_else(Team == \"Miami (FL)\", \"Miami\", Team))\n```\n:::\n\n\n### Build the area chart\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# make plot \nall_rpi %>% ggplot(aes(x = date, y = RPI)) + \n  geom_area(aes(fill = Team), linewidth = 2) +\n  scale_fill_cfb(alpha = .8) +\n    scale_x_continuous(breaks = c(1, 5), labels = c(\"April 16\", \"May 14\")) + \n    scale_y_reverse(breaks = seq(0, 100, 15)) + \n  facet_wrap( ~Team, nrow = 2) +\n  theme_fivethirtyeight() +\n  theme(\n    strip.text = element_cfb_logo(size = 1),\n    plot.title = element_markdown(),\n    plot.subtitle = element_markdown(),\n    text = element_text(family = \"Arial\"),\n    panel.grid = element_blank(),\n    axis.text.x = element_blank()\n  ) +\n  labs(\n    x = \"\",\n    y = \"\",\n    title = \"ACC Baseball: RPI over the last month for every ACC team\",\n    subtitle = \"Week-to-week RPI since April 16, 2023 to May 14, 2023.\",\n    caption = \"dadgumboxscores | May 15, 2023 | data via stats.ncaa.org\"\n  ) -> rpi_plot\n\n# save it\nggplot2::ggsave(\n  \"rpi_plot.png\",\n  rpi_plot,\n  w = 10.5,\n  h = 6.5,\n  dpi = 600,\n  type = 'cairo'\n)\n\nrpi_plot\n```\n\n::: {.cell-output-display}\n![](byc_031_rpi_area_files/figure-html/geom-area-chart-1.png){width=672}\n:::\n:::\n\n\n### \n",
+    "supporting": [
+      "byc_031_rpi_area_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

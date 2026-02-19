@@ -1,0 +1,228 @@
+---
+title: "125: NET over 45 days"
+date: "2025-01-16"
+categories:
+  - geom_ribbon
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+# majority of data wrangling done via evdevbyc repo
+# see https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/
+
+all_net_data <- readr::read_csv("byc_net.csv")
+
+conference_summary <- all_net_data |> 
+  dplyr::filter(conf %in% c("ACC", "Big 12", "SEC", 
+                            "Big East", "Big Ten", "Mountain West")) |> 
+  dplyr::mutate(
+    conf = dplyr::case_match(conf,
+                             "ACC" ~ "ACC - 18 teams",
+                             "SEC" ~ "SEC - 16 teams",
+                             "Big 12" ~ "Big 12 - 16 teams",
+                             "Big Ten" ~ "Big Ten - 18 teams", 
+                             "Big East" ~ "Big East - 11 teams",
+                             "Mountain West" ~ "Mountain West - 11 teams", 
+                             conf ~ conf
+    ),
+    conf = factor(conf, levels = c("SEC - 16 teams", "Big 12 - 16 teams", 
+                                   "Big Ten - 18 teams", "Big East - 11 teams", 
+                                   "ACC - 18 teams", "Mountain West - 11 teams"))
+  ) |> 
+  dplyr::group_by(date, conf) |> 
+  dplyr::summarize(
+    min_net = min(net, na.rm = TRUE),
+    max_net = max(net, na.rm = TRUE),
+    min_team = dplyr::first(team[which.min(net)]),
+    max_team = dplyr::first(team[which.max(net)]),
+    median_net = median(net, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+last_date_data <- conference_summary |>
+  dplyr::filter(date == max(date))
+
+
+# load cfb data from sportsoddhistory.com 
+cfb <- readr::read_csv("cfb-champs.csv") |> 
+  dplyr::select(season = Season, date = Date, where =Location, 
+                game = ...4, score = ...5, winner = ...6,
+                fav = Favorite)
+```
+
+### Geom Ribbon chart
+
+```{r ribbon-plot, warning=FALSE, message=FALSE}
+
+conf_plot <- ggplot2::ggplot(conference_summary) +
+  ggplot2::geom_ribbon(
+    ggplot2::aes(x = date, ymin = min_net, ymax = max_net, fill = conf),
+    alpha = 0.3
+  ) +
+  hrbrthemes::theme_ipsum_rc(grid="XY") +
+  ggplot2::geom_line(ggplot2::aes(x = date, y = min_net, color = conf), size = 1, linetype = "dashed") +
+  ggplot2::geom_line(ggplot2::aes(x = date, y = max_net, color = conf), size = 1, linetype = "dashed") +
+  ggplot2::geom_line(
+    data = conference_summary,
+    ggplot2::aes(x = date, y = median_net, color = conf),
+    size = 1.2, 
+    linetype = "dotted"
+  ) +
+  ggplot2::geom_label(
+    data = last_date_data,
+    ggplot2::aes(x = date, y = min_net, label = min_team),
+    hjust = 1, vjust = -0.30,
+    size = 4,
+    family = "Roboto Condensed",
+    label.padding = ggplot2::unit(0.1, "lines"),
+    label.size = 0
+  ) +
+  ggplot2::geom_label(
+    data = last_date_data,
+    ggplot2::aes(x = date, y = max_net, label = max_team),
+    hjust = 1, vjust = 1.7,
+    size = 4,
+    family = "Roboto Condensed",
+    label.padding = ggplot2::unit(0.1, "lines"),
+    label.size = 0
+  ) +
+  ggplot2::scale_y_reverse(breaks = seq(0, 350, by = 50)) + 
+  ggplot2::labs(
+    title = "NET Ranking Trends by Conference from December 1st to January 16th",
+    subtitle = "Tracks 46 days of NET ranking shifts for six conferences.<br>Shows the best and worst-ranked teams today and the median over time.",
+    x = "",
+    y = "NET",
+    color = "Conference",
+    caption = "Viz by Chris at Bless your Chart | data via stats.ncaa.org | data through January 16 games"
+  ) +
+  ggplot2::facet_wrap(
+    ~ conf,
+    nrow = 3
+  ) + 
+  ggplot2::coord_flip() +
+  ggplot2::coord_cartesian(ylim = c(350, -10)) +  # Expand y-axis limits
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 75, hjust = 1, face ="bold"),
+    axis.title.y = ggplot2::element_text(face = "bold", size = 12),
+    legend.position = "none",
+    strip.text = ggplot2::element_text(face = "bold"),
+    plot.subtitle = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(family = "Roboto Condensed")
+  )
+
+ggplot2::ggsave(
+    "conf_plot.png",
+    conf_plot,
+    w = 8.75,
+    h = 12,
+    dpi = 600,
+    bg = "white",
+    type = 'cairo'
+)
+
+
+```
+
+### CFB Table
+
+```{r cfb-tbl}
+options(chromote.headless = "new")
+cfb_tbl <- cfb |> 
+  cbbplotR::gt_cbb_teams(winner, winner, include_name = FALSE) |> 
+  dplyr::mutate(winner = 
+                  dplyr::if_else(season == 2024, 
+                                 "<img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+                                 winner)) |> 
+  dplyr::relocate(season, .after = winner) |> 
+  dplyr::relocate(score, .after = winner) |> 
+  dplyr::mutate(fav = dplyr::if_else(fav == "Yes", "check", "circle-xmark")) |>  dplyr::mutate(score = dplyr::if_else(is.na(score), "-", score),
+                fav = dplyr::if_else(is.na(fav), "-", fav)                                                                               ) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(winner) |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gtExtras::gt_merge_stack(col1 = where, col2 = date) |> 
+   gt::fmt_icon(
+    rows = c(1, 5, 6, 8),
+    columns = c(fav),
+    fill_color = "#056206",
+  ) |> 
+   gt::fmt_icon(
+    rows = c(2, 3, 4),
+    columns = c(fav),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::cols_align(align = "right", columns = c(game, season)) |>
+   gt::cols_align(align = "left", columns = c(where, winner, score, fav)) |> 
+   gtUtils::gt_column_subheaders(
+    winner = list(heading = "Champion", subtitle = "Winner"),
+    fav = list(heading = "Favorite", subtitle = "Cover?"),
+    score = list(heading = "Final", subtitle = "Score"),
+    where = list(heading = "Location", subtitle = "Date"),
+    season = list(heading = "Season", subtitle = "From Fall"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::cols_label(
+    game = ""
+  ) |> 
+  gtExtras::gt_add_divider(
+    columns = c(where, season),
+    sides = "right",
+    color = "black"
+  ) |> 
+    gt::tab_header(
+    title = gt::html("National Champonship games with a point spread greater than a touchdown since 1998"),
+    subtitle = gt::html(
+      "Shows the eight college football championship games since 1998 with a point spread of eight or more points. <br>Ohio State is favored by -8.5 points against Notre Dame on Monday."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via sportsoddshistory.com, theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+   gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(where, date, game)
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#C5C5FF")),
+    locations = gt::cells_body(columns = c(game), rows = c(7))
+  ) |> 
+  gt::tab_options(table.width = gt::px(775)) |> 
+   gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc"))
+
+gtUtils::gt_save_crop(
+  cfb_tbl,
+  file = "cfb_chart.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+cfb_tbl
+
+```

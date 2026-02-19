@@ -1,0 +1,392 @@
+---
+title: "165: Blowouts"
+date: "2025-12-22"
+categories:
+  - gtUtils
+  - ggbeeswarm
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+-   <div>
+
+    ```{r load-data, warning=FALSE, message=FALSE}
+    library(rlang)
+    library(cbbplotR)
+
+    cfbpl <- readr::read_csv("cfbpl.csv")
+
+    all_stats <- readr::read_csv("torvik_stats.csv")
+
+    # function to save table 
+    gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+      tmp <- tempfile(fileext = ".png")
+      
+      # Wrap the gtsave_extra call in a tryCatch to handle errors
+      tryCatch({
+        gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+      }, error = function(e) {
+        # If there's an error, try using regular gt::gtsave instead
+        message("gtsave_extra failed, trying gt::gtsave...")
+        gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+      })
+      
+      magick::image_read(tmp) |> 
+        magick::image_trim() |> 
+        magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+        magick::image_write(file)
+      unlink(tmp)
+    }
+    ```
+
+    </div>
+
+### Blowout table
+
+```{r blowout-tbl, warning=FALSE, message=FALSE}
+
+fball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>College Football Playoffs: Average Margin of Victory by Round</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'><br>
+       Shows the average margin of victory by each round in the CFP Era.</span>
+     </div>
+     <div>
+       <img src='https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_of_college_football_playoff.svg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+gt_table <- cfbpl |> 
+  dplyr::mutate(
+    season = Season,
+    winner = Team,
+    win_pts = Pts,
+    loser = Opp., 
+    loser_pts = PtsO, 
+    diff = PtDif...14, 
+    round = Round...16
+  ) |> 
+  dplyr::mutate(
+    winner = dplyr::case_match(winner,
+                               "Miami (FL)" ~ "Miami",
+                               "Texas Christian" ~ "TCU",
+                               .default = winner
+    ),
+    loser = dplyr::case_match(loser,
+                              "Texas Christian" ~ "TCU",
+                              .default = loser
+    )
+  ) |> 
+  cbbplotR::gt_cbb_teams(winner, winner, 
+                         include_name = FALSE, 
+                         logo_height = 15) |> 
+  cbbplotR::gt_cbb_teams(loser, loser, 
+                         include_name = FALSE,
+                         logo_height = 15) |> 
+  dplyr::mutate(
+    score_sen = paste0(winner, " ", win_pts, "-", loser_pts, " ", loser)
+  ) |> 
+  dplyr::group_by(season, round) |> 
+  dplyr::summarise(
+    avg_diff = round(mean(diff), 1),
+    score_sen = paste(score_sen, collapse = "<br>"),
+    .groups = "drop"
+  ) |> 
+  tidyr::pivot_wider(
+    names_from = season,
+    values_from = c(avg_diff, score_sen),
+    names_sep = "_"
+  ) |> 
+  dplyr::mutate(
+    dplyr::across(
+      dplyr::starts_with("avg_diff_"),
+      ~ dplyr::if_else(is.na(.x), "—", as.character(.x))
+    ),
+    dplyr::across(
+      dplyr::starts_with("score_sen_"),
+      ~ tidyr::replace_na(.x, "") 
+    )
+  ) |> 
+  dplyr::arrange(round) |> 
+  dplyr::select(
+    round,
+    dplyr::starts_with("avg_diff_2025"), dplyr::starts_with("score_sen_2025"),
+    dplyr::starts_with("avg_diff_2024"), dplyr::starts_with("score_sen_2024"),
+    dplyr::starts_with("avg_diff_2023"), dplyr::starts_with("score_sen_2023"),
+    dplyr::starts_with("avg_diff_2022"), dplyr::starts_with("score_sen_2022"),
+    dplyr::starts_with("avg_diff_2021"), dplyr::starts_with("score_sen_2021"),
+    dplyr::starts_with("avg_diff_2020"), dplyr::starts_with("score_sen_2020"),
+    dplyr::starts_with("avg_diff_2019"), dplyr::starts_with("score_sen_2019"),
+    dplyr::starts_with("avg_diff_2018"), dplyr::starts_with("score_sen_2018"),
+    dplyr::starts_with("avg_diff_2017"), dplyr::starts_with("score_sen_2017"),
+    dplyr::starts_with("avg_diff_2016"), dplyr::starts_with("score_sen_2016"),
+    dplyr::starts_with("avg_diff_2015"), dplyr::starts_with("score_sen_2015"),
+    dplyr::starts_with("avg_diff_2014"), dplyr::starts_with("score_sen_2014")
+  ) |> 
+  dplyr::mutate(
+    round = dplyr::case_match(round,
+            1 ~ "1st Round  \nSemifinals",
+            2 ~ "Quarterfinals",
+            3 ~ "Semifinals", 
+            4 ~ "Championship")
+  ) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(columns = gt::everything()) |> 
+  gtUtils::gt_column_subheaders(
+    avg_diff_2025 = list(heading = "2025", subtitle = "12 teams"),
+    avg_diff_2024 = list(heading = "2024", subtitle = "12 teams"),
+    avg_diff_2023 = list(heading = "2023", subtitle = "4 teams"),
+    avg_diff_2022 = list(heading = "2022", subtitle = "4 teams"),
+    avg_diff_2021 = list(heading = "2021", subtitle = "4 teams"),
+    avg_diff_2020 = list(heading = "2020", subtitle = "4 teams"),
+    avg_diff_2019 = list(heading = "2019", subtitle = "4 teams"),
+    avg_diff_2018 = list(heading = "2018", subtitle = "4 teams"),
+    avg_diff_2017 = list(heading = "2017", subtitle = "4 teams"),
+    avg_diff_2016 = list(heading = "2016", subtitle = "4 teams"),
+    avg_diff_2015 = list(heading = "2015", subtitle = "4 teams"),
+    avg_diff_2014 = list(heading = "2014", subtitle = "4 teams"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  )
+
+
+for(year in 2025:2014) {
+  gt_table <- gt_table |> 
+    gtExtras::gt_merge_stack(
+      col1 = !!rlang::sym(paste0("avg_diff_", year)),
+      col2 = !!rlang::sym(paste0("score_sen_", year)),
+      palette = c("black", "#666666"),  
+      small_cap = FALSE,
+      font_size = c("16px", "10px")
+    )
+}
+
+year_cols <- paste0("avg_diff_", 2025:2014)
+
+blow_tbl <- gt_table |> 
+  gt::cols_align(
+    align = "center",
+    columns = dplyr::all_of(year_cols)
+  ) |> 
+  gt::cols_label(
+    round = "Round"
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_text(align = "center"),
+    locations = gt::cells_body(columns = dplyr::all_of(year_cols))
+  ) |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  # Row 1 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 2,
+    fill = "#F2D4C2",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = c(4, 10, 12, 14, 16, 20),  # Consolidated
+    fill = "#E8B5A0",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 6,
+    fill = "#8FA3B8",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 8,
+    fill = "#6B8CAE",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 18,
+    fill = "#B8C5D6",
+    alpha = 0.4
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 22,
+    fill = "#C17B7B",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 1,
+    columns = 24,
+    fill = "#D49080",
+    alpha = 0.4
+  ) |> 
+  # Row 2 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 2,
+    columns = 4,
+    fill = "#F2D4C2",
+    alpha = 0.4
+  ) |> 
+   gtExtras::gt_highlight_rows(
+    rows = 2,
+    columns = 2,
+    fill = "#E8B5A0",
+    alpha = 0.4
+  ) |> 
+  # Row 3 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 3,
+    columns = 4,
+    fill = "#B8C5D6",
+    alpha = 0.4
+  ) |> 
+  # Row 4 highlights
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = c(4, 10, 14),
+    fill = "#F2D4C2",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = c(6, 16, 24),
+    fill = "#D49080",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = 8,
+    fill = "red",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = 12,  # Removed duplicate
+    fill = "#C17B7B",
+    alpha = 0.4
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = 4,
+    columns = c(18, 20, 22),
+    fill = "#6B8CAE",
+    alpha = 0.4
+  ) |> 
+  gt::tab_header(title = gt::html(fball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via Stathead  | sports-reference.com | theme via {gtUtils} <br>
+        Data for 2025 season through Quarterfinals Round of CFP<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  )
+
+gt_save_crop(
+  blow_tbl,
+  file = "blowout_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+blow_tbl
+  
+```
+
+### Hoops beeswarm
+
+```{r hoops-beeswarm, warning=FALSE, message=FALSE}
+
+plot_data <- all_stats |>
+  dplyr::filter(
+    year > 2021,
+    lubridate::month(date) == 11 | (lubridate::month(date) == 12 & lubridate::day(date) < 23)
+  ) |>
+  dplyr::mutate(
+    margin = abs(pts - opp_pts),
+    is_blowout = margin > 29.5
+  )
+
+labels_data <- plot_data |> 
+  dplyr::group_by(year) |> 
+  dplyr::summarize(
+    n_total = dplyr::n(),
+    n_blowouts = sum(is_blowout),
+    pct_blowout = (n_blowouts / n_total) * 100,
+    label_pos = max(plot_data$margin) + 2,
+    label_text = paste0(
+      n_blowouts, " blowouts  \n", n_total, " games\n",
+      "(", round(pct_blowout, 1), "% of games)"
+    )
+  )
+
+bee_plot <- plot_data |> 
+  ggplot2::ggplot(ggplot2::aes(x = factor(year), y = margin, color = is_blowout)) +
+  ggbeeswarm::geom_quasirandom(alpha = 0.7, size = 2, width = 0.25) +
+  ggplot2::geom_hline(yintercept = 29.5, linetype = "dashed", color = "#333333", linewidth = 0.8) +
+  ggplot2::geom_label(
+    data = labels_data, 
+    ggplot2::aes(x = factor(year), y = label_pos, label = label_text),
+    inherit.aes = FALSE,
+    fontface = "bold",
+    color = "#333333",
+    fill = "white",
+    family = "mono",
+    label.size = 0,
+    alpha = 0.8,
+    hjust = 0
+  ) +
+  ggplot2::scale_color_manual(values = c("FALSE" = "#ffc9b5", "TRUE" = "#FF6B35")) +
+  ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.05, 0.2))) +
+  ggplot2::labs(
+    title = "College Basketball: Blowouts in early season games",
+    subtitle = "Margin of victory in games played before December 23 of each season.\nBlowout defined by a margin of 30+ points.",
+    x = "",
+    y = "Margin of Victory",
+    caption = "data via barttorvik.com  \nViz by Chris at Bless your chart"
+  ) +
+  ggthemes::theme_few() +
+  ggplot2::theme(
+    text = ggplot2::element_text(family = "mono"),  # Global font family
+    plot.title = ggplot2::element_text(color = "black", face = "bold"),
+    legend.position = "none",
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.major.x = ggplot2::element_line(color = "#f0f0f0", linewidth = 0.3)
+  ) +
+  ggplot2::coord_flip()
+
+ggplot2::ggsave(
+  "bee_plot.png",
+  bee_plot,
+  w = 10.5,
+  h = 7.5,
+  dpi = 300,
+)
+
+bee_plot
+
+```

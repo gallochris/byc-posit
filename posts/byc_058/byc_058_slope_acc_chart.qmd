@@ -1,0 +1,366 @@
+---
+title: "058: Slope chart"
+date: "2023-11-15"
+categories:
+  - gt_table
+  - slope
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+acc_sched <- readr::read_csv("acc_sched.csv")
+points <- tibble::tribble(
+  ~Team,~PF,~PA,
+  "North Carolina",39.7,30.7,
+  "Florida State",34.0,17.0,
+  "Georgia Tech",31.7,30.6,
+  "Louisville",31.0,19.6,
+  "Virginia Tech",29.0,23.2,
+  "Boston College",26.8,32.0,
+  "Virginia",23.8,30.5,
+  "Duke",23.5,23.2,
+  "Clemson",22.6,22.6,
+  "Miami",22.3,26.2,
+  "Pittsburgh",20.0,28.8,
+  "NC State",17.8,14.5,
+  "Wake Forest",15.0,26.4,
+  "Syracuse",12.0,30.0,
+)
+
+
+acc_diffs <- points |> 
+  dplyr::mutate(color = dplyr::if_else(PF >= PA, "o", "d")) |> 
+  dplyr::rename(Defense = PA, Offense = PF) |> 
+  tidyr::pivot_longer(cols = c(Offense, Defense), names_to = "diff", values_to = "value")
+```
+
+### GT Table
+
+```{r gt-table, warning=FALSE}
+# function to fetch schedules 
+acc_sched |> 
+  dplyr::arrange(-W, -pd) |> 
+  gt::gt() |>
+  gt::cols_label(
+    # rename columns
+    team_name = "",
+    pd = "+/-",
+  ) |>
+  cfbplotR::gt_fmt_cfb_logo(columns = c("team_name", "1", "2", "3", "4", "5", "6", 
+                                        "7", "8", "9", "10", "11", "12", "13")) |>
+  gt::tab_header(title = "ACC Football Conference Standings: Week-by-Week Schedule and Point Differentials",
+                 subtitle = "Conference wins in green and conference losses in red.") |> 
+  gt::tab_source_note(source_note = "Bless your chart | data via cfbfastR + cfbplotR")  |>
+  gtExtras::gt_theme_538() |> 
+  gt::tab_spanner(label = "Week of the Season",
+              columns = c("1", "2", "3", "4", "5", "6", 
+                          "7", "8", "9", "10", "11", "12", "13")) |> 
+ gtExtras::gt_hulk_col_numeric(pd, trim = TRUE) |> 
+    gt::fmt(
+    columns = c(pd),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  )  |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `1`,
+      rows = team_name %in% c("Clemson", "Georgia Tech")
+    )
+  ) |> 
+    gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `1`,
+      rows = team_name %in% c("Duke", "Louisville"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `3`,
+      rows = team_name %in% c("Boston College")
+    )
+  )  |>  
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `3`,
+      rows = team_name %in% c("Florida State")
+    )
+  ) |> 
+    gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `4`,
+      rows = team_name %in% c("Florida State", "Louisville", 
+                          "Georgia Tech", "North Carolina",
+                        "NC State")
+    )
+  ) |> 
+      gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `4`,
+      rows = team_name %in% c("Clemson", "Virginia", "Pittsburgh", "Boston College", "Wake Forest")
+    )
+  ) |> 
+        gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `5`,
+      rows = team_name %in% c("NC State", "Pittsburgh", "Virginia", "Syracuse")
+    )
+  ) |> 
+          gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `5`,
+      rows = team_name %in% c("Louisville", "Clemson", "Boston College", "Virginia Tech")
+    )
+  ) |> 
+   gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `6`,
+      rows = team_name %in% c("Florida State", "North Carolina", "Clemson", "Georgia Tech")
+    )
+  ) |>
+     gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `6`,
+      rows = team_name %in% c("Virginia Tech", "Syracuse", "Wake Forest", "Miami")
+    )
+  ) |>
+       gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `7`,
+      rows = team_name %in% c("Syracuse", "Wake Forest", 
+                              "Louisville", "Miami", "NC State")
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `7`,
+      rows = team_name %in% c("Florida State", "Virginia Tech", "Pittsburgh", "North Carolina", "Duke")
+    )
+  ) |>
+    gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `8`,
+      rows = team_name %in% c("Georgia Tech", "Pittsburgh",
+                              "North Carolina", "Duke", "Clemson")
+    )
+  ) |>
+      gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `8`,
+      rows = team_name %in% c("Boston College", "Wake Forest", "Virginia", "Florida State", "Miami")
+    )
+  ) |>
+        gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `9`,
+      rows = team_name %in% c("Virginia Tech", "Florida State", "NC State", "Louisville", "Miami", "Georgia Tech")
+    )
+  ) |>
+       gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `9`,
+      rows = team_name %in% c("Wake Forest", "Clemson", "Duke", "Virginia", "North Carolina", "Syracuse")
+    )
+  ) |>
+         gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `10`,
+      rows = team_name %in% c("Wake Forest", "Syracuse", "Virginia", "Pittsburgh", "Virginia Tech", "Miami")
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `10`,
+      rows = team_name %in% c("Duke", "Boston College", "Georgia Tech", "Florida State", "Louisville", "NC State")
+    )
+  ) |>
+           gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#ffdddd")
+    ),
+    locations = gt::cells_body(
+      columns = `11`,
+      rows = team_name %in% c("Duke", "Virginia", "Boston College", "Miami",
+                              "Wake Forest", "Georgia Tech", "Pittsburgh")
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightgreen")
+    ),
+    locations = gt::cells_body(
+      columns = `11`,
+      rows = team_name %in% c("Virginia Tech", "Clemson", "Syracuse", "North Carolina", "Florida State", "Louisville", "NC State")
+    )
+  ) |>
+  gt::tab_style(
+  style = list(
+    gt::cell_fill(color = "#ffffd8",)
+  ),
+  locations = gt::cells_body(columns = `12`)
+) |> 
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("left"),
+    color = "#c1c1c1",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = c("W", "L", "pd", "1", "2", "3", "4", "5", "6", 
+                                              "7", "8", "9", "10", "11", "12", "13")))) |> 
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("right"),
+    color = "#c1c1c1",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = c("13")))) -> table_try
+
+gtExtras::gtsave_extra(table_try, filename = "sched_table.png", vheight = 975, vwidth = 975)
+
+table_try
+```
+
+### Slope chart
+
+```{r slope-chart, warning=FALSE}
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+} 
+
+ggplot2::ggplot(acc_diffs, ggplot2::aes(x = diff, y = value, group = Team, color = color)) +
+  ggplot2::geom_line(alpha = 0.6, linewidth = 1.2) +
+  cfbplotR::geom_cfb_logos(ggplot2::aes(team = Team, y = value + .3), 
+              vjust = .5, width = 0.038, alpha = 0.6) +
+  ggplot2::scale_color_manual(values = c("lightpink", "lightgreen")) +
+  ggplot2::scale_y_continuous(limits = c(10,40), breaks = seq(10,40,5)) +
+  theme_me() +
+  ggplot2::theme(legend.position = "none", 
+                 plot.title = ggtext::element_markdown(),
+                 plot.subtitle = ggtext::element_markdown(size = 12, face ='bold', family = 'mono'),
+                 plot.caption = ggtext::element_markdown(size = 6, face ='bold', family = 'mono'),
+                 axis.text.x = ggtext::element_markdown(size = 12, face ='bold', family = 'mono'),  
+                 axis.text.y = ggtext::element_markdown(size = 12, face ='bold', family = 'mono')) +
+  ggplot2::labs(x = "",
+                y = "",
+                title = "ACC Football  \nScoring Defense & Offense",
+                subtitle = "Points per game in conference play only",
+                caption = "Bless your chart | November 15 | data via cfbstats.com"
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    x = 2.3,
+    y = 40,
+    color = "#333333",
+    label = "Better  \noffense",
+    size = 4,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    x = 0.7,
+    y = 15,
+    color = "#333333",
+    label = "Better  \ndefense",
+    size = 4,
+    fontface = 'bold',
+    family = 'mono'
+  ) -> ppg_plot
+
+
+ggplot2::ggsave(
+  "ppg_plot.png",
+  ppg_plot,
+  w = 6.5,
+  h = 8.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+ppg_plot
+```

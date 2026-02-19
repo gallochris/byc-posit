@@ -1,0 +1,202 @@
+---
+title: "083: ACC Tournament"
+date: "2024-03-11"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### ACC Tournament data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+
+acc_seeds <- readr::read_csv("acct-seeds.csv")
+
+cbbdata::cbd_torvik_game_stats(type = "conf_t") |> 
+  dplyr::filter(conf == "ACC" & year > 2013) -> acct
+
+acct_with_seeds <- acct |> 
+  dplyr::left_join(acc_seeds, by= c("team", "year"))
+
+# need to add in winners
+winners <- tibble::tribble(
+  ~seed,~titles,
+  1,4,
+  2,0,
+  3,2,
+  4,2,
+  5,1,
+  6,0,
+  7,1,
+  8,0,
+  9,0,
+  10,0,
+  11,0,
+  12,0,
+  13,0,
+  14,0,
+  15,0
+)
+
+acct_with_seeds |>
+  dplyr::group_by(seed) |>
+  dplyr::summarise(
+    W = sum(result == "W"),
+    L = sum(result == "L"),
+    win_pct = W / (W + L)
+  ) |>
+  dplyr::left_join(winners, by = "seed") |>
+  dplyr::ungroup() -> seed_tbl
+
+# winners 
+teamTitles <- winners <- tibble::tribble(
+  ~team,~champs,
+  "Virginia",2,
+  "Duke",3,
+  "Virginia Tech",1,
+  "North Carolina",1,
+  "Florida St.",1,
+  "Georgia Tech",1,
+  "Notre Dame",1,
+)
+
+# find records and seeds 
+acct_with_seeds |>
+  dplyr::group_by(team) |>
+  dplyr::summarise(
+    W = sum(result == "W"),
+    L = sum(result == "L"),
+    win_pct = W / (W + L), 
+    seed_avg = mean(seed),
+    min_seed = min(seed),
+    max_seed = max(seed),
+  ) |>
+  dplyr::left_join(teamTitles, by = "team") |>
+  dplyr::ungroup() |> 
+  dplyr::mutate(champs = tidyr::replace_na(champs, 0)) -> team_tbl
+
+
+```
+
+### ACC tournament GT Table
+
+```{r gt-table, warning = FALSE}
+acc_title <- gt_cbb_logo_title(title = 'ACC Tournament: Record and Titles by Seed Since 2014',
+                           subtitle = "Shows the record and titles by seed of the last ten conference tournaments.",
+                           type = 'conference',
+                           value = 'ACC',
+                           logo_height = 40)
+
+seed_tbl  |> 
+  dplyr::mutate(seed = paste0(seed, " ", "seed"),
+                record = paste0(W, "-", L),
+                trophys = dplyr::case_when(
+                  titles %% 1 == 0 ~ strrep("trophy,", titles),
+                  titles %% 1 != 0 ~ paste0(strrep("trophy,", floor(titles)), "trophy")), 
+                trophys = dplyr::if_else(trophys == "", "0", trophys)) |>
+  dplyr::select(seed, record, win_pct, trophys) |> 
+  gt::gt() |> 
+  gt::fmt_number(columns = c(win_pct), decimals = 3) |> 
+  gt::cols_label(
+    seed = "",
+    record = "Record",
+    win_pct = "Win %", 
+    trophys = "Titles"
+  ) |> 
+ gt::fmt_icon(
+   columns = c(trophys),
+   rows = c(1, 3, 4, 5, 7),
+    fill_color = "orange"
+ ) |> 
+  gtExtras::gt_theme_538() |>
+  gtExtras::gt_highlight_rows(rows = c(2, 10), fill = "#FFEBEA", bold_target_only = TRUE,
+    target_col = c(seed)) |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(win_pct)) |> 
+  gt::tab_header(title = gt::html(acc_title)) |> 
+    gt::tab_footnote(footnote = "The 2020 Tournament was cancelled after six games due to COVID, number one seed Florida State was awarded the title.",
+                   locations = gt::cells_column_labels(columns = trophys)) |> 
+  gt::tab_source_note(source_note = gt::html("<hr>14 teams competed in 2015, 2016, and 2020 due to post-season bans (Syracuse, Louisville, Georgia Tech).<br>1 seed (Virginia) and 10 seed (Duke) withdrew from the 2021 Tournament due to COVID.<br>Data provided by cbbdata, cbbplotR, and Wikipedia.<br><hr>
+                                             <b>Data viz by Chris at Bless your chart </b>")) -> ACC_tbl
+
+
+gtExtras::gtsave_extra(ACC_tbl,
+                       filename = "acc_tbl.png",
+                       vheight = 875,
+                       vwidth = 600)
+
+ACC_tbl
+```
+
+### Team Table
+
+```{r gt-table-team, warning = FALSE}
+acc_title <- gt_cbb_logo_title(title = 'ACC Tournament: Record and Titles by Team Since 2014',
+                           subtitle = "Shows the record, seed summary, and titles by team of the last ten conference tournaments.",
+                           type = 'conference',
+                           value = 'ACC',
+                           logo_height = 40)
+
+team_tbl  |> 
+  dplyr::arrange(-champs, -win_pct) |> 
+  dplyr::mutate(record = paste0(W, "-", L),
+                trophys = dplyr::case_when(
+                  champs %% 1 == 0 ~ strrep("trophy,", champs),
+                  champs %% 1 != 0 ~ paste0(strrep("trophy,", floor(champs)), "trophy")), 
+                trophys = dplyr::if_else(trophys == "", "0", trophys)) |>
+  dplyr::select(team, record, win_pct, min_seed, max_seed,seed_avg, trophys) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(team) |> 
+  gt::fmt_number(columns = c(seed_avg), decimals = 1) |> 
+  gt::fmt_number(columns = c(win_pct), decimals = 3) |> 
+  gt::cols_label(
+    team = "",
+    record = "Record",
+    win_pct = "Win %",
+    min_seed = "Best",
+    max_seed = "Worst",
+    seed_avg = "AVG",
+    trophys = "Titles"
+  ) |> 
+ gt::fmt_icon(
+   columns = c(trophys),
+   rows = c(1:7),
+    fill_color = "orange"
+ ) |> 
+  gtExtras::gt_theme_nytimes() |>
+  gtExtras::gt_hulk_col_numeric(columns = c(win_pct)) |>
+  gtExtras::gt_hulk_col_numeric(columns = c(seed_avg), reverse = TRUE) |>
+  gt::tab_spanner(columns = c(min_seed, max_seed, seed_avg), label = "Seed Summary") |> 
+  gt::cols_align(align = "left", columns = "team") |> 
+  gt::tab_header(title = gt::html(acc_title)) |> 
+    gt::tab_footnote(footnote = "The 2020 Tournament was cancelled after six games due to COVID, number one seed Florida State was awarded the title.",
+                   locations = gt::cells_column_labels(columns = trophys)) |> 
+  gt::tab_source_note(source_note = gt::html("<hr>Maryland's last season in the ACC was 2014.<br><br>Syracuse (2015), Louisville (2016), and Georgia Tech (2020) did not participate in the tournament due to post-season bans.<br><br>1 seed (Virginia) and 10 seed (Duke) withdrew from the 2021 Tournament due to COVID.<br><br>Data provided by cbbdata, cbbplotR, and Wikipedia.<br><hr>
+                                             <b>Data viz by Chris at Bless your chart </b>")) |> 
+  gt::tab_style(
+      style = gt::cell_text(
+        color = "#333333",
+        transform = "uppercase"
+      ),
+      locations = gt::cells_column_labels(everything())
+    ) |> 
+  gtExtras::gt_add_divider(columns = c(seed_avg), sides = "right", 
+                           color = "#333333") |> 
+  gtExtras::gt_add_divider(columns = c(min_seed), sides = "left", 
+                           color = "#333333") -> teamACC_tbl
+
+
+gtExtras::gtsave_extra(teamACC_tbl,
+                       filename = "teamacc_tbl.png",
+                       vheight = 875,
+                       vwidth = 600)
+
+teamACC_tbl
+```
+
+### 

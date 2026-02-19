@@ -1,0 +1,118 @@
+---
+title: "067: ACC Hoops Standings"
+date: "2024-01-06"
+categories:
+  - cbbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Data
+
+```{r load-data, message = FALSE}
+cbbdata::cbd_torvik_game_stats(conf = "ACC", opp_conf = "ACC", year = "2024") -> new_acc
+```
+
+### GT Table
+
+```{r gt-table, warning=FALSE}
+
+# add conf title odds
+
+cbb_logo_links <- cbbdata::cbd_teams() |>
+  dplyr::pull('logo') |>
+  rlang::set_names(cbbdata::cbd_teams()$common_team)
+
+
+new_acc |>
+  dplyr::group_by(team) |>
+  dplyr::summarise(
+    wins = sum(result == "W"),
+    loss = sum(result == "L"),
+    delta = sum(pts - opp_pts),
+    home_wins = sum(result == "W" & location == "H"),
+    home_loss = sum(result == "L" & location == "H"),
+    home_delta = sum((pts - opp_pts) * (location == "H")),
+    away_wins = sum(result == "W" & location == "A"),
+    away_loss = sum(result == "L" & location == "A"),
+    away_delta = sum((pts - opp_pts) * (location == "A"))
+  ) |>
+  dplyr::arrange(-delta,-wins) |>
+  dplyr::mutate(
+    row_number = 1:dplyr::n(),
+    team = dplyr::case_match(
+      team,
+      "Florida St." ~ "Florida State",
+      "North Carolina St." ~ "NC State",
+      "Miami FL" ~ "Miami",
+      team ~ team
+    )
+  ) |>
+  dplyr::mutate(team_name = team) |>
+  dplyr::relocate(team_name, .before = wins) |>
+  dplyr::relocate(row_number, .before = team) |>
+  cbbplotR::gt_cbb_teams(
+    team_column = "team",
+    logo_column = "team",
+    include_name = FALSE
+  ) |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = "team") |>
+  gt::cols_label(
+    row_number = "",
+    team_name = "",
+    team = "",
+    delta = "+/-",
+    wins = "W",
+    loss = "L",
+    home_wins = "W",
+    home_loss = "L",
+    home_delta = "+/-",
+    away_wins = "W",
+    away_loss = "L",
+    away_delta = "+/-"
+  ) |>
+  gt::tab_spanner(label = "Overall",
+                  columns = c(wins, loss, delta)) |>
+  gt::tab_spanner(label = "Home",
+                  columns = c(home_wins, home_loss, home_delta)) |>
+  gt::tab_spanner(label = "Away",
+                  columns = c(away_wins, away_loss, away_delta)) |>
+  gt::fmt(
+    columns = c(delta, home_delta, away_delta),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  cbbdata::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = "team_name") |>
+  gt::data_color(
+    columns = c(delta, home_delta, away_delta),
+    colors = scales::col_numeric(
+      c(
+        "#ff8396",
+        "#ffb6c1",
+        "#fff1f3",
+        "#d2f8d2",
+        "#b0f3b0",
+        "#84ec84"
+      ),
+      domain = c(-50, 50)
+    )
+  ) |>
+  gt::tab_header(title = "ACC Basketball: 2024 Conference Standings",
+                 subtitle = "Win/loss and point differential by location in conference play only through January 6 games.") |>
+  gt::tab_source_note(source_note = "Bless your chart | January 7, 2024 | data: cbbdata + cbbplotR")  -> acc_hoops
+
+gtExtras::gtsave_extra(acc_hoops,
+                       filename = "acc_table.png",
+                       vheight = 875,
+                       vwidth = 650)
+
+acc_hoops
+```
+
+### 

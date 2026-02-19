@@ -1,0 +1,17 @@
+{
+  "hash": "1f67ce28acc138e426f4f36c383200d8",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"171: Rating systems\"\ndate: \"2026-01-30\"\ncategories:\n  - geom_line\n  - facet_wrap\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(rlang)\n\ntejas <- readr::read_csv(\"tejas.csv\")\n```\n:::\n\n\n### Facet plot\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlabels <- tejas |>\n  dplyr::group_by(rtg) |>\n  dplyr::filter(date == min(date) | date == max(date)) |>\n  dplyr::ungroup()\n\nfacet_labels <- c(\"kenpom\" = \"kenpom\", \"torvik\" = \"Torvik\", \"NET\" = \"NET\")\n\ndate_breaks <- as.Date(c(\"2025-11-30\", \"2025-12-30\", \"2026-01-30\"))\n\ntejas_plot <- ggplot2::ggplot(tejas, ggplot2::aes(x = date, y = rank)) +\n  ggplot2::geom_line(linewidth = 0.8, color = \"#bf5700\") +\n  ggplot2::geom_point(data = labels,\n                      size = 2.5,\n                      color = \"#bf5700\") +\n  ggplot2::geom_text(\n    data = labels,\n    ggplot2::aes(label = rank),\n    vjust = -0.65,\n    hjust = -0.15,\n    size = 3.5,\n    fontface = \"bold\",\n    color = \"#56a0d3\"\n  ) +\n  ggplot2::facet_wrap( ~ rtg, labeller = ggplot2::as_labeller(facet_labels)) +\n  ggplot2::scale_y_reverse(\n    limits = c(100, 1),\n    breaks = c(1, 25, 50, 75, 100),\n    expand = ggplot2::expansion(mult = c(0.05, 0.02))\n  ) +\n  ggplot2::scale_x_date(\n    breaks = date_breaks,\n    labels = c(\"Nov 30\", \"Dec 30\", \"Jan 30\"),\n    expand = ggplot2::expansion(mult = c(0.02, 0.08))\n  ) +\n  hrbrthemes::theme_ipsum() +\n  ggplot2::labs(\n    title = \"How good is Texas this season?  \\nIt depends on which rating system you use\",\n    subtitle = \"Shows how the Longhorns' ranking has changed across KenPom, Torvik, and NET since November 30.\",\n    x = NULL,\n    y = \"Rank\",\n    caption = \"data via kenpom.com, barttorvik.com, and NCAA  \\nData through Jan.29 games | Viz by Chris at Bless your chart\"\n  ) +\n  ggplot2::theme(\n    plot.title = ggplot2::element_text(\n      hjust = 0.5,\n      size = 20,\n      family = \"Roboto Condensed\"\n    ),\n    plot.subtitle = ggtext::element_markdown(\n      hjust = 0.5,\n      size = 9.5,\n      lineheight = 1.5,\n      family = \"Roboto Condensed\"\n    ),\n    strip.text = ggplot2::element_text(\n      face = \"bold\",\n      size = 11,\n      family = \"Roboto Condensed\"\n    ),\n    panel.grid.minor = ggplot2::element_blank(),\n    panel.spacing = ggplot2::unit(2.5, \"lines\"),\n    axis.text.x = ggplot2::element_text(size = 11, family = \"Roboto Condensed\"),\n    axis.text.y = ggplot2::element_text(size = 11, family = \"Roboto Condensed\"),\n    plot.caption = ggplot2::element_text(\n      face = \"plain\",\n      size = 8,\n      family = \"Roboto Condensed\"\n    )\n  )\n\n\nggplot2::ggsave(\"tejas_plot.png\",\n                tejas_plot,\n                w = 10.5,\n                h = 7,\n                dpi = 600,\n                bg = \"white\",\n                type = \"cairo\")\n\ntejas_plot\n```\n\n::: {.cell-output-display}\n![](byc_171_rating_systems_files/figure-html/tejas-plot-1.png){width=672}\n:::\n:::\n\n\n### \n\n### \n",
+    "supporting": [
+      "byc_171_rating_systems_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

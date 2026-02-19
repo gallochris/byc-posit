@@ -1,0 +1,450 @@
+---
+title: "132: ACC hoops history"
+date: "2025-02-21"
+categories:
+  - geom_smooth
+  - gtExtras
+  - cbbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+acc_bad <- readr::read_csv("acc-bad.csv") |> 
+  dplyr::mutate(year = as.integer(stringr::str_sub(Season, 1, 4)) + 1) |> 
+  dplyr::relocate(year) |> 
+  dplyr::group_by(year) |> 
+  dplyr::count(sort = TRUE) |> 
+  dplyr::select(year, bad_teams = n)
+
+acc_history <- readr::read_csv("acc-history.csv") |> 
+  dplyr::select(year, total_teams, ncaa) |> 
+  dplyr::add_row(year = 2025, total_teams = 18, ncaa = 3) |> 
+  dplyr::left_join(acc_bad, by = "year") |> 
+  dplyr::mutate(ncaa = dplyr::if_else(year == 2020, 5, ncaa),
+                ncaa = dplyr::if_else(year == 2025, 4, ncaa)) |> 
+  dplyr::mutate(
+    ncaa_pct = ncaa/total_teams,
+    bad_pct = bad_teams/total_teams
+  ) |> 
+  tidyr::replace_na(list(bad_teams = 0, bad_pct = 0)) |> 
+  dplyr::arrange(-year)
+  
+# pbp data 
+
+pbp <- readr::read_csv("pbp.csv")
+
+cadeau_fouls <- pbp |>
+  dplyr::filter(Player_1 == "ELLIOT.CADEAU" &
+                  Event_Type == "Commits Foul") |>
+  dplyr::mutate(
+    opponent = dplyr::if_else(Home == "North Carolina", Away, Home),
+    location = dplyr::if_else(Home == "North Carolina", "home", "at")
+  ) |>
+  dplyr::select(
+    game_id = ID,
+    opponent,
+    location,
+    half = Half_Status,
+    game_time = Game_Time,
+    game_seconds = Game_Seconds,
+    player = Player_1,
+    event = Event_Description,
+  )
+```
+
+### Custom theme
+
+```{r theme-me, warning=FALSE, message=FALSE}
+theme_me <- function() {
+  # Create a base theme with minimal style
+  base_theme <- ggplot2::theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular")
+  
+  # Customize the base theme with additional modifications
+  custom_theme <- base_theme +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = ggplot2::element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = ggplot2::margin(t = 20)
+      ),
+      plot.background = ggplot2::element_rect(fill = "floralwhite", color = "floralwhite")
+    )
+  
+  return(custom_theme)
+}
+
+```
+
+### Line chart
+
+```{r line-chart, warning=FALSE, message=FALSE}
+
+ncaa_color <- "#3CB371"
+bad_color <- "#FF69B4"
+
+acc_plot <- acc_history |>
+  ggplot2::ggplot(ggplot2::aes(x = year)) +
+  ggplot2::geom_smooth(
+    ggplot2::aes(
+      y = ncaa_pct,
+      color = "ncaa_pct",
+      linetype = "ncaa_pct"
+    ),
+    se = FALSE,
+    linewidth = 1.5
+  ) +
+  ggplot2::geom_smooth(
+    ggplot2::aes(
+      y = bad_pct,
+      color = "bad_pct",
+      linetype = "bad_pct"
+    ),
+    se = FALSE,
+    linewidth = 1.5
+  ) +
+  ggplot2::geom_point(ggplot2::aes(y = ncaa_pct, color = "ncaa_pct"),
+                      alpha = 0.8,
+                      size = 2.2) +
+  ggplot2::geom_point(ggplot2::aes(y = bad_pct, color = "bad_pct"),
+                      alpha = 0.8,
+                      size = 2.2) +
+  ggplot2::scale_color_manual(values = c("ncaa_pct" = ncaa_color, "bad_pct" = bad_color)) +
+  ggplot2::scale_linetype_manual(values = c("ncaa_pct" = "solid", "bad_pct" = "dashed")) +
+  ggplot2::scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
+    limits = c(0, .9),
+    breaks = seq(0, .9, by = 0.1)
+  ) +
+  ggplot2::scale_x_continuous(breaks = seq(1985, 2025, by = 5)) +
+  ggplot2::labs(
+    title = "ACC Men's Basketball Since 1985",
+    subtitle = "Percentage of teams <span style='color: #3CB371;'>made the NCAA Tournament</span> or <span style='color: #FF69B4;'>finished .500 or worse</span>",
+    x = "",
+    y = "",
+    caption = "Data via stathead.com from Sports-Reference <br> <br>Viz by Chris at Bless your Chart | February 20, 2025"
+  ) +
+  theme_me() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(
+      size = 18,
+      face = 'bold',
+      family = 'mono'
+    ),
+    strip.text.x = ggtext::element_markdown(
+      size = 12,
+      face = 'bold',
+      family = 'mono'
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      size = 10,
+      family = "mono",
+      face = "bold"
+    ),
+    plot.caption = ggtext::element_markdown(size = 8, family = 'mono'),
+    axis.text.x = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    ),
+    axis.text.y = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    )
+  ) +
+    ggplot2::geom_vline(
+    xintercept = c(1991.5, 2005.5, 2014.5, 2024.5),
+    linetype = "dotted",
+    color = "#333333"
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2020,
+    y = .07,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "COVID  \nProjects 5 NCAA  \nTournament bids  \nRecords as of  \n3/11/2020",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2024.3,
+    y = .65,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "2024-25  \nProjects 4 NCAA  \nTournament bids  \nRecords as of  \n2/20/25",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 1988.5,
+    y = .85,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "8 teams",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 1998.5,
+    y = .85,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "9 teams",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2010.5,
+    y = .85,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "11 teams in 2005  \n12 teams 2006-13",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2019.5,
+    y = .85,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "15 teams",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2024.5,
+    y = .85,
+    color = "#333333",
+    fill = "floralwhite",
+    label = "18 teams",
+    size = 2.5,
+    fontface = 'bold',
+    family = 'mono'
+  )
+
+ggplot2::ggsave(
+  "acc_plot.png",
+  acc_plot,
+  w = 9.5,
+  h = 7.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+
+acc_plot
+```
+
+### Distro plot for fouls
+
+```{r distro-plot, warning=FALSE, message=FALSE}
+
+distro_plot <- cadeau_fouls |>
+  dplyr::mutate(minute_bin = game_seconds %/% 300) |>
+  dplyr::count(minute_bin) |>
+  ggplot2::ggplot(ggplot2::aes(x = minute_bin * 5, y = n)) +
+  ggplot2::geom_col(fill = "#56a0d3", color = "white") +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::geom_text(
+    ggplot2::aes(label = n),
+    vjust = -0.5,
+    size = 4,
+    family = "Roboto Condensed",
+    color = "gray20"
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = seq(0, 45, by = 5),
+    labels = c(
+      "First 5 mins",
+      "5-9 min",
+      "10-15 min",
+      "15-20 min",
+      "20-25 min",
+      "25-30 min",
+      "30-35 min",
+      "35-40 min",
+      "Overtime",
+      ""
+    ) 
+  ) +
+  ggplot2::scale_y_continuous(limits = c(0, 20), breaks = seq(0, 20, 5)) +
+  ggplot2::labs(
+    title = "When is Elliot Cadeau whistled for fouls?",
+    subtitle = "Shows total fouls committed in each five-minute segment of game time.  \nCadeau has committed a team-high 84 fouls this season.",
+    x = "",
+    y = "Foul Count",
+    caption = "Data via bigballR through February 19, 2025 games  \nViz by Chris at Bless your Chart"
+  ) +
+  ggplot2::theme(
+    plot.subtitle = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(face = "plain"),
+    panel.grid.major = ggplot2::element_blank()
+  )
+
+ggplot2::ggsave(
+  "ec_plot.png",
+  distro_plot,
+  w = 8.5,
+  h = 7.5,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+distro_plot
+```
+
+### Fouls table
+
+```{r foul-tbl, warning=FALSE, message=FALSE}
+
+ctbl <- cadeau_fouls |>
+  dplyr::group_by(game_id, opponent) |>
+  dplyr::arrange(game_seconds, .by_group = TRUE) |>
+  dplyr::mutate(foul_number = dplyr::row_number()) |>
+  dplyr::filter(foul_number <= 5) |>
+  dplyr::select(game_id, opponent, foul_number, game_seconds) |>
+  tidyr::pivot_wider(names_from = foul_number,
+                     values_from = game_seconds,
+                     names_prefix = "Foul_") |>
+  dplyr::ungroup() |>
+  dplyr::mutate(game_id = as.numeric(game_id)) |>
+  dplyr::mutate(
+    row_number = dplyr::case_match(
+      game_id,
+      5722933 ~ 1,
+      5810067 ~ 2,
+      5722945 ~ 3,
+      5730381 ~ 4,
+      5722959 ~ 5,
+      5810062 ~ 6,
+      5810055 ~ 7,
+      5722389 ~ 8,
+      5732549 ~ 9,
+      5722995 ~ 10,
+      5723013 ~ 11,
+      5723033 ~ 12,
+      5723044 ~ 13,
+      5732557 ~ 14,
+      5732566 ~ 15,
+      5732572 ~ 16,
+      5732517 ~ 17,
+      5732590 ~ 18,
+      5732592 ~ 19,
+      5732601 ~ 20,
+      5732390 ~ 21,
+      5732607 ~ 22,
+      5732612 ~ 23,
+      5732616 ~ 24,
+      5732625 ~ 25,
+      5732624 ~ 26,
+      5732578 ~ 27
+    )
+  ) |>
+  dplyr::arrange(row_number) |>
+  cbbplotR::gt_cbb_teams(opponent,
+                         opponent,
+                         include_name = TRUE,
+                         logo_height = 20) |>
+  gt::gt() |>
+  gt::cols_hide(columns = c(row_number, game_id)) |>
+  gt::fmt_markdown(opponent) |>
+  gt::cols_label(
+    opponent = "",
+    Foul_1 = "1",
+    Foul_2 = "2",
+    Foul_3 = "3",
+    Foul_4 = "4",
+    Foul_5 = "5"
+  ) |>
+  gt::tab_spanner(columns = starts_with("Foul_"), label = "Time of game when each foul was committed") |>
+  gt::fmt_missing(columns = gt::everything(), missing_text = "-") |>
+  gt::fmt(
+    columns = dplyr::starts_with("Foul_"),
+    fns = function(x)
+      ifelse(is.na(x), "-", sprintf("%d:%02d", x %/% 60, x %% 60))
+  ) |>
+  gt::tab_header(
+    title = "When is Elliot Cadeau whistled for fouls?",
+    subtitle = gt::md(
+      "Shows timestamps of game time when Cadeau is charged with a foul.  \nHighlights any fouls committed in the first five minutes."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "Shows timestamp of game, counting up to 40+ minutes, when the foul was committed. <br>Data through February 19, 2025 games<br><b>Table by Chris at Bless your chart | data via bigballR + stats.ncaa.org</b>"
+    )
+  ) |>
+  gt::cols_align(align = "left") |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#EEEEEE',
+    table.font.size = gt::px(10),
+    column_labels.text_transform = 'uppercase',
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#FFC1C3")),
+    locations = gt::cells_body(
+      columns = c("Foul_1"),
+      rows = c(4, 5, 7, 11, 16, 18, 20, 22, 27)
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_fill(color = "#FFC1C3")),
+    locations = gt::cells_body(columns = c("Foul_2"), rows = c(4, 7, 16))
+  )  |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(transform = "capitalize")
+  )  |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED"))
+
+
+gtUtils::gt_save_crop(ctbl,
+                      file = "c_tbl.png",
+                      whitespace = 40,
+                      bg = "white")
+
+ctbl
+
+```

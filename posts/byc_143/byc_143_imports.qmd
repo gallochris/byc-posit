@@ -1,0 +1,475 @@
+---
+title: "143: Imports"
+date: "2025-05-13"
+categories:
+  - geom_smooth
+  - D3
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load transfer data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+yrs <- 2023:2025
+
+portal <- purrr::map(yrs, ~ cfbfastR::cfbd_recruiting_transfer_portal(
+  year = .x)) |> 
+  dplyr::bind_rows() |> 
+  dplyr::mutate(
+    transfer_date = as.Date(transfer_date),
+    transfer_month = lubridate::month(transfer_date, label = TRUE),
+    transfer_year = lubridate::year(transfer_date),
+    rating = as.numeric(rating),
+    window = ifelse(transfer_month != "Apr", "Winter", "Spring"),
+    position = ifelse(position == "ATH", "QB", position),
+    position = forcats::fct_infreq(position) |> forcats::fct_rev(),
+    rating_tier = dplyr::case_when(
+      rating >= 0.95 ~ "Elite",
+      rating >= 0.90 ~ "High",
+      rating >= 0.85 ~ "Solid",
+      TRUE ~ "Depth"
+    )
+  ) |> 
+  dplyr::filter(!is.na(destination))
+
+position_counts <- portal |>
+  dplyr::filter(!is.na(origin), !is.na(destination)) |>
+  dplyr::group_by(origin, destination, season, position) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop")
+
+position_labels <- position_counts |>
+  dplyr::mutate(label = paste0(n, " ", position)) |>
+  dplyr::group_by(origin, destination, season) |>
+  dplyr::summarise(
+    n = sum(n),
+    positions = paste(label, collapse = ", "),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(-n)
+
+```
+
+### Portal charts
+
+```{r gt-plus-sankey, warning=FALSE, message=TRUE}
+
+
+import_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Largest Transfer Portal Imports</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Most amount of players from one program to transfer to another program over past 3 seasons.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+import_tbl <- position_labels |> 
+    dplyr::filter(n > 7) |> 
+    cbbplotR::gt_cbb_teams(origin, origin) |> 
+    cbbplotR::gt_cbb_teams(destination, destination) |>
+    dplyr::select(season, origin, destination, n, positions) |> 
+    gt::gt() |> 
+    gtUtils::gt_theme_gtutils() |> 
+    gt::fmt_markdown(columns = c(origin, destination)) |> 
+    gtExtras::gt_merge_stack(
+      col1 = n,
+      col2 = positions,
+      palette = c("black", "#333333")
+    ) |> 
+    gtUtils::gt_column_subheaders(
+      season = list(heading = "Season", subtitle = "Portal period"),
+      origin = list(heading = "Origin", subtitle = "From where"),
+      n = list(heading = "Players", subtitle = "w/Positions"),
+      destination = list(heading = "Destination", subtitle = "To where"),
+      heading_color = "black",
+      subtitle_color = "gray"
+  ) |> 
+  gt::cols_align(columns = c(origin, destination, n),
+                 align = "left") |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(1, 2, 8),
+    columns = "season",
+    fill = "#C5C5FF",
+    bold_target_only = TRUE,
+    target_col = c(season),
+  ) |> 
+  gtExtras::gt_add_divider(
+    columns = c(season, origin, destination),
+    sides = "right",
+    color = "black"
+  ) |> 
+   gt::tab_header(title = gt::html(import_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via cfbfastR + 247Sports.com, theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart | Data as of May 12, 2025</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+   gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+    ),
+    locations = gt::cells_body(
+      gt::everything()
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(775)) |> 
+   gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc"))
+
+    
+
+gtUtils::gt_save_crop(
+  import_tbl,
+  file = "import_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+import_tbl
+
+# -------------- Sankey fun 
+generate_sankey <- function(team_name) {
+  edges_raw <- portal |>
+    dplyr::filter(
+      season == 2025,
+      origin == team_name | destination == team_name
+    ) |>
+    dplyr::select(from = origin, to = destination) |>
+    dplyr::filter(!is.na(from), !is.na(to))
+
+  # count the number of transfers
+  edge_counts <- edges_raw |>
+    dplyr::count(from, to, name = "value")
+
+  # count by team
+  transfer_counts <- edge_counts |>
+    tidyr::pivot_longer(cols = c(from, to), values_to = "team") |>
+    dplyr::count(team, wt = value, name = "transfer_count")
+
+  nodes <- tibble::tibble(name = unique(c(edge_counts$from, edge_counts$to))) |>
+    dplyr::left_join(transfer_counts, by = c("name" = "team")) |>
+    dplyr::mutate(
+      label = dplyr::if_else(
+        name == team_name,
+        paste0(team_name, " ", transfer_count),
+        dplyr::if_else(transfer_count > 1, paste0(transfer_count, " ", name), name)
+      ),
+      transfer_count = dplyr::coalesce(transfer_count, 0)
+    ) |>
+    dplyr::arrange(desc(name == team_name), desc(transfer_count))
+
+  # adjust order
+  edges_indexed <- edge_counts |>
+    dplyr::mutate(
+      source = match(from, nodes$name) - 1,
+      target = match(to, nodes$name) - 1
+    )
+
+  # add Sankey diagram
+  sankey <- networkD3::sankeyNetwork(
+    Links = edges_indexed,
+    Nodes = nodes,
+    Source = "source",
+    Target = "target",
+    Value = "value",
+    NodeID = "label",
+    fontSize = 13,
+    nodeWidth = 30,
+    sinksRight = FALSE
+  )
+
+  sankey$x$links$color <- "rgba(160,160,160,0.4)"  # light gray
+  sankey$x$nodes$color <- ifelse(nodes$name == team_name, "blue", "steelblue")
+
+  return(sankey)
+}
+```
+
+### ACC Baseball data
+
+```{r base-data, warning=FALSE, message=FALSE}
+# --- load teams 
+teams <- tibble::tibble(baseballr:::rds_from_url(
+  "https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
+) |> 
+  dplyr::filter(year == 2025 & division == 1)
+
+
+acc_ids <- teams |> 
+  dplyr::filter(conference == "ACC") |> 
+  dplyr::pull(team_id)
+
+# function to fetch results 
+acc_results <- function(id) {
+  collegebaseball::ncaa_schedule(team_id = id, year = 2025) |>
+    dplyr::filter(home_team_conference == "ACC" & away_team_conference == "ACC") |>
+    dplyr::filter(!is.na(home_team_score))
+}
+
+acc_scores <- lapply(acc_ids, acc_results)
+
+# grab results and adjust spacing issue with Miami 
+acc_results_2025 <- as.data.frame(do.call(rbind, acc_scores)) |>
+  dplyr::distinct(contest_id, .keep_all = TRUE )  |> 
+  dplyr::mutate(home_team = dplyr::if_else(home_team == "Miami (FL) ", "Miami (FL)", 
+                                           home_team),
+                away_team = dplyr::if_else(away_team == "Miami (FL) ", "Miami (FL)", 
+                                           away_team) 
+  ) 
+
+
+# find standings and run diffs 
+home_diffs <- acc_results_2025 |>
+  dplyr::mutate(h_diff = home_team_score - away_team_score) |>
+  dplyr::group_by(home_team) |>
+  dplyr::summarize(home_diff = sum(h_diff)) |>
+  dplyr::rename(team = home_team)
+
+away_diffs <- acc_results_2025 |>
+  dplyr::mutate(a_diff = away_team_score - home_team_score) |>
+  dplyr::group_by(away_team) |>
+  dplyr::summarize(away_diff = sum(a_diff)) |>
+  dplyr::rename(team = away_team)
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team")|>
+  dplyr::mutate(full_diff = (home_diff + away_diff))|>
+  dplyr::select(team, full_diff, home_diff, away_diff)
+
+home_results <- acc_results_2025 |>
+  dplyr::mutate(h_result = dplyr::if_else(home_team_score > away_team_score, "W", "L")) |>
+  dplyr::group_by(home_team, h_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = h_result,
+    values_from = n)|>
+  dplyr::rename(team = home_team, h_w = W, h_l = L)
+
+away_results <- acc_results_2025 |>
+  dplyr::mutate(a_result = dplyr::if_else(away_team_score > home_team_score, "W", "L")) |>
+  dplyr::group_by(away_team, a_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = a_result,
+    values_from = n) |>
+  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+  dplyr::mutate(across(everything(), ~ replace(.x, is.na(.x), 0))) 
+
+# full run differentials 
+full_recs <- merge(home_results, away_results, by = "team") |>
+  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l))|>
+  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+
+# find leaders
+leader_wins <- max(diffs_recs$W)
+leader_losses <- min(diffs_recs$L[diffs_recs$W == leader_wins])
+
+# standings
+standings <- diffs_recs |>
+  dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l),
+    full_diff = ifelse(full_diff > 0, 
+                       paste0("+", full_diff),
+                       full_diff),
+    record_diff = paste0(overall_rec, " | ", 
+                         sprintf("%.3f", Win_Pct))
+  ) |> 
+  dplyr::select(
+    team, 
+    Win_Pct,
+    record_diff
+  )
+
+acc_results_long <- dplyr::bind_rows(
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = home_team,
+      team_id = home_team_id,
+      team_score = home_team_score,
+      team_conference = home_team_conference,
+      opp = away_team,
+      opp_id = away_team_id,
+      opp_score = away_team_score,
+      opp_conference = away_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "home"
+      ),
+      contest_id
+    ),
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = away_team,
+      team_id = away_team_id,
+      team_score = away_team_score,
+      team_conference = away_team_conference,
+      opp = home_team,
+      opp_id = home_team_id,
+      opp_score = home_team_score,
+      opp_conference = home_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "away"
+      ),
+      contest_id
+    )
+)
+```
+
+### 
+
+### ACC baseball standings chart
+
+```{r acc-base, warning=FALSE, message=FALSE}
+
+acc_plot_data <- acc_results_long |> 
+  dplyr::arrange(team, date) |> 
+  dplyr::mutate(
+    win = as.integer(team_score > opp_score),
+    loss = as.integer(team_score < opp_score)
+  ) |>
+  dplyr::group_by(team) |> 
+  dplyr::mutate(
+    cum_win = cumsum(win),
+    cum_loss = cumsum(loss),
+    win_diff = cum_win - cum_loss,
+    cum_games = cum_win + cum_loss,
+    cum_win_pct = cum_win / cum_games
+  ) |> 
+  dplyr::ungroup()
+
+target_date <- as.Date("2025-05-14")
+
+team_labels <- acc_plot_data |> 
+  dplyr::arrange(desc(date), -contest_id) |> 
+  dplyr::group_by(team) |> 
+  dplyr::slice_max(order_by = date, n = 1) |> 
+  dplyr::left_join(standings, by = c("team")) |> 
+  dplyr::ungroup() |> 
+  dplyr::group_by(cum_win_pct) |>
+  dplyr::mutate(
+    stagger = dplyr::row_number() - (dplyr::n() + 1) / 2,
+    y_staggered = win_diff + stagger * 0.45
+  ) |> 
+  dplyr::ungroup() |> 
+  dplyr::mutate(
+    y_staggered = dplyr::case_when(
+      team == "NC State" ~ y_staggered + 0.3,
+      team == "Georgia Tech" ~ y_staggered - 0.3,
+      TRUE ~ y_staggered
+    )
+  ) |> 
+  dplyr::distinct(team, .keep_all = TRUE)
+
+
+extension_date <- as.Date("2025-05-11")
+
+extend_rows <- acc_plot_data |> 
+  dplyr::group_by(team) |> 
+  dplyr::filter(date == max(date)) |> 
+  dplyr::mutate(date = extension_date) |> 
+  dplyr::ungroup()
+  
+acc_plot_data_extend <- dplyr::bind_rows(acc_plot_data, extend_rows)
+
+ggplot2::ggplot(acc_plot_data_extend, ggplot2::aes(x = date, y = win_diff, color = team)) +
+  ggplot2::geom_smooth(linewidth = 0.5, se = FALSE) +
+  ggplot2::geom_text(
+    data = team_labels,
+    ggplot2::aes(x = target_date, y = y_staggered, 
+                 label = record_diff),
+    hjust = -0.1,
+    size = 3,
+    show.legend = FALSE,
+    family = "Roboto Condensed"
+  ) +
+  ggplot2::expand_limits(x = target_date + 5) +
+  cbbplotR::scale_color_cbb_teams() +
+  cbbplotR::geom_cbb_teams(
+    data = team_labels,
+    ggplot2::aes(x = as.Date("2025-05-12"), 
+                 y = y_staggered, team = team),
+    width = 0.025,
+    alpha = 0.6, 
+    color = NA,
+  ) +
+  ggplot2::labs(
+    title = "ACC Baseball Standings",
+    subtitle = "Shows change in record or win/loss differential over the course of the season.",
+    x = "",
+    y = "",
+    caption = "Data via baseballr + stats.ncaa.org through May 11 games  \nViz by Chris at Bless your chart | May 14, 2025"
+  ) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "#333333") +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 8.5,
+      lineheight = 1.5,
+      family = "Roboto Condensed"
+    ),
+    legend.position = "none",
+    axis.title.x = ggplot2::element_text(family = "Roboto Condensed"),
+    axis.title.y = ggplot2::element_text(family = "Roboto Condensed"),
+    plot.caption = ggplot2::element_text(face = "plain", size = 7.5, "Roboto Condensed")
+  ) -> acc_b_plot
+
+
+ggplot2::ggsave(
+  "acc_b_plot.png",
+  acc_b_plot,
+  h = 8,
+  w = 9.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+acc_b_plot
+```

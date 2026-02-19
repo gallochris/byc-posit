@@ -1,0 +1,563 @@
+---
+title: "142: Chicklets and Matrix"
+date: "2025-05-01"
+categories:
+  - flexoki
+  - waffle
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load cbbdata
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+# schedule diversity 
+
+cbbdata::cbd_torvik_game_stats() |> 
+  dplyr::filter(year > 2009) |> 
+  dplyr::filter(!type %in% c("conf_t", "post")) -> all_stats
+
+
+sched_diverse <- all_stats |>
+  dplyr::mutate(
+    year_of_game = lubridate::year(date),
+    month = lubridate::month(date),
+    season = dplyr::if_else(month >= 11, year_of_game + 1, year_of_game), 
+    before_jan1 = date < as.Date(paste0(season, "-01-01")),
+    after_jan1 = date > as.Date(paste0(season, "-01-01"))
+  ) |>
+  dplyr::group_by(season) |>
+  dplyr::summarise(
+    game_count = dplyr::n(),
+    conf_count = sum(type == "conf", na.rm = TRUE),
+    nc_count = sum(type == "nc", na.rm = TRUE),
+    conf_pct = conf_count / game_count,
+    nc_pct = nc_count / game_count,
+    conf_before_jan1_count = sum(type == "conf" & before_jan1, na.rm = TRUE),
+    conf_before_jan1_pct = conf_before_jan1_count / game_count,
+    conf_after_jan1_count = sum(type == "conf" & after_jan1, na.rm = TRUE),
+    conf_after_jan1_pct = conf_after_jan1_count / game_count,
+    nc_before_jan1_count = sum(type == "nc" & before_jan1, na.rm = TRUE),
+    nc_before_jan1_pct = nc_before_jan1_count / game_count,
+    nc_after_jan1_count = sum(type == "nc" & after_jan1, na.rm = TRUE),
+    nc_after_jan1_pct = nc_after_jan1_count / game_count,
+    .groups = "drop"
+  )
+
+# make the data long 
+sched_diverse_long <- sched_diverse |>
+  tidyr::pivot_longer(
+    cols = dplyr::ends_with("_pct"),
+    names_to = "type",
+    values_to = "pct"
+  )
+```
+
+### Chicklet schedule charts 
+
+```{r sched-chicklet, warning=FALSE, message=FALSE}
+
+# add a way to label some of the years
+label_years <- c(2010, 2015, 2021, 2025)
+
+label_data <- sched_diverse_long |>
+  dplyr::filter(type %in% c("conf_pct", "nc_pct"), season %in% label_years) |>
+  dplyr::mutate(label = scales::percent(pct, accuracy = 0.1))
+
+
+sched_plot_one <- sched_diverse_long |>
+  dplyr::filter(type %in% c("conf_pct", "nc_pct")) |>
+  ggplot2::ggplot(ggplot2::aes(x = season, y = pct)) +
+  ggchicklet::geom_chicklet(ggplot2::aes(fill = type)) +
+  ggplot2::scale_fill_manual(values = c("conf_pct" = "#e4572e", 
+                                        "nc_pct" = "#6a7fd1")) +
+  ggplot2::scale_y_continuous(labels = scales::percent_format(),
+                              limits = c(0, 1.05),
+                              breaks = c(0, 0.25, 0.50, 0.75,
+                                         1.00)) +
+  ggplot2::geom_text(
+    data = label_data,
+    ggplot2::aes(label = label),
+    position = ggplot2::position_stack(vjust = 0.5),
+    color = "white",
+    fontface = "bold",
+    family = "mono",
+    size = 2.75
+  ) +
+  ggplot2::labs(
+    title = "<img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png' width='15'/> Games in-and-out of conference <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png' width='15'/>",
+    subtitle = "Percentage of regular season Division-I games played
+ in <span style='color:#e4572e;'><b>conference</b></span> play and <span style='color:#6a7fd1;'><b>non-conference</b></span> since the 2010 season.<br>",
+    caption = "Several teams have changed conferences during this time span. This past season, both the ACC and Big Ten played 20 regular season conference games. On average, D-I teams play around 31 regular season games each season.<br>
+    <br>
+    **Data via cbbdata and barttorkvik.com, theme from {flexoki} package <br>Viz by Chris at Bless your Chart**",
+    x = "",
+    y = ""
+  ) +
+  flexoki::theme_flexoki_light() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(hjust = 0.5, size = 16),
+    plot.subtitle = ggtext::element_textbox_simple(color = "#222222", margin = ggplot2:::margin(t = 5)),
+    plot.caption = ggtext::element_textbox_simple(color = "#222222", margin = ggplot2:::margin(t = 5)),
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2021,
+    y = 1.025,
+    color = "#333333",
+    fill = "#e4572e",
+    label = "COVID",
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = 0.3
+  )
+
+ggplot2::ggsave(
+  "splot1.png",
+  sched_plot_one,
+  w = 8.5,
+  h = 8.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+sched_plot_one
+
+# when the conference plays its games
+
+# add text
+jan_label_years <- c(2010, 2015, 2025)
+
+jan_label_data <- sched_diverse_long |>
+  dplyr::filter(!type %in% c("conf_pct", "nc_pct")) |>
+  dplyr::mutate(type = factor(
+    type,
+    levels = c(
+      "nc_before_jan1_pct",
+      "conf_before_jan1_pct",
+      "nc_after_jan1_pct",
+      "conf_after_jan1_pct"
+    )
+  )) |>
+  dplyr::arrange(season, type) |>
+  dplyr::group_by(season) |>
+  dplyr::mutate(ypos = cumsum(pct) - 0.5 * pct) |>
+  dplyr::ungroup() |>
+  dplyr::filter(season %in% jan_label_years) |>
+  dplyr::filter(pct >= 0.03) |>
+  dplyr::mutate(label = scales::percent(pct, accuracy = 0.1))
+
+
+sched_plot_two <- sched_diverse_long |>
+  dplyr::filter(!type %in% c("conf_pct", "nc_pct")) |>
+  dplyr::mutate(type = factor(
+    type,
+    levels = c(
+      "nc_before_jan1_pct",
+      "conf_before_jan1_pct",
+      "nc_after_jan1_pct",
+      "conf_after_jan1_pct"
+    )
+  )) |>
+  ggplot2::ggplot(ggplot2::aes(x = season, y = pct)) +
+  ggchicklet::geom_chicklet(ggplot2::aes(fill = type)) +
+  ggplot2::scale_y_continuous(labels = scales::percent_format(),
+                              limits = c(0, 1.05),
+                              breaks = c(0, 0.25, 0.50, 0.75,
+                                         1.00)) +
+  ggplot2::geom_text(
+    data = jan_label_data,
+    ggplot2::aes(x = season, y = ypos, label = label),
+    color = "white",
+    fontface = "bold",
+    family = "mono",
+    size = 2.5
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "nc_before_jan1_pct" = "#e0aaff",
+      "conf_before_jan1_pct" = "#95d5b2",
+      "nc_after_jan1_pct" = "#5a189a",
+      "conf_after_jan1_pct" = "#2d6a4f"
+    )
+  ) +
+  ggplot2::labs(
+    title = "<img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png' width='15'/> When are games played? <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png' width='15'/>",
+    subtitle = "Percentage of regular season Division-I games played
+ in conference and non-conference played:<br>
+ <b>before Jan. 1:</b>
+  <span style='color:#e0aaff;'><b>non-conference</b></span> |
+ <span style='color:#95d5b2;'><b>conference</b></span><br>
+  <b>after Jan. 1:</b>
+ <span style='color:#5a189a;'><b>non-conference</b></span> | <span style='color:#2d6a4f;'><b>conference</b></span><br>
+    ",
+    caption = "During the 2009-10 season, 536 non-conference regular games were played <em>after January 1</em>. This past season (2024-25), just 28 regular season non-conference games were played <em>after January 1</em>.<br>
+    <br>
+    **Data via cbbdata and barttorkvik.com, theme from {flexoki} package <br>Viz by Chris at Bless your Chart**",
+    x = "",
+    y = ""
+  ) +
+  flexoki::theme_flexoki_light() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(hjust = 0.5, size = 16),
+    plot.subtitle = ggtext::element_textbox_simple(color = "#222222", margin = ggplot2:::margin(t = 5)),
+    plot.caption = ggtext::element_textbox_simple(color = "#222222", margin = ggplot2:::margin(t = 5)),
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2021,
+    y = 1.025,
+    color = "#333333",
+    fill = "#2d6a4f",
+    label = "COVID",
+    size = 3,
+    fontface = 'bold',
+    family = 'mono',
+    alpha = 0.3
+  )
+
+ggplot2::ggsave(
+  "splot2.png",
+  sched_plot_two,
+  w = 8.5,
+  h = 8.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+sched_plot_two
+
+```
+
+### Baseball data
+
+```{r base-data, warning=FALSE, message=FALSE}
+# --- load teams 
+teams <- tibble::tibble(baseballr:::rds_from_url(
+  "https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
+) |> 
+  dplyr::filter(year == 2025 & division == 1)
+
+
+acc_ids <- teams |> 
+  dplyr::filter(conference == "ACC") |> 
+  dplyr::pull(team_id)
+
+# function to fetch results 
+acc_results <- function(id) {
+  collegebaseball::ncaa_schedule(team_id = id, year = 2025) |>
+    dplyr::filter(home_team_conference == "ACC" & away_team_conference == "ACC") |>
+    dplyr::filter(!is.na(home_team_score))
+}
+
+acc_scores <- lapply(acc_ids, acc_results)
+
+# grab results and adjust spacing issue with Miami 
+acc_results_2025 <- as.data.frame(do.call(rbind, acc_scores)) |>
+  dplyr::distinct(contest_id, .keep_all = TRUE )  |> 
+  dplyr::mutate(home_team = dplyr::if_else(home_team == "Miami (FL) ", "Miami (FL)", 
+                                           home_team),
+                away_team = dplyr::if_else(away_team == "Miami (FL) ", "Miami (FL)", 
+                                           away_team) 
+  ) 
+
+
+# find standings and run diffs 
+home_diffs <- acc_results_2025 |>
+  dplyr::mutate(h_diff = home_team_score - away_team_score) |>
+  dplyr::group_by(home_team) |>
+  dplyr::summarize(home_diff = sum(h_diff)) |>
+  dplyr::rename(team = home_team)
+
+away_diffs <- acc_results_2025 |>
+  dplyr::mutate(a_diff = away_team_score - home_team_score) |>
+  dplyr::group_by(away_team) |>
+  dplyr::summarize(away_diff = sum(a_diff)) |>
+  dplyr::rename(team = away_team)
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team")|>
+  dplyr::mutate(full_diff = (home_diff + away_diff))|>
+  dplyr::select(team, full_diff, home_diff, away_diff)
+
+home_results <- acc_results_2025 |>
+  dplyr::mutate(h_result = dplyr::if_else(home_team_score > away_team_score, "W", "L")) |>
+  dplyr::group_by(home_team, h_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = h_result,
+    values_from = n)|>
+  dplyr::rename(team = home_team, h_w = W, h_l = L)
+
+away_results <- acc_results_2025 |>
+  dplyr::mutate(a_result = dplyr::if_else(away_team_score > home_team_score, "W", "L")) |>
+  dplyr::group_by(away_team, a_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = a_result,
+    values_from = n) |>
+  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+  dplyr::mutate(across(everything(), ~ replace(.x, is.na(.x), 0))) 
+
+# full run differentials 
+full_recs <- merge(home_results, away_results, by = "team") |>
+  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l))|>
+  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+
+# find leaders
+leader_wins <- max(diffs_recs$W)
+leader_losses <- min(diffs_recs$L[diffs_recs$W == leader_wins])
+
+# standings
+standings <- diffs_recs |>
+  dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l),
+    full_diff = ifelse(full_diff > 0, 
+                       paste0("+", full_diff),
+                       full_diff),
+    record_diff = paste0(overall_rec, " | ", full_diff)
+  ) |> 
+  dplyr::select(
+    team, 
+    Win_Pct,
+    record_diff
+  )
+
+# tidy results for the matrix 
+acc_results_long <- dplyr::bind_rows(
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = home_team,
+      team_id = home_team_id,
+      team_score = home_team_score,
+      team_conference = home_team_conference,
+      opp = away_team,
+      opp_id = away_team_id,
+      opp_score = away_team_score,
+      opp_conference = away_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "home"
+      ),
+      contest_id
+    ),
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = away_team,
+      team_id = away_team_id,
+      team_score = away_team_score,
+      team_conference = away_team_conference,
+      opp = home_team,
+      opp_id = home_team_id,
+      opp_score = home_team_score,
+      opp_conference = home_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "away"
+      ),
+      contest_id
+    )
+)
+
+# make the matrix table long 
+long_tbl <- acc_results_long |> 
+  dplyr::group_by(team, opp) |> 
+  dplyr::summarise('n_win' = sum(team_score > opp_score, na.rm = T),
+                   'n_loss' = sum(team_score < opp_score, na.rm = T)) |> 
+  dplyr::mutate('record' = paste0(n_win, '-', n_loss)) |> 
+  dplyr::select(team, opp, record) |> 
+  dplyr::ungroup() |> 
+  dplyr::left_join(standings, by ="team") |> 
+  dplyr::arrange(-Win_Pct) |> 
+  dplyr::mutate(team = ifelse(team == "NC State", "N.C. State", team),
+                team = ifelse(team == "Miami (FL)", "Miami FL", team)) |> 
+  cbbplotR::gt_cbb_teams(team, team, logo_height = 25, include_name = FALSE) |>  
+  tidyr::pivot_wider(names_from = opp,
+                     values_from = record) |> 
+  dplyr::select(team, 
+                record_diff,
+                `Florida St.`, 
+                `NC State`,
+                `Georgia Tech`,
+                `North Carolina`, 
+                `Miami (FL)`,
+                `Clemson`,
+                `Duke`,
+                `Louisville`,
+                `Virginia`,
+                `Wake Forest`,
+                `Notre Dame`,
+                `Virginia Tech`,
+                `Pittsburgh`,
+                `Boston College`,
+                `Stanford`,
+                `California`
+)
+```
+
+### 
+
+### ACC baseball matrix
+
+```{r acc-base, warning=FALSE, message=FALSE}
+
+# --- function for team headers 
+md = function(x) {
+  gt::html(x
+           
+  )
+}
+
+team_headers <- c(
+  "Florida St.", "NC State", "Georgia Tech", "North Carolina", 
+  "Miami (FL)", "Clemson", "Duke", "Louisville", "Virginia", 
+  "Wake Forest", "Notre Dame", "Virginia Tech",
+  "Pittsburgh", "Boston College", "Stanford", "California"
+)
+
+# cfbplotR urls from https://github.com/Kazink36/cfbplotR/blob/main/data-raw/logo_ref_2.csv
+team_img_urls <- c(
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/52.png", # fsu 
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/152.png", #ncsu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/59.png", # gt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/153.png", # unc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png", # miami
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/228.png", #clemson
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/150.png", # duke
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/97.png", # lville
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/258.png", # uva
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/154.png", # wake forest
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/87.png", # notre dame
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/259.png", # vt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/221.png", #pitt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/103.png", # bc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/24.png", # stanford
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/25.png" # cal
+)
+
+add_team_header <- function(team_name, img_url) {
+  gtExtras::img_header(
+    label = "",
+    img_url = img_url,
+    height = 25,
+    palette = c("white")
+  )
+}
+
+# add teams headers
+team_headers_with_images <- purrr::map2(team_headers, team_img_urls, add_team_header) |>
+  purrr::set_names(team_headers)
+
+# table header 
+baseball_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC Baseball Record Matrix</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Conference records through May 4 games.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/1.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+long_tbl |>
+  dplyr::mutate(dplyr::across(-c(team, record_diff),
+                              ~ ifelse(is.na(.x), "-", 
+                                       as.character(.x)))) |>
+  gt::gt() |>
+  gt::cols_label(team = "", !!!team_headers_with_images) |>
+  gt::cols_align('center') |>
+  gt::fmt_markdown('team') |>
+  gtUtils::gt_theme_gtutils() |> 
+  gtExtras::gt_merge_stack(
+    col1 = "team",
+    col2 = "record_diff",
+    palette = c("black", "black"),
+    small_cap = FALSE
+  ) |> 
+  gt::data_color(columns = c(-team, -record_diff),
+                 fn = scales::col_factor(
+                   palette = c("#FFFDF5", 
+                               "#ffe0e0", "#ff9999", "#ffcccc", 
+                               "#b2ffb2", "#7FFF7F", "#00FF00"),
+                   domain = c("-", 
+                              "0-3", "0-2", "1-2", 
+                              "2-0", "2-1", "3-0")
+                 )
+  ) |> 
+  gt::tab_header(title = gt::html(baseball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via baseballR, stats.ncaa.org | theme via {gtUtils} <br>
+        Read the data left to right to see each team's record against other league opponents, plus overall league record and run differential.<br>
+        <hr><b>Table by Chris at Bless your chart | data from May 5, 2025</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::tab_options(table.width = gt::px(675)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) -> acc_tbl
+
+
+gtUtils::gt_save_crop(acc_tbl,
+                      file = "acc_tbl.png",
+                      whitespace = 30,
+                      bg = "#FFFDF5")
+
+acc_tbl
+```

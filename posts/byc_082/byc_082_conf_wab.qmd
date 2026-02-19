@@ -1,0 +1,472 @@
+---
+title: "082: Conference WAB"
+date: "2024-03-06"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Conference WAB data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+
+# load data 
+sched_with_rtg <- readr::read_csv("https://raw.githubusercontent.com/gallochris/wab_data_job/main/data/played_sched_rtg.csv")
+
+future_sched_with_ratings <- readr::read_csv("https://raw.githubusercontent.com/gallochris/wab_data_job/main/data/future_sched_rtg.csv")
+
+wabRank <- readr::read_csv("https://raw.githubusercontent.com/gallochris/wab_data_job/main/data/wab_rank.csv")
+
+clean_played_tbl <- readr::read_csv("https://raw.githubusercontent.com/gallochris/wab_data_job/main/data/clean_played_tbl.csv")
+
+# find conference info
+confInfo <- sched_with_rtg |> 
+  dplyr::select(team,conf) |> 
+  unique()
+
+# this is the part to functionize 
+# confWAB <- "ACC" 
+
+run_confWAB <- function(confWAB) {
+  confSched <- sched_with_rtg |>
+    dplyr::filter(conf %in% confWAB) |>
+    dplyr::filter(conf == opp_conf)
+  
+  #find the median team
+  confTeams <- confInfo |>
+    dplyr::filter(conf %in% confWAB) |>
+    dplyr::pull(team)
+  
+  wabRank |>
+    dplyr::filter(team %in% confTeams) |>
+    dplyr::arrange(trank_rank) |>
+    dplyr::pull(team) -> confTeamsRanked
+  
+  #median team (or if there are an even number, the team worse than median, so team 6 of 10)
+  medianTeam <-
+    confTeamsRanked[ceiling(length(confTeamsRanked) / 2)]
+  
+  hcMultiplier <- 0.014
+  
+  # Add the efficiency ratings - these are updated via cbbdata every 30 minutes or so?
+  barts <- cbbdata::cbd_torvik_ratings(year = "2024") |>
+    dplyr::select(team, barthag, adj_o, adj_d) |>
+    dplyr::mutate(
+      oHome = adj_o * (1 + hcMultiplier),
+      dHome = adj_d * (1 - hcMultiplier),
+      oAway = adj_o * (1 - hcMultiplier),
+      dAway = adj_d * (1 + hcMultiplier)
+    ) |>
+    dplyr::mutate(
+      H = (oHome ^ 11.5) / (oHome ^ 11.5 + dHome ^ 11.5),
+      N = (adj_o ^ 11.5) / (adj_o ^ 11.5 + adj_d ^ 11.5),
+      A = (oAway ^ 11.5) / (oAway ^ 11.5 + dAway ^ 11.5)
+    ) |>
+    tidyr::pivot_longer(cols = c(N, H, A),
+                        names_to = "location",
+                        values_to = "rtg")
+  
+  # Now add entire played schedule for DI teams only
+  all_team_sched <- cbbdata::cbd_torvik_game_stats(year = "2024") |>
+    dplyr::select(game_id,
+                  date,
+                  team,
+                  opp,
+                  conf,
+                  opp_conf,
+                  location,
+                  result,
+                  pts_scored,
+                  pts_allowed) |>
+    dplyr::mutate(opp_location = dplyr::case_match(location,
+                                                   "H" ~ "A",
+                                                   "A" ~ "H",
+                                                   "N" ~ "N")) |>
+    dplyr::arrange(date)
+  
+  # Define the bubble team and location ratings
+  # Now with Median Conf team
+  bubTeam <- medianTeam
+  
+  # Define second default team - use 55th ranking as a proxy
+  two_bubTeam <- barts |>
+    dplyr::select(team, barthag) |>
+    dplyr::arrange(-barthag) |>
+    dplyr::distinct(team, .keep_all = TRUE) |>
+    dplyr::slice(42) |>
+    dplyr::pull(team)
+  
+  # Bubble location metrics
+  barts |>
+    dplyr::filter(team == bubTeam & location == "H") |>
+    dplyr::pull(rtg) -> bubbleHome
+  
+  barts |>
+    dplyr::filter(team == bubTeam & location == "N") |>
+    dplyr::pull(rtg) -> bubbleNeut
+  
+  barts |>
+    dplyr::filter(team == bubTeam & location == "A") |>
+    dplyr::pull(rtg) -> bubbleAway
+  
+  
+  # Add played schedule with ratings, wab, and NET
+  # The cbbdata::cbd_add_net_quad function adds the opponent's NET
+  # and the Quadrant of the game, which is fun
+  sched_with_rtg <- all_team_sched |>
+    dplyr::left_join(barts, by = c("team" = "team",
+                                   "location" = "location")) |>
+    dplyr::left_join(barts, by = c("opp" = "team",
+                                   "opp_location" = "location"))  |>
+    dplyr::rename(team_rtg = rtg.x, opp_rtg = rtg.y)  |>
+    dplyr::mutate(
+      bub_rtg = dplyr::case_when(
+        location == "H" ~ bubbleHome,
+        location == "A" ~ bubbleAway,
+        location == "N" ~ bubbleNeut
+      )
+    ) |>
+    dplyr::mutate(
+      #bub_win_prob = log(bub_rtg / (1 - opp_rtg), base = 5),
+      bub_win_prob = (bub_rtg - bub_rtg * opp_rtg) / (bub_rtg + opp_rtg - 2 * bub_rtg * opp_rtg),
+      # team A is bubble, team B is opponent
+      wab = dplyr::case_when(
+        result == "W" ~ (1 - bub_win_prob),
+        
+        result == "L" ~ (0 - bub_win_prob),
+      ),
+      wab_opp = 1 - bub_win_prob,
+      score = dplyr::if_else(
+        result == "W",
+        paste0(pts_scored, "-", pts_allowed),
+        paste0(pts_allowed, "-", pts_scored)
+      )
+    ) |>
+    dplyr::select(
+      date,
+      team,
+      opp,
+      conf,
+      opp_conf,
+      location,
+      result,
+      score,
+      opp_location,
+      team_rtg,
+      opp_rtg,
+      bub_rtg,
+      bub_win_prob,
+      wab,
+      wab_opp
+    ) |>
+    cbbdata::cbd_add_net_quad()
+  
+  
+  playedGames <-
+    cbbdata::cbd_torvik_game_stats(year = "2024")$game_id |> unique()
+  #"South Dakota MinesUtah St.11-6" %in% playedGames
+  
+  all_team_future <-
+    cbbdata::cbd_torvik_season_schedule(year = "2024") |>
+    dplyr::filter(!game_id %in% playedGames & type != "nond1") |>
+    dplyr::mutate(team = home, opp = away)
+  
+  ### Try to replicate chris' above work for the future games:
+  # Add played schedule with ratings, wab, and NET
+  # The cbbdata::cbd_add_net_quad function adds the opponent's NET
+  # and the Quadrant of the game, which is fun
+  
+  ## try this, mutate all_team_future to include "team" as home, opponent as away -> save as homeTeam
+  ##          then mutate a column that is team as away, opp as home -> save as awayTeam
+  ## rbind
+  ## then use the bubble ratings file above to pull in the WAB value of "opponent"
+  
+  all_team_future_visitors <-
+    cbbdata::cbd_torvik_season_schedule(year = "2024") |>
+    dplyr::filter(!game_id %in% playedGames & type != "nond1") |>
+    dplyr::mutate(team = away, opp = home)
+  
+  
+  future_sched_with_ratings <-
+    rbind.data.frame(all_team_future, all_team_future_visitors) |>
+    dplyr::mutate(location = ifelse(neutral, "N",
+                                    ifelse(team == home, "H", "A"))) |>
+    dplyr::mutate(opp_location = ifelse(neutral, "N",
+                                        ifelse(team == home, "A", "H"))) |>
+    dplyr::arrange(date) |>
+    dplyr::left_join(barts, by = c("team" = "team",
+                                   "location" = "location")) |>
+    dplyr::left_join(barts, by = c("opp" = "team",
+                                   "opp_location" = "location"))  |>
+    dplyr::rename(team_rtg = rtg.x, opp_rtg = rtg.y) |>
+    dplyr::mutate(
+      bub_rtg = dplyr::case_when(
+        location == "H" ~ bubbleHome,
+        location == "A" ~ bubbleAway,
+        location == "N" ~ bubbleNeut
+      )
+    ) |>
+    dplyr::mutate(#bub_win_prob = log(bub_rtg / (1 - opp_rtg), base = 5),
+      bub_win_prob = (bub_rtg - bub_rtg * opp_rtg) / (bub_rtg + opp_rtg - 2 * bub_rtg * opp_rtg)) |>
+    dplyr::mutate(wabW = (1 - bub_win_prob),
+                  wabL = (-bub_win_prob)) |>
+    dplyr::select(
+      date,
+      team,
+      opp,
+      location,
+      opp_location,
+      team_rtg,
+      opp_rtg,
+      bub_rtg,
+      bub_win_prob,
+      wabW,
+      wabL
+    ) |>
+    cbbdata::cbd_add_net_quad()
+  
+  
+  confSched <- sched_with_rtg |>
+    dplyr::filter(conf == confWAB & opp_conf == confWAB) |>
+    dplyr::mutate(wins = ifelse(result == "W", 1, 0),
+                  losses = ifelse(result == "W", 0, 1))
+  confSched |>
+    dplyr::group_by(team) |>
+    dplyr::summarize(
+      confWAB = sum(wab),
+      possWAB = sum(wab_opp),
+      confWins = sum(wins),
+      confLosses = sum(losses)
+    ) |> ## summarize in conference WAB, possible WAB
+    dplyr::arrange(-confWAB) |>
+    dplyr::mutate(confGames = confWins + confLosses) |>
+    dplyr::mutate(
+      confWP = confWins / confGames,
+      bubbleWins = confWins - confWAB,
+      bubbleLosses = confGames - (confWins - confWAB)
+    ) |>
+    dplyr::mutate(bubbleWP = bubbleWins / confGames) -> confWABtable
+  
+  
+  the_title <- gt_cbb_logo_title(title = 'Conference-only WAB',
+                           subtitle = "Shows each team's actual record and its expected record using a conference specific bubble team.",
+                           type = 'conference',
+                           value = confWAB,
+                           logo_height = 40)
+
+confWABtable |> 
+  dplyr::mutate(sos_rank = dplyr::dense_rank(-possWAB),
+                bubbleWins = round(bubbleWins, digits = 1),
+                bubbleLosses = round(bubbleLosses, digits = 1),
+                confWAB = round(confWAB, digits = 1)) |> 
+  dplyr::select(team, confWins, confLosses, confWAB, bubbleWins, bubbleLosses, sos_rank) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(team) |> 
+  gt::cols_label(
+    team = "",
+    confWins = "W",
+    confLosses = "L", 
+    confWAB = "WAB",
+    bubbleWins = "W", 
+    bubbleLosses = "L",
+    sos_rank = "SOS"
+  ) |> 
+  gt::tab_spanner(columns = c(confWAB, bubbleWins, bubbleLosses, sos_rank), label = "Expected Record Bubble Team") |> 
+  cbbplotR::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = "team") |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(sos_rank), reverse = TRUE) |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(confWAB)) |> 
+  gt::tab_header(title = gt::html(the_title)) |> 
+  gt::tab_source_note(source_note = gt::html("<hr><br>Wins-above-bubble (WAB) is a résumé metric that reflects how many more (or fewer) games a team has won against its schedule than a bubble-quality team would be expected to win against that same schedule.<br><br> SOS is strength of schedule based on potential WAB to earn.<br><br><br>Data through March 9 games.<br><hr>
+                                             <b>Fifth Factor + Bless your chart | data via cbbdata + cbbplotR</b>")) -> tbl_confWAB
+
+
+gtExtras::gtsave_extra(tbl_confWAB,
+                       filename = "conf_wab_table.png",
+                       vheight = 875,
+                       vwidth = 650)
+
+return(tbl_confWAB)
+}
+
+run_confWAB(confWAB = "ACC") -> result
+
+```
+
+### Conf WAB table (ACC)
+
+```{r gt-table, warning = FALSE}
+acc_title <- gt_cbb_logo_title(title = 'Conference-only WAB',
+                           subtitle = "Shows each team's actual record and its expected record using a conference specific bubble team.",
+                           type = 'conference',
+                           value = 'ACC',
+                           logo_height = 40)
+
+result |> 
+  dplyr::mutate(sos_rank = dplyr::dense_rank(-possWAB),
+                bubbleWins = round(bubbleWins, digits = 1),
+                bubbleLosses = round(bubbleLosses, digits = 1),
+                confWAB = round(confWAB, digits = 1)) |> 
+  dplyr::select(team, confWins, confLosses, confWAB, bubbleWins, bubbleLosses, sos_rank) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  gt::gt() |> 
+  gt::fmt_markdown(team) |> 
+  gt::cols_label(
+    team = "",
+    confWins = "W",
+    confLosses = "L", 
+    confWAB = "WAB",
+    bubbleWins = "W", 
+    bubbleLosses = "L",
+    sos_rank = "SOS"
+  ) |> 
+  gt::tab_spanner(columns = c(confWAB, bubbleWins, bubbleLosses, sos_rank), label = "Expected Record Bubble Team") |> 
+  cbbplotR::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = "team") |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(sos_rank), reverse = TRUE) |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(confWAB)) |> 
+  gt::tab_header(title = gt::html(acc_title)) |> 
+  gt::tab_source_note(source_note = gt::html("<hr><br>Wins-above-bubble (WAB) is a résumé metric that reflects how many more (or fewer) games a team has won against its schedule than a bubble-quality team would be expected to win against that same schedule.<br><br> SOS is strength of schedule based on potential WAB to earn.<br><br><br>Data through March 9 games. Miami and Boston College play tonight.<br><hr>
+                                             <b>Fifth Factor + Bless your chart | data via cbbdata + cbbplotR</b>")) -> tbl_confWAB
+
+
+gtExtras::gtsave_extra(tbl_confWAB,
+                       filename = "conf_wab_table.png",
+                       vheight = 875,
+                       vwidth = 650)
+
+tbl_confWAB
+```
+
+### Data load for win matrix
+
+```{r h2h-matrix}
+acc_records <- cbbdata::cbd_torvik_game_stats(type = 'conf', year = 2024) |> 
+  dplyr::filter(conf == 'ACC') |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarise(win = sum(result == "W"),
+                   loss = sum(result == "L"),
+                   win_pct = win / (win + loss)) |>
+  dplyr::arrange(-win_pct) |> 
+  dplyr::select(team, win_pct)
+      
+
+
+acc_games <- cbbdata::cbd_torvik_game_stats(type = 'conf', year = 2024) |> 
+  dplyr::filter(conf == 'ACC') |> 
+  dplyr::group_by(team, opp) |> 
+  dplyr::summarise('n_win' = sum(pts_scored > pts_allowed, na.rm = T),
+                   'n_loss' = sum(pts_scored < pts_allowed, na.rm = T)) |> 
+  dplyr::mutate('record' = paste0(n_win, '-', n_loss)) |> 
+  dplyr::select(team, opp, record) |> 
+  dplyr::ungroup() |> 
+  dplyr::left_join(acc_records, by ="team") |> 
+  dplyr::arrange(-win_pct) |> 
+  cbbplotR::gt_cbb_teams(team, team, logo_height = 25, include_name = TRUE) |>  
+  tidyr::pivot_wider(names_from = opp,
+                     values_from = record) |> 
+  dplyr::select(team, win_pct, `North Carolina`, `Duke`, `Virginia`, `Clemson`, `Pittsburgh`, `Syracuse`, 
+                 `Wake Forest`, `Florida St.`,
+                `North Carolina St.`, `Virginia Tech`, `Georgia Tech`, `Notre Dame`,
+                `Boston College`, `Miami FL`, `Louisville`)
+
+# function 
+  md = function(x) {
+    gt::html(x
+
+    )
+  }
+  
+  team_headers <- c(
+    "North Carolina", "Duke", "Virginia", "Clemson", "Pittsburgh", "Syracuse", 
+     "Wake Forest", "Florida St.",
+    "North Carolina St.", "Virginia Tech", "Georgia Tech", "Notre Dame",
+    "Boston College", "Miami FL", "Louisville"
+  )
+  
+  # cfbplotR urls from https://github.com/Kazink36/cfbplotR/blob/main/data-raw/logo_ref_2.csv
+  team_img_urls <- c(
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/153.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/150.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/258.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/228.png", #clemson
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/221.png", #pitt
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/183.png", # syracuse
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/154.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/52.png", 
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/152.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/259.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/59.png", # gt
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/87.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/103.png",
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png", 
+    "http://a.espncdn.com/i/teamlogos/ncaa/500/97.png"
+  )
+  
+  add_team_header <- function(team_name, img_url) {
+    gtExtras::img_header(
+      label = "",
+      img_url = img_url,
+      height = 25,
+      palette = c("white")
+    )
+  }
+  
+  # add teams headers
+  team_headers_with_images <- purrr::map2(team_headers, team_img_urls, add_team_header) |>
+    purrr::set_names(team_headers)
+  
+  acc_title <- gt_cbb_logo_title(title = 'ACC: Head-to-Head Conference Records',
+                                 subtitle = "Shows each team's record against each other, read it left-to-right.",
+                                 type = 'conference',
+                                 value = 'ACC',
+                                 logo_height = 45)
+```
+
+### GT table H2H matrix
+
+```{r h2h-matrix-tbl}
+acc_games |> 
+  gt::gt() |> 
+  gt::cols_align('center') |>  
+  gt::fmt_markdown('team') |> 
+  gt::cols_hide(columns = win_pct) |> 
+  gt::cols_label(team = "", !!!team_headers_with_images) |>
+  gt::sub_missing(missing_text = '---') |> 
+  gtExtras::gt_theme_538() |> 
+  gt::tab_header(title = gt::html(acc_title)) |> 
+  gt::data_color(columns = c(-team),
+                 fn = scales::col_factor(
+                   palette = c("#5b5b5b", "#ffe0e0", "#ff9999", "#b2ffb2", "#e5e5e5", "#7FFF7F"),
+                   domain = c("---", "2-0", "1-0", "1-1", "0-1", "0-2")
+                 )) |>
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("left"),
+    color = "#acacac",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = everything()))) |> 
+  gt::tab_style(style = list(gt::cell_borders(
+    sides = c("right"),
+    color = "#acacac",
+    weight = gt::px(2)
+  )),
+  locations = list(gt::cells_body(columns = 15))) |> 
+  gt::tab_source_note(source_note = gt::html("<br>Teams sorted by overall win percentage through March 9 games.<br> 
+                                             <b>Bless your chart | data via cbbdata + cbbplotR</b>")) |> 
+    gt::cols_align(align = "left", columns = "team") -> h2h_matrix_acc
+
+
+gtExtras::gtsave_extra(h2h_matrix_acc,
+                       filename = "h2h_table.png",
+                       vheight = 875,
+                       vwidth = 870)
+
+h2h_matrix_acc
+```

@@ -1,0 +1,840 @@
+---
+title: "144: ACC Baseball"
+date: "2025-05-19"
+categories:
+  - gtUtils
+  - geom_smooth
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load baseball 
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+teams <- tibble::tibble(baseballr:::rds_from_url(
+  "https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
+) |> 
+  dplyr::filter(year == 2025 & division == 1)
+
+
+acc_ids <- teams |> 
+  dplyr::filter(conference == "ACC") |> 
+  dplyr::pull(team_id)
+
+# function to fetch results 
+acc_results <- function(id) {
+  collegebaseball::ncaa_schedule(team_id = id, year = 2025) |>
+    dplyr::filter(home_team_conference == "ACC" & away_team_conference == "ACC") |>
+    dplyr::filter(!is.na(home_team_score))
+}
+
+acc_scores <- lapply(acc_ids, acc_results)
+
+# grab results and adjust spacing issue with Miami 
+acc_results_2025 <- as.data.frame(do.call(rbind, acc_scores)) |>
+  dplyr::distinct(contest_id, .keep_all = TRUE )  |> 
+  dplyr::mutate(home_team = dplyr::if_else(home_team == "Miami (FL) ", "Miami (FL)", 
+                                           home_team),
+                away_team = dplyr::if_else(away_team == "Miami (FL) ", "Miami (FL)", 
+                                           away_team) 
+  ) 
+
+
+# find standings and run diffs 
+home_diffs <- acc_results_2025 |>
+  dplyr::mutate(h_diff = home_team_score - away_team_score) |>
+  dplyr::group_by(home_team) |>
+  dplyr::summarize(home_diff = sum(h_diff)) |>
+  dplyr::rename(team = home_team)
+
+away_diffs <- acc_results_2025 |>
+  dplyr::mutate(a_diff = away_team_score - home_team_score) |>
+  dplyr::group_by(away_team) |>
+  dplyr::summarize(away_diff = sum(a_diff)) |>
+  dplyr::rename(team = away_team)
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team")|>
+  dplyr::mutate(full_diff = (home_diff + away_diff))|>
+  dplyr::select(team, full_diff, home_diff, away_diff)
+
+home_results <- acc_results_2025 |>
+  dplyr::mutate(h_result = dplyr::if_else(home_team_score > away_team_score, "W", "L")) |>
+  dplyr::group_by(home_team, h_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = h_result,
+    values_from = n)|>
+  dplyr::rename(team = home_team, h_w = W, h_l = L)
+
+away_results <- acc_results_2025 |>
+  dplyr::mutate(a_result = dplyr::if_else(away_team_score > home_team_score, "W", "L")) |>
+  dplyr::group_by(away_team, a_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = a_result,
+    values_from = n) |>
+  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+  dplyr::mutate(across(everything(), ~ replace(.x, is.na(.x), 0))) 
+
+# full run differentials 
+full_recs <- merge(home_results, away_results, by = "team") |>
+  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l))|>
+  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+
+# find leaders
+leader_wins <- max(diffs_recs$W)
+leader_losses <- min(diffs_recs$L[diffs_recs$W == leader_wins])
+
+# standings
+standings <- diffs_recs |>
+  dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l),
+    full_diff = ifelse(full_diff > 0, 
+                       paste0("+", full_diff),
+                       full_diff),
+    record_diff = paste0(overall_rec, " | ", 
+                         sprintf("%.3f", Win_Pct))
+  ) |> 
+  dplyr::select(
+    team, 
+    Win_Pct,
+    record_diff
+  )
+
+acc_results_long <- dplyr::bind_rows(
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = home_team,
+      team_id = home_team_id,
+      team_score = home_team_score,
+      team_conference = home_team_conference,
+      opp = away_team,
+      opp_id = away_team_id,
+      opp_score = away_team_score,
+      opp_conference = away_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "home"
+      ),
+      contest_id
+    ),
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = away_team,
+      team_id = away_team_id,
+      team_score = away_team_score,
+      team_conference = away_team_conference,
+      opp = home_team,
+      opp_id = home_team_id,
+      opp_score = home_team_score,
+      opp_conference = home_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "away"
+      ),
+      contest_id
+    )
+)
+
+# hux table 
+huxtable::as_hux(
+  diffs_recs |>
+    dplyr::mutate(c_games = W + L,
+                  diff_per_game = sprintf("%.2f", full_diff / c_games)) |>
+    dplyr::arrange(-full_diff) |>
+    dplyr::mutate(rpi = c(7, 20, 31, 26, 29,
+                          55, 14, 34, 32, 10, 
+                          40, 51, 107, 49,
+                          75, 52)) |>
+    dplyr::select(team, rpi, diff_per_game, full_diff, c_games) |>
+    dplyr::arrange(rpi) |>
+    dplyr::mutate(seed = c(3, 5, 2, 1,
+                           8, 10, 7, 9,
+                           4, 11, 13, 12,
+                           15, 6, 14, 16)) |>
+    dplyr::select(Seed = seed, Team = team, RPI = rpi, `+/- per game` = diff_per_game) |>
+    dplyr::arrange(`+/- per game`)
+) |>
+  huxtable::set_caption("ACC Tournament Seeds with RPI  and League  \nRun Differential Per Game") |>
+  huxtable::set_caption_pos("top") |>
+  huxtable::set_width(0.8)
+```
+
+### Standings table
+
+```{r standings-tbl, warning=FALSE, message=TRUE}
+
+# standings plot 
+standings <- diffs_recs |>
+  dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l)
+  ) |> 
+  dplyr::select(
+    team, 
+    overall_rec, 
+    full_diff,
+    Win_Pct, 
+    home_diff,
+    home_rec,
+    away_diff,
+    away_rec
+  )
+
+
+baseball_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC Baseball Standings</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Regular season final standings.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/1.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+standings |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::arrange(-Win_Pct, -full_diff)|> 
+  gt::gt() |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gt::fmt_markdown(team) |> 
+  gtExtras::gt_merge_stack(
+    col1 = "home_diff",
+    col2 = "home_rec",
+    palette = c("black", "#848484"),
+    small_cap = FALSE
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = "away_diff",
+    col2 = "away_rec",
+    palette = c("black", "#848484"),
+    small_cap = FALSE
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    home_diff = list(heading = "Home +/-", subtitle = "W-L"),
+    away_diff = list(heading = "Away +/-", subtitle = "W-L"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::cols_label(
+    team = "",
+    overall_rec = "W-L",
+    full_diff = "+/-",
+    Win_Pct = "Win %",
+  )|>
+  gt::fmt(
+    columns = c(full_diff, home_diff, away_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  )|>
+  gt::data_color(
+    columns = c(full_diff, home_diff, away_diff),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", 
+                "#ffffbf", "#a6d96a", 
+                "#1a9641"),
+    alpha = 0.5
+  ) |> 
+  gtUtils::gt_color_pills(Win_Pct,
+                          domain = c(0.250, 0.750), format_type = "number", digits = 3,
+                          palette = c("#d7191c", "#fdae61", 
+                                      "#ffffbf", "#a6d96a", 
+                                      "#1a9641"),
+                          alpha = 0.5
+  ) |> 
+  gt::tab_header(title = gt::html(baseball_header)) |>
+  gt::tab_source_note(source_note = gt::html("<hr><b>Table by Chris at Bless your chart | data via ncaa.org througn May 17 games</b>")) |>
+  gt::cols_align(align = "left", columns = c(team)) |>
+  gtExtras::gt_add_divider(columns = c(team, Win_Pct), 
+                           sides = "right", color = "black") |> 
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::tab_options(table.width = gt::px(675)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(575)) -> acc_tbl_one
+
+
+gtUtils::gt_save_crop(
+  acc_tbl_one,
+  file = "acc_tbl_one.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+
+acc_tbl_one
+```
+
+### ACC last 10 chart
+
+```{r last-10, warning=FALSE, message=FALSE}
+leader_wins <- max(diffs_recs$W)
+leader_losses <- min(diffs_recs$L[diffs_recs$W == leader_wins])
+
+# pivot to find record in last 10 ACC games
+games_long <- acc_results_2025 |>
+  dplyr::select(date, contest_id, home_team, away_team, home_team_score, away_team_score) |>
+  dplyr::mutate(home_team = dplyr::if_else(home_team == "Miami (FL) ", "Miami (FL)", 
+                                           home_team),
+                away_team = dplyr::if_else(away_team == "Miami (FL) ", "Miami (FL)", 
+                                           away_team) 
+  ) |> 
+  dplyr::mutate(
+    team_home = home_team,
+    team_away = away_team
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(home_team, away_team),
+    names_to = "home_away",
+    values_to = "team"
+  ) |>
+  dplyr::mutate(
+    opponent = ifelse(home_away == "home_team", team_away, team_home),
+    team_score = ifelse(home_away == "home_team", home_team_score, away_team_score),
+    opp_score = ifelse(home_away == "home_team", away_team_score, home_team_score),
+    result = dplyr::case_when(
+      team_score > opp_score ~ "W",
+      team_score < opp_score ~ "L",
+      TRUE ~ "T"
+    ),
+    run_diff = team_score - opp_score
+  ) |>
+  dplyr::arrange(team, date)
+
+# last 10 games 
+last_10 <- games_long |>
+  dplyr::group_by(team) |>
+  dplyr::slice_tail(n = 10) |>
+  dplyr::summarize(
+    last10_wins = sum(result == "W"),
+    last10_losses = sum(result == "L"),
+    last10_diff = sum(run_diff),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(last10_rec = paste0(last10_wins, "-", last10_losses))
+
+
+standings <- diffs_recs |>
+  dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l)
+  ) |> 
+  dplyr::left_join(last_10, by = "team"
+  ) |> 
+  dplyr::select(
+    overall_rec, 
+    full_diff,
+    Win_Pct,
+    GB,
+    last10_rec,
+    last10_diff,
+    team
+  )
+
+standings |>
+  dplyr::mutate(repeat_team = team) |>
+  dplyr::relocate(repeat_team, .before = overall_rec) |>
+  cbbplotR::gt_cbb_teams(team, team, logo_height = 20, include_name = FALSE) |>
+  cbbplotR::gt_cbb_teams(repeat_team,
+                         repeat_team,
+                         logo_height = 20,
+                         include_name = FALSE) |>
+  dplyr::arrange(GB, -Win_Pct, -full_diff) |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = c(repeat_team, team)) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::fmt(
+    columns = c(full_diff, last10_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::data_color(
+    columns = c(full_diff, last10_diff),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    alpha = 0.5
+  ) |>
+  gtUtils::gt_color_pills(
+    Win_Pct,
+    domain = c(.1, .9),
+    format_type = "number",
+    digits = 3,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000"),
+    pill_height = 15,
+  ) |>
+  gtExtras::gt_add_divider(columns = last10_diff,
+                           sides = "left",
+                           color = "black") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::tab_spanner(columns = c(last10_rec, last10_diff),
+                  label = "Last 10 Games") |>
+  gt::tab_spanner(columns = c(overall_rec, Win_Pct, full_diff, GB),
+                  label = "Overall") |>
+  gt::cols_label(
+    repeat_team = "",
+    last10_rec = "W-L",
+    last10_diff = "+/-",
+    overall_rec = "W-L",
+    Win_Pct = "Win %",
+    full_diff = "+/-",
+    GB = "GB",
+    team = "",
+  ) |>
+  gt::tab_header(title = gt::md("**ACC Baseball Final Regular Season Standings**"),
+                 subtitle = "Records and run differentials for the regular season and last 10 games.") |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "Through May 17 games games<br><b>Table by Chris at Bless your Chart <br> data via baseballR + stats.ncaa.org</b>"
+    )
+  ) |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#EEEEEE',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'uppercase'
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(weight = 850, )
+  ) |>
+  gt::tab_options(table.width = gt::px(450)) -> acc_tbl_two
+
+
+gtUtils::gt_save_crop(acc_tbl_two,
+                      file = "acc_tbl_last_10.png",
+                      whitespace = 30,
+                      bg = "white")
+
+acc_tbl_two
+```
+
+### 
+
+### ACC baseball matrix
+
+```{r acc-base-matrix, warning=FALSE, message=FALSE}
+
+standings <- diffs_recs |>
+  dplyr::mutate(
+    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+    GB = ifelse(GB == 0, 0, GB),
+    Win_Pct = round(W / (W + L), 3)
+  ) |>
+  dplyr::arrange(desc(Win_Pct)) |> 
+  dplyr::mutate(
+    overall_rec = paste0(W, "-", L),
+    home_rec = paste0(h_w, "-", h_l),
+    away_rec = paste0(a_w, "-", a_l),
+    full_diff = ifelse(full_diff > 0, 
+                       paste0("+", full_diff),
+                       full_diff),
+    record_diff = paste0(overall_rec, " | ", sprintf("%.3f", Win_Pct))
+  ) |> 
+  dplyr::select(
+    team, 
+    Win_Pct,
+    record_diff
+  )
+
+# tidy results for the matrix 
+acc_results_long <- dplyr::bind_rows(
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = home_team,
+      team_id = home_team_id,
+      team_score = home_team_score,
+      team_conference = home_team_conference,
+      opp = away_team,
+      opp_id = away_team_id,
+      opp_score = away_team_score,
+      opp_conference = away_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "home"
+      ),
+      contest_id
+    ),
+  acc_results_2025 |>
+    dplyr::transmute(
+      season = year,
+      date = as.Date(date, format = "%m/%d/%Y"),
+      team = away_team,
+      team_id = away_team_id,
+      team_score = away_team_score,
+      team_conference = away_team_conference,
+      opp = home_team,
+      opp_id = home_team_id,
+      opp_score = home_team_score,
+      opp_conference = home_team_conference,
+      location = dplyr::case_when(
+        neutral_site == "TRUE" ~ "neutral",
+        TRUE ~ "away"
+      ),
+      contest_id
+    )
+)
+
+# make the matrix table long 
+long_tbl <- acc_results_long |> 
+  dplyr::group_by(team, opp) |> 
+  dplyr::summarise('n_win' = sum(team_score > opp_score, na.rm = T),
+                   'n_loss' = sum(team_score < opp_score, na.rm = T)) |> 
+  dplyr::mutate('record' = paste0(n_win, '-', n_loss)) |> 
+  dplyr::select(team, opp, record) |> 
+  dplyr::ungroup() |> 
+  dplyr::left_join(standings, by ="team") |> 
+  dplyr::arrange(-Win_Pct) |> 
+  dplyr::mutate(team = ifelse(team == "NC State", "N.C. State", team),
+                team = ifelse(team == "Miami (FL)", "Miami FL", team)) |> 
+  cbbplotR::gt_cbb_teams(team, team, logo_height = 25, include_name = FALSE) |>  
+  tidyr::pivot_wider(names_from = opp,
+                     values_from = record) |> 
+  dplyr::select(team, 
+                record_diff,
+                `Georgia Tech`,
+                `Florida St.`, 
+                `North Carolina`, 
+                `NC State`,
+                `Clemson`,
+                `Virginia`,
+                `Duke`,
+                `Wake Forest`,
+                `Miami (FL)`,
+                `Louisville`,
+                `Notre Dame`,
+                `Virginia Tech`,
+                `Stanford`,
+                `Boston College`,
+                `Pittsburgh`,
+                `California`
+  )
+
+# --- function for team headers 
+md = function(x) {
+  gt::html(x
+           
+  )
+}
+
+team_headers <- c(
+  "Georgia Tech", "Florida St.", "North Carolina", "NC State",
+  "Clemson", "Virginia", "Duke", 
+  "Wake Forest", "Miami (FL)", "Louisville", "Notre Dame", "Virginia Tech",
+ "Stanford", "Boston College", "Pittsburgh", "California"
+)
+
+# cfbplotR urls from https://github.com/Kazink36/cfbplotR/blob/main/data-raw/logo_ref_2.csv
+team_img_urls <- c(
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/59.png", # gt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/52.png", # fsu 
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/153.png", # unc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/152.png", #ncsu
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/228.png", #clemson
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/258.png", # uva
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/150.png", # duke
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/154.png", # wake forest
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png", # miami
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/97.png", # lville
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/87.png", # notre dame
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/259.png", # vt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/24.png", # stanford
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/103.png", # bc
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/221.png", #pitt
+  "http://a.espncdn.com/i/teamlogos/ncaa/500/25.png" # cal
+)
+
+add_team_header <- function(team_name, img_url) {
+  gtExtras::img_header(
+    label = "",
+    img_url = img_url,
+    height = 25,
+    palette = c("white")
+  )
+}
+
+# add teams headers
+team_headers_with_images <- purrr::map2(team_headers, team_img_urls, add_team_header) |>
+  purrr::set_names(team_headers)
+
+# table header 
+baseball_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC Baseball Record Matrix</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Final regular season conference records.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/1.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+long_tbl |>
+  dplyr::mutate(dplyr::across(-c(team, record_diff),
+                              ~ ifelse(is.na(.x), "-", 
+                                       as.character(.x)))) |>
+  gt::gt() |>
+  gt::cols_label(team = "", !!!team_headers_with_images) |>
+  gt::cols_align('center') |>
+  gt::fmt_markdown('team') |>
+  gtUtils::gt_theme_gtutils() |> 
+  gtExtras::gt_merge_stack(
+    col1 = "team",
+    col2 = "record_diff",
+    palette = c("black", "black"),
+    small_cap = FALSE
+  ) |> 
+  gt::data_color(columns = c(-team, -record_diff),
+                 fn = scales::col_factor(
+                   palette = c("#FFFDF5", 
+                               "#ffe0e0", "#ff9999", "#eeeeee", "#ffcccc", 
+                               "#b2ffb2", "#7FFF7F", "#00FF00"),
+                   domain = c("-", 
+                              "0-3", "0-2", "1-1", "1-2", 
+                              "2-0", "2-1", "3-0")
+                 )
+  ) |> 
+  gt::tab_header(title = gt::html(baseball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via baseballR, stats.ncaa.org | theme via {gtUtils} <br>
+        Read the data left to right to see each team's record against other league opponents, plus overall league record and win percentage.<br>
+        <hr><b>Table by Chris at Bless your chart | data from May 17</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::tab_options(table.width = gt::px(675)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) -> acc_tbl_three
+
+
+gtUtils::gt_save_crop(acc_tbl_three,
+                      file = "acc_tbl_matrix.png",
+                      whitespace = 30,
+                      bg = "#FFFDF5")
+
+acc_tbl_three
+```
+
+### ACC baseball over time 
+
+```{r plot-over-time, warning=FALSE, message=FALSE}
+acc_plot_data <- acc_results_long |> 
+  dplyr::arrange(team, date) |> 
+  dplyr::mutate(
+    win = as.integer(team_score > opp_score),
+    loss = as.integer(team_score < opp_score)
+  ) |>
+  dplyr::group_by(team) |> 
+  dplyr::mutate(
+    cum_win = cumsum(win),
+    cum_loss = cumsum(loss),
+    win_diff = cum_win - cum_loss,
+    cum_games = cum_win + cum_loss,
+    cum_win_pct = cum_win / cum_games
+  ) |> 
+  dplyr::ungroup()
+
+target_date <- as.Date("2025-05-20")
+
+team_labels <- acc_plot_data |> 
+  dplyr::arrange(desc(date), -contest_id) |> 
+  dplyr::group_by(team) |> 
+  dplyr::slice_max(order_by = date, n = 1) |> 
+  dplyr::left_join(standings, by = c("team")) |> 
+  dplyr::ungroup() |> 
+  dplyr::group_by(cum_win_pct) |>
+  dplyr::mutate(
+    stagger = dplyr::row_number() - (dplyr::n() + 1) / 2,
+    y_staggered = win_diff + stagger * 0.45
+  ) |> 
+  dplyr::ungroup() |> 
+ dplyr::mutate(
+     y_staggered = dplyr::case_when(
+       team == "Florida St." ~ y_staggered + 0.3,
+       team == "North Carolina" ~ y_staggered - 0.3,
+       team == "Clemson" ~ y_staggered - 0.45,
+       team == "Virginia" ~ y_staggered - 0.1,
+       team == "Wake Forest" ~ y_staggered + 0.7,
+       team == "Miami (FL)" ~ y_staggered - 0.7,
+       team == "Louisville" ~ y_staggered - 0.7,
+       team == "Virginia Tech" ~ y_staggered - 0.3,
+       team == "Boston College" ~ y_staggered - 0.4,
+       TRUE ~ y_staggered
+     )
+  ) |> 
+  dplyr::distinct(team, .keep_all = TRUE)
+
+
+extension_date <- as.Date("2025-05-25")
+
+extend_rows <- acc_plot_data |> 
+  dplyr::group_by(team) |> 
+  dplyr::filter(date == max(date)) |> 
+  dplyr::mutate(date = extension_date) |> 
+  dplyr::ungroup()
+
+acc_plot_data_extend <- dplyr::bind_rows(acc_plot_data, extend_rows)
+
+ggplot2::ggplot(acc_plot_data_extend, ggplot2::aes(x = date, y = win_diff, color = team)) +
+  ggplot2::geom_smooth(linewidth = 0.5, se = FALSE) +
+  ggplot2::geom_text(
+    data = team_labels,
+    ggplot2::aes(x = as.Date("2025-05-31"), y = y_staggered, 
+                 label = record_diff),
+    hjust = -0.1,
+    size = 3,
+    show.legend = FALSE,
+    family = "Roboto Condensed"
+  ) +
+  ggplot2::scale_x_date(
+    limits = c(as.Date("2025-03-07"), as.Date("2025-06-15")),
+    breaks = as.Date(c("2025-04-01", "2025-05-01")),
+    labels = function(x) format(x, "%B")  # Full month name (e.g., "April")
+  ) +
+  ggplot2::expand_limits(x = target_date + 5) +
+  cbbplotR::scale_color_cbb_teams() +
+  cbbplotR::geom_cbb_teams(
+    data = team_labels,
+    ggplot2::aes(x = as.Date("2025-05-28"), 
+                 y = y_staggered, team = team),
+    width = 0.025,
+    alpha = 0.6, 
+    color = NA,
+  ) +
+  ggplot2::labs(
+    title = "ACC Baseball Final Regular Season Standings",
+    subtitle = "Shows change in record or win/loss differential over the course of the season.",
+    x = "",
+    y = "",
+    caption = "Data via baseballr + stats.ncaa.org through May 17  \nViz by Chris at Bless your chart"
+  ) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "#eeeeee") +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 8.5,
+      lineheight = 1.5,
+      family = "Roboto Condensed"
+    ),
+    legend.position = "none",
+    #xis.text.x = ggplot2::element_blank(),
+    axis.title.x = ggplot2::element_text(family = "Roboto Condensed"),
+    axis.title.y = ggplot2::element_text(family = "Roboto Condensed"),
+    plot.caption = ggplot2::element_text(face = "plain", size = 7.5, "Roboto Condensed")
+  ) -> acc_b_plot
+
+
+ggplot2::ggsave(
+  "acc_b_plot.png",
+  acc_b_plot,
+  h = 8,
+  w = 9.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+acc_b_plot
+
+```

@@ -1,0 +1,218 @@
+"","game_number","date","time_et","game","location","venue","conference","thrill_score","referee_name","ref_rank","year"
+"1",60,"Mon Jan 23","7:00 PM","47 Virginia Tech 78, 31 Duke 75","Blacksburg, VA","Cassell Coliseum","ACC",66.7,"Keith Kimble",1,2023
+"2",54,"Mon Jan 16","7:00 PM","39 Miami FL 82, 86 Syracuse 78","Coral Gables, FL","Watsco Center","ACC",47.6,"Keith Kimble",1,2023
+"3",44,"Wed Jan 4","7:00 PM","59 N.C. State 84, 14 Duke 60","Raleigh, NC","PNC Arena","ACC",70.7,"Keith Kimble",1,2023
+"4",58,"Sat Jan 21","6:00 PM","62 Clemson 51, 49 Virginia Tech 50","Clemson, SC","Littlejohn Coliseum","ACC",63.3,"Doug Sirmons",2,2023
+"5",55,"Wed Jan 18","7:00 PM","62 Pittsburgh 75, 281 Louisville 54","Louisville, KY","KFC Yum! Center","ACC",24.7,"Doug Sirmons",2,2023
+"6",53,"Mon Jan 16","7:00 PM","39 Miami FL 82, 86 Syracuse 78","Coral Gables, FL","Watsco Center","ACC",47.6,"Doug Sirmons",2,2023
+"7",46,"Sat Jan 7","3:00 PM","81 Wake Forest 80, 265 Louisville 72","Louisville, KY","KFC Yum! Center","ACC",29.2,"Doug Sirmons",2,2023
+"8",25,"Sun Dec 4","3:00 PM","40 Virginia Tech 80, 23 North Carolina 72","Blacksburg, VA","Cassell Coliseum","ACC",72.8,"Doug Sirmons",2,2023
+"9",24,"Sat Dec 3","2:00 PM","5 Virginia 62, 160 Florida St. 57","Charlottesville, VA","John Paul Jones Arena","ACC",18.5,"Doug Sirmons",2,2023
+"10",59,"Mon Jan 23","7:00 PM","47 Virginia Tech 78, 31 Duke 75","Blacksburg, VA","Cassell Coliseum","ACC",66.7,"Kipp Kissinger",4,2023
+"11",51,"Wed Jan 11","9:00 PM","83 Wake Forest 90, 160 Florida St. 75","Winston-Salem, NC","Joel Coliseum","ACC",32.9,"Kipp Kissinger",4,2023
+"12",46,"Tue Jan 3","7:00 PM","171 Boston College 70, 110 Notre Dame 63","Chestnut Hill, MA","Conte Forum","ACC",42.6,"Kipp Kissinger",4,2023
+"13",28,"Sat Dec 10","3:15 PM","24 North Carolina 75, 119 Georgia Tech 59","Chapel Hill, NC","Dean E. Smith Center","ACC",31.2,"Kipp Kissinger",4,2023
+"14",23,"Sun Dec 4","1:00 PM","45 Miami FL 80, 186 Louisville 53","Louisville, KY","KFC Yum! Center","ACC",39.9,"Kipp Kissinger",4,2023
+"15",60,"Wed Jan 25","7:00 PM","68 Pittsburgh 81, 74 Wake Forest 79","Pittsburgh, PA","Petersen Events Center","ACC",56.7,"Roger Ayers",5,2023
+"16",59,"Tue Jan 24","9:00 PM","24 North Carolina 72, 81 Syracuse 68","Syracuse, NY","JMA Wireless Dome","ACC",65.5,"Roger Ayers",5,2023
+"17",58,"Sat Jan 21","6:00 PM","62 Clemson 51, 49 Virginia Tech 50","Clemson, SC","Littlejohn Coliseum","ACC",63.3,"Roger Ayers",5,2023
+"18",56,"Tue Jan 17","7:00 PM","37 N.C. State 78, 140 Georgia Tech 66","Atlanta, GA","McCamish Pavilion","ACC",50.3,"Roger Ayers",5,2023
+"19",53,"Sat Jan 14","2:00 PM","25 North Carolina 80, 274 Louisville 59","Louisville, KY","KFC Yum! Center","ACC",21.9,"Roger Ayers",5,2023
+"20",47,"Sat Jan 7","1:00 PM","23 Duke 65, 167 Boston College 64","Chestnut Hill, MA","Conte Forum","ACC",40.9,"Roger Ayers",5,2023
+"21",41,"Sat Dec 31","12:00 PM","83 Wake Forest 77, 31 Virginia Tech 75","Winston-Salem, NC","Joel Coliseum","ACC",63.9,"Roger Ayers",5,2023
+"22",40,"Fri Dec 30","4:00 PM","64 Clemson 78, 54 N.C. State 64","Clemson, SC","Littlejohn Coliseum","ACC",63.3,"Roger Ayers",5,2023
+"23",38,"Thu Dec 22","7:00 PM","49 N.C. State 76, 253 Louisville 64","Raleigh, NC","PNC Arena","ACC",14.5,"Roger Ayers",5,2023
+"24",37,"Wed Dec 21","6:30 PM","174 Boston College 70, 24 Virginia Tech 65 (OT)","Chestnut Hill, MA","Conte Forum","ACC",38.7,"Roger Ayers",5,2023
+"25",36,"Tue Dec 20","6:30 PM","92 Wake Forest 81, 14 Duke 70","Winston-Salem, NC","Joel Coliseum","ACC",58.2,"Roger Ayers",5,2023
+"26",29,"Sat Dec 10","3:15 PM","24 North Carolina 75, 119 Georgia Tech 59","Chapel Hill, NC","Dean E. Smith Center","ACC",31.2,"Roger Ayers",5,2023
+"27",23,"Sat Dec 3","12:00 PM","85 Syracuse 62, 64 Notre Dame 61","South Bend, IN","Joyce Center","ACC",49.4,"Roger Ayers",5,2023
+"28",60,"Wed Jan 25","9:00 PM","184 Boston College 75, 295 Louisville 65","Chestnut Hill, MA","Conte Forum","ACC",20.6,"Ron Groover",8,2023
+"29",59,"Tue Jan 24","7:00 PM","42 N.C. State 85, 161 Notre Dame 82","Raleigh, NC","PNC Arena","ACC",26.9,"Ron Groover",8,2023
+"30",57,"Sat Jan 21","12:00 PM","29 Duke 68, 43 Miami FL 66","Durham, NC","Cameron Indoor Stadium","ACC",63.6,"Ron Groover",8,2023
+"31",50,"Sat Jan 14","7:00 PM","83 Syracuse 78, 127 Notre Dame 73","Syracuse, NY","JMA Wireless Dome","ACC",39.7,"Ron Groover",8,2023
+"32",48,"Wed Jan 11","7:00 PM","27 Duke 77, 65 Pittsburgh 69","Durham, NC","Cameron Indoor Stadium","ACC",53.5,"Ron Groover",8,2023
+"33",47,"Tue Jan 10","9:00 PM","14 Virginia 65, 21 North Carolina 58","Charlottesville, VA","John Paul Jones Arena","ACC",67.6,"Ron Groover",8,2023
+"34",40,"Fri Dec 30","2:00 PM","40 Miami FL 76, 105 Notre Dame 65","South Bend, IN","Joyce Center","ACC",59.2,"Ron Groover",8,2023
+"35",36,"Wed Dec 21","7:30 PM","66 Clemson 79, 105 Georgia Tech 66","Atlanta, GA","McCamish Pavilion","ACC",55.1,"Ron Groover",8,2023
+"36",35,"Tue Dec 20","9:00 PM","72 Pittsburgh 84, 81 Syracuse 82","Syracuse, NY","JMA Wireless Dome","ACC",55.6,"Ron Groover",8,2023
+"37",28,"Sat Dec 10","2:00 PM","44 Miami FL 80, 56 N.C. State 73","Coral Gables, FL","Watsco Center","ACC",60.7,"Ron Groover",8,2023
+"38",24,"Sat Dec 3","2:00 PM","5 Virginia 62, 160 Florida St. 57","Charlottesville, VA","John Paul Jones Arena","ACC",18.5,"Ron Groover",8,2023
+"39",23,"Fri Dec 2","7:00 PM","92 Pittsburgh 68, 49 N.C. State 60","Raleigh, NC","PNC Arena","ACC",46.2,"Ron Groover",8,2023
+"40",43,"Tue Jan 17","7:00 PM","37 N.C. State 78, 140 Georgia Tech 66","Atlanta, GA","McCamish Pavilion","ACC",50.3,"Paul Szelc",6,2023
+"41",58,"Wed Jan 25","7:00 PM","68 Pittsburgh 81, 74 Wake Forest 79","Pittsburgh, PA","Petersen Events Center","ACC",56.7,"Bert Smith",7,2023
+"42",56,"Sat Jan 21","5:00 PM","25 North Carolina 80, 37 N.C. State 69","Chapel Hill, NC","Dean E. Smith Center","ACC",66.3,"Bert Smith",7,2023
+"43",54,"Wed Jan 18","7:00 PM","12 Virginia 78, 45 Virginia Tech 68","Charlottesville, VA","John Paul Jones Arena","ACC",56,"Bert Smith",7,2023
+"44",53,"Tue Jan 17","7:00 PM","173 Florida St. 84, 130 Notre Dame 71","South Bend, IN","Joyce Center","ACC",35.8,"Bert Smith",7,2023
+"45",50,"Sat Jan 14","5:00 PM","58 Clemson 72, 26 Duke 64","Clemson, SC","Littlejohn Coliseum","ACC",68.7,"Bert Smith",7,2023
+"46",49,"Wed Jan 11","7:00 PM","43 Miami FL 88, 172 Boston College 72","Coral Gables, FL","Watsco Center","ACC",24.2,"Bert Smith",7,2023
+"47",47,"Sat Jan 7","7:30 PM","43 N.C. State 73, 35 Virginia Tech 69","Blacksburg, VA","Cassell Coliseum","ACC",64.5,"Bert Smith",7,2023
+"48",43,"Tue Jan 3","7:00 PM","89 Syracuse 70, 269 Louisville 69","Louisville, KY","KFC Yum! Center","ACC",29.8,"Bert Smith",7,2023
+"49",41,"Sat Dec 31","12:00 PM","12 Virginia 74, 118 Georgia Tech 56","Atlanta, GA","McCamish Pavilion","ACC",50.4,"Bert Smith",7,2023
+"50",40,"Fri Dec 30","12:00 PM","70 Pittsburgh 76, 20 North Carolina 74","Pittsburgh, PA","Petersen Events Center","ACC",68,"Bert Smith",7,2023
+"51",36,"Thu Dec 22","7:00 PM","49 N.C. State 76, 253 Louisville 64","Raleigh, NC","PNC Arena","ACC",14.5,"Bert Smith",7,2023
+"52",34,"Tue Dec 20","6:30 PM","92 Wake Forest 81, 14 Duke 70","Winston-Salem, NC","Joel Coliseum","ACC",58.2,"Bert Smith",7,2023
+"53",27,"Sat Dec 10","3:15 PM","24 North Carolina 75, 119 Georgia Tech 59","Chapel Hill, NC","Dean E. Smith Center","ACC",31.2,"Bert Smith",7,2023
+"54",21,"Fri Dec 2","7:00 PM","92 Pittsburgh 68, 49 N.C. State 60","Raleigh, NC","PNC Arena","ACC",46.2,"Bert Smith",7,2023
+"55",52,"Mon Jan 23","7:00 PM","47 Virginia Tech 78, 31 Duke 75","Blacksburg, VA","Cassell Coliseum","ACC",66.7,"Terry Oglesby",10,2023
+"56",53,"Tue Jan 24","9:00 PM","24 North Carolina 72, 81 Syracuse 68","Syracuse, NY","JMA Wireless Dome","ACC",65.5,"Lee Cassell",12,2023
+"57",51,"Sat Jan 21","3:00 PM","154 Florida St. 71, 57 Pittsburgh 64","Pittsburgh, PA","Petersen Events Center","ACC",29.2,"Lee Cassell",12,2023
+"58",49,"Tue Jan 17","7:00 PM","37 N.C. State 78, 140 Georgia Tech 66","Atlanta, GA","McCamish Pavilion","ACC",50.3,"Lee Cassell",12,2023
+"59",46,"Sat Jan 14","8:00 PM","81 Wake Forest 85, 177 Boston College 63","Chestnut Hill, MA","Conte Forum","ACC",45,"Lee Cassell",12,2023
+"60",44,"Wed Jan 11","7:00 PM","88 Syracuse 82, 41 Virginia Tech 72","Syracuse, NY","JMA Wireless Dome","ACC",60.5,"Lee Cassell",12,2023
+"61",43,"Tue Jan 10","9:00 PM","14 Virginia 65, 21 North Carolina 58","Charlottesville, VA","John Paul Jones Arena","ACC",67.6,"Lee Cassell",12,2023
+"62",42,"Sat Jan 7","4:00 PM","56 Clemson 75, 64 Pittsburgh 74","Pittsburgh, PA","Petersen Events Center","ACC",62.4,"Lee Cassell",12,2023
+"63",39,"Sat Dec 31","1:00 PM","17 Duke 86, 150 Florida St. 67","Durham, NC","Cameron Indoor Stadium","ACC",23.2,"Lee Cassell",12,2023
+"64",38,"Fri Dec 30","4:00 PM","64 Clemson 78, 54 N.C. State 64","Clemson, SC","Littlejohn Coliseum","ACC",63.3,"Lee Cassell",12,2023
+"65",34,"Wed Dec 21","8:30 PM","145 Florida St. 73, 101 Notre Dame 72","Tallahassee, FL","Donald L. Tucker Center","ACC",46.1,"Lee Cassell",12,2023
+"66",54,"Sat Jan 21","12:00 PM","29 Duke 68, 43 Miami FL 66","Durham, NC","Cameron Indoor Stadium","ACC",63.6,"John Gaffney",18,2023
+"67",53,"Wed Jan 18","7:00 PM","12 Virginia 78, 45 Virginia Tech 68","Charlottesville, VA","John Paul Jones Arena","ACC",56,"John Gaffney",18,2023
+"68",47,"Wed Jan 11","7:00 PM","27 Duke 77, 65 Pittsburgh 69","Durham, NC","Cameron Indoor Stadium","ACC",53.5,"John Gaffney",18,2023
+"69",46,"Tue Jan 10","7:00 PM","127 Notre Dame 73, 130 Georgia Tech 72 (OT)","South Bend, IN","Joyce Center","ACC",41.3,"John Gaffney",18,2023
+"70",41,"Wed Jan 4","9:00 PM","23 North Carolina 88, 87 Wake Forest 79","Chapel Hill, NC","Dean E. Smith Center","ACC",44.3,"John Gaffney",18,2023
+"71",40,"Tue Jan 3","7:00 PM","89 Syracuse 70, 269 Louisville 69","Louisville, KY","KFC Yum! Center","ACC",29.8,"John Gaffney",18,2023
+"72",25,"Sat Dec 10","2:00 PM","44 Miami FL 80, 56 N.C. State 73","Coral Gables, FL","Watsco Center","ACC",60.7,"John Gaffney",18,2023
+"73",42,"Tue Jan 17","9:00 PM","73 Wake Forest 87, 52 Clemson 77","Winston-Salem, NC","Joel Coliseum","ACC",63.5,"Mike Roberts",16,2023
+"74",34,"Wed Jan 4","7:00 PM","59 N.C. State 84, 14 Duke 60","Raleigh, NC","PNC Arena","ACC",70.7,"Mike Roberts",16,2023
+"75",33,"Tue Jan 3","7:00 PM","171 Boston College 70, 110 Notre Dame 63","Chestnut Hill, MA","Conte Forum","ACC",42.6,"Mike Roberts",16,2023
+"76",44,"Sat Jan 21","2:00 PM","11 Virginia 76, 73 Wake Forest 67","Winston-Salem, NC","Joel Coliseum","ACC",67.8,"Jeffrey Anderson",20,2023
+"77",38,"Sat Jan 14","7:00 PM","83 Syracuse 78, 127 Notre Dame 73","Syracuse, NY","JMA Wireless Dome","ACC",39.7,"Jeffrey Anderson",20,2023
+"78",34,"Wed Jan 4","9:00 PM","23 North Carolina 88, 87 Wake Forest 79","Chapel Hill, NC","Dean E. Smith Center","ACC",44.3,"Jeffrey Anderson",20,2023
+"79",33,"Tue Jan 3","7:00 PM","89 Syracuse 70, 269 Louisville 69","Louisville, KY","KFC Yum! Center","ACC",29.8,"Jeffrey Anderson",20,2023
+"80",32,"Sat Dec 31","1:00 PM","17 Duke 86, 150 Florida St. 67","Durham, NC","Cameron Indoor Stadium","ACC",23.2,"Jeffrey Anderson",20,2023
+"81",28,"Wed Dec 21","7:30 PM","66 Clemson 79, 105 Georgia Tech 66","Atlanta, GA","McCamish Pavilion","ACC",55.1,"Jeffrey Anderson",20,2023
+"82",18,"Sun Dec 4","1:00 PM","45 Miami FL 80, 186 Louisville 53","Louisville, KY","KFC Yum! Center","ACC",39.9,"Jeffrey Anderson",20,2023
+"83",53,"Wed Jan 25","7:00 PM","68 Pittsburgh 81, 74 Wake Forest 79","Pittsburgh, PA","Petersen Events Center","ACC",56.7,"Brian O'Connell",22,2023
+"84",52,"Tue Jan 24","9:00 PM","24 North Carolina 72, 81 Syracuse 68","Syracuse, NY","JMA Wireless Dome","ACC",65.5,"Brian O'Connell",22,2023
+"85",47,"Wed Jan 18","7:00 PM","12 Virginia 78, 45 Virginia Tech 68","Charlottesville, VA","John Paul Jones Arena","ACC",56,"Brian O'Connell",22,2023
+"86",44,"Sat Jan 14","5:00 PM","58 Clemson 72, 26 Duke 64","Clemson, SC","Littlejohn Coliseum","ACC",68.7,"Brian O'Connell",22,2023
+"87",36,"Wed Jan 4","9:00 PM","58 Clemson 68, 29 Virginia Tech 65","Blacksburg, VA","Cassell Coliseum","ACC",56.8,"Brian O'Connell",22,2023
+"88",35,"Tue Jan 3","7:00 PM","171 Boston College 70, 110 Notre Dame 63","Chestnut Hill, MA","Conte Forum","ACC",42.6,"Brian O'Connell",22,2023
+"89",30,"Wed Dec 21","6:30 PM","174 Boston College 70, 24 Virginia Tech 65 (OT)","Chestnut Hill, MA","Conte Forum","ACC",38.7,"Brian O'Connell",22,2023
+"90",42,"Tue Jan 17","9:00 PM","73 Wake Forest 87, 52 Clemson 77","Winston-Salem, NC","Joel Coliseum","ACC",63.5,"Doug Shows",19,2023
+"91",41,"Mon Jan 16","7:00 PM","39 Miami FL 82, 86 Syracuse 78","Coral Gables, FL","Watsco Center","ACC",47.6,"Doug Shows",19,2023
+"92",37,"Tue Jan 10","9:00 PM","14 Virginia 65, 21 North Carolina 58","Charlottesville, VA","John Paul Jones Arena","ACC",67.6,"Doug Shows",19,2023
+"93",30,"Sat Dec 31","1:00 PM","17 Duke 86, 150 Florida St. 67","Durham, NC","Cameron Indoor Stadium","ACC",23.2,"Doug Shows",19,2023
+"94",29,"Fri Dec 30","4:00 PM","64 Clemson 78, 54 N.C. State 64","Clemson, SC","Littlejohn Coliseum","ACC",63.3,"Doug Shows",19,2023
+"95",46,"Tue Jan 24","9:00 PM","60 Clemson 72, 157 Georgia Tech 51","Clemson, SC","Littlejohn Coliseum","ACC",28.9,"Brent Hampton",26,2023
+"96",40,"Wed Jan 11","9:00 PM","83 Wake Forest 90, 160 Florida St. 75","Winston-Salem, NC","Joel Coliseum","ACC",32.9,"Brent Hampton",26,2023
+"97",35,"Wed Jan 4","7:00 PM","129 Georgia Tech 76, 39 Miami FL 70","Atlanta, GA","McCamish Pavilion","ACC",52.2,"Brent Hampton",26,2023
+"98",33,"Sat Dec 31","2:00 PM","86 Syracuse 79, 160 Boston College 65","Syracuse, NY","JMA Wireless Dome","ACC",31.2,"Brent Hampton",26,2023
+"99",21,"Sun Dec 4","1:00 PM","45 Miami FL 80, 186 Louisville 53","Louisville, KY","KFC Yum! Center","ACC",39.9,"Brent Hampton",26,2023
+"100",49,"Wed Jan 25","9:00 PM","184 Boston College 75, 295 Louisville 65","Chestnut Hill, MA","Conte Forum","ACC",20.6,"Pat Driscoll",27,2023
+"101",48,"Tue Jan 24","9:00 PM","60 Clemson 72, 157 Georgia Tech 51","Clemson, SC","Littlejohn Coliseum","ACC",28.9,"Pat Driscoll",27,2023
+"102",37,"Sat Jan 7","1:00 PM","23 Duke 65, 167 Boston College 64","Chestnut Hill, MA","Conte Forum","ACC",40.9,"Pat Driscoll",27,2023
+"103",35,"Wed Jan 4","9:00 PM","23 North Carolina 88, 87 Wake Forest 79","Chapel Hill, NC","Dean E. Smith Center","ACC",44.3,"Pat Driscoll",27,2023
+"104",34,"Tue Jan 3","9:00 PM","66 Pittsburgh 68, 11 Virginia 65","Pittsburgh, PA","Petersen Events Center","ACC",67.4,"Pat Driscoll",27,2023
+"105",19,"Sat Dec 3","12:00 PM","85 Syracuse 62, 64 Notre Dame 61","South Bend, IN","Joyce Center","ACC",49.4,"Pat Driscoll",27,2023
+"106",49,"Sat Jan 21","12:00 PM","29 Duke 68, 43 Miami FL 66","Durham, NC","Cameron Indoor Stadium","ACC",63.6,"Tony Chiazza",28,2023
+"107",48,"Sat Jan 21","5:00 PM","25 North Carolina 80, 37 N.C. State 69","Chapel Hill, NC","Dean E. Smith Center","ACC",66.3,"Jeff Clark",32,2023
+"108",38,"Wed Jan 11","7:00 PM","27 Duke 77, 65 Pittsburgh 69","Durham, NC","Cameron Indoor Stadium","ACC",53.5,"Jeff Clark",32,2023
+"109",36,"Sat Jan 7","1:00 PM","163 Florida St. 75, 122 Georgia Tech 64","Tallahassee, FL","Donald L. Tucker Center","ACC",43.5,"Jeff Clark",32,2023
+"110",52,"Tue Jan 24","7:00 PM","44 Miami FL 86, 143 Florida St. 63","Tallahassee, FL","Donald L. Tucker Center","ACC",50.6,"Clarence Armstrong",31,2023
+"111",50,"Sat Jan 21","2:00 PM","11 Virginia 76, 73 Wake Forest 67","Winston-Salem, NC","Joel Coliseum","ACC",67.8,"Clarence Armstrong",31,2023
+"112",47,"Tue Jan 17","7:00 PM","23 North Carolina 72, 201 Boston College 64","Chapel Hill, NC","Dean E. Smith Center","ACC",18.7,"Clarence Armstrong",31,2023
+"113",44,"Sat Jan 14","12:00 PM","36 N.C. State 83, 39 Miami FL 81 (OT)","Raleigh, NC","PNC Arena","ACC",67,"Clarence Armstrong",31,2023
+"114",43,"Wed Jan 11","9:00 PM","53 Clemson 83, 277 Louisville 70","Clemson, SC","Littlejohn Coliseum","ACC",12.5,"Clarence Armstrong",31,2023
+"115",42,"Tue Jan 10","7:00 PM","127 Notre Dame 73, 130 Georgia Tech 72 (OT)","South Bend, IN","Joyce Center","ACC",41.3,"Clarence Armstrong",31,2023
+"116",40,"Sat Jan 7","5:00 PM","12 Virginia 73, 90 Syracuse 66","Charlottesville, VA","John Paul Jones Arena","ACC",36,"Clarence Armstrong",31,2023
+"117",34,"Fri Dec 30","2:00 PM","40 Miami FL 76, 105 Notre Dame 65","South Bend, IN","Joyce Center","ACC",59.2,"Clarence Armstrong",31,2023
+"118",31,"Thu Dec 22","7:00 PM","49 N.C. State 76, 253 Louisville 64","Raleigh, NC","PNC Arena","ACC",14.5,"Clarence Armstrong",31,2023
+"119",29,"Tue Dec 20","6:30 PM","92 Wake Forest 81, 14 Duke 70","Winston-Salem, NC","Joel Coliseum","ACC",58.2,"Clarence Armstrong",31,2023
+"120",19,"Sun Dec 4","3:00 PM","40 Virginia Tech 80, 23 North Carolina 72","Blacksburg, VA","Cassell Coliseum","ACC",72.8,"Clarence Armstrong",31,2023
+"121",18,"Sat Dec 3","2:00 PM","5 Virginia 62, 160 Florida St. 57","Charlottesville, VA","John Paul Jones Arena","ACC",18.5,"Clarence Armstrong",31,2023
+"122",43,"Sat Jan 14","7:00 PM","83 Syracuse 78, 127 Notre Dame 73","Syracuse, NY","JMA Wireless Dome","ACC",39.7,"Earl Walton",37,2023
+"123",51,"Tue Jan 17","7:00 PM","23 North Carolina 72, 201 Boston College 64","Chapel Hill, NC","Dean E. Smith Center","ACC",18.7,"Matt Potter",38,2023
+"124",48,"Sat Jan 14","3:00 PM","64 Pittsburgh 71, 128 Georgia Tech 60","Atlanta, GA","McCamish Pavilion","ACC",52.6,"Matt Potter",38,2023
+"125",46,"Wed Jan 11","9:00 PM","83 Wake Forest 90, 160 Florida St. 75","Winston-Salem, NC","Joel Coliseum","ACC",32.9,"Matt Potter",38,2023
+"126",40,"Wed Jan 4","7:00 PM","129 Georgia Tech 76, 39 Miami FL 70","Atlanta, GA","McCamish Pavilion","ACC",52.2,"Matt Potter",38,2023
+"127",39,"Tue Jan 3","9:00 PM","66 Pittsburgh 68, 11 Virginia 65","Pittsburgh, PA","Petersen Events Center","ACC",67.4,"Matt Potter",38,2023
+"128",36,"Sat Dec 31","2:00 PM","86 Syracuse 79, 160 Boston College 65","Syracuse, NY","JMA Wireless Dome","ACC",31.2,"Matt Potter",38,2023
+"129",33,"Wed Dec 21","6:30 PM","174 Boston College 70, 24 Virginia Tech 65 (OT)","Chestnut Hill, MA","Conte Forum","ACC",38.7,"Matt Potter",38,2023
+"130",44,"Sat Jan 14","2:00 PM","25 North Carolina 80, 274 Louisville 59","Louisville, KY","KFC Yum! Center","ACC",21.9,"Jeb Hartness",42,2023
+"131",20,"Sat Dec 3","4:00 PM","20 Duke 75, 125 Boston College 59","Durham, NC","Cameron Indoor Stadium","ACC",27.5,"Jeb Hartness",42,2023
+"132",19,"Fri Dec 2","7:00 PM","61 Clemson 77, 68 Wake Forest 57","Clemson, SC","Littlejohn Coliseum","ACC",56.2,"Jeb Hartness",42,2023
+"133",46,"Wed Jan 25","9:00 PM","184 Boston College 75, 295 Louisville 65","Chestnut Hill, MA","Conte Forum","ACC",20.6,"Tommy Morrissey",46,2023
+"134",44,"Sat Jan 21","5:00 PM","25 North Carolina 80, 37 N.C. State 69","Chapel Hill, NC","Dean E. Smith Center","ACC",66.3,"Tommy Morrissey",46,2023
+"135",41,"Tue Jan 17","7:00 PM","173 Florida St. 84, 130 Notre Dame 71","South Bend, IN","Joyce Center","ACC",35.8,"Tommy Morrissey",46,2023
+"136",39,"Sat Jan 14","5:00 PM","58 Clemson 72, 26 Duke 64","Clemson, SC","Littlejohn Coliseum","ACC",68.7,"Tommy Morrissey",46,2023
+"137",37,"Wed Jan 11","7:00 PM","43 Miami FL 88, 172 Boston College 72","Coral Gables, FL","Watsco Center","ACC",24.2,"Tommy Morrissey",46,2023
+"138",36,"Sat Jan 7","7:30 PM","43 N.C. State 73, 35 Virginia Tech 69","Blacksburg, VA","Cassell Coliseum","ACC",64.5,"Tommy Morrissey",46,2023
+"139",32,"Sat Dec 31","12:00 PM","12 Virginia 74, 118 Georgia Tech 56","Atlanta, GA","McCamish Pavilion","ACC",50.4,"Tommy Morrissey",46,2023
+"140",31,"Fri Dec 30","12:00 PM","70 Pittsburgh 76, 20 North Carolina 74","Pittsburgh, PA","Petersen Events Center","ACC",68,"Tommy Morrissey",46,2023
+"141",30,"Wed Dec 21","7:30 PM","66 Clemson 79, 105 Georgia Tech 66","Atlanta, GA","McCamish Pavilion","ACC",55.1,"Tommy Morrissey",46,2023
+"142",29,"Tue Dec 20","9:00 PM","72 Pittsburgh 84, 81 Syracuse 82","Syracuse, NY","JMA Wireless Dome","ACC",55.6,"Tommy Morrissey",46,2023
+"143",22,"Sat Dec 10","2:00 PM","44 Miami FL 80, 56 N.C. State 73","Coral Gables, FL","Watsco Center","ACC",60.7,"Tommy Morrissey",46,2023
+"144",18,"Fri Dec 2","7:00 PM","92 Pittsburgh 68, 49 N.C. State 60","Raleigh, NC","PNC Arena","ACC",46.2,"Tommy Morrissey",46,2023
+"145",48,"Tue Jan 24","7:00 PM","42 N.C. State 85, 161 Notre Dame 82","Raleigh, NC","PNC Arena","ACC",26.9,"Lamar Simpson",44,2023
+"146",45,"Wed Jan 18","7:00 PM","62 Pittsburgh 75, 281 Louisville 54","Louisville, KY","KFC Yum! Center","ACC",24.7,"Lamar Simpson",44,2023
+"147",41,"Sat Jan 14","4:00 PM","11 Virginia 67, 170 Florida St. 58","Tallahassee, FL","Donald L. Tucker Center","ACC",40.3,"Lamar Simpson",44,2023
+"148",41,"Tue Jan 24","7:00 PM","44 Miami FL 86, 143 Florida St. 63","Tallahassee, FL","Donald L. Tucker Center","ACC",50.6,"Jamie Luckie",45,2023
+"149",40,"Sat Jan 21","2:00 PM","194 Boston College 84, 144 Notre Dame 72","South Bend, IN","Joyce Center","ACC",32.4,"Jamie Luckie",45,2023
+"150",34,"Sat Jan 14","3:00 PM","64 Pittsburgh 71, 128 Georgia Tech 60","Atlanta, GA","McCamish Pavilion","ACC",52.6,"Jamie Luckie",45,2023
+"151",32,"Sat Jan 7","5:00 PM","12 Virginia 73, 90 Syracuse 66","Charlottesville, VA","John Paul Jones Arena","ACC",36,"Jamie Luckie",45,2023
+"152",31,"Wed Jan 4","7:00 PM","129 Georgia Tech 76, 39 Miami FL 70","Atlanta, GA","McCamish Pavilion","ACC",52.2,"Jamie Luckie",45,2023
+"153",29,"Sat Dec 31","12:00 PM","83 Wake Forest 77, 31 Virginia Tech 75","Winston-Salem, NC","Joel Coliseum","ACC",63.9,"Jamie Luckie",45,2023
+"154",41,"Sat Jan 21","2:00 PM","11 Virginia 76, 73 Wake Forest 67","Winston-Salem, NC","Joel Coliseum","ACC",67.8,"Bill Covington Jr.",48,2023
+"155",39,"Tue Jan 17","7:00 PM","173 Florida St. 84, 130 Notre Dame 71","South Bend, IN","Joyce Center","ACC",35.8,"Bill Covington Jr.",48,2023
+"156",38,"Sat Jan 14","12:00 PM","36 N.C. State 83, 39 Miami FL 81 (OT)","Raleigh, NC","PNC Arena","ACC",67,"Bill Covington Jr.",48,2023
+"157",37,"Wed Jan 11","9:00 PM","53 Clemson 83, 277 Louisville 70","Clemson, SC","Littlejohn Coliseum","ACC",12.5,"Bill Covington Jr.",48,2023
+"158",34,"Sat Jan 7","1:00 PM","163 Florida St. 75, 122 Georgia Tech 64","Tallahassee, FL","Donald L. Tucker Center","ACC",43.5,"Bill Covington Jr.",48,2023
+"159",30,"Sat Dec 31","12:00 PM","83 Wake Forest 77, 31 Virginia Tech 75","Winston-Salem, NC","Joel Coliseum","ACC",63.9,"Bill Covington Jr.",48,2023
+"160",26,"Tue Dec 20","8:30 PM","47 Miami FL 66, 11 Virginia 64","Coral Gables, FL","Watsco Center","ACC",73.6,"Bill Covington Jr.",48,2023
+"161",23,"Sat Dec 10","1:00 PM","146 Florida St. 75, 211 Louisville 53","Tallahassee, FL","Donald L. Tucker Center","ACC",29.9,"Bill Covington Jr.",48,2023
+"162",18,"Sat Dec 3","4:00 PM","20 Duke 75, 125 Boston College 59","Durham, NC","Cameron Indoor Stadium","ACC",27.5,"Bill Covington Jr.",48,2023
+"163",17,"Fri Dec 2","7:00 PM","61 Clemson 77, 68 Wake Forest 57","Clemson, SC","Littlejohn Coliseum","ACC",56.2,"Bill Covington Jr.",48,2023
+"164",33,"Sat Jan 7","4:00 PM","56 Clemson 75, 64 Pittsburgh 74","Pittsburgh, PA","Petersen Events Center","ACC",62.4,"Greg Evans",58,2023
+"165",44,"Sat Jan 21","2:00 PM","194 Boston College 84, 144 Notre Dame 72","South Bend, IN","Joyce Center","ACC",32.4,"A.J. Desai",61,2023
+"166",38,"Sat Jan 14","3:00 PM","64 Pittsburgh 71, 128 Georgia Tech 60","Atlanta, GA","McCamish Pavilion","ACC",52.6,"A.J. Desai",61,2023
+"167",37,"Wed Jan 11","7:00 PM","88 Syracuse 82, 41 Virginia Tech 72","Syracuse, NY","JMA Wireless Dome","ACC",60.5,"A.J. Desai",61,2023
+"168",35,"Sat Jan 7","11:30 AM","21 North Carolina 81, 120 Notre Dame 64","Chapel Hill, NC","Dean E. Smith Center","ACC",31.9,"A.J. Desai",61,2023
+"169",31,"Fri Dec 30","12:00 PM","70 Pittsburgh 76, 20 North Carolina 74","Pittsburgh, PA","Petersen Events Center","ACC",68,"A.J. Desai",61,2023
+"170",16,"Sat Dec 3","12:00 PM","85 Syracuse 62, 64 Notre Dame 61","South Bend, IN","Joyce Center","ACC",49.4,"A.J. Desai",61,2023
+"171",37,"Sat Jan 14","8:00 PM","81 Wake Forest 85, 177 Boston College 63","Chestnut Hill, MA","Conte Forum","ACC",45,"Tony Henderson",74,2023
+"172",35,"Wed Jan 4","9:00 PM","58 Clemson 68, 29 Virginia Tech 65","Blacksburg, VA","Cassell Coliseum","ACC",56.8,"Tony Henderson",74,2023
+"173",32,"Fri Dec 30","2:00 PM","40 Miami FL 76, 105 Notre Dame 65","South Bend, IN","Joyce Center","ACC",59.2,"Tony Henderson",74,2023
+"174",30,"Wed Dec 21","8:30 PM","145 Florida St. 73, 101 Notre Dame 72","Tallahassee, FL","Donald L. Tucker Center","ACC",46.1,"Tony Henderson",74,2023
+"175",29,"Tue Dec 20","8:30 PM","47 Miami FL 66, 11 Virginia 64","Coral Gables, FL","Watsco Center","ACC",73.6,"Tony Henderson",74,2023
+"176",24,"Sat Dec 10","1:00 PM","146 Florida St. 75, 211 Louisville 53","Tallahassee, FL","Donald L. Tucker Center","ACC",29.9,"Tony Henderson",74,2023
+"177",18,"Fri Dec 2","7:00 PM","61 Clemson 77, 68 Wake Forest 57","Clemson, SC","Littlejohn Coliseum","ACC",56.2,"Tony Henderson",74,2023
+"178",37,"Wed Jan 18","7:00 PM","62 Pittsburgh 75, 281 Louisville 54","Louisville, KY","KFC Yum! Center","ACC",24.7,"Tim Clougherty",71,2023
+"179",36,"Tue Jan 17","9:00 PM","73 Wake Forest 87, 52 Clemson 77","Winston-Salem, NC","Joel Coliseum","ACC",63.5,"Tim Clougherty",71,2023
+"180",35,"Sat Jan 14","4:00 PM","11 Virginia 67, 170 Florida St. 58","Tallahassee, FL","Donald L. Tucker Center","ACC",40.3,"Tim Clougherty",71,2023
+"181",33,"Wed Jan 11","7:00 PM","43 Miami FL 88, 172 Boston College 72","Coral Gables, FL","Watsco Center","ACC",24.2,"Tim Clougherty",71,2023
+"182",32,"Tue Jan 10","7:00 PM","127 Notre Dame 73, 130 Georgia Tech 72 (OT)","South Bend, IN","Joyce Center","ACC",41.3,"Tim Clougherty",71,2023
+"183",28,"Wed Jan 4","9:00 PM","58 Clemson 68, 29 Virginia Tech 65","Blacksburg, VA","Cassell Coliseum","ACC",56.8,"Tim Clougherty",71,2023
+"184",23,"Tue Dec 20","9:00 PM","72 Pittsburgh 84, 81 Syracuse 82","Syracuse, NY","JMA Wireless Dome","ACC",55.6,"Tim Clougherty",71,2023
+"185",42,"Tue Jan 24","7:00 PM","44 Miami FL 86, 143 Florida St. 63","Tallahassee, FL","Donald L. Tucker Center","ACC",50.6,"Ted Valentine",66,2023
+"186",41,"Sat Jan 21","12:00 PM","88 Syracuse 80, 142 Georgia Tech 63","Atlanta, GA","McCamish Pavilion","ACC",48.9,"Ted Valentine",66,2023
+"187",39,"Tue Jan 17","7:00 PM","23 North Carolina 72, 201 Boston College 64","Chapel Hill, NC","Dean E. Smith Center","ACC",18.7,"Ted Valentine",66,2023
+"188",37,"Sat Jan 14","4:00 PM","11 Virginia 67, 170 Florida St. 58","Tallahassee, FL","Donald L. Tucker Center","ACC",40.3,"Ted Valentine",66,2023
+"189",36,"Wed Jan 11","7:00 PM","88 Syracuse 82, 41 Virginia Tech 72","Syracuse, NY","JMA Wireless Dome","ACC",60.5,"Ted Valentine",66,2023
+"190",34,"Sat Jan 7","11:30 AM","21 North Carolina 81, 120 Notre Dame 64","Chapel Hill, NC","Dean E. Smith Center","ACC",31.9,"Ted Valentine",66,2023
+"191",33,"Wed Jan 4","7:00 PM","59 N.C. State 84, 14 Duke 60","Raleigh, NC","PNC Arena","ACC",70.7,"Ted Valentine",66,2023
+"192",32,"Tue Jan 3","9:00 PM","66 Pittsburgh 68, 11 Virginia 65","Pittsburgh, PA","Petersen Events Center","ACC",67.4,"Ted Valentine",66,2023
+"193",31,"Sat Dec 31","2:00 PM","86 Syracuse 79, 160 Boston College 65","Syracuse, NY","JMA Wireless Dome","ACC",31.2,"Ted Valentine",66,2023
+"194",28,"Wed Dec 21","8:30 PM","145 Florida St. 73, 101 Notre Dame 72","Tallahassee, FL","Donald L. Tucker Center","ACC",46.1,"Ted Valentine",66,2023
+"195",27,"Tue Dec 20","8:30 PM","47 Miami FL 66, 11 Virginia 64","Coral Gables, FL","Watsco Center","ACC",73.6,"Ted Valentine",66,2023
+"196",22,"Sat Dec 10","1:00 PM","146 Florida St. 75, 211 Louisville 53","Tallahassee, FL","Donald L. Tucker Center","ACC",29.9,"Ted Valentine",66,2023
+"197",19,"Sun Dec 4","3:00 PM","40 Virginia Tech 80, 23 North Carolina 72","Blacksburg, VA","Cassell Coliseum","ACC",72.8,"Ted Valentine",66,2023
+"198",18,"Sat Dec 3","4:00 PM","20 Duke 75, 125 Boston College 59","Durham, NC","Cameron Indoor Stadium","ACC",27.5,"Ted Valentine",66,2023
+"199",32,"Sat Jan 7","11:30 AM","21 North Carolina 81, 120 Notre Dame 64","Chapel Hill, NC","Dean E. Smith Center","ACC",31.9,"Chance Moore",80,2023
+"200",37,"Sat Jan 21","12:00 PM","88 Syracuse 80, 142 Georgia Tech 63","Atlanta, GA","McCamish Pavilion","ACC",48.9,"Jerry Heater",91,2023
+"201",30,"Sat Jan 7","3:00 PM","81 Wake Forest 80, 265 Louisville 72","Louisville, KY","KFC Yum! Center","ACC",29.2,"Jerry Heater",91,2023
+"202",33,"Sat Jan 21","12:00 PM","88 Syracuse 80, 142 Georgia Tech 63","Atlanta, GA","McCamish Pavilion","ACC",48.9,"Mark Schnur",97,2023
+"203",27,"Sat Jan 7","1:00 PM","23 Duke 65, 167 Boston College 64","Chestnut Hill, MA","Conte Forum","ACC",40.9,"Mark Schnur",97,2023
+"204",33,"Tue Jan 24","9:00 PM","60 Clemson 72, 157 Georgia Tech 51","Clemson, SC","Littlejohn Coliseum","ACC",28.9,"Justin Porterfield",94,2023
+"205",32,"Sat Jan 21","3:00 PM","154 Florida St. 71, 57 Pittsburgh 64","Pittsburgh, PA","Petersen Events Center","ACC",29.2,"Justin Porterfield",94,2023
+"206",29,"Sat Jan 14","8:00 PM","81 Wake Forest 85, 177 Boston College 63","Chestnut Hill, MA","Conte Forum","ACC",45,"Justin Porterfield",94,2023
+"207",27,"Sat Jan 7","4:00 PM","56 Clemson 75, 64 Pittsburgh 74","Pittsburgh, PA","Petersen Events Center","ACC",62.4,"Justin Porterfield",94,2023
+"208",27,"Sat Jan 21","6:00 PM","62 Clemson 51, 49 Virginia Tech 50","Clemson, SC","Littlejohn Coliseum","ACC",63.3,"Jeff Pon",103,2023
+"209",22,"Sat Jan 7","5:00 PM","12 Virginia 73, 90 Syracuse 66","Charlottesville, VA","John Paul Jones Arena","ACC",36,"Jeff Pon",103,2023
+"210",23,"Sat Jan 7","1:00 PM","163 Florida St. 75, 122 Georgia Tech 64","Tallahassee, FL","Donald L. Tucker Center","ACC",43.5,"Trey Styons",118,2023
+"211",29,"Tue Jan 24","7:00 PM","42 N.C. State 85, 161 Notre Dame 82","Raleigh, NC","PNC Arena","ACC",26.9,"Raymond Styons",122,2023
+"212",28,"Sat Jan 21","3:00 PM","154 Florida St. 71, 57 Pittsburgh 64","Pittsburgh, PA","Petersen Events Center","ACC",29.2,"Raymond Styons",122,2023
+"213",26,"Sat Jan 14","12:00 PM","36 N.C. State 83, 39 Miami FL 81 (OT)","Raleigh, NC","PNC Arena","ACC",67,"Raymond Styons",122,2023
+"214",24,"Sat Jan 7","3:00 PM","81 Wake Forest 80, 265 Louisville 72","Louisville, KY","KFC Yum! Center","ACC",29.2,"Raymond Styons",122,2023
+"215",27,"Sat Jan 21","2:00 PM","194 Boston College 84, 144 Notre Dame 72","South Bend, IN","Joyce Center","ACC",32.4,"Jemel Spearman",129,2023
+"216",25,"Sat Jan 14","2:00 PM","25 North Carolina 80, 274 Louisville 59","Louisville, KY","KFC Yum! Center","ACC",21.9,"Jemel Spearman",129,2023
+"217",23,"Sat Jan 7","7:30 PM","43 N.C. State 73, 35 Virginia Tech 69","Blacksburg, VA","Cassell Coliseum","ACC",64.5,"Jemel Spearman",129,2023

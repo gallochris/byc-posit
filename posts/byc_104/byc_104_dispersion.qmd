@@ -1,0 +1,458 @@
+---
+title: "104: Dispersion"
+date: "2024-08-16"
+categories:
+  - gt
+  - rvest
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Scrape power ratings
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+# load in SP+ ratings 
+# saved in CSV because they're behind a paywall at ESPN+
+# https://www.espn.com/college-football/insider/story/_/id/40836337/college-football-2024-preseason-sp+-rankings-takeaways
+data <- readr::read_csv("sp.csv")
+
+# function to clean table and correct names 
+# this is sort of sloppy and anti-dry (oh well)
+clean_sp_table <- function(sp) {
+  sp |> 
+    dplyr::mutate(team = gsub("[^a-zA-Z]", "", Team),
+                  sp_rating = `SP+`,
+                  sp_off_rating = stringr::str_extract(`Off. SP+`, "\\d+\\.?\\d*"),
+                  sp_off_rk = stringr::str_extract(`Off. SP+`,
+                                                         pattern = "(?<=\\().*(?=\\))"),
+                  sp_def_rk = stringr::str_extract(`Def. SP+`,
+                                                         pattern = "(?<=\\().*(?=\\))"),
+                  sp_def_rating = stringr::str_extract(`Def. SP+`, "\\d+\\.?\\d*"),
+                  sp_st_rk = stringr::str_extract(`ST SP+`,
+                                                    pattern = "(?<=\\().*(?=\\))"),
+                  sp_st_rating = stringr::str_extract(`ST SP+`, "\\d+\\.?\\d*"),
+    ) |> 
+    dplyr::mutate_at(c('sp_rating', 'sp_off_rating', 'sp_off_rk', 'sp_def_rk', 'sp_def_rating', 
+                       'sp_st_rk', 'sp_st_rating'), as.numeric) |> 
+    dplyr::mutate(
+      # change names to be abbreviated
+      team = dplyr::case_match(team,
+                               'NCarolina' ~ 'North Carolina',
+                               'OhioSt' ~ 'Ohio State',
+                               'TexasAM' ~ 'Texas A&M',
+                               'PennSt' ~ 'Penn State',
+                               'IowaSt' ~ 'Iowa State',
+                               'NotreDame' ~ 'Notre Dame',
+                               'ArizonaSt' ~ 'Arizona State',
+                               'OleMiss' ~ 'Ole Miss',
+                               'MichiganSt' ~ 'Michigan State',
+                               'NCSt' ~ 'NC State',
+                               'MissSt' ~ 'Mississippi State',
+                               'OklahomaSt' ~ 'Oklahoma State',
+                               'KansasSt' ~ 'Kansas State',
+                               'CoastalCaro' ~ 'Coastal Carolina',
+                               'WakeForest' ~ 'Wake Forest',
+                               'SanDiegoSt' ~ 'San Diego State',
+                               'AppSt' ~ 'Appalachian State',
+                               'BoiseSt' ~ 'Boise State',
+                               'FloridaSt' ~ 'Florida State',
+                               'FresnoSt' ~ 'Fresno State',
+                               'VaTech' ~ 'Virginia Tech',
+                               "WVirginia" ~ "West Virginia",
+                               "TexasTech" ~ "Texas Tech",
+                               "BostonColl" ~ "Boston College",
+                               "JMU" ~ "James Madison",
+                               "WKU" ~ "Western Kentucky",
+                               "ECU" ~ "East Carolina", 
+                               "OregonSt" ~ "Oregon State",
+                               "WashSt" ~ "Washington State",
+                               "AirForce" ~ "Air Force",
+                               "ODU" ~ "Old Dominion", 
+                               'GaTech' ~ 'Georgia Tech',
+                               "SCarolina" ~ "South Carolina", 
+                               "SanJoseSt" ~ "San Jose State",
+                               "ColoradoSt" ~ "Colorado State",
+                               "FAU" ~ "Florida Atlantic", 
+                               "MTSU" ~ "Middle Tennessee",
+                               "EMU" ~ "Eastern Michigan",
+                               "MiamiOH" ~ "Miami (OH)",
+                               "GeorgiaSt" ~ "Georgia State",
+                               "UtahSt" ~ "Utah State",
+                               "KentSt" ~ "Kent State",
+                               "BallSt" ~ "Ball State",
+                               "SAlabama" ~ "South Alabama",
+                               "NIU" ~ "Northern Illinois",
+                               "USF" ~ "South Florida", 
+                               "LaTech" ~ "Louisiana Tech",
+                               "NTexas" ~ "North Texas",  
+                               "GaSouthern" ~ "Georgia Southern",
+                               "NewMexico" ~ "New Mexico",   
+                               "SoMiss" ~ "Southern Mississippi",
+                               "TexasSt" ~ "Texas State",
+                               "ArkansasSt" ~ "Arkansas State",   
+                               "CMU" ~ "Central Michigan",
+                               "ULM" ~ "Louisiana Monroe",
+                               "BGSU" ~ "Bowling Green",
+                               "WMU" ~ "Western Michigan",
+                               "NMSU" ~ "New Mexico State",
+                               "ULMonroe" ~ "Louisiana Monroe",
+                               "Massachusetts" ~ "UMass",
+                               "FIU" ~ "Florida International",
+                               "KennesawSt" ~ "Kennesaw State",
+                               "SamHouston" ~ "Sam Houston State",
+                               "SJSU" ~ "San Jose State",
+                               "SDSU" ~ "San Diego State",
+                               "JvilleSt" ~ "Jacksonville State",
+                               team ~ team
+      )
+    ) |> 
+    dplyr::select(team_name = team, sp_rating, sp_off_rk, sp_off_rating, sp_def_rk, 
+                  sp_def_rating, sp_st_rk, sp_st_rating) |> 
+    dplyr::arrange(-sp_rating) |> 
+    dplyr::mutate(sp_rk = dplyr::row_number()) |> 
+    dplyr::relocate(sp_rk, .before = team_name)
+}
+
+sp <- clean_sp_table(sp = data)
+
+# Scape FEI ratings from the website 
+# Also, going to try to get these in a more similar format 
+# FEI shows median possessions per game is 26, so 13 per team 
+# the avergage points per drive is 2.15 since 2007-2023 https://www.bcftoys.com/drives
+# so, we can take the fei_rating + 2.15 * 13 to get a similar number 
+# is this correct, maybe? 
+fei_url <- "https://www.bcftoys.com/2024-fei/"
+
+webpage <- rvest::read_html(fei_url)
+
+fei <- webpage |>
+  rvest::html_node("table") |>
+  rvest::html_table() |>
+  dplyr::slice(-1) |> 
+  dplyr::select(fei_rk = X1, team_name = X2, fei_rating = X3, ofei = X5, ofei_rk = X6, 
+                dfei = X7, dfei_rk = X8, stfei = X9, stfei_rk = X10, EWins = X19) |> 
+  dplyr::slice(-1) |> 
+  dplyr::filter(team_name != "Team") |> 
+  na.omit() |> 
+  dplyr::mutate_at(dplyr::vars(-team_name), as.numeric) |> 
+  dplyr::mutate(team_name = dplyr::case_match(team_name, 
+                       "Connecticut" ~ "UConn",
+                       "UL Monroe" ~ "Louisiana Monroe",
+                       "Sam Houston" ~ "Sam Houston State",
+                       "Massachusetts" ~ "UMass",
+                       team_name ~ team_name
+                       ),
+                fei_adj = (2.15 + fei_rating) * 11.5) 
+  
+
+
+# Run anti-join to find the team_names that are NOT matching
+# commenting this out for now 
+
+# fei |> 
+#     dplyr::anti_join(sp, by = "team_name") |> 
+#     dplyr::select(team_name)
+# A tibble: 10 × 1
+
+        
+# Scrape KFord Ratings from website 
+# website is not behind paywall, but scraping the table was sub-optimal 
+# grabbed it manually and saved via CSV 
+# https://kfordratings.com/power
+kford <- readr::read_csv("kford.csv") |> 
+  dplyr::rename(kford_rk = Rank, team_name = Team, kford_rating = Rating) |> 
+   dplyr::mutate(team_name = dplyr::case_match(team_name, 
+                       "Miami (FL)" ~ "Miami",
+                       "Pitt" ~ "Pittsburgh",
+                       "WKU" ~ "Western Kentucky",
+                       "Miami (Ohio)" ~ "Miami (OH)",
+                       "NIU" ~ "Northern Illinois",
+                       "USF" ~ "South Florida",
+                       "Sam Houston" ~ "Sam Houston State",
+                       "Southern Miss" ~ "Southern Mississippi",
+                       "ULM" ~ "Louisiana Monroe",
+                       "FIU" ~ "Florida International",
+                       team_name ~ team_name
+                       ))
+
+```
+
+### Combine and normalize the ratings
+
+```{r gt-table, message=FALSE, warning=FALSE}
+
+
+# combine all ratings by joining on team_name 
+trio <- kford |> 
+  dplyr::left_join(sp, by ="team_name") |> 
+  dplyr::left_join(fei, by = "team_name") |> 
+  dplyr::select(team_name, sp_rating, kford_rating, fei_rating,
+                kford_rk, fei_rk, sp_rk) 
+
+# normalize the ratings using a function 
+norm <- function(x) {
+  (x - mean(x)) / sd(x)
+}
+
+diff_rtg <- trio |> 
+  dplyr::mutate(
+        sp_norm = norm(sp_rk),
+        kford_norm = norm(kford_rk),
+        fei_norm = norm(fei_rk)
+  ) |> 
+  dplyr::rowwise() |> # run against each individual team
+  dplyr::mutate(
+    rating_range = max(kford_norm, fei_norm, sp_norm) - min(kford_norm, fei_norm, sp_norm),
+    rating_sd = sd(c(kford_norm, fei_norm, sp_norm)),
+    avg_rating = mean(c(kford_rk, fei_rk, sp_rk))
+  ) |> 
+  dplyr::ungroup() |> 
+  dplyr::select(team_name, rating_range, rating_sd, avg_rating,
+                sp_rk, fei_rk, kford_rk, sp_rating, fei_rating, kford_rating) |> 
+  dplyr::arrange(-rating_range, -rating_sd)
+
+```
+
+GT Theme
+
+```{r gt-theme}
+
+gt_theme_chris <- function(gt_object, ...) {
+  stopifnot("'gt_object' must be a 'gt_tbl', have you accidentally passed raw data?" = "gt_tbl" %in% class(gt_object))
+  
+  gt_object |> 
+    gt::tab_options(
+      heading.align = "left",
+      table.border.top.style = "none",
+      column_labels.border.bottom.style = "none",
+      column_labels.border.bottom.color = "black",
+      table_body.border.top.style = "none",
+      table_body.border.bottom.color = "white",
+      heading.border.bottom.style = "none",
+      data_row.padding = gt::px(5),
+      table.font.size = gt::px(12),
+      column_labels.font.size = gt::px(12),
+      column_labels.font.weight = "bolder",
+      column_labels.border.bottom.width = gt::px(1),
+      ...
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        color = "#333333",
+        font = gt::google_font("Roboto"),
+        transform = "uppercase"
+      ),
+      locations = list(
+        gt::cells_column_labels(),
+        gt::cells_stubhead()
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        font = gt::google_font("Roboto"),
+        weight = 800
+      ),
+      locations = gt::cells_title(groups = "title")
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        font = gt::google_font("Roboto"),
+        weight = 400
+      ),
+      locations = gt::cells_body()
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "subtitle"),
+      style = gt::cell_text(
+        size = "small"
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "title"),
+      style = gt::cell_text(
+        size = "large"
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_source_notes(),
+      style = gt::cell_text(
+        size = "x-small"
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    )  |> 
+    gt::tab_style(
+      locations = gt::cells_row_groups(groups = gt::everything()),
+      style = list(
+        gt::cell_text(
+          size = "small",
+          weight = "bold"
+        ), 
+        gt::cell_fill(color = "#FFFEE0")
+      )) |> 
+    gt::tab_style(
+      style = list(
+        gt::cell_fill(color = "#FFFEE0"),
+        gt::cell_text(color = "#333333", size = gt::px(12), weight = "bold"),
+        gt::cell_borders(sides = "right", color = "black", weight = gt::px(2)),
+        gt::cell_borders(sides = "bottom", color = "black", weight = gt::px(2))
+      ),
+      locations = list(
+        gt::cells_column_spanners(
+          spanners = gt::everything()
+        )
+      )
+    )
+} 
+```
+
+### GT Tables
+
+```{r gt-tbl}
+
+# prepare the table by grabbing the widest range and slimmest range 
+
+diff_rtg |> 
+  dplyr::arrange(-rating_range, -rating_sd) |> 
+  dplyr::slice(1:10) |> 
+  dplyr::mutate(range_group = "highest", 
+                color = "Reds") -> high_range 
+
+diff_rtg |> 
+  dplyr::arrange(rating_range, rating_sd) |> 
+  dplyr::slice(1:10) |> 
+  dplyr::mutate(range_group = "lowest",
+                color = "Greens") -> low_range 
+
+diff_groups <- high_range |> 
+  dplyr::bind_rows(low_range) |> 
+  dplyr::mutate_at(dplyr::vars(
+                rating_range,
+                rating_sd,
+                avg_rating,
+                sp_rating,
+                fei_rating,
+                kford_rating
+  ), ~ sprintf("%.2f", .)) |> 
+  dplyr::relocate(kford_rk, .before = fei_rk, fei_rating) |> 
+   dplyr::relocate(kford_rating, .before = fei_rating)
+
+disperse_tbl <- function(high_or_low, color) {
+  
+  table_header <- glue::glue(
+    "<div style='display: flex; justify-content: space-between; align-items: center;'>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2024 Preseason FBS Power Ratings</span><span style='display: block; font-weight: bold; text-align: center; font-size: 18px;'>Strongest agreement</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Compares the preseason ratings across SP+, FEI, and KFORD.</span>
+     </div>
+   </div>"
+  )
+  
+  
+  diff_groups |>    
+    dplyr::filter(range_group == high_or_low) |>
+    dplyr::filter(color == color) |> 
+    cbbplotR::gt_cbb_teams(team_name, team_name) |> 
+    gt::gt() |> 
+    gt::fmt_markdown(team_name) |> 
+    gtExtras::gt_merge_stack(
+      col1 = sp_rk,
+      col2 = sp_rating,
+      palette = c("black", "#333333")
+    ) |> 
+    gtExtras::gt_merge_stack(
+      col1 = kford_rk,
+      col2 = kford_rating,
+      palette = c("black", "#333333")
+    ) |>
+    gtExtras::gt_merge_stack(
+      col1 = fei_rk,
+      col2 = fei_rating,
+      palette = c("black", "#333333")
+    ) |>
+    gt::cols_label(
+      team_name = "",
+      rating_range = "Range",
+      rating_sd = "SD",
+      avg_rating = "Avg",
+      sp_rk = "SP+",
+      kford_rk = "KFORD",
+      fei_rk = "FEI"
+    ) |>
+     gt::data_color(
+    columns = rating_range,
+    direction = c("column"),
+    palette = c(color),
+      ) |> 
+    gt::data_color(
+          columns = c(sp_rk, kford_rk, fei_rk),
+    direction = c("column"),
+    palette = c("YlGn"), 
+    reverse = TRUE,
+    alpha = 0.4,
+    ) |> 
+    gt::cols_hide(columns = c(range_group, color)) |> 
+    gt::tab_spanner(label = gt::html("Measure of<br>Dispersion"), 
+                    columns = c(rating_range, rating_sd, avg_rating)) |> 
+    gt::tab_spanner(label = gt::html("Rank<br>Power Rating"), 
+                    columns = c(sp_rk, kford_rk, fei_rk)) |> 
+    gt::cols_align(align = "left", columns = c(team_name)) |>
+    gtExtras::gt_add_divider(columns = c(team_name, avg_rating), 
+                             sides = "right", color = "black") |> 
+    gt::tab_header(title = gt::html(table_header)) |>
+    gt::tab_source_note(source_note = gt::html("<hr>
+                                       <b>How do I read this chart?</b><br>Each system uses a different scale for its power ratings, so we're normalizing the ratings and comparing the range, standard deviation, and average rating. The lower these numbers, the more agreement across models. And the higher these numbers, the more disagreement across models. <br>There are <b>134 FBS</b> teams this season.
+                                       Chart also highlights the raw ranking in each system, so its faster to compare teams. Lists the power rating using the system's scale underneath each rank.<hr><b>Preseason ratings data sources</b><br>
+                                       SP+, Bill Connelly, ESPN+<br>
+                                       FEI, Brian Fremeau, bcftoys.com/<br>
+                                       KFORD, Kelley Ford, kfordratings.com 
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | August 17, 2024</b>")) |> 
+    cbbplotR::gt_theme_savant() |> 
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    ) |> 
+    gt::tab_options(
+      heading.align = "left",
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_row_groups(groups = gt::everything()),
+      style = list(
+        gt::cell_text(
+          align = "center"
+        ),
+        gt::cell_borders(sides = c("top", "right"), color = "black", weight = gt::px(2))
+      ))
+}
+
+table_highest <- disperse_tbl("highest", "Reds")
+
+# For teams with smallest dispersion
+table_lowest <- disperse_tbl("lowest", "Greens")
+
+# Save the tables
+gtExtras::gtsave_extra(table_highest,
+                       filename = "highest_dispersion.png",
+                       vheight = 850,
+                       vwidth = 650)
+
+gtExtras::gtsave_extra(table_lowest,
+                       filename = "lowest_dispersion.png",
+                       vheight = 850,
+                       vwidth = 650)
+
+table_highest
+
+table_lowest
+```

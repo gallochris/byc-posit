@@ -1,0 +1,14 @@
+,Boston College,Clemson,Duke,Florida State,Georgia Tech,Louisville,Miami,North Carolina,NC State,Pittsburgh,Syracuse,Wake Forest,Virginia,Virginia Tech
+Boston College,,Duke,Clemson,,Louisville,Georgia Tech,,,,,,,,
+Clemson,,,,,,,,,,,,,,
+Duke,Florida State,,,Boston College,,,,,,,,,,
+Florida State,Louisville,Florida State,,Clemson,Wake Forest,Boston College,,Pittsburgh,Virginia,North Carolina,,Georgia Tech,NC State,
+Louisville,Virginia,Syracuse,,,,NC State,,,Louisville,Virginia Tech,Clemson,,Boston College,Pittsburgh
+Miami,,Wake Forest,,Virginia Tech,Miami,,Georgia Tech,Syracuse,,,North Carolina,Clemson,,Florida State
+North Carolina,,,NC State,Syracuse,,Pittsburgh,North Carolina,Miami,Duke,Louisville,Florida State,Virginia Tech,,Wake Forest
+NC State,Georgia Tech,Miami,Florida State,Duke,Boston College,,Clemson,Virginia,,Wake Forest,,Pittsburgh,North Carolina,
+Pittsburgh,,NC State,Louisville,Wake Forest,North Carolina,Duke,Virginia,Georgia Tech,Clemson,,Virginia Tech,Florida State,Miami,Syracuse
+Syracuse,Syracuse,,Wake Forest,Pittsburgh,Virginia,Virginia Tech,NC State,,Miami,Florida State,Boston College,Duke,Georgia Tech,Louisville
+Wake Forest,Virginia Tech,Georgia Tech,North Carolina,Miami,Clemson,Virginia,Florida State,Duke,Wake Forest,Syracuse,Pittsburgh,NC State,Louisville,Boston College
+Virginia ,Pittsburgh,North Carolina,Virginia,,Syracuse,Miami,Louisville,Clemson,Virginia Tech,Boston College,Georgia Tech,,Duke,NC State
+Virginia Tech,Miami,,Pittsburgh,,,,Boston College,NC State,North Carolina,Duke,Wake Forest,Syracuse,Virginia Tech,Virginia

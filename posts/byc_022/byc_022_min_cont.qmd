@@ -1,0 +1,155 @@
+---
+title: "022: More experience, less continuity"
+date: "2023-03-15"
+categories:
+  - ggthemes
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(hoopR)
+library(ggtext)
+library(gt)
+library(gtExtras)
+library(ggthemes)
+```
+
+### Load data
+
+```{r data-load, message=FALSE}
+ # use hoopR to grab stats
+yrs <- c(2008:2023)
+
+rm <- function(id) {
+    kp_height(min_year = id, max_year = id) %>% 
+        mutate(season = id) %>%
+        select(season, ncaa_seed, team, continuity, continuity_rk, bench, bench_rk, experience, experience_rk) %>%
+        filter(!is.na(ncaa_seed))
+}
+
+
+rm_data <- lapply(yrs, rm)
+
+rm_results <- as.data.frame(do.call(rbind, rm_data))
+
+avgs <- rm_results %>%
+    group_by(season) %>% 
+    summarise(avg_cont = mean(continuity),
+              avg_exp = mean(experience),
+              avg_bench = mean(bench))
+
+acc_teams <- c("N.C. State", "North Carolina", "Duke", "Wake Forest")
+
+acc_nums <- rm_results %>%
+            filter(team %in% acc_teams) %>%
+            select(season, team, ncaa_seed, continuity, continuity_rk, experience, experience_rk) %>%
+            arrange(-season) %>%
+            mutate(team = case_match(team,
+                "North Carolina" ~ "UNC",
+                "N.C. State" ~ "NC State",
+                team ~ team
+                )) 
+```
+
+### Create scatterplot
+
+```{r scatter-plot, warning=FALSE}
+avgs_plot <- avgs %>% 
+  mutate(
+    color = if_else(season == 2023, "#ef8a62", "#67a9cf"),
+    fill = colorspace::lighten(color, amount = 0.3)
+    ) %>% 
+  ggplot(aes(x = avg_cont, y = avg_exp, color = color, fill = fill)) +
+  geom_point(size = 5, pch = 21) +
+  scale_color_identity(aesthetics = c("fill", "color")) +
+  scale_x_continuous(limits = c(45, 65), breaks = seq(45, 65, by = 5)) +
+  scale_y_continuous(limits = c(1.5, 2.5), breaks = seq(1.5, 2.5, by = .1)) +
+  coord_cartesian(clip = "off") +
+  annotate("text", x = 45, y = 1.5, size = 3, label = "Minutes continuity measures what percentage of a team’s minutes are played by the same player from season to season.", 
+  vjust = 10.5, hjust = 0.1, color = "darkgrey") +
+  theme_fivethirtyeight() +
+  theme(axis.title.x = element_text(face="bold"),
+          axis.title.y = element_text(face="bold"),
+           plot.caption = element_text(size = 8)) +
+    labs(
+    x = "Continuity",
+    y = "Experience",
+    title = "Teams have more experience and less continuity in the NCAA Tournament",
+    subtitle = "Average years of experience and percentage of minutes continuity for tournament teams since 2008.",
+    caption = "@dadgumboxscores | March 15 | data via kenpom & hoopR"
+  ) +
+  annotate("text", 
+    y = 2.35, 
+    x = 46.8, 
+    color = "#ef8a62", 
+    label = "2023",
+    size = 6,
+    fontface = "bold",
+    hjust = 0.8
+  ) +
+    annotate("text", 
+    y = 2, 
+    x = 57, 
+    color = "#67a9cf", 
+    label = "Other seasons  \n2008 to 2022",
+    size = 6,
+    fontface = "bold",
+    hjust = 0.8
+  )
+
+
+ggsave(
+  "avg_plot.png",
+  avgs_plot,
+  w = 10.5,
+  h = 8.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+avgs_plot
+```
+
+#### Make GT Table
+
+```{r gt-table, warning=FALSE}
+acc_table <- acc_nums %>%
+  filter(season != 2020) %>%
+  gt() %>%
+  cols_label(
+    # rename columns
+    season = "Year",
+    team = "Team",
+    ncaa_seed = "Seed",
+    continuity = "% Min",
+    experience = "Years",
+    continuity_rk = "D-I Rank",
+    experience_rk = "D-I Rank"
+  ) %>%
+  tab_spanner(label = "Continuity",
+              columns = c(continuity, continuity_rk)) %>%
+  tab_spanner(label = "Experience",
+              columns = c(experience, experience_rk)) %>%
+  gt_theme_dot_matrix() %>%
+  tab_header(title = "Experience and Minutes Continuity for the Big Four") %>%
+  tab_source_note(source_note = "@dadgumboxscores | March 15 | data via kenpom & hoopR") %>%
+  tab_options (
+    source_notes.font.size = px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = px(10),
+    column_labels.text_transform = 'capitalize'
+  )
+
+gtsave_extra(acc_table,
+             "acc_table.png"
+)
+
+acc_table
+```
+
+#### 

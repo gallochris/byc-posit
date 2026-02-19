@@ -1,0 +1,390 @@
+---
+title: "136: Bracket fun"
+date: "2025-03-19"
+categories:
+  - gt
+  - nanoplots
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+# this data is used in the evidence app, saving as a csv for static generation 
+# https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/wab_logs.R
+
+team_sum_tbl <- readr::read_csv("ncaat_data.csv")
+
+ncaat_teams <- team_sum_tbl |> 
+  dplyr::pull(team)
+
+cbbdata::cbd_torvik_game_stats(year = 2025) |> 
+  dplyr::filter(team %in% ncaat_teams) |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarise(
+    record = paste0(sum(result == "W"), "-", sum(result == "L")),
+    avg = mean(game_score),
+    avg_last_10 = mean(head(game_score, 10)),
+    sum_data = list(rev(game_score)),
+    max_game = max(game_score),
+    max_result = result[which.max(game_score)],
+    max_opp = opp[which.max(game_score)],
+    max_pts_scored =  pts_scored[which.max(game_score)],
+    max_pts_allowed =  pts_allowed[which.max(game_score)],
+    min_game = min(game_score),
+    min_result = result[which.min(game_score)],
+    min_opp = opp[which.min(game_score)],
+    min_pts_scored =  pts_scored[which.min(game_score)],
+    min_pts_allowed =  pts_allowed[which.min(game_score)],
+  ) |> 
+  dplyr::mutate(
+    max_score = paste0(max_result, ", ", 
+                       max_opp, " ",
+                       max_pts_scored, "-",
+                       max_pts_allowed),
+    min_score = paste0(min_result, ", ", 
+                       min_opp, " ",
+                       min_pts_scored, "-",
+                       min_pts_allowed),
+  ) |> 
+  dplyr::select(team, record, avg, avg_last_10, sum_data, max_score, max_game, min_score, min_game,) |> 
+  dplyr::arrange(-avg) -> gscores
+
+
+ncaat_gscores <- gscores |> 
+  dplyr::left_join(team_sum_tbl, by = c("team", "record")) |> 
+  dplyr::relocate(seed, .before = team) |> 
+  dplyr::relocate(region, .after = team) |> 
+  dplyr::mutate(
+    region = dplyr::if_else(team == "North Carolina",
+                             "South", region),
+    seed = dplyr::if_else(team == "North Carolina",
+                         11, seed),
+    f4 = dplyr::if_else(team == "North Carolina",
+                          0.022, f4),
+    region = dplyr::if_else(team == "Alabama St.",
+                            "South", region),
+    seed = dplyr::if_else(team == "Alabama St.",
+                          16, seed),
+    f4 = dplyr::if_else(team == "Alabama St.",
+                        0, f4),
+  ) |> 
+  dplyr::mutate(avg_rank = rowMeans(dplyr::across(c(trk, kp)))) |> 
+  dplyr::select(region,
+                seed, 
+                team,
+                record,
+                f4,
+                avg, 
+                max_score,
+                max_game,
+                min_score,
+                min_game,
+                avg_last_10,
+                sum_data
+                )
+
+
+```
+
+### Function for Game Scores
+
+```{r gscore-func, warning=FALSE, message=FALSE}
+
+region_tbl <- function(region) {
+  
+  # Set the title of the plot
+  table_title <- 
+    paste0(region, " Region: Team Performance")
+  
+  custom_header <-glue::glue(
+    "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>{table_title}</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Game Score (GS) is calculated by Bart Torvik on a per game basis.<br>Shows odds to win the region, the season average and average GS over the last 10 games, the best/worst games, and performance over time for every team.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+  )
+  
+  ncaat_gscores |>
+    dplyr::filter(region == {{region}}) |>
+    dplyr::mutate(
+      pairs = dplyr::case_when(
+        seed %in% c(1, 16) ~ 1,
+        seed %in% c(8, 9) ~ 2,
+        seed %in% c(5, 12) ~ 3,
+        seed %in% c(4, 13) ~ 4,
+        seed %in% c(6, 11) ~ 5,
+        seed %in% c(3, 14) ~ 6,
+        seed %in% c(7, 10) ~ 7,
+        seed %in% c(2, 15) ~ 8,
+      )
+    ) |> 
+    dplyr::arrange(pairs, seed) |> 
+    cbbplotR::gt_cbb_teams(team, team, logo_height = 12.5) |> 
+    gt::gt() |>
+    gtUtils::gt_theme_gtutils() |> 
+    gt::fmt_markdown(columns = c(team)) |>
+    gt::cols_hide(columns = c(region, pairs)) |> 
+    gtExtras::gt_merge_stack(
+      col1 = team,
+      col2 = record,
+      palette = c("black", "#333333"),
+      font_size = c("12px", "8px"),
+      font_weight = c("bold", "normal")
+    ) |> 
+    gtExtras::gt_merge_stack(
+      col1 = max_game,
+      col2 = max_score,
+      palette = c("black", "#333333"),
+      font_size = c("12px", "6.5px"),
+      font_weight = c("bold", "normal")
+    ) |>
+    gtExtras::gt_merge_stack(
+      col1 = min_game,
+      col2 = min_score,
+      palette = c("black", "#333333"),
+      font_size = c("12px", "6.5px"),
+      font_weight = c("bold", "normal")
+    ) |>
+    gtUtils::gt_column_subheaders(
+      f4 = list(heading = "Odds", subtitle = "% to win Region"),
+      avg = list(heading = "Avg", subtitle = "Season"),
+      max_game = list(heading = "Best", subtitle = "Game"),
+      min_game = list(heading = "Worst", subtitle = "Game"),
+      avg_last_10 = list(heading = "Last 10", subtitle = "Games"),
+      heading_color = "black",
+      subtitle_color = "gray"
+    ) |> 
+    gt::tab_spanner(
+      columns = c(avg, max_game, min_game, avg_last_10,
+                  sum_data),
+      label = "Game Score"
+    ) |> 
+    gt::cols_label(
+      seed = "Seed",
+      team = ""
+    ) |> 
+    gt::cols_nanoplot(
+      columns = sum_data,
+      reference_line = "mean",
+      autohide = TRUE,
+      new_col_label = "Over time",
+      options = gt::nanoplot_options(
+        data_area_fill_color = "#a6d96a",
+        reference_line_color = "#333333",
+        show_data_area = TRUE,
+        show_data_points = FALSE
+      )
+    ) |> 
+    gt::cols_align(align = "left", columns = c(team, f4, max_score, min_score)) |>
+    gt::cols_align(align = "right", columns = c(seed, avg, avg_last_10)) |>
+    gtExtras::gt_add_divider(columns = c(f4), sides = "right", color = "black") |> 
+    gt::tab_header(title = gt::html(custom_header)) |>
+    gt::tab_source_note(source_note = gt::html("<hr><b>Table by Chris at Bless your Chart & Ryan at Fifth Factor | data from Bart Torvik and cbbplotR | March 19, 2025</b>")) |> 
+    gt::tab_style(
+      locations = gt::cells_column_labels(),
+      style = gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = "650",
+        size = gt::px(14)
+      )
+    ) |>
+    gtUtils::gt_color_pills(f4,
+                            domain = c(0, .55), format_type = "percent", digits = 1,
+                            palette = c("#d7191c", 
+                                        "#ffffbf", 
+                                        "#1a9641")
+    ) |>
+    gtUtils::gt_color_pills(avg,
+                            domain = c(10, 100), format_type = "number", digits = 1,
+                            palette = c("#d7191c",
+                                        "#ffffbf", 
+                                        "#1a9641")
+    ) |> 
+    gtUtils::gt_color_pills(avg_last_10,
+                            domain = c(10, 100), format_type = "number", digits = 1,
+                            palette = c("#d7191c", 
+                                        "#ffffbf", 
+                                        "#1a9641")
+    ) |> 
+    gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+    gt::tab_options(table.width = gt::px(750)) |>
+    gt::tab_style(
+      locations = gt::cells_row_groups(),
+      style = list(
+        gt::cell_text(
+          font = gt::google_font("Signika Negative"),
+          weight = 850,
+          size = gt::px(11.5),
+          color = "black",
+          align = "left"
+        ),
+        gt::cell_fill(
+          color = "#C5C5FF"
+        )
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_column_spanners(),
+      style = gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(14)
+      )
+    ) |>
+    gt::tab_style(
+      locations = gt::cells_source_notes(),
+      style = gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        size = gt::px(10),
+        weight = 250
+      )
+    ) |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(font = gt::google_font("Signika Negative"),
+                      size = gt::px(10.5)
+        )
+      ),
+      locations = gt::cells_body(
+        rows = gt::everything(),
+        columns = gt::everything()
+      )
+    ) |> 
+    gtUtils::gt_border_grid(color = "black",
+                            weight = 2,
+                            include_labels = FALSE) -> ncaat_region_table
+  
+  ncaat_region_table
+}
+
+region_tbl(region = "South") -> south
+
+gtUtils::gt_save_crop(
+  south,
+  file = "south_region_tbl.png",
+  whitespace = 60,
+  bg = "#FFFDF5"
+)
+
+south
+```
+
+### Yahoo and Torvik data
+
+```{r yahoo-tbl, warning=FALSE, message=FALSE}
+ 
+bodds <- readr::read_csv("yahoo.csv")
+
+bodds_tbl <- bodds |> 
+  dplyr::mutate(f4pick = f4pick * 100, 
+                delta = F4 - f4pick) |> 
+  dplyr::arrange(-f4pick) |> 
+  dplyr::relocate(f4pick) |> 
+  dplyr::filter(f4pick > 3) |> 
+  dplyr::mutate(
+    F4 = F4/100,
+    f4pick = f4pick/100
+  ) |> 
+  dplyr::mutate(
+    color_f4pick = dplyr::case_when(
+      f4pick > .25 ~ "orange",
+      f4pick <= .25 & f4pick > F4 ~ "yellow",
+      f4pick <= .25 & f4pick <= F4 ~ "lightgreen"
+    )
+  ) |> 
+  dplyr::select(F4, Team, Seed, Region, 
+                f4pick, color_f4pick)
+
+
+bodds_tbl |> 
+  cbbplotR::gt_cbb_teams(Team, Team,
+                         logo_height = 15) |> 
+  dplyr::arrange(-F4, -f4pick) |> 
+  gt::gt() |> 
+  gt::cols_hide(color_f4pick) |> 
+  gt::fmt_markdown(columns = Team) |> 
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::cols_align(align = "left", columns = c("Team", "Region")) |> 
+  gt::cols_align(align = "right", columns = c("F4", "Seed", 
+                                              "f4pick")) |> 
+  gtUtils::gt_color_pills(
+    F4,
+    domain = c(0, .7),
+    format_type = "percent",
+    digits = 1,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000"),
+    pill_height = 15,
+  ) |> 
+  gt::fmt_percent(f4pick, decimals = 1) |> 
+  gt::data_color(
+    columns = f4pick,
+    fn = function(x) {
+      dplyr::case_when(
+        x > 0.25 ~ "orange",
+        x <= 0.25 & x > bodds_tbl$F4[match(x, bodds_tbl$f4pick)] ~ "yellow",
+        x <= 0.25 & x <= bodds_tbl$F4[match(x, bodds_tbl$f4pick)] ~ "lightgreen",
+        TRUE ~ "black"
+      )
+    },
+    alpha = 0.6
+  ) |> 
+  gt::cols_label(
+    F4 = "Odds", 
+    Team = "",
+    Seed = "Seed", 
+    Region = "Region", 
+    f4pick = "Pick %", 
+  ) |> 
+  gt::tab_header(
+    title = gt::md("**Final Four Odds vs Yahoo Bracket Picks**"),
+    subtitle = "Shows Final Four odds from Bart Torvik compared to Yahoo bracket picks by the public for the 2025 NCAA men's basketball tournament."
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>Data through March 18, 2025 games<hr><br><b>Table by Ryan at Fifth Factor and Chris at Bless your chart <br> data via barttorvik.com, yahoo.com, + cbbplotR</b>"
+    )
+  ) |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#EEEEEE',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'uppercase'
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(
+      weight = 850,
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(385)) -> f4_tbl 
+
+
+gtUtils::gt_save_crop(
+  f4_tbl,
+  file = "f4_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+f4_tbl
+
+```

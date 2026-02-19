@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-08-27">
+
+<title>105: Defense – bless your chart</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">bless your chart</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">about</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/gallochris/caRolina"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dadgumboxscores"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page">
+      <h1 class="title">105: Defense</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">gt</div>
+                <div class="quarto-category">nanoplots</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 27, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+
+
+
+
+
+<section id="scrape-cfbfastr-for-schedules-and-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="scrape-cfbfastr-for-schedules-and-matrix">Scrape cfbfastR for schedules and matrix</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cbbplotR)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cfbfastR::cfbd_team_info(year = 2024) |&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::rename(team = school) -&gt; cfb_teams</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># full_teams &lt;- cfb_teams |&gt; </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::pull(team)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># cfbfastR function to pull schedules for all teams</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sched &lt;- function(team) {</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  result_list &lt;- purrr::map(team, function(team) {</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    cfbfastR::cfbd_game_info(year = 2024,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                             season_type = "regular",</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                             team = team) |&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#      dplyr::select(date = start_date, week, neutral_site, conference, conference_game, home_team, away_team) |&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#      tidyr::pivot_longer(</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#        cols = c(home_team, away_team),</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#        names_to = "home_away",</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#        values_to = "opponent"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#      ) |&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#      dplyr::filter(opponent != team) |&gt;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#      dplyr::mutate(team = team) |&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#      dplyr::mutate(home_away = dplyr::case_match(home_away, "away_team" ~ "home", "home_team" ~ "away")) |&gt;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#      dplyr::mutate(home_away = dplyr::if_else(neutral_site == TRUE, "neutral", home_away)) |&gt;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#      dplyr::select(date, team, week, conference_game, home_away, opponent)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  })</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a> <span class="co"># combined_result &lt;- dplyr::bind_rows(result_list)</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#  return(combined_result)</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># loop through teams to fetch schedules </span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># combined_result &lt;- sched_win_totals(full_teams)</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># cfbfastR::cfbd_team_info(year = 2024) |&gt;</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">#     dplyr::select(opponent = school, opp_conf = conference) -&gt; opp_confs</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># join opponent conferences </span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># full_sched &lt;- combined_result |&gt; </span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co">#  dplyr::left_join(opp_confs, by = "opponent")</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co"># write.csv(full_sched, "2024_sched.csv")</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>sched <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"2024_sched.csv"</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>sched <span class="sc">|&gt;</span> </span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">conf =</span> dplyr<span class="sc">::</span><span class="fu">case_match</span>(conf,</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"American Athletic"</span> <span class="sc">~</span> <span class="st">"American"</span>,</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Pac-12"</span> <span class="sc">~</span> <span class="st">"Pac-2"</span>,</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Conference USA"</span> <span class="sc">~</span> <span class="st">"CUSA"</span>,</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"FBS Independents"</span> <span class="sc">~</span> <span class="st">"INDIE"</span>,</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Mid-American"</span> <span class="sc">~</span> <span class="st">"MAC"</span>,</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Mountain West"</span> <span class="sc">~</span> <span class="st">"MW"</span>,</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>                                          conf <span class="sc">~</span> conf  )) <span class="sc">|&gt;</span> </span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">opp_conf =</span> dplyr<span class="sc">::</span><span class="fu">case_match</span>(opp_conf,</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"American Athletic"</span> <span class="sc">~</span> <span class="st">"American"</span>,</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Pac-12"</span> <span class="sc">~</span> <span class="st">"Pac-2"</span>,</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Conference USA"</span> <span class="sc">~</span> <span class="st">"CUSA"</span>,</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"FBS Independents"</span> <span class="sc">~</span> <span class="st">"INDIE"</span>,</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Mid-American"</span> <span class="sc">~</span> <span class="st">"MAC"</span>,</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Mountain West"</span> <span class="sc">~</span> <span class="st">"MW"</span>,</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>                                           opp_conf <span class="sc">~</span> opp_conf  )) <span class="sc">|&gt;</span> </span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(conf, opp_conf) <span class="sc">|&gt;</span> </span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>        <span class="at">opp =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">"drop"</span>  <span class="co"># Explicitly drop the grouping</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>        <span class="at">names_from =</span> opp_conf,</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>        <span class="at">values_from =</span> opp,</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>        <span class="at">values_fill =</span> <span class="dv">0</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>            <span class="sc">-</span>conf,</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>            <span class="sc">~</span><span class="fu">ifelse</span>(dplyr<span class="sc">::</span><span class="fu">cur_column</span>() <span class="sc">==</span> conf, <span class="st">"-"</span>, <span class="fu">as.character</span>(.))</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">NA</span><span class="st">`</span>)<span class="ot">-&gt;</span> conferences</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="gt-table-for-conferences" class="level3">
+<h3 class="anchored" data-anchor-id="gt-table-for-conferences">GT Table for conferences</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>conferences <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    gt<span class="sc">::</span><span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    gtExtras<span class="sc">::</span><span class="fu">gt_theme_dot_matrix</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    gt<span class="sc">::</span><span class="fu">tab_options</span> (</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">source_notes.font.size =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">10</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">row.striping.background_color =</span> <span class="st">'#EEEEEE'</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">table.font.size =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">12</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">column_labels.text_transform =</span> <span class="st">'uppercase'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    gt<span class="sc">::</span><span class="fu">tab_style</span>(<span class="at">style =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">cell_borders</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">sides =</span> <span class="fu">c</span>(<span class="st">"left"</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">"#eeeeee"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">2</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">list</span>(gt<span class="sc">::</span><span class="fu">cells_body</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">columns =</span> gt<span class="sc">::</span><span class="fu">everything</span>()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_label</span>(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">conf =</span> <span class="st">""</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_header</span>(<span class="at">title =</span> gt<span class="sc">::</span><span class="fu">html</span>(<span class="st">"&lt;b&gt;Games Scheduled Between FBS Conferences in 2024&lt;/b&gt;&lt;hr&gt;"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_source_note</span>(<span class="at">source_note =</span> gt<span class="sc">::</span><span class="fu">html</span>(<span class="st">"Data via cfbfastR&lt;br&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;hr&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="st">                                       &lt;b&gt;Table by Chris (@dadgumboxscores) + Bless your chart | August 28, 2024&lt;/b&gt;"</span>))<span class="ot">-&gt;</span> conf_tbl </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>gtExtras<span class="sc">::</span><span class="fu">gtsave_extra</span>(conf_tbl, </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                       <span class="at">filename =</span> <span class="st">"conf_tbl.png"</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                       <span class="at">vwidth =</span> <span class="dv">650</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                       <span class="at">expand =</span> <span class="dv">10</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>conf_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="yinywghvip" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yinywghvip table {
+  font-family: Courier, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#yinywghvip thead, #yinywghvip tbody, #yinywghvip tfoot, #yinywghvip tr, #yinywghvip td, #yinywghvip th {
+  border-style: none;
+}
+
+#yinywghvip p {
+  margin: 0;
+  padding: 0;
+}
+
+#yinywghvip .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#yinywghvip .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#yinywghvip .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#yinywghvip .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#yinywghvip .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yinywghvip .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+#yinywghvip .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yinywghvip .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 85%;
+  font-weight: normal;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#yinywghvip .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 85%;
+  font-weight: normal;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#yinywghvip .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#yinywghvip .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#yinywghvip .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#yinywghvip .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#yinywghvip .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#yinywghvip .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#yinywghvip .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#yinywghvip .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#yinywghvip .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#yinywghvip .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yinywghvip .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#yinywghvip .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#yinywghvip .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#yinywghvip .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yinywghvip .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#yinywghvip .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#yinywghvip .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yinywghvip .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yinywghvip .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#yinywghvip .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yinywghvip .gt_striped {
+  background-color: #EEEEEE;
+}
+
+#yinywghvip .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yinywghvip .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yinywghvip .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yinywghvip .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yinywghvip .gt_sourcenote {
+  font-size: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yinywghvip .gt_left {
+  text-align: left;
+}
+
+#yinywghvip .gt_center {
+  text-align: center;
+}
+
+#yinywghvip .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#yinywghvip .gt_font_normal {
+  font-weight: normal;
+}
+
+#yinywghvip .gt_font_bold {
+  font-weight: bold;
+}
+
+#yinywghvip .gt_font_italic {
+  font-style: italic;
+}
+
+#yinywghvip .gt_super {
+  font-size: 65%;
+}
+
+#yinywghvip .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#yinywghvip .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#yinywghvip .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#yinywghvip .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#yinywghvip .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#yinywghvip .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#yinywghvip .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#yinywghvip .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#yinywghvip div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+
+tbody tr:last-child {
+  border-bottom: 2px solid #ffffff00;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="gt_heading header">
+<td colspan="12" class="gt_heading gt_title gt_font_normal gt_bottom_border"><strong>Games Scheduled Between FBS Conferences in 2024</strong>
+<hr></td>
+</tr>
+<tr class="gt_col_headings even">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="ACC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">ACC</th>
+<th id="American" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">American</th>
+<th id="Big 12" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Big 12</th>
+<th id="Big Ten" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Big Ten</th>
+<th id="CUSA" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">CUSA</th>
+<th id="INDIE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">INDIE</th>
+<th id="MAC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">MAC</th>
+<th id="MW" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">MW</th>
+<th id="Pac-2" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Pac-2</th>
+<th id="SEC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">SEC</th>
+<th id="Sun Belt" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Sun Belt</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">ACC</td>
+<td class="gt_row gt_right" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">8</td>
+<td class="gt_row gt_right" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">11</td>
+<td class="gt_row gt_right" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">7</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">American</td>
+<td class="gt_row gt_right gt_striped" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right gt_striped" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right gt_striped" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right gt_striped" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">6</td>
+<td class="gt_row gt_right gt_striped" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">6</td>
+<td class="gt_row gt_right gt_striped" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right gt_striped" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">11</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">Big 12</td>
+<td class="gt_row gt_right" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">8</td>
+<td class="gt_row gt_right" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">Big Ten</td>
+<td class="gt_row gt_right gt_striped" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right gt_striped" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right gt_striped" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right gt_striped" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right gt_striped" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right gt_striped" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">9</td>
+<td class="gt_row gt_right gt_striped" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">6</td>
+<td class="gt_row gt_right gt_striped" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right gt_striped" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">CUSA</td>
+<td class="gt_row gt_right" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">6</td>
+<td class="gt_row gt_right" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">INDIE</td>
+<td class="gt_row gt_right gt_striped" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">8</td>
+<td class="gt_row gt_right gt_striped" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">6</td>
+<td class="gt_row gt_right gt_striped" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right gt_striped" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right gt_striped" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right gt_striped" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">8</td>
+<td class="gt_row gt_right gt_striped" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">MAC</td>
+<td class="gt_row gt_right" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">9</td>
+<td class="gt_row gt_right" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">8</td>
+<td class="gt_row gt_right" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">7</td>
+<td class="gt_row gt_right" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">MW</td>
+<td class="gt_row gt_right gt_striped" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">8</td>
+<td class="gt_row gt_right gt_striped" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">6</td>
+<td class="gt_row gt_right gt_striped" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right gt_striped" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right gt_striped" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right gt_striped" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">15</td>
+<td class="gt_row gt_right gt_striped" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right gt_striped" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">Pac-2</td>
+<td class="gt_row gt_right" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">15</td>
+<td class="gt_row gt_right" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">SEC</td>
+<td class="gt_row gt_right gt_striped" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">11</td>
+<td class="gt_row gt_right gt_striped" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right gt_striped" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right gt_striped" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right gt_striped" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">7</td>
+<td class="gt_row gt_right gt_striped" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right gt_striped" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right gt_striped" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+<td class="gt_row gt_right gt_striped" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">7</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="conf" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">Sun Belt</td>
+<td class="gt_row gt_right" headers="ACC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">7</td>
+<td class="gt_row gt_right" headers="American" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">11</td>
+<td class="gt_row gt_right" headers="Big 12" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">2</td>
+<td class="gt_row gt_right" headers="Big Ten" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right" headers="CUSA" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">5</td>
+<td class="gt_row gt_right" headers="INDIE" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">1</td>
+<td class="gt_row gt_right" headers="MAC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">4</td>
+<td class="gt_row gt_right" headers="MW" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">3</td>
+<td class="gt_row gt_right" headers="Pac-2" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">0</td>
+<td class="gt_row gt_right" headers="SEC" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">7</td>
+<td class="gt_row gt_right" headers="Sun Belt" style="border-left-width: 2px; border-left-style: solid; border-left-color: #eeeeee">-</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="12" class="gt_sourcenote">Data via cfbfastR<br>
+
+<hr>
+<strong>Table by Chris (@dadgumboxscores) + Bless your chart | August 28, 2024</strong></td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="historical-sp-data-for-unc-defense" class="level3">
+<h3 class="anchored" data-anchor-id="historical-sp-data-for-unc-defense">Historical SP+ data for UNC defense</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>total_def <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"sp_historical.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(team <span class="sc">==</span> <span class="st">"North Carolina"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(year <span class="sc">&gt;</span> <span class="dv">1987</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">def_pctile =</span>  readr<span class="sc">::</span><span class="fu">parse_number</span>(def_pctile)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(year, team, <span class="st">`</span><span class="at">Def. SP+</span><span class="st">`</span>, def_pctile, <span class="at">def_rk =</span> rank...<span class="dv">11</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># now just do 2023 - by scraping 2023 SP+ </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"2023-sp.csv"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># function to clean table and correct names </span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># this is sort of sloppy and anti-dry (oh well)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>clean_sp_table <span class="ot">&lt;-</span> <span class="cf">function</span>(sp) {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  sp <span class="sc">|&gt;</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">team =</span> <span class="fu">gsub</span>(<span class="st">"[^a-zA-Z]"</span>, <span class="st">""</span>, team),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_rating =</span> <span class="st">`</span><span class="at">SP+</span><span class="st">`</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_off_rating =</span> stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">`</span><span class="at">Off. SP+</span><span class="st">`</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">d+</span><span class="sc">\\</span><span class="st">.?</span><span class="sc">\\</span><span class="st">d*"</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_off_rk =</span> stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">`</span><span class="at">Off. SP+</span><span class="st">`</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                                                         <span class="at">pattern =</span> <span class="st">"(?&lt;=</span><span class="sc">\\</span><span class="st">().*(?=</span><span class="sc">\\</span><span class="st">))"</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_def_rk =</span> stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">`</span><span class="at">Def. SP+</span><span class="st">`</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                                                         <span class="at">pattern =</span> <span class="st">"(?&lt;=</span><span class="sc">\\</span><span class="st">().*(?=</span><span class="sc">\\</span><span class="st">))"</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_def_rating =</span> stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">`</span><span class="at">Def. SP+</span><span class="st">`</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">d+</span><span class="sc">\\</span><span class="st">.?</span><span class="sc">\\</span><span class="st">d*"</span>),</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_st_rk =</span> stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">`</span><span class="at">ST SP+</span><span class="st">`</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                                                    <span class="at">pattern =</span> <span class="st">"(?&lt;=</span><span class="sc">\\</span><span class="st">().*(?=</span><span class="sc">\\</span><span class="st">))"</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sp_st_rating =</span> stringr<span class="sc">::</span><span class="fu">str_extract</span>(<span class="st">`</span><span class="at">ST SP+</span><span class="st">`</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">d+</span><span class="sc">\\</span><span class="st">.?</span><span class="sc">\\</span><span class="st">d*"</span>),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="st">'sp_rating'</span>, <span class="st">'sp_off_rating'</span>, <span class="st">'sp_off_rk'</span>, <span class="st">'sp_def_rk'</span>, <span class="st">'sp_def_rating'</span>, </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>                       <span class="st">'sp_st_rk'</span>, <span class="st">'sp_st_rating'</span>), as.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>      <span class="co"># change names to be abbreviated</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">team =</span> dplyr<span class="sc">::</span><span class="fu">case_match</span>(team,</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'NCarolina'</span> <span class="sc">~</span> <span class="st">'North Carolina'</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'OhioSt'</span> <span class="sc">~</span> <span class="st">'Ohio State'</span>,</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'TexasAM'</span> <span class="sc">~</span> <span class="st">'Texas A&amp;M'</span>,</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'PennSt'</span> <span class="sc">~</span> <span class="st">'Penn State'</span>,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'IowaSt'</span> <span class="sc">~</span> <span class="st">'Iowa State'</span>,</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'NotreDame'</span> <span class="sc">~</span> <span class="st">'Notre Dame'</span>,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'ArizonaSt'</span> <span class="sc">~</span> <span class="st">'Arizona State'</span>,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'OleMiss'</span> <span class="sc">~</span> <span class="st">'Ole Miss'</span>,</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'MichiganSt'</span> <span class="sc">~</span> <span class="st">'Michigan State'</span>,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'NCSt'</span> <span class="sc">~</span> <span class="st">'NC State'</span>,</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'MissSt'</span> <span class="sc">~</span> <span class="st">'Mississippi State'</span>,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'OklahomaSt'</span> <span class="sc">~</span> <span class="st">'Oklahoma State'</span>,</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'KansasSt'</span> <span class="sc">~</span> <span class="st">'Kansas State'</span>,</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'CoastalCaro'</span> <span class="sc">~</span> <span class="st">'Coastal Carolina'</span>,</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'WakeForest'</span> <span class="sc">~</span> <span class="st">'Wake Forest'</span>,</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'SanDiegoSt'</span> <span class="sc">~</span> <span class="st">'San Diego State'</span>,</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'AppSt'</span> <span class="sc">~</span> <span class="st">'Appalachian State'</span>,</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'BoiseSt'</span> <span class="sc">~</span> <span class="st">'Boise State'</span>,</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'FloridaSt'</span> <span class="sc">~</span> <span class="st">'Florida State'</span>,</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'FresnoSt'</span> <span class="sc">~</span> <span class="st">'Fresno State'</span>,</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'VaTech'</span> <span class="sc">~</span> <span class="st">'Virginia Tech'</span>,</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"WVirginia"</span> <span class="sc">~</span> <span class="st">"West Virginia"</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"TexasTech"</span> <span class="sc">~</span> <span class="st">"Texas Tech"</span>,</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"BostonColl"</span> <span class="sc">~</span> <span class="st">"Boston College"</span>,</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"JMU"</span> <span class="sc">~</span> <span class="st">"James Madison"</span>,</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"WKU"</span> <span class="sc">~</span> <span class="st">"Western Kentucky"</span>,</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"ECU"</span> <span class="sc">~</span> <span class="st">"East Carolina"</span>, </span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"OregonSt"</span> <span class="sc">~</span> <span class="st">"Oregon State"</span>,</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"WashSt"</span> <span class="sc">~</span> <span class="st">"Washington State"</span>,</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"AirForce"</span> <span class="sc">~</span> <span class="st">"Air Force"</span>,</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"ODU"</span> <span class="sc">~</span> <span class="st">"Old Dominion"</span>, </span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'GaTech'</span> <span class="sc">~</span> <span class="st">'Georgia Tech'</span>,</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SCarolina"</span> <span class="sc">~</span> <span class="st">"South Carolina"</span>, </span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SanJoseSt"</span> <span class="sc">~</span> <span class="st">"San Jose State"</span>,</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"ColoradoSt"</span> <span class="sc">~</span> <span class="st">"Colorado State"</span>,</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"FAU"</span> <span class="sc">~</span> <span class="st">"Florida Atlantic"</span>, </span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"MTSU"</span> <span class="sc">~</span> <span class="st">"Middle Tennessee"</span>,</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"EMU"</span> <span class="sc">~</span> <span class="st">"Eastern Michigan"</span>,</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"MiamiOH"</span> <span class="sc">~</span> <span class="st">"Miami (OH)"</span>,</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"GeorgiaSt"</span> <span class="sc">~</span> <span class="st">"Georgia State"</span>,</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"UtahSt"</span> <span class="sc">~</span> <span class="st">"Utah State"</span>,</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"KentSt"</span> <span class="sc">~</span> <span class="st">"Kent State"</span>,</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"BallSt"</span> <span class="sc">~</span> <span class="st">"Ball State"</span>,</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SAlabama"</span> <span class="sc">~</span> <span class="st">"South Alabama"</span>,</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"NIU"</span> <span class="sc">~</span> <span class="st">"Northern Illinois"</span>,</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"USF"</span> <span class="sc">~</span> <span class="st">"South Florida"</span>, </span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"LaTech"</span> <span class="sc">~</span> <span class="st">"Louisiana Tech"</span>,</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"NTexas"</span> <span class="sc">~</span> <span class="st">"North Texas"</span>,  </span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"GaSouthern"</span> <span class="sc">~</span> <span class="st">"Georgia Southern"</span>,</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"NewMexico"</span> <span class="sc">~</span> <span class="st">"New Mexico"</span>,   </span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SoMiss"</span> <span class="sc">~</span> <span class="st">"Southern Mississippi"</span>,</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"TexasSt"</span> <span class="sc">~</span> <span class="st">"Texas State"</span>,</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"ArkansasSt"</span> <span class="sc">~</span> <span class="st">"Arkansas State"</span>,   </span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"CMU"</span> <span class="sc">~</span> <span class="st">"Central Michigan"</span>,</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"ULM"</span> <span class="sc">~</span> <span class="st">"Louisiana Monroe"</span>,</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"BGSU"</span> <span class="sc">~</span> <span class="st">"Bowling Green"</span>,</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"WMU"</span> <span class="sc">~</span> <span class="st">"Western Michigan"</span>,</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"NMSU"</span> <span class="sc">~</span> <span class="st">"New Mexico State"</span>,</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"ULMonroe"</span> <span class="sc">~</span> <span class="st">"Louisiana Monroe"</span>,</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Massachusetts"</span> <span class="sc">~</span> <span class="st">"UMass"</span>,</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"FIU"</span> <span class="sc">~</span> <span class="st">"Florida International"</span>,</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"KennesawSt"</span> <span class="sc">~</span> <span class="st">"Kennesaw State"</span>,</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SamHouston"</span> <span class="sc">~</span> <span class="st">"Sam Houston State"</span>,</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SJSU"</span> <span class="sc">~</span> <span class="st">"San Jose State"</span>,</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"SDSU"</span> <span class="sc">~</span> <span class="st">"San Diego State"</span>,</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"JvilleSt"</span> <span class="sc">~</span> <span class="st">"Jacksonville State"</span>,</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>                               team <span class="sc">~</span> team</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="at">team_name =</span> team, sp_rating, sp_off_rk, sp_off_rating, sp_def_rk, </span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>                  sp_def_rating, sp_st_rk, sp_st_rating) <span class="sc">|&gt;</span> </span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="sc">-</span>sp_rating) <span class="sc">|&gt;</span> </span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sp_rk =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">relocate</span>(sp_rk, <span class="at">.before =</span> team_name)</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">clean_sp_table</span>(<span class="at">sp =</span> data)</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>unc_2023 <span class="ot">&lt;-</span> sp <span class="sc">|&gt;</span> </span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">def_pctile =</span> dplyr<span class="sc">::</span><span class="fu">percent_rank</span>(sp_def_rating) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>                <span class="at">year =</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(team_name <span class="sc">==</span> <span class="st">"North Carolina"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(year, <span class="at">team =</span> team_name, <span class="st">`</span><span class="at">Def. SP+</span><span class="st">`</span> <span class="ot">=</span> sp_def_rating, def_pctile, <span class="at">def_rk =</span> sp_def_rk)</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>unc_defense <span class="ot">&lt;-</span> total_def <span class="sc">|&gt;</span> </span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(unc_2023) <span class="sc">|&gt;</span> </span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">coach =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1988</span><span class="sc">:</span><span class="dv">1997</span>) <span class="sc">~</span> <span class="st">"Mack Brown 1.0"</span>,</span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1998</span><span class="sc">:</span><span class="dv">2000</span>) <span class="sc">~</span> <span class="st">"Carl Torbush"</span>,</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2001</span><span class="sc">:</span><span class="dv">2006</span>) <span class="sc">~</span> <span class="st">"John Bunting"</span>,</span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span><span class="sc">:</span><span class="dv">2010</span>) <span class="sc">~</span> <span class="st">"Butch Davis"</span>,</span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">==</span> <span class="dv">2011</span> <span class="sc">~</span> <span class="st">"Everett Withers"</span>,</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2012</span><span class="sc">:</span><span class="dv">2018</span>) <span class="sc">~</span> <span class="st">"Larry Fedora"</span>,</span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>      year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2019</span><span class="sc">:</span><span class="dv">2023</span>) <span class="sc">~</span> <span class="st">"Mack Brown 2.0"</span></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(coach) <span class="sc">|&gt;</span> </span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_rtg =</span> <span class="fu">mean</span>(<span class="st">`</span><span class="at">Def. SP+</span><span class="st">`</span>),</span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pct =</span> <span class="fu">mean</span>(def_pctile),</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_data =</span> <span class="fu">list</span>(def_pctile),</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>    <span class="at">record =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 1.0"</span> <span class="sc">~</span> <span class="st">"69-46"</span>,</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Carl Torbush"</span> <span class="sc">~</span> <span class="st">"17-18"</span>,</span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"John Bunting"</span> <span class="sc">~</span> <span class="st">"27-45"</span>,</span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Butch Davis"</span> <span class="sc">~</span> <span class="st">"28-23"</span>,</span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Everett Withers"</span> <span class="sc">~</span> <span class="st">"7-6"</span>,</span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Larry Fedora"</span> <span class="sc">~</span> <span class="st">"45-43"</span>,</span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 2.0"</span> <span class="sc">~</span> <span class="st">"38-27"</span>,</span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>  <span class="at">win_pct =</span>  dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 1.0"</span> <span class="sc">~</span> .<span class="dv">600</span>,</span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Carl Torbush"</span> <span class="sc">~</span> .<span class="dv">486</span>,</span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"John Bunting"</span> <span class="sc">~</span> .<span class="dv">375</span>,</span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Butch Davis"</span> <span class="sc">~</span> .<span class="dv">549</span>,</span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Everett Withers"</span> <span class="sc">~</span> .<span class="dv">539</span>,</span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Larry Fedora"</span> <span class="sc">~</span> .<span class="dv">511</span>,</span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 2.0"</span> <span class="sc">~</span> .<span class="dv">585</span>,</span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank =</span>  dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 1.0"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Carl Torbush"</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"John Bunting"</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Butch Davis"</span> <span class="sc">~</span> <span class="dv">4</span>,</span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Everett Withers"</span> <span class="sc">~</span> <span class="dv">5</span>,</span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Larry Fedora"</span> <span class="sc">~</span> <span class="dv">6</span>,</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 2.0"</span> <span class="sc">~</span> <span class="dv">8</span>,</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">tenure =</span>  dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 1.0"</span> <span class="sc">~</span> <span class="st">"1988-1997"</span>,</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Carl Torbush"</span> <span class="sc">~</span> <span class="st">"1998-2000"</span>,</span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"John Bunting"</span> <span class="sc">~</span> <span class="st">"2001-2006"</span>,</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Butch Davis"</span> <span class="sc">~</span> <span class="st">"2007-2010"</span>,</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Everett Withers"</span> <span class="sc">~</span> <span class="st">"2011"</span>,</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Larry Fedora"</span> <span class="sc">~</span> <span class="st">"2012-2018"</span>,</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>      coach <span class="sc">==</span> <span class="st">"Mack Brown 2.0"</span> <span class="sc">~</span> <span class="st">"2019-Present"</span>,</span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="sc">-</span>rank) <span class="sc">|&gt;</span> </span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">win_pct =</span> <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, win_pct))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="gt-table-for-unc-defenses-with-custom-header" class="level3">
+<h3 class="anchored" data-anchor-id="gt-table-for-unc-defenses-with-custom-header">GT Table for UNC defenses with custom header</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare the table by grabbing the widest range and slimmest range </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>custom_header <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;div style='display: flex; justify-content: space-between; align-items: center;'&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;div&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="st">       style='height: 55px; width: auto; vertical-align: middle;'&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;div style='flex-grow:1; margin-left: 30px; margin-right: 30px'&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'&gt;North Carolina defense under each coach since 1988&lt;/span&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'&gt;Shows the defensive performance using SP+ ratings and percentiles since the 1988 season.&lt;/span&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;div&gt;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png' </span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="st">       style='height: 45px; width: auto; vertical-align: middle;'&gt;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="st">   &lt;/div&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;br&gt;"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>unc_defense <span class="sc">|&gt;</span> </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">relocate</span>(rank, <span class="at">.before =</span> coach) <span class="sc">|&gt;</span> </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(record, <span class="at">.before =</span> avg_rtg) <span class="sc">|&gt;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(win_pct, <span class="at">.before =</span> avg_rtg) <span class="sc">|&gt;</span> </span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    gt<span class="sc">::</span><span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_hide</span>(rank) <span class="sc">|&gt;</span> </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    gtExtras<span class="sc">::</span><span class="fu">gt_merge_stack</span>(</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">col1 =</span> coach,</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">col2 =</span> tenure,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#848484"</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_merge_stack</span>(</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">col1 =</span> record,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">col2 =</span> win_pct,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"#848484"</span>)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  gtExtras<span class="sc">::</span><span class="fu">gt_add_divider</span>(<span class="at">columns =</span> <span class="fu">c</span>(coach), </span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                           <span class="at">sides =</span> <span class="st">"right"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">cols_label</span>(</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">coach =</span> <span class="st">"Coach"</span>,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">record =</span> <span class="st">"Overall Record"</span>,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_rtg =</span> <span class="st">"Rating"</span>,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pct =</span> <span class="st">"Percentile"</span>,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_data =</span> <span class="st">""</span>,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_spanner</span>(<span class="at">columns =</span> <span class="fu">c</span>(avg_rtg, avg_pct, sum_data),</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                  <span class="at">label =</span> gt<span class="sc">::</span><span class="fu">html</span>(<span class="st">"SP+ Defense&lt;br&gt;Averages over tenure"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>   gt<span class="sc">::</span><span class="fu">cols_nanoplot</span>(</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        <span class="at">columns =</span> sum_data,</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>        <span class="at">reference_line =</span> <span class="dv">70</span>,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>        <span class="at">autohide =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot_type =</span> <span class="st">"line"</span>,</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>        <span class="at">new_col_label =</span> <span class="st">"Performance"</span>,</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>        <span class="at">options =</span> gt<span class="sc">::</span><span class="fu">nanoplot_options</span>(</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>            <span class="at">data_area_fill_color =</span> <span class="st">"#eabfff"</span>,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>            <span class="at">reference_line_color =</span> <span class="st">"#333333"</span>,</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>            <span class="at">show_data_area =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>            <span class="at">show_data_points =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(avg_rtg, avg_pct), <span class="at">decimals =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_header</span>(<span class="at">title =</span> gt<span class="sc">::</span><span class="fu">html</span>(custom_header)) <span class="sc">|&gt;</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_source_note</span>(<span class="at">source_note =</span> gt<span class="sc">::</span><span class="fu">html</span>(<span class="st">"&lt;hr&gt;</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="st">                                       Data from Bill Connelly's SP+ system | Theme from cbbplotR and logos from ESPN.com&lt;br&gt;</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="st">                                       Shows the average &lt;b&gt;defensive&lt;/b&gt; SP+ rating and percentile over the coaching tenure.&lt;br&gt;                                       The &lt;b&gt;lower&lt;/b&gt; average SP+ rating, the &lt;b&gt;better&lt;/b&gt; the defense.&lt;br&gt;</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="st">                                       The dotted line is the &lt;b&gt;70th percentile&lt;/b&gt; and the &lt;b&gt;higher&lt;/b&gt; the percentile, the &lt;b&gt;better&lt;/b&gt; the defense.&lt;br&gt;</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="st">                                       &lt;hr&gt;</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="st">                                       &lt;b&gt;Table by Chris (@dadgumboxscores) + Bless your chart | August 28, 2024&lt;/b&gt;"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>  cbbplotR<span class="sc">::</span><span class="fu">gt_theme_savant</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>   gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> gt<span class="sc">::</span><span class="fu">cell_borders</span>(<span class="at">sides =</span> <span class="st">"top"</span>, <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">weight =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="fl">1.5</span>), <span class="at">style =</span> <span class="st">'solid'</span>),</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> gt<span class="sc">::</span><span class="fu">cells_body</span>(</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> gt<span class="sc">::</span><span class="fu">everything</span>()</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">tab_style</span>(</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">cell_text</span>(<span class="at">color =</span> <span class="st">"#333333"</span>, <span class="at">size =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">12</span>), <span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">cell_borders</span>(<span class="at">sides =</span> <span class="st">"bottom"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">weight =</span> gt<span class="sc">::</span><span class="fu">px</span>(<span class="dv">2</span>))</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">list</span>(</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>      gt<span class="sc">::</span><span class="fu">cells_column_spanners</span>(</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>        <span class="at">spanners =</span> gt<span class="sc">::</span><span class="fu">everything</span>()</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>    gt<span class="sc">::</span><span class="fu">tab_options</span>(</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.align =</span> <span class="st">"center"</span>,</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>  ) <span class="ot">-&gt;</span> unc_def_tbl</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>gtExtras<span class="sc">::</span><span class="fu">gtsave_extra</span>(unc_def_tbl, </span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>                       <span class="at">filename =</span> <span class="st">"unc_def_tbl.png"</span>,</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>                       <span class="at">vwidth =</span> <span class="dv">750</span>,</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>                       <span class="at">expand =</span> <span class="dv">10</span>)</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>unc_def_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="cjaibagikf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#cjaibagikf table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#cjaibagikf thead, #cjaibagikf tbody, #cjaibagikf tfoot, #cjaibagikf tr, #cjaibagikf td, #cjaibagikf th {
+  border-style: none;
+}
+
+#cjaibagikf p {
+  margin: 0;
+  padding: 0;
+}
+
+#cjaibagikf .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#cjaibagikf .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#cjaibagikf .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#cjaibagikf .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #000000;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#cjaibagikf .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#cjaibagikf .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#cjaibagikf .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#cjaibagikf .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#cjaibagikf .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#cjaibagikf .gt_group_heading {
+  padding-top: 1.5px;
+  padding-bottom: 1.5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#cjaibagikf .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #000000;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: middle;
+}
+
+#cjaibagikf .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#cjaibagikf .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#cjaibagikf .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgba(255, 255, 255, 0);
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#cjaibagikf .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cjaibagikf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#cjaibagikf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#cjaibagikf .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#cjaibagikf .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cjaibagikf .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#cjaibagikf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cjaibagikf .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#cjaibagikf .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+#cjaibagikf .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cjaibagikf .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cjaibagikf .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cjaibagikf .gt_left {
+  text-align: left;
+}
+
+#cjaibagikf .gt_center {
+  text-align: center;
+}
+
+#cjaibagikf .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#cjaibagikf .gt_font_normal {
+  font-weight: normal;
+}
+
+#cjaibagikf .gt_font_bold {
+  font-weight: bold;
+}
+
+#cjaibagikf .gt_font_italic {
+  font-style: italic;
+}
+
+#cjaibagikf .gt_super {
+  font-size: 65%;
+}
+
+#cjaibagikf .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#cjaibagikf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#cjaibagikf .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#cjaibagikf .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#cjaibagikf .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#cjaibagikf .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#cjaibagikf .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#cjaibagikf .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#cjaibagikf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+
+#cjaibagikf tbody tr:last-child {
+  border-bottom: 2px solid #ffffff00;
+}
+
+#cjaibagikf .gt_col_heading {
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+
+#cjaibagikf .gt_subtitle {
+  padding-top: 0px !important;
+  padding-bottom: 4px !important;
+}
+
+#cjaibagikf .gt_heading {
+  padding-bottom: 0px;
+  padding-top: 6px;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="gt_heading header">
+<td colspan="5" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="font-family: 'Roboto Condensed'; font-size: 18px; font-weight: bold"><div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<img src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png" class="img-fluid" style="height: 55px; width: auto; vertical-align: middle;">
+</div>
+<div style="flex-grow:1; margin-left: 30px; margin-right: 30px">
+<span style="display: block; font-weight: bold; text-align: center; font-size: 24px;">North Carolina defense under each coach since 1988</span> <span style="font-size: 14px; font-weight: normal; display: block; text-align: center;">Shows the defensive performance using SP+ ratings and percentiles since the 1988 season.</span>
+</div>
+<div>
+<img src="https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png" class="img-fluid" style="height: 45px; width: auto; vertical-align: middle;">
+</div>
+</div>
+<br>
+</td>
+</tr>
+<tr class="gt_col_headings gt_spanner_row even">
+<th rowspan="2" id="Coach" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; font-weight: bold" scope="col">Coach</th>
+<th rowspan="2" id="Overall Record" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-family: 'Roboto Condensed'; font-size: 14px; font-weight: bold" scope="col">Overall Record</th>
+<th colspan="2" id="SP+ Defense<br>Averages over tenure" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="color: #333333; font-size: 12px; font-weight: bold; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: black" scope="colgroup"><span class="gt_column_spanner">SP+ Defense<br>
+Averages over tenure</span></th>
+<th rowspan="2" id="Performance" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-family: 'Roboto Condensed'; font-size: 14px; font-weight: bold" scope="col">Performance</th>
+</tr>
+<tr class="gt_col_headings header">
+<th id="Rating" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-family: 'Roboto Condensed'; font-size: 14px; font-weight: bold" scope="col">Rating</th>
+<th id="Percentile" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-family: 'Roboto Condensed'; font-size: 14px; font-weight: bold" scope="col">Percentile</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">Mack Brown 2.0</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">2019-Present</span>
+</div></td>
+<td class="gt_row gt_right" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">38-27</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.585</span>
+</div></td>
+<td class="gt_row gt_right" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">27.8</td>
+<td class="gt_row gt_right" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">50.5</td>
+<td class="gt_row gt_left" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 350 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<path class="area-closed" d="M50,29.9214659685864,112.5,64.2146596858639,175,115,237.5,74.9476439790576,300,45.5410122164049,300,125,300,125,300,125,300,125,300,125,50,125,50,125,50,125,50,125,50,125Z" stroke="transparent" stroke-width="2" fill="url(#area_pattern)" fill-opacity="0.7"></path> <path d="M 50,29.9214659685864 C 75,29.9214659685864 87.5,64.2146596858639 112.5,64.2146596858639 C 137.5,64.2146596858639 150,115 175,115 C 200,115 212.5,74.9476439790576 237.5,74.9476439790576 C 262.5,74.9476439790576 275,45.5410122164049 300,45.5410122164049" stroke="#4682B4" stroke-width="8" fill="none"></path> <g class="ref-line"><rect x="40" y="5" width="270" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="15" x2="300" y2="15" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="310" y="25" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">70.0</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">31.8</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">64.3</text></g> <g class="vert-line"> <rect x="102.5" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="122.5" y="20" fill="transparent" stroke="transparent" font-size="30px">51.2</text></g> <g class="vert-line"> <rect x="165" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="185" y="20" fill="transparent" stroke="transparent" font-size="30px">31.8</text></g> <g class="vert-line"> <rect x="227.5" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="247.5" y="20" fill="transparent" stroke="transparent" font-size="30px">47.1</text></g> <g class="vert-line"> <rect x="290" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="310" y="20" fill="transparent" stroke="transparent" font-size="30px">58.3</text></g>
+</svg>
+</div></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">Larry Fedora</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">2012-2018</span>
+</div></td>
+<td class="gt_row gt_right gt_striped" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">45-43</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.511</span>
+</div></td>
+<td class="gt_row gt_right gt_striped" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">27.2</td>
+<td class="gt_row gt_right gt_striped" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">54.0</td>
+<td class="gt_row gt_left gt_striped" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 450 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<path class="area-closed" d="M50,62.8896103896104,108.333333333333,15,166.666666666667,98.6038961038961,225,27.3376623376623,283.333333333333,19.3831168831169,341.666666666667,52.5,400,115,400,125,400,125,400,125,400,125,400,125,400,125,400,125,50,125,50,125,50,125,50,125,50,125,50,125,50,125Z" stroke="transparent" stroke-width="2" fill="url(#area_pattern)" fill-opacity="0.7"></path> <path d="M 50,62.8896103896104 C 75,62.8896103896104 83.3333333333333,15 108.333333333333,15 C 133.333333333333,15 141.666666666667,98.6038961038961 166.666666666667,98.6038961038961 C 191.666666666667,98.6038961038961 200,27.3376623376623 225,27.3376623376623 C 250,27.3376623376623 258.333333333333,19.3831168831169 283.333333333333,19.3831168831169 C 308.333333333333,19.3831168831169 316.666666666667,52.5 341.666666666667,52.5 C 366.666666666667,52.5 375,115 400,115" stroke="#4682B4" stroke-width="8" fill="none"></path> <g class="ref-line"><rect x="40" y="19.7727272727273" width="370" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="29.7727272727273" x2="400" y2="29.7727272727273" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="410" y="39.7727272727273" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">79.1</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">17.5</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">49.6</text></g> <g class="vert-line"> <rect x="98.3333333333333" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="118.333333333333" y="20" fill="transparent" stroke="transparent" font-size="30px">79.1</text></g> <g class="vert-line"> <rect x="156.666666666667" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="176.666666666667" y="20" fill="transparent" stroke="transparent" font-size="30px">27.6</text></g> <g class="vert-line"> <rect x="215" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="235" y="20" fill="transparent" stroke="transparent" font-size="30px">71.5</text></g> <g class="vert-line"> <rect x="273.333333333333" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="293.333333333333" y="20" fill="transparent" stroke="transparent" font-size="30px">76.4</text></g> <g class="vert-line"> <rect x="331.666666666667" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="351.666666666667" y="20" fill="transparent" stroke="transparent" font-size="30px">56.0</text></g> <g class="vert-line"> <rect x="390" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="410" y="20" fill="transparent" stroke="transparent" font-size="30px">17.5</text></g>
+</svg>
+</div></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">Everett Withers</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">2011</span>
+</div></td>
+<td class="gt_row gt_right" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">7-6</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.539</span>
+</div></td>
+<td class="gt_row gt_right" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">23.0</td>
+<td class="gt_row gt_right" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">67.4</td>
+<td class="gt_row gt_left" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 150 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<g class="ref-line"><rect x="40" y="45.3560830860534" width="70" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="55.3560830860534" x2="100" y2="55.3560830860534" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="110" y="65.3560830860534" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">80.9</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">53.9</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">67.4</text></g>
+</svg>
+</div></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">Butch Davis</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">2007-2010</span>
+</div></td>
+<td class="gt_row gt_right gt_striped" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">28-23</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.549</span>
+</div></td>
+<td class="gt_row gt_right gt_striped" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">19.1</td>
+<td class="gt_row gt_right gt_striped" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">79.0</td>
+<td class="gt_row gt_left gt_striped" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 300 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<path class="area-closed" d="M50,115,116.666666666667,32.2619047619048,183.333333333333,15,250,51.9047619047619,250,125,250,125,250,125,250,125,50,125,50,125,50,125,50,125Z" stroke="transparent" stroke-width="2" fill="url(#area_pattern)" fill-opacity="0.7"></path> <path d="M 50,115 C 75,115 91.6666666666667,32.2619047619048 116.666666666667,32.2619047619048 C 141.666666666667,32.2619047619048 158.333333333333,15 183.333333333333,15 C 208.333333333333,15 225,51.9047619047619 250,51.9047619047619" stroke="#4682B4" stroke-width="8" fill="none"></path> <g class="ref-line"><rect x="40" y="97.2619047619048" width="220" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="107.261904761905" x2="250" y2="107.261904761905" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="260" y="117.261904761905" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">85.5</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">68.7</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">68.7</text></g> <g class="vert-line"> <rect x="106.666666666667" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="126.666666666667" y="20" fill="transparent" stroke="transparent" font-size="30px">82.6</text></g> <g class="vert-line"> <rect x="173.333333333333" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="193.333333333333" y="20" fill="transparent" stroke="transparent" font-size="30px">85.5</text></g> <g class="vert-line"> <rect x="240" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="260" y="20" fill="transparent" stroke="transparent" font-size="30px">79.3</text></g>
+</svg>
+</div></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">John Bunting</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">2001-2006</span>
+</div></td>
+<td class="gt_row gt_right" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">27-45</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.375</span>
+</div></td>
+<td class="gt_row gt_right" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">27.1</td>
+<td class="gt_row gt_right" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">45.2</td>
+<td class="gt_row gt_left" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 400 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<path class="area-closed" d="M50,15.1769911504425,110,68.6283185840708,170,115,230,52.3451327433628,290,22.4336283185841,350,79.2477876106195,350,125,350,125,350,125,350,125,350,125,350,125,50,125,50,125,50,125,50,125,50,125,50,125Z" stroke="transparent" stroke-width="2" fill="url(#area_pattern)" fill-opacity="0.7"></path> <path d="M 50,15.1769911504425 C 75,15.1769911504425 85,68.6283185840708 110,68.6283185840708 C 135,68.6283185840708 145,115 170,115 C 195,115 205,52.3451327433628 230,52.3451327433628 C 255,52.3451327433628 265,22.4336283185841 290,22.4336283185841 C 315,22.4336283185841 325,79.2477876106195 350,79.2477876106195" stroke="#4682B4" stroke-width="8" fill="none"></path> <g class="ref-line"><rect x="40" y="5" width="320" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="15" x2="350" y2="15" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="360" y="25" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">70.0</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">13.5</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">69.9</text></g> <g class="vert-line"> <rect x="100" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="120" y="20" fill="transparent" stroke="transparent" font-size="30px">39.7</text></g> <g class="vert-line"> <rect x="160" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="180" y="20" fill="transparent" stroke="transparent" font-size="30px">13.5</text></g> <g class="vert-line"> <rect x="220" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="240" y="20" fill="transparent" stroke="transparent" font-size="30px">48.9</text></g> <g class="vert-line"> <rect x="280" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="300" y="20" fill="transparent" stroke="transparent" font-size="30px">65.8</text></g> <g class="vert-line"> <rect x="340" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="360" y="20" fill="transparent" stroke="transparent" font-size="30px">33.7</text></g>
+</svg>
+</div></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left gt_striped" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">Carl Torbush</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">1998-2000</span>
+</div></td>
+<td class="gt_row gt_right gt_striped" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">17-18</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.486</span>
+</div></td>
+<td class="gt_row gt_right gt_striped" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">23.1</td>
+<td class="gt_row gt_right gt_striped" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">60.2</td>
+<td class="gt_row gt_left gt_striped" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 250 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<path class="area-closed" d="M50,21.25,125,115,200,75.7954545454546,200,125,200,125,200,125,50,125,50,125,50,125Z" stroke="transparent" stroke-width="2" fill="url(#area_pattern)" fill-opacity="0.7"></path> <path d="M 50,21.25 C 75,21.25 100,115 125,115 C 150,115 175,75.7954545454546 200,75.7954545454546" stroke="#4682B4" stroke-width="8" fill="none"></path> <g class="ref-line"><rect x="40" y="5" width="170" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="15" x2="200" y2="15" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="210" y="25" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">70.0</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">52.4</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">68.9</text></g> <g class="vert-line"> <rect x="115" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="135" y="20" fill="transparent" stroke="transparent" font-size="30px">52.4</text></g> <g class="vert-line"> <rect x="190" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="210" y="20" fill="transparent" stroke="transparent" font-size="30px">59.3</text></g>
+</svg>
+</div></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="coach" style="border-right-width: 2px; border-right-style: solid; border-right-color: black; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">Mack Brown 1.0</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">1988-1997</span>
+</div></td>
+<td class="gt_row gt_right" headers="record" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div style="line-height:14px">
+<span class="smallcaps">69-46</span>
+</div>
+<div style="line-height:10px">
+<span style="font-weight:bold;color:#848484;font-size:10px">0.600</span>
+</div></td>
+<td class="gt_row gt_right" headers="avg_rtg" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">18.8</td>
+<td class="gt_row gt_right" headers="avg_pct" style="font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black">67.3</td>
+<td class="gt_row gt_left" headers="nanoplots" style="padding-top: 0; padding-bottom: 0; vertical-align: middle; overflow-x: visible; font-family: 'Roboto Condensed'; font-size: 14px; border-top-width: 1.5px; border-top-style: solid; border-top-color: black"><div>
+<svg role="img" viewbox="0 0 600 130" style="
+height:2em;
+margin-left:auto;
+margin-right:auto;
+font-size:inherit;
+overflow:visible;
+vertical-align:middle;
+position:relative;">
+<defs> <pattern id="area_pattern" width="8" height="8" patternunits="userSpaceOnUse"> <path class="pattern-line" d="M 0,8 l 8,-8 M -1,1 l 4,-4 M 6,10 l 4,-4" stroke="#eabfff" stroke-width="1.5" stroke-linecap="round" shape-rendering="geometricPrecision"> </path> </pattern> </defs>
+<style>text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; stroke-width: 0.15em; paint-order: stroke; stroke-linejoin: round; cursor: default; } .vert-line:hover rect { fill: #911EB4; fill-opacity: 40%; stroke: #FFFFFF60; color: red; } .vert-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover text { stroke: white; fill: #212427; } .horizontal-line:hover rect { fill: transparent; stroke: transparent; color: blue; } .boxplot-line:hover text { stroke: white; fill: #212427; } .boxplot-line:hover rect { fill: transparent; stroke: transparent; } .horizontal-line:hover text { stroke: white; fill: #212427; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; } .y-axis-line:hover rect { fill: #EDEDED; fill-opacity: 60%; stroke: #FFFFFF60; color: red; } .y-axis-line:hover text { stroke: white; stroke-width: 0.20em; fill: #1A1C1F; } .ref-line:hover rect { stroke: #FFFFFF60; } .ref-line:hover line { stroke: #FF0000; } .ref-line:hover text { stroke: white; fill: #212427; }</style>
+<path class="area-closed" d="M50,115,105.555555555556,81.5132336018412,161.111111111111,26.1622554660529,216.666666666667,38.590333716916,272.222222222222,53.7802071346375,327.777777777778,43.8837744533947,383.333333333333,64.9424626006904,438.888888888889,43.078250863061,494.444444444444,15,550,15.6904487917146,550,125,550,125,550,125,550,125,550,125,550,125,550,125,550,125,550,125,550,125,50,125,50,125,50,125,50,125,50,125,50,125,50,125,50,125,50,125,50,125Z" stroke="transparent" stroke-width="2" fill="url(#area_pattern)" fill-opacity="0.7"></path> <path d="M 50,115 C 75,115 80.5555555555555,81.5132336018412 105.555555555556,81.5132336018412 C 130.555555555556,81.5132336018412 136.111111111111,26.1622554660529 161.111111111111,26.1622554660529 C 186.111111111111,26.1622554660529 191.666666666667,38.590333716916 216.666666666667,38.590333716916 C 241.666666666667,38.590333716916 247.222222222222,53.7802071346375 272.222222222222,53.7802071346375 C 297.222222222222,53.7802071346375 302.777777777778,43.8837744533947 327.777777777778,43.8837744533947 C 352.777777777778,43.8837744533947 358.333333333333,64.9424626006904 383.333333333333,64.9424626006904 C 408.333333333333,64.9424626006904 413.888888888889,43.078250863061 438.888888888889,43.078250863061 C 463.888888888889,43.078250863061 469.444444444444,15 494.444444444444,15 C 519.444444444444,15 525,15.6904487917146 550,15.6904487917146" stroke="#4682B4" stroke-width="8" fill="none"></path> <g class="ref-line"><rect x="40" y="36.6455696202532" width="520" height="20" stroke="transparent" stroke-width="1" fill="transparent"></rect><line class="ref-line" x1="50" y1="46.6455696202532" x2="550" y2="46.6455696202532" stroke="#333333" stroke-width="1" stroke-dasharray="4 3" transform="" stroke-linecap="round" vector-effect="non-scaling-stroke"></line><text x="560" y="56.6455696202532" fill="transparent" stroke="transparent" font-size="30px">70.0</text></g> <g class="y-axis-line"> <rect x="0" y="0" width="65" height="130" stroke="transparent" stroke-width="0" fill="transparent"></rect> <text x="0" y="19" fill="transparent" stroke="transparent" font-size="25">97.5</text> <text x="0" y="126" fill="transparent" stroke="transparent" font-size="25">10.6</text></g> <g class="vert-line"> <rect x="40" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="60" y="20" fill="transparent" stroke="transparent" font-size="30px">10.6</text></g> <g class="vert-line"> <rect x="95.5555555555555" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="115.555555555556" y="20" fill="transparent" stroke="transparent" font-size="30px">39.7</text></g> <g class="vert-line"> <rect x="151.111111111111" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="171.111111111111" y="20" fill="transparent" stroke="transparent" font-size="30px">87.8</text></g> <g class="vert-line"> <rect x="206.666666666667" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="226.666666666667" y="20" fill="transparent" stroke="transparent" font-size="30px">77.0</text></g> <g class="vert-line"> <rect x="262.222222222222" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="282.222222222222" y="20" fill="transparent" stroke="transparent" font-size="30px">63.8</text></g> <g class="vert-line"> <rect x="317.777777777778" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="337.777777777778" y="20" fill="transparent" stroke="transparent" font-size="30px">72.4</text></g> <g class="vert-line"> <rect x="373.333333333333" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="393.333333333333" y="20" fill="transparent" stroke="transparent" font-size="30px">54.1</text></g> <g class="vert-line"> <rect x="428.888888888889" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="448.888888888889" y="20" fill="transparent" stroke="transparent" font-size="30px">73.1</text></g> <g class="vert-line"> <rect x="484.444444444444" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="504.444444444444" y="20" fill="transparent" stroke="transparent" font-size="30px">97.5</text></g> <g class="vert-line"> <rect x="540" y="0" width="20" height="130" stroke="transparent" stroke-width="12" fill="transparent"></rect> <text x="560" y="20" fill="transparent" stroke="transparent" font-size="30px">96.9</text></g>
+</svg>
+</div></td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="5" class="gt_sourcenote" style="font-family: 'Roboto Condensed'; font-size: 10px"><hr>
+Data from Bill Connelly's SP+ system | Theme from cbbplotR and logos from ESPN.com<br>
+Shows the average <strong>defensive</strong> SP+ rating and percentile over the coaching tenure.<br>
+The <strong>lower</strong> average SP+ rating, the <strong>better</strong> the defense.<br>
+The dotted line is the <strong>70th percentile</strong> and the <strong>higher</strong> the percentile, the <strong>better</strong> the defense.<br>
+
+<hr>
+<strong>Table by Chris (@dadgumboxscores) + Bless your chart | August 28, 2024</strong></td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/cjg\.quarto\.pub\/bless-your-chart\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

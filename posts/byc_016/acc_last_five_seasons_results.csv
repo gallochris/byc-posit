@@ -1,0 +1,672 @@
+"","game_date","game_id","team","opponent","location","result","points_scored","points_allowed","diff","year"
+"1",20190112,2826,"North Carolina","Louisville","Home","L"," 83","62",21,2019
+"2",20190115,3021,"North Carolina","Notre Dame","Home","W"," 75","69",6,2019
+"3",20190121,3312,"North Carolina","Virginia Tech","Home","W"," 103","82",21,2019
+"4",20190205,3986,"North Carolina","N.C. State","Home","W"," 113","96",17,2019
+"5",20190209,4125,"North Carolina","Miami FL","Home","W"," 88","85",3,2019
+"6",20190211,4288,"North Carolina","Virginia","Home","L"," 69","61",8,2019
+"7",20190223,4795,"North Carolina","Florida St.","Home","W"," 77","59",18,2019
+"8",20190226,4958,"North Carolina","Syracuse","Home","W"," 93","85",8,2019
+"9",20190309,5420,"North Carolina","Duke","Home","W"," 79","70",9,2019
+"10",20190105,2633,"Duke","Clemson","Home","W"," 87","68",19,2019
+"11",20190114,2985,"Duke","Syracuse","Home","L"," 95","91",4,2019
+"12",20190119,3274,"Duke","Virginia","Home","W"," 72","70",2,2019
+"13",20190126,3476,"Duke","Georgia Tech","Home","W"," 66","53",13,2019
+"14",20190205,3974,"Duke","Boston College","Home","W"," 80","55",25,2019
+"15",20190216,4578,"Duke","N.C. State","Home","W"," 94","78",16,2019
+"16",20190220,4680,"Duke","North Carolina","Home","L"," 88","72",16,2019
+"17",20190302,5126,"Duke","Miami FL","Home","W"," 87","57",30,2019
+"18",20190305,5249,"Duke","Wake Forest","Home","W"," 71","70",1,2019
+"19",20190108,2684,"Wake Forest","Duke","Home","L"," 87","65",22,2019
+"20",20190115,3017,"Wake Forest","N.C. State","Home","W"," 71","67",4,2019
+"21",20190126,3535,"Wake Forest","Boston College","Home","L"," 65","61",4,2019
+"22",20190130,3712,"Wake Forest","Louisville","Home","L"," 82","54",28,2019
+"23",20190205,3982,"Wake Forest","Pittsburgh","Home","W"," 78","76",2,2019
+"24",20190216,4451,"Wake Forest","North Carolina","Home","L"," 95","57",38,2019
+"25",20190226,4945,"Wake Forest","Miami FL","Home","W"," 76","75",1,2019
+"26",20190302,5087,"Wake Forest","Syracuse","Home","L"," 79","54",25,2019
+"27",20190309,5354,"Wake Forest","Florida St.","Home","L"," 65","57",8,2019
+"28",20190108,2695,"N.C. State","North Carolina","Home","L"," 90","82",8,2019
+"29",20190112,2827,"N.C. State","Pittsburgh","Home","W"," 86","80",6,2019
+"30",20190126,3498,"N.C. State","Clemson","Home","W"," 69","67",2,2019
+"31",20190129,3659,"N.C. State","Virginia","Home","L"," 66","65",1,2019
+"32",20190202,3799,"N.C. State","Virginia Tech","Home","L"," 47","24",23,2019
+"33",20190213,4358,"N.C. State","Syracuse","Home","W"," 73","58",15,2019
+"34",20190220,4661,"N.C. State","Boston College","Home","W"," 89","80",9,2019
+"35",20190224,4913,"N.C. State","Wake Forest","Home","W"," 94","74",20,2019
+"36",20190306,5292,"N.C. State","Georgia Tech","Home","L"," 63","61",2,2019
+"37",20190105,2501,"Pittsburgh","North Carolina","Home","L"," 85","60",25,2019
+"38",20190109,2729,"Pittsburgh","Louisville","Home","W"," 89","86",3,2019
+"39",20190114,2986,"Pittsburgh","Florida St.","Home","W"," 75","62",13,2019
+"40",20190122,3348,"Pittsburgh","Duke","Home","L"," 79","64",15,2019
+"41",20190202,3873,"Pittsburgh","Syracuse","Home","L"," 65","56",9,2019
+"42",20190209,4143,"Pittsburgh","N.C. State","Home","L"," 79","76",3,2019
+"43",20190216,4505,"Pittsburgh","Virginia Tech","Home","L"," 70","64",6,2019
+"44",20190227,4979,"Pittsburgh","Clemson","Home","L"," 62","48",14,2019
+"45",20190309,5352,"Pittsburgh","Notre Dame","Home","W"," 56","53",3,2019
+"46",20190101,2366,"Virginia Tech","Notre Dame","Home","W"," 81","66",15,2019
+"47",20190105,2502,"Virginia Tech","Boston College","Home","W"," 77","66",11,2019
+"48",20190119,3197,"Virginia Tech","Wake Forest","Home","W"," 87","71",16,2019
+"49",20190126,3593,"Virginia Tech","Syracuse","Home","W"," 78","56",22,2019
+"50",20190204,3958,"Virginia Tech","Louisville","Home","L"," 72","64",8,2019
+"51",20190213,4363,"Virginia Tech","Georgia Tech","Home","W"," 76","68",8,2019
+"52",20190218,4609,"Virginia Tech","Virginia","Home","L"," 64","58",6,2019
+"53",20190226,4960,"Virginia Tech","Duke","Home","W"," 77","72",5,2019
+"54",20190308,5345,"Virginia Tech","Miami FL","Home","W"," 84","70",14,2019
+"55",20190105,2518,"Georgia Tech","Wake Forest","Home","W"," 92","79",13,2019
+"56",20190109,2710,"Georgia Tech","Virginia Tech","Home","L"," 52","49",3,2019
+"57",20190119,3181,"Georgia Tech","Louisville","Home","L"," 79","51",28,2019
+"58",20190122,3335,"Georgia Tech","Notre Dame","Home","W"," 63","61",2,2019
+"59",20190129,3655,"Georgia Tech","North Carolina","Home","L"," 77","54",23,2019
+"60",20190206,4004,"Georgia Tech","Clemson","Home","L"," 65","42",23,2019
+"61",20190216,4462,"Georgia Tech","Florida St.","Home","L"," 69","47",22,2019
+"62",20190220,4681,"Georgia Tech","Pittsburgh","Home","W"," 73","65",8,2019
+"63",20190303,5229,"Georgia Tech","Boston College","Home","W"," 81","78",3,2019
+"64",20190105,2499,"Notre Dame","Syracuse","Home","L"," 72","62",10,2019
+"65",20190112,2828,"Notre Dame","Boston College","Home","W"," 69","66",3,2019
+"66",20190119,3158,"Notre Dame","N.C. State","Home","L"," 77","73",4,2019
+"67",20190126,3487,"Notre Dame","Virginia","Home","L"," 82","55",27,2019
+"68",20190128,3640,"Notre Dame","Duke","Home","L"," 83","61",22,2019
+"69",20190210,4283,"Notre Dame","Georgia Tech","Home","W"," 69","59",10,2019
+"70",20190219,4630,"Notre Dame","Wake Forest","Home","L"," 75","68",7,2019
+"71",20190223,4812,"Notre Dame","Virginia Tech","Home","L"," 67","59",8,2019
+"72",20190306,5294,"Notre Dame","Clemson","Home","L"," 64","62",2,2019
+"73",20190105,2541,"Virginia","Florida St.","Home","W"," 65","52",13,2019
+"74",20190115,3016,"Virginia","Virginia Tech","Home","W"," 81","59",22,2019
+"75",20190122,3349,"Virginia","Wake Forest","Home","W"," 68","45",23,2019
+"76",20190202,3822,"Virginia","Miami FL","Home","W"," 56","46",10,2019
+"77",20190209,4206,"Virginia","Duke","Home","L"," 81","71",10,2019
+"78",20190216,4470,"Virginia","Notre Dame","Home","W"," 60","54",6,2019
+"79",20190227,4984,"Virginia","Georgia Tech","Home","W"," 81","51",30,2019
+"80",20190302,5109,"Virginia","Pittsburgh","Home","W"," 73","49",24,2019
+"81",20190309,5426,"Virginia","Louisville","Home","W"," 73","68",5,2019
+"82",20190109,2733,"Boston College","Virginia","Home","L"," 83","56",27,2019
+"83",20190120,3287,"Boston College","Florida St.","Home","W"," 87","82",5,2019
+"84",20190130,3705,"Boston College","Syracuse","Home","L"," 77","71",6,2019
+"85",20190202,3811,"Boston College","Notre Dame","Home","L"," 79","73",6,2019
+"86",20190212,4303,"Boston College","Pittsburgh","Home","W"," 66","57",9,2019
+"87",20190217,4607,"Boston College","Miami FL","Home","W"," 64","57",7,2019
+"88",20190227,4998,"Boston College","Louisville","Home","W"," 66","59",7,2019
+"89",20190305,5262,"Boston College","North Carolina","Home","L"," 79","66",13,2019
+"90",20190309,5357,"Boston College","N.C. State","Home","L"," 73","47",26,2019
+"91",20190106,2651,"Louisville","Miami FL","Home","W"," 90","73",17,2019
+"92",20190116,3035,"Louisville","Boston College","Home","W"," 80","70",10,2019
+"93",20190124,3437,"Louisville","N.C. State","Home","W"," 84","77",7,2019
+"94",20190126,3496,"Louisville","Pittsburgh","Home","W"," 66","51",15,2019
+"95",20190202,3936,"Louisville","North Carolina","Home","L"," 79","69",10,2019
+"96",20190212,4316,"Louisville","Duke","Home","L"," 71","69",2,2019
+"97",20190216,4447,"Louisville","Clemson","Home","W"," 56","55",1,2019
+"98",20190223,4762,"Louisville","Virginia","Home","L"," 64","52",12,2019
+"99",20190303,5219,"Louisville","Notre Dame","Home","W"," 75","61",14,2019
+"100",20190109,2730,"Syracuse","Clemson","Home","W"," 61","53",8,2019
+"101",20190112,2927,"Syracuse","Georgia Tech","Home","L"," 73","59",14,2019
+"102",20190119,3161,"Syracuse","Pittsburgh","Home","W"," 74","63",11,2019
+"103",20190124,3442,"Syracuse","Miami FL","Home","W"," 73","53",20,2019
+"104",20190205,3989,"Syracuse","Florida St.","Home","L"," 80","62",18,2019
+"105",20190209,4145,"Syracuse","Boston College","Home","W"," 67","56",11,2019
+"106",20190220,4665,"Syracuse","Louisville","Home","W"," 69","49",20,2019
+"107",20190223,4895,"Syracuse","Duke","Home","L"," 75","65",10,2019
+"108",20190304,5234,"Syracuse","Virginia","Home","L"," 79","53",26,2019
+"109",20190112,2821,"Clemson","Virginia","Home","L"," 63","43",20,2019
+"110",20190116,3065,"Clemson","Georgia Tech","Home","W"," 72","60",12,2019
+"111",20190129,3666,"Clemson","Pittsburgh","Home","W"," 82","69",13,2019
+"112",20190203,3944,"Clemson","Wake Forest","Home","W"," 64","37",27,2019
+"113",20190209,4121,"Clemson","Virginia Tech","Home","W"," 59","51",8,2019
+"114",20190219,4640,"Clemson","Florida St.","Home","L"," 77","64",13,2019
+"115",20190223,4759,"Clemson","Boston College","Home","W"," 76","66",10,2019
+"116",20190302,5202,"Clemson","North Carolina","Home","L"," 81","79",2,2019
+"117",20190309,5350,"Clemson","Syracuse","Home","W"," 67","55",12,2019
+"118",20190109,2735,"Florida St.","Miami FL","Home","W"," 68","62",6,2019
+"119",20190112,2842,"Florida St.","Duke","Home","L"," 80","78",2,2019
+"120",20190122,3334,"Florida St.","Clemson","Home","W"," 77","68",9,2019
+"121",20190202,3798,"Florida St.","Georgia Tech","Home","W"," 59","49",10,2019
+"122",20190209,4159,"Florida St.","Louisville","Home","W"," 80","75",5,2019
+"123",20190213,4334,"Florida St.","Wake Forest","Home","W"," 88","66",22,2019
+"124",20190225,4921,"Florida St.","Notre Dame","Home","W"," 68","61",7,2019
+"125",20190302,5084,"Florida St.","N.C. State","Home","W"," 78","73",5,2019
+"126",20190305,5251,"Florida St.","Virginia Tech","Home","W"," 73","64",9,2019
+"127",20190103,2437,"Miami FL","N.C. State","Home","L"," 87","82",5,2019
+"128",20190112,2825,"Miami FL","Wake Forest","Home","W"," 76","65",11,2019
+"129",20190119,3139,"Miami FL","North Carolina","Home","L"," 85","76",9,2019
+"130",20190127,3636,"Miami FL","Florida St.","Home","L"," 78","66",12,2019
+"131",20190130,3689,"Miami FL","Virginia Tech","Home","L"," 82","70",12,2019
+"132",20190206,4009,"Miami FL","Notre Dame","Home","W"," 62","47",15,2019
+"133",20190213,4340,"Miami FL","Clemson","Home","W"," 65","64",1,2019
+"134",20190223,4780,"Miami FL","Georgia Tech","Home","W"," 80","65",15,2019
+"135",20190305,5263,"Miami FL","Pittsburgh","Home","W"," 76","63",13,2019
+"136",20191106,162,"North Carolina","Notre Dame","Home","W"," 76","65",11,2020
+"137",20200104,2544,"North Carolina","Georgia Tech","Home","L"," 96","83",13,2020
+"138",20200108,2696,"North Carolina","Pittsburgh","Home","L"," 73","65",8,2020
+"139",20200111,2867,"North Carolina","Clemson","Home","L"," 79","76",3,2020
+"140",20200125,3458,"North Carolina","Miami FL","Home","W"," 94","71",23,2020
+"141",20200201,3927,"North Carolina","Boston College","Home","L"," 71","70",1,2020
+"142",20200208,4195,"North Carolina","Duke","Home","L"," 98","96",2,2020
+"143",20200215,4574,"North Carolina","Virginia","Home","L"," 64","62",2,2020
+"144",20200225,4959,"North Carolina","N.C. State","Home","W"," 85","79",6,2020
+"145",20200303,5258,"North Carolina","Wake Forest","Home","W"," 93","83",10,2020
+"146",20191231,2359,"Duke","Boston College","Home","W"," 88","49",39,2020
+"147",20200111,2911,"Duke","Wake Forest","Home","W"," 90","59",31,2020
+"148",20200118,3216,"Duke","Louisville","Home","L"," 79","73",6,2020
+"149",20200121,3326,"Duke","Miami FL","Home","W"," 89","59",30,2020
+"150",20200128,3652,"Duke","Pittsburgh","Home","W"," 79","67",12,2020
+"151",20200210,4273,"Duke","Florida St.","Home","W"," 70","65",5,2020
+"152",20200215,4484,"Duke","Notre Dame","Home","W"," 94","60",34,2020
+"153",20200222,4873,"Duke","Virginia Tech","Home","W"," 88","64",24,2020
+"154",20200302,5239,"Duke","N.C. State","Home","W"," 88","69",19,2020
+"155",20200307,5394,"Duke","North Carolina","Home","W"," 89","76",13,2020
+"156",20191207,1622,"Wake Forest","N.C. State","Home","L"," 91","82",9,2020
+"157",20200108,2707,"Wake Forest","Florida St.","Home","L"," 78","68",10,2020
+"158",20200114,2990,"Wake Forest","Virginia Tech","Home","L"," 80","70",10,2020
+"159",20200119,3284,"Wake Forest","Boston College","Home","W"," 80","62",18,2020
+"160",20200126,3598,"Wake Forest","Virginia","Home","L"," 65","63",2,2020
+"161",20200201,3936,"Wake Forest","Clemson","Home","W"," 56","44",12,2020
+"162",20200211,4303,"Wake Forest","North Carolina","Home","W"," 74","57",17,2020
+"163",20200219,4664,"Wake Forest","Georgia Tech","Home","L"," 86","79",7,2020
+"164",20200225,4952,"Wake Forest","Duke","Home","W"," 113","101",12,2020
+"165",20200229,5137,"Wake Forest","Notre Dame","Home","W"," 84","73",11,2020
+"166",20191105,107,"N.C. State","Georgia Tech","Home","L"," 82","81",1,2020
+"167",20200108,2694,"N.C. State","Notre Dame","Home","W"," 73","68",5,2020
+"168",20200115,3015,"N.C. State","Miami FL","Home","W"," 80","63",17,2020
+"169",20200118,3156,"N.C. State","Clemson","Home","W"," 60","54",6,2020
+"170",20200127,3617,"N.C. State","North Carolina","Home","L"," 75","65",10,2020
+"171",20200201,3810,"N.C. State","Louisville","Home","L"," 77","57",20,2020
+"172",20200219,4686,"N.C. State","Duke","Home","W"," 88","66",22,2020
+"173",20200222,4815,"N.C. State","Florida St.","Home","L"," 67","61",6,2020
+"174",20200229,5089,"N.C. State","Pittsburgh","Home","W"," 77","73",4,2020
+"175",20200306,5353,"N.C. State","Wake Forest","Home","W"," 84","64",20,2020
+"176",20191106,173,"Pittsburgh","Florida St.","Home","W"," 63","61",2,2020
+"177",20200104,2477,"Pittsburgh","Wake Forest","Home","L"," 69","65",4,2020
+"178",20200114,2978,"Pittsburgh","Louisville","Home","L"," 73","68",5,2020
+"179",20200118,3127,"Pittsburgh","North Carolina","Home","W"," 66","52",14,2020
+"180",20200122,3377,"Pittsburgh","Boston College","Home","W"," 74","72",2,2020
+"181",20200202,3938,"Pittsburgh","Miami FL","Home","W"," 62","57",5,2020
+"182",20200208,4135,"Pittsburgh","Georgia Tech","Home","W"," 73","64",9,2020
+"183",20200212,4355,"Pittsburgh","Clemson","Home","L"," 72","52",20,2020
+"184",20200222,4769,"Pittsburgh","Virginia","Home","L"," 59","56",3,2020
+"185",20200226,4980,"Pittsburgh","Syracuse","Home","L"," 72","49",23,2020
+"186",20191206,1518,"Virginia Tech","Duke","Home","L"," 77","63",14,2020
+"187",20200111,2826,"Virginia Tech","N.C. State","Home","W"," 72","58",14,2020
+"188",20200118,3130,"Virginia Tech","Syracuse","Home","L"," 71","69",2,2020
+"189",20200122,3372,"Virginia Tech","North Carolina","Home","W"," 79","77",2,2020
+"190",20200201,3849,"Virginia Tech","Florida St.","Home","L"," 74","63",11,2020
+"191",20200208,4115,"Virginia Tech","Boston College","Home","L"," 77","73",4,2020
+"192",20200215,4583,"Virginia Tech","Pittsburgh","Home","W"," 67","57",10,2020
+"193",20200219,4689,"Virginia Tech","Miami FL","Home","L"," 102","95",7,2020
+"194",20200226,4991,"Virginia Tech","Virginia","Home","L"," 56","53",3,2020
+"195",20200304,5298,"Virginia Tech","Clemson","Home","W"," 70","58",12,2020
+"196",20191207,1625,"Georgia Tech","Syracuse","Home","L"," 97","63",34,2020
+"197",20200108,2721,"Georgia Tech","Duke","Home","L"," 73","64",9,2020
+"198",20200115,3035,"Georgia Tech","Notre Dame","Home","L"," 78","74",4,2020
+"199",20200118,3242,"Georgia Tech","Virginia","Home","L"," 63","58",5,2020
+"200",20200125,3502,"Georgia Tech","N.C. State","Home","W"," 64","58",6,2020
+"201",20200204,3970,"Georgia Tech","Virginia Tech","Home","W"," 76","57",19,2020
+"202",20200212,4338,"Georgia Tech","Louisville","Home","W"," 64","58",6,2020
+"203",20200225,4957,"Georgia Tech","Clemson","Home","W"," 68","59",9,2020
+"204",20200229,5204,"Georgia Tech","Miami FL","Home","W"," 63","57",6,2020
+"205",20200304,5307,"Georgia Tech","Pittsburgh","Home","W"," 73","57",16,2020
+"206",20191207,1591,"Notre Dame","Boston College","Home","L"," 73","72",1,2020
+"207",20200111,2820,"Notre Dame","Louisville","Home","L"," 67","64",3,2020
+"208",20200122,3354,"Notre Dame","Syracuse","Home","L"," 84","82",2,2020
+"209",20200129,3675,"Notre Dame","Wake Forest","Home","W"," 90","80",10,2020
+"210",20200201,3789,"Notre Dame","Georgia Tech","Home","W"," 80","72",8,2020
+"211",20200205,3987,"Notre Dame","Pittsburgh","Home","W"," 80","72",8,2020
+"212",20200217,4609,"Notre Dame","North Carolina","Home","W"," 77","76",1,2020
+"213",20200223,4921,"Notre Dame","Miami FL","Home","W"," 87","71",16,2020
+"214",20200304,5310,"Notre Dame","Florida St.","Home","L"," 73","71",2,2020
+"215",20200307,5425,"Notre Dame","Virginia Tech","Home","W"," 64","56",8,2020
+"216",20191208,5442,"Virginia","North Carolina","Home","W"," 56","47",9,2020
+"217",20200104,2498,"Virginia","Virginia Tech","Home","W"," 65","39",26,2020
+"218",20200111,2862,"Virginia","Syracuse","Home","L"," 63","55",8,2020
+"219",20200120,3297,"Virginia","N.C. State","Home","L"," 53","51",2,2020
+"220",20200128,3645,"Virginia","Florida St.","Home","W"," 61","56",5,2020
+"221",20200205,4006,"Virginia","Clemson","Home","W"," 51","44",7,2020
+"222",20200211,4309,"Virginia","Notre Dame","Home","W"," 50","49",1,2020
+"223",20200219,4680,"Virginia","Boston College","Home","W"," 78","65",13,2020
+"224",20200229,5220,"Virginia","Duke","Home","W"," 52","50",2,2020
+"225",20200307,5383,"Virginia","Louisville","Home","W"," 57","54",3,2020
+"226",20191106,149,"Boston College","Wake Forest","Home","W"," 77","70",7,2020
+"227",20200107,2648,"Boston College","Virginia","Home","W"," 60","53",7,2020
+"228",20200111,2888,"Boston College","Georgia Tech","Home","L"," 71","52",19,2020
+"229",20200125,3469,"Boston College","Virginia Tech","Home","W"," 61","56",5,2020
+"230",20200129,3699,"Boston College","Louisville","Home","L"," 86","69",17,2020
+"231",20200204,3966,"Boston College","Duke","Home","L"," 63","55",8,2020
+"232",20200216,4603,"Boston College","N.C. State","Home","W"," 71","68",3,2020
+"233",20200222,4847,"Boston College","Clemson","Home","L"," 82","64",18,2020
+"234",20200226,5006,"Boston College","Notre Dame","Home","L"," 62","61",1,2020
+"235",20200303,5252,"Boston College","Syracuse","Home","L"," 84","71",13,2020
+"236",20191206,1512,"Louisville","Pittsburgh","Home","W"," 64","46",18,2020
+"237",20200104,2493,"Louisville","Florida St.","Home","L"," 78","65",13,2020
+"238",20200107,2655,"Louisville","Miami FL","Home","W"," 74","58",16,2020
+"239",20200122,3346,"Louisville","Georgia Tech","Home","W"," 68","64",4,2020
+"240",20200125,3472,"Louisville","Clemson","Home","W"," 80","62",18,2020
+"241",20200205,4023,"Louisville","Wake Forest","Home","W"," 86","76",10,2020
+"242",20200208,4155,"Louisville","Virginia","Home","W"," 80","73",7,2020
+"243",20200219,4655,"Louisville","Syracuse","Home","W"," 90","66",24,2020
+"244",20200222,4814,"Louisville","North Carolina","Home","W"," 72","55",17,2020
+"245",20200301,5236,"Louisville","Virginia Tech","Home","W"," 68","52",16,2020
+"246",20191106,183,"Syracuse","Virginia","Home","L"," 48","34",14,2020
+"247",20200104,2525,"Syracuse","Notre Dame","Home","L"," 88","87",1,2020
+"248",20200107,2671,"Syracuse","Virginia Tech","Home","L"," 67","63",4,2020
+"249",20200115,2997,"Syracuse","Boston College","Home","W"," 76","50",26,2020
+"250",20200125,3460,"Syracuse","Pittsburgh","Home","W"," 69","61",8,2020
+"251",20200201,3934,"Syracuse","Duke","Home","L"," 97","88",9,2020
+"252",20200208,4218,"Syracuse","Wake Forest","Home","W"," 75","73",2,2020
+"253",20200211,4298,"Syracuse","N.C. State","Home","L"," 79","74",5,2020
+"254",20200222,4820,"Syracuse","Georgia Tech","Home","W"," 79","72",7,2020
+"255",20200229,5218,"Syracuse","North Carolina","Home","L"," 92","79",13,2020
+"256",20191105,18,"Clemson","Virginia Tech","Home","L"," 67","60",7,2020
+"257",20191231,2356,"Clemson","Miami FL","Home","L"," 73","68",5,2020
+"258",20200104,2474,"Clemson","N.C. State","Home","W"," 81","70",11,2020
+"259",20200114,2973,"Clemson","Duke","Home","W"," 79","72",7,2020
+"260",20200121,3323,"Clemson","Wake Forest","Home","W"," 71","68",3,2020
+"261",20200128,3638,"Clemson","Syracuse","Home","W"," 71","70",1,2020
+"262",20200209,4266,"Clemson","Notre Dame","Home","L"," 61","57",4,2020
+"263",20200215,4483,"Clemson","Louisville","Home","W"," 77","62",15,2020
+"264",20200229,5104,"Clemson","Florida St.","Home","W"," 70","69",1,2020
+"265",20200306,5346,"Clemson","Georgia Tech","Home","L"," 65","62",3,2020
+"266",20191208,1632,"Florida St.","Clemson","Home","W"," 72","53",19,2020
+"267",20191231,2349,"Florida St.","Georgia Tech","Home","W"," 70","58",12,2020
+"268",20200115,3005,"Florida St.","Virginia","Home","W"," 54","50",4,2020
+"269",20200125,3559,"Florida St.","Notre Dame","Home","W"," 85","84",1,2020
+"270",20200203,3951,"Florida St.","North Carolina","Home","W"," 65","59",6,2020
+"271",20200208,4108,"Florida St.","Miami FL","Home","W"," 99","81",18,2020
+"272",20200215,4443,"Florida St.","Syracuse","Home","W"," 80","77",3,2020
+"273",20200218,4637,"Florida St.","Pittsburgh","Home","W"," 82","67",15,2020
+"274",20200224,4927,"Florida St.","Louisville","Home","W"," 82","67",15,2020
+"275",20200307,5384,"Florida St.","Boston College","Home","W"," 80","62",18,2020
+"276",20191105,7,"Miami FL","Louisville","Home","L"," 87","74",13,2020
+"277",20200104,2589,"Miami FL","Duke","Home","L"," 95","62",33,2020
+"278",20200112,2955,"Miami FL","Pittsburgh","Home","W"," 66","58",8,2020
+"279",20200118,3123,"Miami FL","Florida St.","Home","L"," 83","79",4,2020
+"280",20200128,3647,"Miami FL","Virginia Tech","Home","W"," 71","61",10,2020
+"281",20200205,4022,"Miami FL","N.C. State","Home","L"," 83","72",11,2020
+"282",20200212,4323,"Miami FL","Boston College","Home","W"," 85","58",27,2020
+"283",20200215,4464,"Miami FL","Wake Forest","Home","W"," 71","54",17,2020
+"284",20200304,5308,"Miami FL","Virginia","Home","L"," 46","44",2,2020
+"285",20200307,5422,"Miami FL","Syracuse","Home","W"," 69","65",4,2020
+"286",20210102,1231,"North Carolina","Notre Dame","Home","W"," 66","65",1,2021
+"287",20210112,1459,"North Carolina","Syracuse","Home","W"," 81","75",6,2021
+"288",20210120,2122,"North Carolina","Wake Forest","Home","W"," 80","73",7,2021
+"289",20210123,2295,"North Carolina","N.C. State","Home","W"," 86","76",10,2021
+"290",20210220,3543,"North Carolina","Louisville","Home","W"," 99","54",45,2021
+"291",20210227,3826,"North Carolina","Florida St.","Home","W"," 78","70",8,2021
+"292",20210306,4001,"North Carolina","Duke","Home","W"," 91","73",18,2021
+"293",20210106,1468,"Duke","Boston College","Home","W"," 83","82",1,2021
+"294",20210109,1612,"Duke","Wake Forest","Home","W"," 79","68",11,2021
+"295",20210126,2410,"Duke","Georgia Tech","Home","W"," 75","68",7,2021
+"296",20210130,2561,"Duke","Clemson","Home","W"," 79","53",26,2021
+"297",20210206,2883,"Duke","North Carolina","Home","L"," 91","87",4,2021
+"298",20210209,3016,"Duke","Notre Dame","Home","L"," 93","89",4,2021
+"299",20210220,3491,"Duke","Virginia","Home","W"," 66","65",1,2021
+"300",20210222,3625,"Duke","Syracuse","Home","W"," 85","71",14,2021
+"301",20210227,3781,"Duke","Louisville","Home","L"," 80","73",7,2021
+"302",20210113,1812,"Wake Forest","Louisville","Home","L"," 77","65",12,2021
+"303",20210117,2068,"Wake Forest","Virginia Tech","Home","L"," 64","60",4,2021
+"304",20210123,1822,"Wake Forest","Pittsburgh","Home","W"," 76","75",1,2021
+"305",20210130,2670,"Wake Forest","Miami FL","Home","W"," 66","54",12,2021
+"306",20210217,3371,"Wake Forest","Duke","Home","L"," 84","60",24,2021
+"307",20210220,3588,"Wake Forest","N.C. State","Home","L"," 80","62",18,2021
+"308",20210224,3685,"Wake Forest","Clemson","Home","L"," 60","39",21,2021
+"309",20210305,3975,"Wake Forest","Georgia Tech","Home","L"," 75","63",12,2021
+"310",20201222,1048,"N.C. State","North Carolina","Home","W"," 79","76",3,2021
+"311",20201230,1174,"N.C. State","Boston College","Home","W"," 79","76",3,2021
+"312",20210109,1657,"N.C. State","Miami FL","Home","L"," 64","59",5,2021
+"313",20210127,2436,"N.C. State","Wake Forest","Home","W"," 72","67",5,2021
+"314",20210203,4036,"N.C. State","Virginia","Home","L"," 64","57",7,2021
+"315",20210209,3024,"N.C. State","Syracuse","Home","L"," 77","68",9,2021
+"316",20210213,3234,"N.C. State","Duke","Home","L"," 69","53",16,2021
+"317",20210228,3885,"N.C. State","Pittsburgh","Home","W"," 65","62",3,2021
+"318",20201222,1050,"Pittsburgh","Louisville","Home","L"," 64","54",10,2021
+"319",20210116,2000,"Pittsburgh","Syracuse","Home","W"," 96","76",20,2021
+"320",20210119,4035,"Pittsburgh","Duke","Home","W"," 79","73",6,2021
+"321",20210126,2414,"Pittsburgh","North Carolina","Home","L"," 75","65",10,2021
+"322",20210130,1713,"Pittsburgh","Notre Dame","Home","L"," 84","58",26,2021
+"323",20210203,2750,"Pittsburgh","Virginia Tech","Home","W"," 83","72",11,2021
+"324",20210217,4038,"Pittsburgh","N.C. State","Home","L"," 74","73",1,2021
+"325",20210220,2767,"Pittsburgh","Florida St.","Home","L"," 79","72",7,2021
+"326",20210302,3915,"Pittsburgh","Wake Forest","Home","W"," 70","57",13,2021
+"327",20201215,807,"Virginia Tech","Clemson","Home","W"," 66","60",6,2021
+"328",20201229,1147,"Virginia Tech","Miami FL","Home","W"," 80","78",2,2021
+"329",20210110,1751,"Virginia Tech","Notre Dame","Home","W"," 77","63",14,2021
+"330",20210112,1779,"Virginia Tech","Duke","Home","W"," 74","67",7,2021
+"331",20210130,2668,"Virginia Tech","Virginia","Home","W"," 65","51",14,2021
+"332",20210223,3652,"Virginia Tech","Georgia Tech","Home","L"," 69","53",16,2021
+"333",20210227,3868,"Virginia Tech","Wake Forest","Home","W"," 84","46",38,2021
+"334",20201230,1161,"Georgia Tech","North Carolina","Home","W"," 72","67",5,2021
+"335",20210103,1402,"Georgia Tech","Wake Forest","Home","W"," 70","54",16,2021
+"336",20210120,2108,"Georgia Tech","Clemson","Home","W"," 83","65",18,2021
+"337",20210130,2578,"Georgia Tech","Florida St.","Home","W"," 76","65",11,2021
+"338",20210206,2898,"Georgia Tech","Notre Dame","Home","W"," 82","80",2,2021
+"339",20210210,3041,"Georgia Tech","Virginia","Home","L"," 57","49",8,2021
+"340",20210214,2389,"Georgia Tech","Pittsburgh","Home","W"," 71","65",6,2021
+"341",20210227,3792,"Georgia Tech","Syracuse","Home","W"," 84","77",7,2021
+"342",20210302,3910,"Georgia Tech","Duke","Home","W"," 81","77",4,2021
+"343",20201216,841,"Notre Dame","Duke","Home","L"," 75","65",10,2021
+"344",20201230,1176,"Notre Dame","Virginia","Home","L"," 66","57",9,2021
+"345",20210116,1992,"Notre Dame","Boston College","Home","W"," 80","70",10,2021
+"346",20210127,2439,"Notre Dame","Virginia Tech","Home","L"," 62","51",11,2021
+"347",20210202,2728,"Notre Dame","Wake Forest","Home","W"," 79","58",21,2021
+"348",20210214,3305,"Notre Dame","Miami FL","Home","W"," 71","61",10,2021
+"349",20210303,4039,"Notre Dame","N.C. State","Home","L"," 80","69",11,2021
+"350",20210306,4003,"Notre Dame","Florida St.","Home","W"," 83","73",10,2021
+"351",20210106,1495,"Virginia","Wake Forest","Home","W"," 70","61",9,2021
+"352",20210113,1811,"Virginia","Notre Dame","Home","W"," 80","68",12,2021
+"353",20210123,2347,"Virginia","Georgia Tech","Home","W"," 64","62",2,2021
+"354",20210125,2399,"Virginia","Syracuse","Home","W"," 81","58",23,2021
+"355",20210206,3684,"Virginia","Pittsburgh","Home","W"," 73","66",7,2021
+"356",20210213,3281,"Virginia","North Carolina","Home","W"," 60","48",12,2021
+"357",20210224,2390,"Virginia","N.C. State","Home","L"," 68","61",7,2021
+"358",20210301,3903,"Virginia","Miami FL","Home","W"," 62","51",11,2021
+"359",20201212,4111,"Boston College","Syracuse","Home","L"," 101","63",38,2021
+"360",20210102,1270,"Boston College","Louisville","Home","L"," 76","64",12,2021
+"361",20210109,1596,"Boston College","Virginia","Home","L"," 61","49",12,2021
+"362",20210112,1762,"Boston College","Miami FL","Home","W"," 84","62",22,2021
+"363",20210206,2867,"Boston College","N.C. State","Home","L"," 81","65",16,2021
+"364",20210210,3035,"Boston College","Wake Forest","Home","L"," 69","65",4,2021
+"365",20210227,3767,"Boston College","Notre Dame","Home","W"," 94","90",4,2021
+"366",20210106,1477,"Louisville","Virginia Tech","Home","W"," 73","71",2,2021
+"367",20210118,2075,"Louisville","Florida St.","Home","L"," 78","65",13,2021
+"368",20210123,2274,"Louisville","Duke","Home","W"," 70","65",5,2021
+"369",20210201,1870,"Louisville","Georgia Tech","Home","W"," 74","58",16,2021
+"370",20210223,3644,"Louisville","Notre Dame","Home","W"," 69","57",12,2021
+"371",20210306,3991,"Louisville","Virginia","Home","L"," 68","58",10,2021
+"372",20210106,1352,"Syracuse","Pittsburgh","Home","L"," 63","60",3,2021
+"373",20210119,2098,"Syracuse","Miami FL","Home","W"," 83","57",26,2021
+"374",20210123,2327,"Syracuse","Virginia Tech","Home","W"," 78","60",18,2021
+"375",20210131,2697,"Syracuse","N.C. State","Home","W"," 76","73",3,2021
+"376",20210213,3570,"Syracuse","Boston College","Home","W"," 75","67",8,2021
+"377",20210220,1727,"Syracuse","Notre Dame","Home","W"," 75","67",8,2021
+"378",20210301,3902,"Syracuse","North Carolina","Home","W"," 72","70",2,2021
+"379",20210303,2890,"Syracuse","Clemson","Home","W"," 64","54",10,2021
+"380",20201229,1130,"Clemson","Florida St.","Home","W"," 77","67",10,2021
+"381",20210105,1443,"Clemson","N.C. State","Home","W"," 74","70",4,2021
+"382",20210116,1933,"Clemson","Virginia","Home","L"," 85","50",35,2021
+"383",20210127,3922,"Clemson","Louisville","Home","W"," 54","50",4,2021
+"384",20210202,2717,"Clemson","North Carolina","Home","W"," 63","50",13,2021
+"385",20210206,2876,"Clemson","Syracuse","Home","W"," 78","61",17,2021
+"386",20210212,3184,"Clemson","Georgia Tech","Home","W"," 74","72",2,2021
+"387",20210227,3776,"Clemson","Miami FL","Home","W"," 66","58",8,2021
+"388",20210306,3982,"Clemson","Pittsburgh","Home","W"," 77","62",15,2021
+"389",20201215,791,"Florida St.","Georgia Tech","Home","W"," 74","61",13,2021
+"390",20210113,1787,"Florida St.","N.C. State","Home","W"," 105","73",32,2021
+"391",20210116,1947,"Florida St.","North Carolina","Home","W"," 82","75",7,2021
+"392",20210123,2254,"Florida St.","Clemson","Home","W"," 80","61",19,2021
+"393",20210127,2426,"Florida St.","Miami FL","Home","W"," 81","59",22,2021
+"394",20210213,3194,"Florida St.","Wake Forest","Home","W"," 92","85",7,2021
+"395",20210215,3312,"Florida St.","Virginia","Home","W"," 81","60",21,2021
+"396",20210303,3926,"Florida St.","Boston College","Home","W"," 93","64",29,2021
+"397",20201216,839,"Miami FL","Pittsburgh","Home","L"," 70","55",15,2021
+"398",20210102,1322,"Miami FL","Clemson","Home","L"," 66","65",1,2021
+"399",20210105,1449,"Miami FL","North Carolina","Home","L"," 67","65",2,2021
+"400",20210116,1974,"Miami FL","Louisville","Home","W"," 78","72",6,2021
+"401",20210124,2371,"Miami FL","Notre Dame","Home","L"," 73","59",14,2021
+"402",20210201,2707,"Miami FL","Duke","Home","W"," 77","75",2,2021
+"403",20210206,2916,"Miami FL","Virginia Tech","Home","L"," 80","76",4,2021
+"404",20210220,3531,"Miami FL","Georgia Tech","Home","L"," 87","60",27,2021
+"405",20210224,3667,"Miami FL","Florida St.","Home","L"," 88","71",17,2021
+"406",20210305,3966,"Miami FL","Boston College","Home","W"," 80","76",4,2021
+"407",20220108,2741,"North Carolina","Virginia","Home","W"," 74","58",16,2022
+"408",20220115,3138,"North Carolina","Georgia Tech","Home","W"," 88","65",23,2022
+"409",20220124,2385,"North Carolina","Virginia Tech","Home","W"," 78","68",10,2022
+"410",20220126,3636,"North Carolina","Boston College","Home","W"," 58","47",11,2022
+"411",20220129,3808,"North Carolina","N.C. State","Home","W"," 100","80",20,2022
+"412",20220205,4127,"North Carolina","Duke","Home","L"," 87","67",20,2022
+"413",20220212,4543,"North Carolina","Florida St.","Home","W"," 94","74",20,2022
+"414",20220216,4647,"North Carolina","Pittsburgh","Home","L"," 76","67",9,2022
+"415",20220221,4921,"North Carolina","Louisville","Home","W"," 70","63",7,2022
+"416",20220228,5257,"North Carolina","Syracuse","Home","W"," 88","79",9,2022
+"417",20211222,2182,"Duke","Virginia Tech","Home","W"," 76","65",11,2022
+"418",20220104,2593,"Duke","Georgia Tech","Home","W"," 69","57",12,2022
+"419",20220108,2797,"Duke","Miami FL","Home","L"," 76","74",2,2022
+"420",20220115,3165,"Duke","N.C. State","Home","W"," 88","73",15,2022
+"421",20220122,3495,"Duke","Syracuse","Home","W"," 79","59",20,2022
+"422",20220125,3598,"Duke","Clemson","Home","W"," 71","69",2,2022
+"423",20220207,4251,"Duke","Virginia","Home","L"," 69","68",1,2022
+"424",20220215,4604,"Duke","Wake Forest","Home","W"," 76","74",2,2022
+"425",20220219,4798,"Duke","Florida St.","Home","W"," 88","70",18,2022
+"426",20220305,5403,"Duke","North Carolina","Home","L"," 94","81",13,2022
+"427",20220104,2587,"Wake Forest","Florida St.","Home","W"," 76","54",22,2022
+"428",20220108,2753,"Wake Forest","Syracuse","Home","W"," 77","74",3,2022
+"429",20220112,2970,"Wake Forest","Duke","Home","L"," 76","64",12,2022
+"430",20220122,3483,"Wake Forest","North Carolina","Home","W"," 98","76",22,2022
+"431",20220124,2380,"Wake Forest","Boston College","Home","W"," 87","57",30,2022
+"432",20220202,3967,"Wake Forest","Pittsburgh","Home","W"," 91","75",16,2022
+"433",20220212,4435,"Wake Forest","Miami FL","Home","L"," 76","72",4,2022
+"434",20220219,4758,"Wake Forest","Notre Dame","Home","W"," 79","74",5,2022
+"435",20220226,5137,"Wake Forest","Louisville","Home","W"," 99","77",22,2022
+"436",20220302,5313,"Wake Forest","N.C. State","Home","W"," 101","76",25,2022
+"437",20211204,1421,"N.C. State","Louisville","Home","L"," 73","68",5,2022
+"438",20220101,2443,"N.C. State","Florida St.","Home","L"," 83","81",2,2022
+"439",20220108,2814,"N.C. State","Clemson","Home","L"," 70","65",5,2022
+"440",20220119,3294,"N.C. State","Virginia Tech","Home","L"," 62","59",3,2022
+"441",20220122,3472,"N.C. State","Virginia","Home","W"," 77","63",14,2022
+"442",20220202,3975,"N.C. State","Syracuse","Home","L"," 89","82",7,2022
+"443",20220205,4099,"N.C. State","Notre Dame","Home","L"," 69","57",12,2022
+"444",20220209,4298,"N.C. State","Wake Forest","Home","L"," 69","51",18,2022
+"445",20220223,4968,"N.C. State","Boston College","Home","L"," 69","61",8,2022
+"446",20220226,5198,"N.C. State","North Carolina","Home","L"," 84","74",10,2022
+"447",20211228,2246,"Pittsburgh","Notre Dame","Home","L"," 68","67",1,2022
+"448",20220108,2764,"Pittsburgh","Boston College","Home","W"," 69","67",2,2022
+"449",20220115,3094,"Pittsburgh","Louisville","Home","W"," 65","53",12,2022
+"450",20220119,3303,"Pittsburgh","Virginia","Home","L"," 66","61",5,2022
+"451",20220125,3600,"Pittsburgh","Syracuse","Home","W"," 64","53",11,2022
+"452",20220205,4137,"Pittsburgh","Virginia Tech","Home","L"," 76","71",5,2022
+"453",20220212,4433,"Pittsburgh","N.C. State","Home","W"," 71","69",2,2022
+"454",20220219,4806,"Pittsburgh","Georgia Tech","Home","L"," 68","62",6,2022
+"455",20220222,4935,"Pittsburgh","Miami FL","Home","L"," 85","64",21,2022
+"456",20220301,5277,"Pittsburgh","Duke","Home","L"," 86","56",30,2022
+"457",20211204,1435,"Virginia Tech","Wake Forest","Home","L"," 80","61",19,2022
+"458",20220104,2586,"Virginia Tech","N.C. State","Home","L"," 68","63",5,2022
+"459",20220115,3121,"Virginia Tech","Notre Dame","Home","W"," 79","73",6,2022
+"460",20220126,3634,"Virginia Tech","Miami FL","Home","L"," 78","75",3,2022
+"461",20220202,3976,"Virginia Tech","Georgia Tech","Home","W"," 81","66",15,2022
+"462",20220207,2617,"Virginia Tech","Pittsburgh","Home","W"," 74","47",27,2022
+"463",20220212,4562,"Virginia Tech","Syracuse","Home","W"," 71","59",12,2022
+"464",20220214,4590,"Virginia Tech","Virginia","Home","W"," 62","53",9,2022
+"465",20220219,4890,"Virginia Tech","North Carolina","Home","L"," 65","57",8,2022
+"466",20220301,5279,"Virginia Tech","Louisville","Home","W"," 75","43",32,2022
+"467",20211205,1457,"Georgia Tech","North Carolina","Home","L"," 79","62",17,2022
+"468",20220102,2054,"Georgia Tech","Louisville","Home","L"," 67","64",3,2022
+"469",20220108,2782,"Georgia Tech","Notre Dame","Home","L"," 72","68",4,2022
+"470",20220119,3293,"Georgia Tech","Wake Forest","Home","L"," 80","64",16,2022
+"471",20220126,3641,"Georgia Tech","Florida St.","Home","W"," 75","61",14,2022
+"472",20220129,3822,"Georgia Tech","Miami FL","Home","L"," 73","62",11,2022
+"473",20220205,4093,"Georgia Tech","Clemson","Home","W"," 69","64",5,2022
+"474",20220215,4612,"Georgia Tech","N.C. State","Home","L"," 76","61",15,2022
+"475",20220223,4983,"Georgia Tech","Virginia Tech","Home","L"," 62","58",4,2022
+"476",20220305,5439,"Georgia Tech","Boston College","Home","W"," 82","78",4,2022
+"477",20220105,2638,"Notre Dame","North Carolina","Home","W"," 78","73",5,2022
+"478",20220112,2977,"Notre Dame","Clemson","Home","W"," 72","56",16,2022
+"479",20220126,3643,"Notre Dame","N.C. State","Home","W"," 73","65",8,2022
+"480",20220129,3778,"Notre Dame","Virginia","Home","W"," 69","65",4,2022
+"481",20220131,2393,"Notre Dame","Duke","Home","L"," 57","43",14,2022
+"482",20220209,4335,"Notre Dame","Louisville","Home","W"," 63","57",6,2022
+"483",20220216,4641,"Notre Dame","Boston College","Home","W"," 99","95",4,2022
+"484",20220223,4950,"Notre Dame","Syracuse","Home","W"," 79","69",10,2022
+"485",20220226,5124,"Notre Dame","Georgia Tech","Home","W"," 90","56",34,2022
+"486",20220305,5446,"Notre Dame","Pittsburgh","Home","W"," 78","54",24,2022
+"487",20211203,1326,"Virginia","Pittsburgh","Home","W"," 57","56",1,2022
+"488",20211222,2180,"Virginia","Clemson","Home","L"," 67","50",17,2022
+"489",20220112,2978,"Virginia","Virginia Tech","Home","W"," 54","52",2,2022
+"490",20220115,3107,"Virginia","Wake Forest","Home","L"," 63","55",8,2022
+"491",20220124,3585,"Virginia","Louisville","Home","W"," 64","52",12,2022
+"492",20220201,3934,"Virginia","Boston College","Home","W"," 67","55",12,2022
+"493",20220205,4124,"Virginia","Miami FL","Home","W"," 71","58",13,2022
+"494",20220212,4561,"Virginia","Georgia Tech","Home","W"," 63","53",10,2022
+"495",20220223,4975,"Virginia","Duke","Home","L"," 65","61",4,2022
+"496",20220226,5236,"Virginia","Florida St.","Home","L"," 64","63",1,2022
+"497",20211203,1313,"Boston College","Notre Dame","Home","W"," 73","57",16,2022
+"498",20220102,2059,"Boston College","North Carolina","Home","L"," 91","65",26,2022
+"499",20220112,2962,"Boston College","Georgia Tech","Home","L"," 81","76",5,2022
+"500",20220122,3494,"Boston College","Virginia Tech","Home","W"," 68","63",5,2022
+"501",20220130,3762,"Boston College","Pittsburgh","Home","W"," 69","56",13,2022
+"502",20220208,4266,"Boston College","Syracuse","Home","L"," 73","64",9,2022
+"503",20220212,4455,"Boston College","Duke","Home","L"," 72","61",11,2022
+"504",20220221,2402,"Boston College","Florida St.","Home","W"," 71","55",16,2022
+"505",20220226,5101,"Boston College","Clemson","Home","L"," 70","60",10,2022
+"506",20220302,5309,"Boston College","Miami FL","Home","L"," 81","70",11,2022
+"507",20211229,2298,"Louisville","Wake Forest","Home","W"," 73","69",4,2022
+"508",20220105,2619,"Louisville","Pittsburgh","Home","W"," 75","72",3,2022
+"509",20220112,2976,"Louisville","N.C. State","Home","L"," 79","63",16,2022
+"510",20220119,3299,"Louisville","Boston College","Home","W"," 67","54",13,2022
+"511",20220122,3523,"Louisville","Notre Dame","Home","L"," 82","70",12,2022
+"512",20220129,3823,"Louisville","Duke","Home","L"," 74","65",9,2022
+"513",20220201,3916,"Louisville","North Carolina","Home","L"," 90","83",7,2022
+"514",20220216,4640,"Louisville","Miami FL","Home","L"," 70","63",7,2022
+"515",20220219,4765,"Louisville","Clemson","Home","W"," 70","61",9,2022
+"516",20220305,5441,"Louisville","Virginia","Home","L"," 71","61",10,2022
+"517",20220101,2465,"Syracuse","Virginia","Home","L"," 74","69",5,2022
+"518",20220111,2932,"Syracuse","Pittsburgh","Home","W"," 77","61",16,2022
+"519",20220115,3203,"Syracuse","Florida St.","Home","L"," 76","71",5,2022
+"520",20220118,3275,"Syracuse","Clemson","Home","W"," 91","78",13,2022
+"521",20220129,3803,"Syracuse","Wake Forest","Home","W"," 94","72",22,2022
+"522",20220205,4222,"Syracuse","Louisville","Home","W"," 92","69",23,2022
+"523",20220219,4881,"Syracuse","Boston College","Home","W"," 76","56",20,2022
+"524",20220221,2482,"Syracuse","Georgia Tech","Home","W"," 74","73",1,2022
+"525",20220226,5226,"Syracuse","Duke","Home","L"," 97","72",25,2022
+"526",20220305,5453,"Syracuse","Miami FL","Home","L"," 75","72",3,2022
+"527",20220104,2591,"Clemson","Virginia","Home","L"," 75","65",10,2022
+"528",20220115,3123,"Clemson","Boston College","Home","L"," 70","68",2,2022
+"529",20220122,3431,"Clemson","Pittsburgh","Home","W"," 75","48",27,2022
+"530",20220202,3956,"Clemson","Florida St.","Home","W"," 75","69",6,2022
+"531",20220208,4269,"Clemson","North Carolina","Home","L"," 79","77",2,2022
+"532",20220210,2510,"Clemson","Duke","Home","L"," 82","64",18,2022
+"533",20220212,4471,"Clemson","Notre Dame","Home","L"," 76","61",15,2022
+"534",20220223,4977,"Clemson","Wake Forest","Home","W"," 80","69",11,2022
+"535",20220302,5300,"Clemson","Georgia Tech","Home","W"," 68","65",3,2022
+"536",20220305,5378,"Clemson","Virginia Tech","Home","W"," 63","59",4,2022
+"537",20211204,1358,"Florida St.","Syracuse","Home","L"," 63","60",3,2022
+"538",20220108,2833,"Florida St.","Louisville","Home","W"," 79","70",9,2022
+"539",20220111,2936,"Florida St.","Miami FL","Home","W"," 65","64",1,2022
+"540",20220118,3249,"Florida St.","Duke","Home","W"," 79","78",1,2022
+"541",20220129,3842,"Florida St.","Virginia Tech","Home","L"," 85","72",13,2022
+"542",20220205,4154,"Florida St.","Wake Forest","Home","L"," 68","60",8,2022
+"543",20220209,4312,"Florida St.","Pittsburgh","Home","L"," 56","51",5,2022
+"544",20220215,4605,"Florida St.","Clemson","Home","W"," 81","80",1,2022
+"545",20220302,5301,"Florida St.","Notre Dame","Home","W"," 74","70",4,2022
+"546",20220305,5438,"Florida St.","N.C. State","Home","W"," 89","76",13,2022
+"547",20211204,1418,"Miami FL","Clemson","Home","W"," 80","75",5,2022
+"548",20211229,2273,"Miami FL","N.C. State","Home","W"," 91","83",8,2022
+"549",20220101,2496,"Miami FL","Wake Forest","Home","W"," 92","84",8,2022
+"550",20220105,2631,"Miami FL","Syracuse","Home","W"," 88","87",1,2022
+"551",20220118,3282,"Miami FL","North Carolina","Home","W"," 85","57",28,2022
+"552",20220122,3528,"Miami FL","Florida St.","Home","L"," 61","60",1,2022
+"553",20220202,3965,"Miami FL","Notre Dame","Home","L"," 68","64",4,2022
+"554",20220209,4297,"Miami FL","Georgia Tech","Home","W"," 79","70",9,2022
+"555",20220219,4791,"Miami FL","Virginia","Home","L"," 74","71",3,2022
+"556",20220226,5104,"Miami FL","Virginia Tech","Home","L"," 71","70",1,2022
+"557",20221210,1695,"North Carolina","Georgia Tech","Home","W"," 75","59",16,2023
+"558",20230104,2672,"North Carolina","Wake Forest","Home","W"," 88","79",9,2023
+"559",20230107,2888,"North Carolina","Notre Dame","Home","W"," 81","64",17,2023
+"560",20230117,3333,"North Carolina","Boston College","Home","W"," 72","64",8,2023
+"561",20230121,3548,"North Carolina","N.C. State","Home","W"," 80","69",11,2023
+"562",20230201,4046,"North Carolina","Pittsburgh","Home","L"," 65","64",1,2023
+"563",20230211,4528,"North Carolina","Clemson","Home","W"," 91","71",20,2023
+"564",20230213,4668,"North Carolina","Miami FL","Home","L"," 80","72",8,2023
+"565",20221203,1408,"Duke","Boston College","Home","W"," 75","59",16,2023
+"566",20221231,2486,"Duke","Florida St.","Home","W"," 86","67",19,2023
+"567",20230111,3005,"Duke","Pittsburgh","Home","W"," 77","69",8,2023
+"568",20230121,3485,"Duke","Miami FL","Home","W"," 68","66",2,2023
+"569",20230131,4004,"Duke","Wake Forest","Home","W"," 75","73",2,2023
+"570",20230204,4233,"Duke","North Carolina","Home","W"," 63","57",6,2023
+"571",20230214,4688,"Duke","Notre Dame","Home","W"," 68","64",4,2023
+"572",20221220,2121,"Wake Forest","Duke","Home","W"," 81","70",11,2023
+"573",20221231,2469,"Wake Forest","Virginia Tech","Home","W"," 77","75",2,2023
+"574",20230111,3037,"Wake Forest","Florida St.","Home","W"," 90","75",15,2023
+"575",20230117,3346,"Wake Forest","Clemson","Home","W"," 87","77",10,2023
+"576",20230121,3520,"Wake Forest","Virginia","Home","L"," 76","67",9,2023
+"577",20230128,3833,"Wake Forest","N.C. State","Home","L"," 79","77",2,2023
+"578",20230207,4347,"Wake Forest","North Carolina","Home","W"," 92","85",7,2023
+"579",20230211,4566,"Wake Forest","Georgia Tech","Home","W"," 71","70",1,2023
+"580",20221202,1358,"N.C. State","Pittsburgh","Home","L"," 68","60",8,2023
+"581",20221222,2258,"N.C. State","Louisville","Home","W"," 76","64",12,2023
+"582",20230104,2654,"N.C. State","Duke","Home","W"," 84","60",24,2023
+"583",20230114,3123,"N.C. State","Miami FL","Home","W"," 83","81",2,2023
+"584",20230124,3677,"N.C. State","Notre Dame","Home","W"," 85","82",3,2023
+"585",20230201,4061,"N.C. State","Florida St.","Home","W"," 94","66",28,2023
+"586",20230204,4173,"N.C. State","Georgia Tech","Home","W"," 72","64",8,2023
+"587",20221230,2456,"Pittsburgh","North Carolina","Home","W"," 76","74",2,2023
+"588",20230103,2631,"Pittsburgh","Virginia","Home","W"," 68","65",3,2023
+"589",20230107,2831,"Pittsburgh","Clemson","Home","L"," 75","74",1,2023
+"590",20230121,3524,"Pittsburgh","Florida St.","Home","L"," 71","64",7,2023
+"591",20230125,3712,"Pittsburgh","Wake Forest","Home","W"," 81","79",2,2023
+"592",20230128,3872,"Pittsburgh","Miami FL","Home","W"," 71","68",3,2023
+"593",20230207,4343,"Pittsburgh","Louisville","Home","W"," 91","57",34,2023
+"594",20230214,4702,"Pittsburgh","Boston College","Home","W"," 77","58",19,2023
+"595",20221204,1488,"Virginia Tech","North Carolina","Home","W"," 80","72",8,2023
+"596",20230104,2674,"Virginia Tech","Clemson","Home","L"," 68","65",3,2023
+"597",20230107,2870,"Virginia Tech","N.C. State","Home","L"," 73","69",4,2023
+"598",20230123,3654,"Virginia Tech","Duke","Home","W"," 78","75",3,2023
+"599",20230128,3904,"Virginia Tech","Syracuse","Home","W"," 85","70",15,2023
+"600",20230204,4165,"Virginia Tech","Virginia","Home","W"," 74","68",6,2023
+"601",20230208,4397,"Virginia Tech","Boston College","Home","L"," 82","76",6,2023
+"602",20221221,2194,"Georgia Tech","Clemson","Home","L"," 79","66",13,2023
+"603",20221231,2543,"Georgia Tech","Virginia","Home","L"," 74","56",18,2023
+"604",20230104,2651,"Georgia Tech","Miami FL","Home","W"," 76","70",6,2023
+"605",20230114,3162,"Georgia Tech","Pittsburgh","Home","L"," 71","60",11,2023
+"606",20230117,3330,"Georgia Tech","N.C. State","Home","L"," 78","66",12,2023
+"607",20230121,3486,"Georgia Tech","Syracuse","Home","L"," 80","63",17,2023
+"608",20230128,3853,"Georgia Tech","Duke","Home","L"," 86","43",43,2023
+"609",20230208,4380,"Georgia Tech","Notre Dame","Home","W"," 70","68",2,2023
+"610",20230215,4721,"Georgia Tech","Virginia Tech","Home","W"," 77","70",7,2023
+"611",20221203,1371,"Notre Dame","Syracuse","Home","L"," 62","61",1,2023
+"612",20221230,2455,"Notre Dame","Miami FL","Home","L"," 76","65",11,2023
+"613",20230110,2971,"Notre Dame","Georgia Tech","Home","W"," 73","72",1,2023
+"614",20230117,3334,"Notre Dame","Florida St.","Home","L"," 84","71",13,2023
+"615",20230121,3510,"Notre Dame","Boston College","Home","L"," 84","72",12,2023
+"616",20230128,3819,"Notre Dame","Louisville","Home","W"," 76","62",14,2023
+"617",20230204,4174,"Notre Dame","Wake Forest","Home","L"," 81","64",17,2023
+"618",20230211,4531,"Notre Dame","Virginia Tech","Home","L"," 93","87",6,2023
+"619",20221203,1396,"Virginia","Florida St.","Home","W"," 62","57",5,2023
+"620",20230107,2848,"Virginia","Syracuse","Home","W"," 73","66",7,2023
+"621",20230110,2985,"Virginia","North Carolina","Home","W"," 65","58",7,2023
+"622",20230118,3374,"Virginia","Virginia Tech","Home","W"," 78","68",10,2023
+"623",20230128,3821,"Virginia","Boston College","Home","W"," 76","57",19,2023
+"624",20230207,4356,"Virginia","N.C. State","Home","W"," 63","50",13,2023
+"625",20230211,4553,"Virginia","Duke","Home","W"," 69","62",7,2023
+"626",20221221,2172,"Boston College","Virginia Tech","Home","W"," 70","65",5,2023
+"627",20230103,2617,"Boston College","Notre Dame","Home","W"," 70","63",7,2023
+"628",20230107,2789,"Boston College","Duke","Home","L"," 65","64",1,2023
+"629",20230114,3219,"Boston College","Wake Forest","Home","L"," 85","63",22,2023
+"630",20230125,3728,"Boston College","Louisville","Home","W"," 75","65",10,2023
+"631",20230131,4001,"Boston College","Clemson","Home","W"," 62","54",8,2023
+"632",20230204,4218,"Boston College","Syracuse","Home","L"," 77","68",9,2023
+"633",20230211,4497,"Boston College","N.C. State","Home","L"," 92","62",30,2023
+"634",20221204,1475,"Louisville","Miami FL","Home","L"," 80","53",27,2023
+"635",20230103,2621,"Louisville","Syracuse","Home","L"," 70","69",1,2023
+"636",20230107,2820,"Louisville","Wake Forest","Home","L"," 80","72",8,2023
+"637",20230114,3153,"Louisville","North Carolina","Home","L"," 80","59",21,2023
+"638",20230118,3366,"Louisville","Pittsburgh","Home","L"," 75","54",21,2023
+"639",20230201,4043,"Louisville","Georgia Tech","Home","W"," 68","58",10,2023
+"640",20230204,4182,"Louisville","Florida St.","Home","L"," 81","78",3,2023
+"641",20230215,4724,"Louisville","Virginia","Home","L"," 61","58",3,2023
+"642",20221220,2142,"Syracuse","Pittsburgh","Home","L"," 84","82",2,2023
+"643",20221231,2459,"Syracuse","Boston College","Home","W"," 79","65",14,2023
+"644",20230111,3018,"Syracuse","Virginia Tech","Home","W"," 82","72",10,2023
+"645",20230114,3215,"Syracuse","Notre Dame","Home","W"," 78","73",5,2023
+"646",20230124,3688,"Syracuse","North Carolina","Home","L"," 72","68",4,2023
+"647",20230130,3988,"Syracuse","Virginia","Home","L"," 67","62",5,2023
+"648",20230214,4694,"Syracuse","N.C. State","Home","W"," 75","72",3,2023
+"649",20221202,1348,"Clemson","Wake Forest","Home","W"," 77","57",20,2023
+"650",20221230,2453,"Clemson","N.C. State","Home","W"," 78","64",14,2023
+"651",20230111,3033,"Clemson","Louisville","Home","W"," 83","70",13,2023
+"652",20230114,3195,"Clemson","Duke","Home","W"," 72","64",8,2023
+"653",20230121,3553,"Clemson","Virginia Tech","Home","W"," 51","50",1,2023
+"654",20230124,3685,"Clemson","Georgia Tech","Home","W"," 72","51",21,2023
+"655",20230204,4197,"Clemson","Miami FL","Home","L"," 78","74",4,2023
+"656",20230215,4714,"Clemson","Florida St.","Home","W"," 94","54",40,2023
+"657",20221210,1665,"Florida St.","Louisville","Home","W"," 75","53",22,2023
+"658",20221221,2208,"Florida St.","Notre Dame","Home","W"," 73","72",1,2023
+"659",20230107,2792,"Florida St.","Georgia Tech","Home","W"," 75","64",11,2023
+"660",20230114,3174,"Florida St.","Virginia","Home","L"," 67","58",9,2023
+"661",20230124,3672,"Florida St.","Miami FL","Home","L"," 86","63",23,2023
+"662",20230128,3887,"Florida St.","Clemson","Home","L"," 82","81",1,2023
+"663",20230208,4377,"Florida St.","Syracuse","Home","L"," 76","67",9,2023
+"664",20230211,4498,"Florida St.","Pittsburgh","Home","L"," 83","75",8,2023
+"665",20221210,1677,"Miami FL","N.C. State","Home","W"," 80","73",7,2023
+"666",20221220,2136,"Miami FL","Virginia","Home","W"," 66","64",2,2023
+"667",20230111,3012,"Miami FL","Boston College","Home","W"," 88","72",16,2023
+"668",20230116,3303,"Miami FL","Syracuse","Home","W"," 82","78",4,2023
+"669",20230131,4044,"Miami FL","Virginia Tech","Home","W"," 92","83",9,2023
+"670",20230206,4325,"Miami FL","Duke","Home","W"," 81","59",22,2023
+"671",20230211,4581,"Miami FL","Louisville","Home","W"," 93","85",8,2023

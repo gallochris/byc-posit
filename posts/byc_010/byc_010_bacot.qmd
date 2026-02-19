@@ -1,0 +1,149 @@
+---
+title: "010: Generational rebounder"
+date: "2023-01-08"
+categories:
+  - geom_encircle
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(ggalt)
+library(stringr)
+library(ggrepel)
+library(ggtext)
+library(gt)
+library(gtExtras)
+options(ggrepel.max.overlaps = Inf)
+```
+
+### Load data and manipulate
+
+```{r load-data, message = FALSE}
+rbs <- read_csv("unc_boards.csv") %>% 
+       filter(Rebounds > 600) %>% 
+       mutate(Type = if_else(RPG > 9.8, "Over 10.0 avg", "Under 10 avg"),
+              Label = if_else(RPG > 9.8 | Rebounds > 1000, Player, "")) 
+
+```
+
+### Set the themes for the plot
+
+```{r themes}
+# theme
+theme_me <- function () {
+  theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular") %+replace%
+    theme (
+      plot.title = element_text(
+        hjust = 0.5,
+        size = 24,
+        face = "bold"
+      ),
+      plot.subtitle = element_text(
+        hjust = 0.5,
+        size = 10,
+        lineheight = 0.25,
+        vjust = -0.5
+      ),
+      plot.caption = element_text(
+        hjust = 1,
+        size = 6,
+        lineheight = 0.35,
+        margin = margin(t = 20)
+      ),
+      panel.grid.minor = element_blank(),
+      plot.background = element_rect(fill = "floral white", color = "floral white")
+    )
+}
+
+colors = c("#2b8cbe", "#045a8d")
+
+```
+
+### Make the scatterplot with the encircle
+
+```{r scatter-plot, warning=FALSE}
+bacot <- rbs %>%
+    mutate(Label = if_else(Player == "Armando Bacot", "", Label)) %>% 
+    ggplot(aes(x=Rebounds, y = Games, color=Type)) +
+    geom_point() +
+    geom_label_repel(aes(label = Label),
+                     box.padding   = 0.35, 
+                     point.padding = 0.5,
+                     segment.color = 'grey50') +
+    geom_vline(xintercept = 1000,
+             linetype = 'dashed',
+             color = "#dddddd") +
+      geom_hline(yintercept = 100,
+             linetype = 'dashed',
+             color = "#dddddd") +
+  scale_color_manual(values = colors) +
+  scale_x_continuous(breaks = seq(600, 1250, 50), limits = c(600, 1250)) +
+  scale_y_continuous(breaks = seq(50, 160, 10), limits = c(50, 160)) +
+  geom_encircle(data = filter(rbs, 
+                              Player == "Armando Bacot"), aes(fill = "lightpink"),
+                s_shape=0.2, expand=0.01, alpha=0.1) +
+  theme_me() +
+  theme(legend.position = "none", plot.title = element_markdown()) +
+  labs(
+    y = "Career Games",
+    x = "Career Rebounds",
+    title = "<span style='color:#56a0d3'>Armando Bacot</span>  \nGenerational rebounder ",
+    caption = "@dadgumboxscores | January 8, 2023 | data via goheels.com"
+  ) +
+  annotate(
+    geom = 'label',
+    y = 120,
+    x = 1165,
+    label = "Armando Bacot \n1170 rebounds \n115 career games",
+    fontface = 'bold',
+    colour = "#56a0d3",
+    size = 4,
+    fill = "lightpink",
+  ) 
+
+# save the chart
+ggsave(
+  "bacot.png",
+  bacot,
+  w = 9.5,
+  h = 9.5,
+  dpi = 300,
+)
+
+bacot
+```
+
+### Make the table
+
+```{r table-rpg, warning=FALSE}
+
+table <- rbs %>%
+  filter(Rebounds > 1000 | RPG > 9.8) %>% 
+  mutate(Years = if_else(Player == "Armando Bacot", "2019-present", Years)) %>% 
+  select(Player, Years, Rebounds, Games, RPG) %>%
+  arrange(-Rebounds) %>% 
+  gt() %>%
+  gt_merge_stack(col1 = Player, col2 = Years) %>%
+  gt_highlight_rows(
+    rows = c(2),
+    fill = "#d0e4f3",
+    bold_target_only = TRUE,
+    target_col = c(RPG),
+  ) %>%
+  gt_theme_nytimes() %>%
+  # set title + caption + subtitle
+  tab_header(title = "North Carolina Career Rebound Leaders") %>%
+  tab_source_note(source_note = "@dadgumboxscores | January 8, 2023 | data via goheels.com")  %>%
+  # fix font of source note
+  tab_options (source_notes.font.size = px(10),
+               table.font.size = px(12))
+  
+gtsave(table, 'rpg_table.png', vwidth = 600, vheight = 600, expand = 10)
+
+table
+```

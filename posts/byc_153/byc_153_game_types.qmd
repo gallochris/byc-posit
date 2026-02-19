@@ -1,0 +1,445 @@
+---
+title: "153: Conference Games"
+date: "2025-09-12"
+categories:
+  - gtUtils
+  - geom_smooth
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# load processed games
+games <- readr::read_csv("cfb_games_25.csv")
+
+games_processed <- games |>
+  dplyr::mutate(
+    date = as.Date(game_date),
+    # Define P4 conferences
+    # home_is_p4 = homeConfShort %in% c("ACC", "SEC", "B12", "B10"),
+    # away_is_p4 = awayConfShort %in% c("ACC", "SEC", "B12", "B10"),
+    type = dplyr::case_when(
+      homeClassification == "fcs" |
+        awayClassification == "fcs" ~ "FCS Games",
+      conferenceGame == TRUE ~ "Conference Games",
+      conferenceGame == FALSE ~ "Non-Conference Games",
+      TRUE ~ "Other"
+    )
+  ) |>
+  dplyr::filter(type != "Other")
+
+
+games_by_type <- games_processed |>
+  dplyr::distinct(id, .keep_all = TRUE) |>
+  dplyr::group_by(date, type) |>
+  dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
+  tidyr::complete(date = seq(min(date), max(date), by = "day"),
+                  type,
+                  fill = list(count = 0)) |>
+  dplyr::group_by(type) |>
+  dplyr::arrange(date, .by_group = TRUE) |>
+  dplyr::mutate(cumulative = cumsum(count)) |>
+  dplyr::ungroup()
+
+# count the teams in each conference 
+conference_team_counts <- games |>
+  dplyr::filter(
+    !is.na(homeConference),
+    homeClassification == "fbs"  # Only count FBS teams
+  ) |>
+  dplyr::select(homeTeam, homeConference) |>
+  dplyr::distinct() |>
+  dplyr::group_by(homeConference) |>
+  dplyr::summarise(total_teams = dplyr::n(), .groups = "drop") |>
+  dplyr::rename(conference = homeConference)
+
+# conference counts
+conference_weekly_counts <- games |>
+  dplyr::filter(
+    !is.na(homeConference),!is.na(awayConference),!is.na(week),
+    homeClassification == "fbs",
+    awayClassification == "fbs"
+  ) |>
+  dplyr::mutate(conference = homeConference) |>
+  dplyr::group_by(conference, week) |>
+  dplyr::summarise(
+    total_games = dplyr::n(),
+    conference_games = sum(conferenceGame == TRUE, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::select(conference, week, conference_games) |>
+  tidyr::pivot_wider(names_from = week,
+                     values_from = conference_games,
+                     names_prefix = "Week_") |>
+  dplyr::mutate(dplyr::across(dplyr::starts_with("Week_"), ~ ifelse(is.na(.x), 0, .x))) |>
+  dplyr::select(conference,
+                dplyr::starts_with("Week_0"),
+                dplyr::everything()) |> 
+  dplyr::left_join(conference_team_counts, 
+                   by = "conference")
+
+
+
+```
+
+### Geom smooth
+
+```{r geom-step, warning=FALSE, message=FALSE}
+
+type_plot <- games_by_type |>
+  ggplot2::ggplot(ggplot2::aes(x = date, y = cumulative, color = type)) +
+  ggplot2::geom_smooth(linewidth = 1.2,
+                       se = FALSE,
+                       method = "loess") +
+  ggplot2::scale_x_date(date_labels = "%B", date_breaks = "1 month") +
+  ggplot2::scale_y_continuous(limits = c(0, 550), breaks = seq(0, 550, by = 50)) +
+  ggplot2::scale_color_manual(
+    values = c(
+      "Conference Games" = "#e66101",
+      "Non-Conference Games" = "#1f78b4",
+      "FCS Games" = "#5d4e75",
+      "P4 vs P4 Games" = "#d62728"
+    )
+  ) +
+  ggplot2::labs(
+    title = "2025 College Football Season <br>Cumulative Games by Type",
+    subtitle = paste0(
+      "<span style='color: #e66101;'>Conference Games</span><br>",
+      "<span style='color: #1f78b4;'>Non-Conference Games</span><br>",
+      "<span style='color: #5d4e75;'>Games with FCS opponents</span><br>"
+    ),
+    caption = "Viz by Chris at Bless your Chart <br> data via collegefootballdata.com",
+    x = "",
+    y = "Number of Games",
+    color = "Game Type"
+  ) +
+  ggthemes::theme_wsj() +
+  ggplot2::geom_vline(
+    xintercept = as.Date("2025-09-10"),
+    linetype = "dashed",
+    color = "#acacac",
+    size = 1
+  ) +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      size = 18,
+      face = 'bold',
+      family = 'mono'
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      size = 14,
+      family = 'mono',
+      face = 'bold'
+    ),
+    legend.position = "none",
+    panel.grid.minor = ggplot2::element_blank(),
+    plot.caption = ggtext::element_markdown(
+      size = 7,
+      family = 'mono',
+      face = 'bold'
+    )
+  )
+
+ggplot2::ggsave(
+  "game_type_plot.png",
+  type_plot,
+  w = 7.5,
+  h = 9,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+type_plot
+```
+
+### Conference games table
+
+```{r conf-tbl, warning=FALSE, message=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Conference Games <br>by Week of the Season </span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Shows the number of regular season conference games each week for FBS conferences over the course of the season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+week_labels <- setNames(as.character(0:14), paste0("Week_", 0:14))
+
+conf_tbl <- conference_weekly_counts |>
+  dplyr::filter(!conference %in% c("Pac-12", "FBS Independents")) |>
+  dplyr::select(-Week_16) |>
+  dplyr::mutate(
+    conference = dplyr::case_match(
+      conference,
+      "American Athletic" ~ "American",
+      "Conference USA" ~ "CUSA",
+      "Mid-American" ~ "MAC",
+      conference ~ conference
+    ),
+    total_teams = paste0(total_teams, " ", "teams")
+  ) |>
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |>
+  gtExtras::gt_merge_stack(
+    col1 = "conference",
+    col2 = "total_teams",
+    palette = c("black", "#848484"),
+    small_cap = FALSE
+  ) |> 
+  gt::cols_align(conference, align = "left") |>
+  gtUtils::gt_column_subheaders(
+    conference = list(heading = "Conference", subtitle = "# of teams"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(.list = week_labels) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gtExtras::gt_add_divider(
+    columns = c(conference),
+    sides = "right",
+    color = "black"
+  ) |>
+  gt::tab_spanner(columns = c(-conference), label = "Week") |>
+  gt::data_color(
+    columns = c(-conference),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(0, 9),
+    alpha = 0.6
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via collegefootballdata.com | theme via {gtUtils} <br>
+        Only regular season conference games through end of November 2025 shown<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gt::tab_options(table.width = gt::px(500)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(14)
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  )
+
+gt_save_crop(conf_tbl,
+             file = "conf_tbl.png",
+             whitespace = 40,
+             bg = "#FFFDF5")
+
+conf_tbl
+
+```
+
+### 
+
+### Faceted by conference
+
+```{r faceted-by-conf, warning=FALSE, message=FALSE}
+
+
+
+games_processed <- games |>
+  dplyr::mutate(
+    date = as.Date(game_date),
+    type = dplyr::case_when(
+      homeClassification == "fcs" |
+        awayClassification == "fcs" ~ "FCS Games",
+      conferenceGame == TRUE ~ "Conference Games",
+      conferenceGame == FALSE ~ "Non-Conference Games",
+      TRUE ~ "Other"
+    )
+  ) |>
+  dplyr::filter(type != "Other")
+
+home_games <- games_processed |>
+  dplyr::select(id, date, type, conference = homeConference)
+
+away_games <- games_processed |>
+  dplyr::select(id, date, type, conference = awayConference)
+
+games_by_conf <- dplyr::bind_rows(home_games, away_games) |>
+  dplyr::filter(!is.na(conference) & conference != "")
+
+
+games_by_conference_type <- games_by_conf |>
+  dplyr::distinct(id, conference, .keep_all = TRUE) |>
+  dplyr::group_by(date, conference, type) |>
+  dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
+  tidyr::complete(date = seq(min(games_processed$date), max(games_processed$date), by = "day"),
+                  conference,
+                  type,
+                  fill = list(count = 0)) |>
+  dplyr::group_by(conference, type) |>
+  dplyr::arrange(date, .by_group = TRUE) |>
+  dplyr::mutate(cumulative = cumsum(count)) |>
+  dplyr::ungroup() |>
+  dplyr::left_join(conference_team_counts, by = "conference") |>   dplyr::filter(
+    conference %in% c(
+      "ACC",
+      "American Athletic",
+      "Big 12",
+      "Big Ten",
+      "Conference USA",
+      "Mid-American",
+      "Mountain West",
+      "SEC",
+      "Sun Belt"
+    )
+  )
+
+# Create the faceted plot
+conf_facet_plot <- games_by_conference_type |>
+  dplyr::mutate(conf_display = paste0(conference, "\n", total_teams, " teams"),
+                conf_display = forcats::fct_reorder(conf_display, total_teams, .desc = TRUE)) |>
+  ggplot2::ggplot(ggplot2::aes(x = date, y = cumulative, color = type)) +
+  ggplot2::geom_smooth(
+    linewidth = 0.8,
+    se = FALSE,
+    method = "loess",
+    span = 0.7
+  ) +
+  ggplot2::facet_wrap(~ conf_display, scales = "fixed", ncol = 3) +
+  ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month") +
+  ggplot2::scale_y_continuous(limits = c(0, 85), breaks = c(0, 20, 40, 60, 80)) +
+  ggplot2::scale_color_manual(
+    values = c(
+      "Conference Games" = "#e66101",
+      "Non-Conference Games" = "#1f78b4",
+      "FCS Games" = "#5d4e75"
+    )
+  ) +
+  ggplot2::labs(
+    title = "2025 College Football Season<br>Cumulative Games by Type and Conference",
+    subtitle = paste0(
+      "<span style='color: #e66101;'>Conference Games</span> | ",
+      "<span style='color: #1f78b4;'>Non-Conference Games</span> | ",
+      "<span style='color: #5d4e75;'>Games with FCS opponents</span>"
+    ),
+    caption = "Viz by Chris at Bless your Chart <br> data via collegefootballdata.com",
+    x = "",
+    y = "Cumulative Games",
+    color = "Game Type"
+  ) +
+  ggthemes::theme_wsj() +
+  ggplot2::geom_vline(
+    xintercept = as.Date("2025-09-10"),
+    linetype = "dashed",
+    color = "#acacac",
+    size = 0.5,
+    alpha = 0.7
+  ) +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      size = 16,
+      face = 'bold',
+      family = 'mono'
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      size = 12,
+      family = 'mono',
+      face = 'bold'
+    ),
+    legend.position = "none",
+    panel.grid.minor = ggplot2::element_blank(),
+    plot.caption = ggtext::element_markdown(
+      size = 8,
+      family = 'mono',
+      face = 'bold'
+    ),
+    strip.text = ggplot2::element_text(
+      size = 10,
+      face = 'bold',
+      family = 'mono'
+    ),
+    axis.text.x = ggplot2::element_text(size = 8),
+    axis.text.y = ggplot2::element_text(size = 8)
+  )
+
+ggplot2::ggsave(
+  "conf_type_plot.png",
+  conf_facet_plot,
+  w = 7.5,
+  h = 9,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+conf_facet_plot
+```
+
+### 
+
+### 

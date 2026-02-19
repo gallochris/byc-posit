@@ -1,0 +1,436 @@
+---
+title: "150: Jaccard"
+date: "2025-08-13"
+categories:
+  - geom_beeswarm
+  - ggvenn
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+# this was pulled for collegefootballdata.com 
+# loading CSV given function takes awhile to run
+all_games <- readr::read_csv("all_games_jaccard.csv")
+
+# h2h function using collegefootballdata
+# get_all_team_opponents_with_h2h <- function(team_name) {
+#  games_2025 <- get_games(year = 2025) |>
+#    dplyr::filter(
+#      seasonType == "regular",
+#      homeClassification == "fbs", 
+#      awayClassification == "fbs"
+#    )
+  
+#  opponents <- dplyr::bind_rows(
+#    games_2025 |> dplyr::filter(homeTeam == team_name) |> dplyr::select(opponent = awayTeam),
+#    games_2025 |> dplyr::filter(awayTeam == team_name) |> dplyr::select(opponent = homeTeam)
+#  ) |>
+#    dplyr::pull(opponent) |>
+#    unique()
+  
+#  return(opponents)  # Don't add the team itself
+# }
+
+# load Texas, Alabama, Penn State, Ohio State opponents via CSV 
+
+psu_opp <- readr::read_csv("psu_opp.csv")
+osu_opp <- readr::read_csv("osu_opp.csv")
+
+texas_opp <- readr::read_csv("texas_opp.csv")
+bama_opp <- readr::read_csv("bama_opp.csv")
+
+
+# save table for data wrapper sharing 
+# datawrapper_tbl <- all_games |> 
+#  dplyr::filter(year == 2025) |> 
+#  dplyr::mutate(
+#    most_sim_final = dplyr::case_when(
+      # All three have the same Jaccard score
+#      most_sim_jaccard == second_sim_jaccard & second_sim_jaccard == third_sim_jaccard ~ 
+#        paste0(most_similar, ", ", second_similar, ", ", third_similar),
+      
+      # First two have the same Jaccard score (but third is different)
+#      most_sim_jaccard == second_sim_jaccard ~ 
+#        paste0(most_similar, ", ", second_similar),
+      
+      # Only the first one is unique (default case)
+#      TRUE ~ most_similar
+#    )
+#  ) |>
+#  dplyr::select(team, most_sim_final, shared_fbs = most_sim_shared, jaccard = most_sim_jaccard)
+```
+
+### Beeswarm plot
+
+```{r beeswarm-plot, warning=FALSE, message=FALSE}
+
+beeswarm_data <- all_games |>
+  dplyr::filter(year %in% c(1995, 2005, 2015, 2025)) |>
+  dplyr::select(year, most_sim_jaccard) |>
+  dplyr::filter(!is.na(most_sim_jaccard))
+
+# Convert to percentage version
+summary_stats <- beeswarm_data |>
+  dplyr::group_by(year) |>
+  dplyr::summarise(
+    median_jaccard = median(most_sim_jaccard, na.rm = TRUE),
+    mean_jaccard = mean(most_sim_jaccard, na.rm = TRUE),
+    n_teams = dplyr::n(),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    # Create annotation labels with percentages
+    annotation_label = paste0(
+      n_teams,
+      " teams \n",
+      round(median_jaccard * 100, 1),
+      "%"
+    )
+  )
+
+beeswarm_plot <- ggplot2::ggplot(
+  beeswarm_data,
+  ggplot2::aes(
+    x = factor(year),
+    y = most_sim_jaccard * 100,
+    color = factor(year)
+  )
+) +
+  ggbeeswarm::geom_quasirandom(alpha = 0.7, 
+                               size = 1.6, 
+                               width = 0.3,
+                               method = "tukey"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = c(1, 2, 3, 4),
+    y = 10.5,
+    label = summary_stats$annotation_label,
+    size = 3.5,
+    color = "#333333",
+    fill = "floralwhite",
+    family = "Roboto Condensed"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 1.95,
+    y = 93.5,
+    label = "Jaccard similarity example  \nUTEP and BYU shared 10 opponents in 1995  \n83.3% of unique opponents between  \n the two teams were shared",
+    size = 3.5,
+    color = "#333333",
+    fill = "#42049EFF",
+    alpha = 0.3,
+    family = "Roboto Condensed"
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#474747",
+    x = 1.5,
+    y = 90,
+    xend = 1.15,
+    yend = 83.3,
+    curvature = .3,
+    arrow = ggplot2::arrow(length = grid::unit(2, "mm"))
+  ) + 
+  ggplot2::scale_color_viridis_d(
+    name = "Year",
+    option = "plasma",
+    begin = 0.1,
+    end = 0.9
+  ) +
+  ggplot2::labs(
+    title = "Similarity in college football schedules over time",
+    subtitle = "Distribution of highest schedule similarities between FBS teams (regular season only).",
+    x = "Year",
+    y = "Schedule Overlap (%)",
+    caption = "Shows number of FBS teams and median similarity for a sample of four seasons.  \ndata via collegefootballdata.com | Viz by Chris at Bless your Chart"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    panel.grid.minor = ggplot2::element_blank(),
+    legend.position = "none",
+    plot.subtitle = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(color = "gray60",
+                              family = "Roboto Condensed",
+                              hjust = 1),
+    plot.margin = ggplot2::margin(t = 5, r = 20, b = 5, l = 5, unit = "pt")
+  ) +
+  ggplot2::ylim(0, 100)
+
+
+ggplot2::ggsave(
+  "beeswarm_plot.png",
+  beeswarm_plot,
+  w =10,
+  h = 8,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+beeswarm_plot
+```
+
+### 
+
+### Venn diagram
+
+```{r venn-diagram, warning=FALSE, message=FALSE}
+
+opponent_lists <- list(
+  "Penn State" = psu_opp[[2]],
+  "Ohio State" = osu_opp[[2]]  
+)
+
+venn_plot <- ggvenn::ggvenn(
+    opponent_lists,
+    fill_color = c("#041E42", "#BB0000"),  # Penn State navy and Ohio State scarlet
+    fill_alpha = 0.3,
+    stroke_size = 1.5,
+    set_name_size = 0,
+    show_elements = FALSE,   
+    text_color = "#333333",
+    text_size = 4
+) +
+    hrbrthemes::theme_ipsum_rc(base_family = "Roboto Condensed") +
+    ggplot2::labs(
+        title = "Penn State and Ohio State: 2025 Shared Opponents",
+        subtitle = "While both teams play head-to-head, the two Big Ten schools share only two common opponents.",
+        x = "",
+        y = "",
+        caption = "Out of 20 unique opponents, only 10% (two total) are shared  \ndata via collegefootballdata.com | Viz by Chris at Bless your Chart"
+    ) +
+    ggplot2::theme(
+        text = ggplot2::element_text(family = "Roboto Condensed"),
+        plot.subtitle = ggtext::element_markdown(),
+        plot.caption = ggtext::element_markdown(color = "gray60",
+                                                family = "Roboto Condensed",
+                                                hjust = 1),
+        plot.margin = ggplot2::margin(t = 5, r = 20, b = 5, l = 5, unit = "pt"),
+        
+        # Remove ALL axis elements including numbers
+        axis.title = ggplot2::element_blank(),
+        axis.text = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank(), 
+        axis.text.y = ggplot2::element_blank(),  
+        axis.ticks = ggplot2::element_blank(),
+        axis.line = ggplot2::element_blank(),
+        
+        # Remove panel elements
+        panel.grid.major = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.border = ggplot2::element_blank(),
+        panel.background = ggplot2::element_blank(),
+        
+        # Remove plot background
+        plot.background = ggplot2::element_blank(),
+        
+        # Remove legend elements (if you want)
+        legend.background = ggplot2::element_blank(),
+        legend.key = ggplot2::element_blank(),
+        
+        # Remove strip elements (for facets)
+        strip.background = ggplot2::element_blank(),
+        strip.text = ggplot2::element_blank()
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0,
+        y =-0.30,
+        team = "UCLA",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0,
+        y =-0.50,
+        team = "Rutgers",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = .01,
+        y = 0.25,
+        team = "Penn State",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.01,
+        y = 0.45,
+        team = "Ohio State",
+        height = .085,
+    ) + # show penn st opponents 
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -0.80,
+        y = 0.55,
+        team = "Oregon",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -1.2,
+        y = 0.55,
+        team = "Indiana",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -0.48,
+        y = 0.55,
+        team = "Michigan State",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -0.80,
+        y = 0.35,
+        team = "Nebraska",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -1.2,
+        y = 0.35,
+        team = "Northwestern",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -0.48,
+        y = 0.35,
+        team = "Iowa",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -0.8,
+        y = -0.30,
+        team = "Florida International",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -0.5,
+        y = -0.30,
+        team = "Nevada",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = -1.2,
+        y = -0.30,
+        team = "Villanova",
+        height = .085,
+    ) + # ohio state opponents 
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 1.15,
+        y = -0.30,
+        team = "Texas",
+        height = .090,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.80,
+        y = -0.30,
+        team = "Ohio",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.45,
+        y = -0.30,
+        team = "Grambling",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.45,
+        y = 0.55,
+        team = "Washington",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.80,
+        y = 0.55,
+        team = "Michigan",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 1.15,
+        y = 0.55,
+        team = "Illinois",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.45,
+        y = 0.35,
+        team = "Minnesota",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 0.80,
+        y = 0.35,
+        team = "Wisconsin",
+        height = .085,
+    ) +
+    ggplot2::annotate(
+        cfbplotR::GeomCFBlogo,
+        x = 1.15,
+        y = 0.35,
+        team = "Purdue",
+        height = .085,
+    ) +
+    # Add team name annotations with Roboto Condensed font
+    ggplot2::annotate(
+        "text",
+        x = -0.8,
+        y = 0.8,
+        label = "Penn State",
+        family = "Roboto Condensed",
+        size = 5,
+        fontface = "bold",
+        color = "#041E42"
+    ) +
+    ggplot2::annotate(
+        "text", 
+        x = 0.8,
+        y = 0.8,
+        label = "Ohio State",
+        family = "Roboto Condensed", 
+        size = 5,
+        fontface = "bold",
+        color = "#BB0000"
+    )
+
+ggplot2::ggsave(
+  "vd_plot.png",
+  venn_plot,
+  w =10,
+  h = 8,
+  dpi = 600,
+  type = 'cairo',
+  bg = "white"
+)
+
+venn_plot
+
+```
+
+### 
+
+### 

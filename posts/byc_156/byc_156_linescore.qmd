@@ -1,0 +1,348 @@
+---
+title: "156: Linescores"
+date: "2025-10-08"
+categories:
+  - gtUtils
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+```
+
+### Linescores
+
+```{r linescore, warning=FALSE, message=FALSE}
+
+line_score <- tibble::tribble(
+  ~team,            ~inning_1, ~inning_2, ~inning_3, ~inning_4, ~inning_5, ~inning_6, ~inning_7, ~inning_8, ~inning_9, ~inning_10, ~inning_11, ~inning_12, ~points, ~explosives, ~turnovers, 
+  "Clemson",        7,         7,         7,         7,         0,         7,       0,           0, 3, 0, 0, NA, 38, 6, 1,
+  "North Carolina", 3,         0,         0,         0,         0,         0,       0,          0, 0, 7, 0, 0, 10, 1, 1,
+)
+
+clem_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/228.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Clemson 38, North Carolina 10</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Possession-by-possession line score and relevant stats.<br>October 4, 2025 | Chapel Hill, NC</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+
+clem_tbl <- line_score |>
+  dplyr::rename_with( ~ stringr::str_remove(.x, "inning_"),
+                      dplyr::starts_with("inning_")) |>
+  cbbplotR::gt_cbb_teams(team, team)  |>
+  gt::gt()  |>
+  gt::sub_missing(missing_text = "-") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gt::tab_header(title = gt::html(clem_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>Season records</b>: Clemson 2-3 (1-2 ACC), UNC 2-3 (0-1 ACC)<br>
+        <b>Avg Starting Field Position</b>: Clemson own 37, UNC own 21<br>
+        <b>Yards per play</b>: Clemson 6.97, UNC 4.50<br>
+        <b>Clemson Drive outcomes</b>: TD (5), PUNT (3), FG (1), DOWNS (1), TO (1)<br> 
+        <b>UNC Drive Outcomes</b>: PUNT (6), DOWNS (2), HALF (1), TD (1), FG (1), FGA (1)<br>
+        <b>3rd down conversions</b>: Clemson 4-12, UNC 2-11<br>
+        <b>Penalties total-yards</b>: Clemson 7-85, UNC 8-75<br>
+        <b>E (Explosive plays of 20+ yards)</b> Clemson 6 (all passing), UNC 1 (passing)<br>
+        <b>T (Turnovers)</b> Clemson 1 (fumble), UNC 1 (missed 50-yd field goal)<br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::cols_label(
+    team = "",
+    points = "P",
+    explosives = "E",
+    turnovers = "T"
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+     table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(2:5, 7, 10, 14:15),
+    fill = "#FBC199"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(2, 11),
+    fill = "#BBD9ED"
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+   gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  gt::tab_spanner(label = "1st Half", columns = c(2:7)) |>
+  gt::tab_spanner(label = "2nd Half", columns = c(8:13)) |>
+  gtExtras::gt_add_divider(columns = c(7), sides = "right",
+                           color = "black", weight = 0.5) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc"))
+
+gt_save_crop(clem_tbl,
+             file = "linescore_clem.png",
+             whitespace = 60,
+             bg = "white")
+
+clem_tbl
+
+# penn state vs ucla 
+ucla_score <- tibble::tribble(
+    ~team,        ~inning_1, ~inning_2, ~inning_3, ~inning_4, ~inning_5, ~inning_6, ~inning_7, ~inning_8, ~inning_9, ~inning_10, ~inning_11, ~inning_12, ~inning_13, ~points, ~explosives, ~turnovers, 
+    "Penn State",  NA,        7,         0,         0,         0,         7,         7,         7,         7,         0,          0,          2, 0,        37,      4,           1,
+    "UCLA",        7,         3,         7,         7,         3,         0,         0,         7,         8,         0,          0,          0,  NA,        42,      6,           2,
+)
+
+ucla_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/26.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>UCLA 42, Penn State 37</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Possession-by-possession line score and relevant stats.<br>October 4, 2025 | Pasadena, CA</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/213.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+
+ucla_tbl <- ucla_score |>
+  dplyr::rename_with( ~ stringr::str_remove(.x, "inning_"),
+                      dplyr::starts_with("inning_")) |>
+  cbbplotR::gt_cbb_teams(team, team)  |>
+  gt::gt()  |>
+  gt::sub_missing(missing_text = "-") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gt::tab_header(title = gt::html(ucla_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>Season records</b>: UCLA 1-4 (1-0 B10), Penn State 3-2 (0-2 B10)<br>
+        <b>Avg Starting Field Position</b>: UCLA own 33, Penn State own 33<br>
+        <b>Yards per play</b>: UCLA 5.65, Penn State 6.26 <br>
+        <b>UCLA Drive outcomes</b>: TD (5), FG (2), PUNT (2), DOWNS (1), TO (1)<br> 
+        <b>Penn State Drive Outcomes</b>: TD (5), DOWNS (3), HALF (1), TO (1), SAFETY (1), PUNT (1)<br>
+        <b>3rd down conversions</b>: UCLA 10-16, Penn State 4-9<br>
+        <b>Avg 3rd down distance</b>: UCLA 7.4, Penn State 5.7<br>
+        <b>Penalties total-yards</b>: UCLA 5-35, Penn State 6-43<br>
+        <b>E (Explosive plays of 20+ yards)</b> UCLA 6 (4 rushing, 2 passing), Penn State 4 (2 rushing, 2 passing)<br>
+        <b>T (Turnovers)</b> UCLA 2 (missed 56-yd field goal, allowed blocked punt), Penn State 1 (fumble)<br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::cols_label(
+    team = "",
+    points = "P",
+    explosives = "E",
+    turnovers = "T"
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+     table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(3, 7:10, 13, 17),
+    fill = "#9aa5b3"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(2:6, 9:10, 15, 16),
+    fill = "#f9dc99"
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+   gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  gt::tab_spanner(label = "1st Half", columns = c(2:6)) |>
+  gt::tab_spanner(label = "2nd Half", columns = c(7:14)) |>
+  gtExtras::gt_add_divider(columns = c(6), sides = "right",
+                           color = "black", weight = 0.5) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc"))
+
+gt_save_crop(ucla_tbl,
+             file = "linescore_psu.png",
+             whitespace = 60,
+             bg = "white")
+
+ucla_tbl
+
+# fsu and miami
+miami_score <- tibble::tribble(
+  ~team,            ~inning_1, ~inning_2, ~inning_3, ~inning_4, ~inning_5, ~inning_6, ~inning_7, ~inning_8, ~inning_9, ~inning_10, ~inning_11, ~points, ~explosives, ~turnovers, 
+  "Miami",          0,         7,         7,         0,         0,         0,         7,         7,         0,         0,          0,             28,      5,           0,
+  "Florida State",  3,         0,         0,         0,         0,         0,         0,         0,         8,         8,          3,            22,      3,           3,
+)
+
+
+miami_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2390.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Miami 28, Florida State 22</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Possession-by-possession line score and relevant stats.<br>October 4, 2025 | Tallahassee, FL</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/52.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+
+miami_tbl <- miami_score |>
+  dplyr::rename_with( ~ stringr::str_remove(.x, "inning_"),
+                      dplyr::starts_with("inning_")) |>
+  cbbplotR::gt_cbb_teams(team, team)  |>
+  gt::gt()  |>
+  gt::sub_missing(missing_text = "-") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gt::tab_header(title = gt::html(miami_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>Season records</b>: Miami 5-0 (1-0 ACC), FSU 3-2 (0-2 ACC)<br>
+        <b>Avg Starting Field Position</b>: Miami own 34, FSU own 26<br>
+        <b>Yards per play</b>: Miami 5.73, FSU 4.87 <br>
+        <b>Miami Drive outcomes</b>: PUNT (5), TD (4), DOWNS (1), HALF (1)<br> 
+        <b>FSU Drive Outcomes</b>: PUNT (4), TO (3), TD (2), FG (2)<br>
+        <b>3rd down conversions</b>: Miami 5-14, FSU 7-16<br>
+        <b>Avg 3rd down distance</b>: Miami 6.2, FSU 7.6<br>
+        <b>Penalties total-yards</b>: Miami 13-114, FSU 5-45<br>
+        <b>E (Explosive plays of 20+ yards)</b> Miami 5 (4 passing, 1 rushing), FSU 3 (all passing)<br>
+        <b>T (Turnovers)</b> Miami 0, FSU 3 (2 interceptions, 1 fumble)<br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::cols_label(
+    team = "",
+    points = "P",
+    explosives = "E",
+    turnovers = "T"
+  ) |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+     table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(3:4, 8:9, 13:15),
+    fill = "#fac7a6"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(2, 10:12),
+    fill = "#c9abb2"
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+   gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  gt::tab_spanner(label = "1st Half", columns = c(2:7)) |>
+  gt::tab_spanner(label = "2nd Half", columns = c(8:12)) |>
+  gtExtras::gt_add_divider(columns = c(7), sides = "right",
+                           color = "black", weight = 0.5) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc"))
+
+gt_save_crop(miami_tbl,
+             file = "linescore_miami.png",
+             whitespace = 60,
+             bg = "white")
+
+miami_tbl
+
+```
+
+### 

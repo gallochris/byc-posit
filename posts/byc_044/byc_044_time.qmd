@@ -1,0 +1,155 @@
+---
+title: "044: Time and the clock"
+date: "2023-08-20"
+categories:
+  - geom_smooth
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch data
+
+```{r data-load, message=FALSE}
+url <- "https://stats.ncaa.org/reports/game_length?id=21853"
+
+response <- httr::GET(url, httr::add_headers("User-Agent" = "Mozilla/5.0"))
+
+gl_response <- httr::content(response, "text")
+
+gl_page <- rvest::read_html(gl_response)
+
+gl_data <- gl_page |> 
+  rvest::html_nodes("table") |> 
+  magrittr::extract2(1) |> 
+  rvest::html_table(fill = TRUE)
+
+gl_data <- gl_data[-c(1, 2), ]
+
+
+# Make the first row the column headers
+colnames(gl_data) <- gl_data[1, ]
+
+# Remove the first row (previously used as column headers)
+gl_data <- gl_data[-1, ]
+
+# now only snag the columns for the full season, not home and away 
+columns_to_keep <- c(2, 3, 12, 13, 14, 15)  
+
+gl_format <- gl_data |> 
+  dplyr::select(all_of(columns_to_keep)) |> 
+  dplyr::filter(Conference != "Totals") |> 
+  dplyr::mutate_at(dplyr::vars(-Institution, -Conference, -Length), as.numeric) |> 
+  dplyr::mutate(est_plays = OffPlays + DefPlays)
+  
+gl_format |> 
+  dplyr::mutate(
+    hours = as.numeric(substr(Length, 1, 2)),
+    minutes = as.numeric(substr(Length, 4, 5)),
+    avg_duration = hours * 60 + minutes
+  ) |> 
+  dplyr::select(-hours, -minutes) |> 
+  dplyr::rename(Team = Institution) -> gl_final
+
+readxl::read_excel("top.xlsx") |> 
+  dplyr::filter(!Team %in% c("Miami (FL) (ACC)", "Miami (OH) (MAC)")) |> 
+  dplyr::mutate(Team = gsub("\\([^)]*\\)", "", Team)) |> 
+  dplyr::mutate(Team = stringr::str_trim(Team, side = "right")) |> 
+  dplyr::mutate(
+    minutes = as.numeric(substr(AvgTOP, 1, 2)),
+    seconds = as.numeric(substr(AvgTOP, 4, 5)),
+    avg_min = minutes + (seconds /100)
+  ) |> 
+  dplyr::add_row(Team = "Miami (FL)", avg_min = 30.4) |> 
+  dplyr::add_row(Team = "Miami (OH)", avg_min = 30.2) |> 
+  dplyr::add_row(Team = "James Madison", avg_min = 33.4) -> poss
+
+poss_gl <- dplyr::left_join(gl_final, poss, by = "Team") |> 
+           dplyr::mutate(Team = dplyr::case_match(Team, 
+                            "App State" ~ "Appalachian State",
+                            "Army West Point" ~ "Army",
+                            "Central Mich." ~ "Central Michigan",
+                            "Eastern Mich." ~ "Eastern Michigan",
+                            "Fla. Atlantic" ~ "Florida Atlantic",
+                            "Ga. Southern" ~ "Georgia Southern",
+                            "Middle Tenn." ~ "Middle Tennessee",
+                            "NIU" ~ "Northern Illinois",
+                            "South Fla." ~ "South Florida",
+                            "Southern California" ~ "USC",
+                            "Southern Miss." ~ "Southern Mississippi",
+                            "ULM" ~ "Louisiana Monroe",
+                            "Western Ky." ~ "Western Kentucky",
+                            "Western Mich." ~ "Western Michigan",
+                            "Miami (FL)" ~ "Miami FL",
+                            .default = Team
+                        )) |> 
+  dplyr::mutate(avg_ppm = OffPlays/avg_min) |> 
+  dplyr::select(-Rank, -G.y, -`W-L`, -minutes, -seconds)
+
+```
+
+### Scatterplot
+
+```{r scatterplot, warning=FALSE}
+# regression plot
+poss_gl |> 
+  ggplot2::ggplot(ggplot2::aes(x = avg_ppm, y = avg_duration)) + 
+  ggplot2::scale_y_continuous(breaks = seq(180, 240, 10), labels = c("3 hrs", "3 hrs  \n10 min", "3 hrs  \n20 min", "3 hrs  \n30 min",
+  "3 hrs  \n40 min", "3 hrs  \n50 min", "4 hrs"), limits = c(180, 240)) +
+  ggplot2::scale_x_continuous(breaks = seq(1.7, 3, 0.1), limits = c(1.7, 3)) +
+  cfbplotR::geom_cfb_logos(ggplot2::aes(team = Team), width = 0.038, alpha = 0.6) +
+  cfbplotR::geom_median_lines(ggplot2::aes(h_var = avg_duration, v_var = avg_ppm), color = "#333333") +
+  ggplot2:: geom_smooth(method='lm', formula= y~x, se = FALSE, color = "#fc8d59") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "none", plot.title = ggtext::element_markdown()) + 
+ggplot2::labs(
+    x = "Average plays per minute",
+    y = "Average Game Duration",
+    title = "Teams that play <em>slower</em> have games that take <em>longer</em>?",
+    subtitle = "Using the 2022 season, plots the average game duration (dependent variable) against average plays per minute (independent variable)",
+    caption = "Bless your chart | data via stats.ncaa.org"
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = 1.8,
+    y = 190,
+    label = "Play slower  \nShorter games",
+    size = 3,
+    fontface = "bold",
+    color = "#333333",
+  ) + 
+    ggplot2::annotate(
+    "text",
+    x = 2.7,
+    y = 230,
+    label = "Play faster  \nLonger games",
+    size = 3,
+    fontface = "bold",
+    color = "#333333",
+  ) + 
+    ggplot2::annotate(
+    "text",
+    x = 1.8,
+    y = 230,
+    label = "Median  \n2.3 plays per minute  \n3 hrs and 27 min",
+    size = 3,
+    fontface = "bold",
+    color = "#333333",
+  ) -> plot_scat
+  
+  plot_scat
+  
+  # save it
+ggplot2::ggsave(
+  "plot_scat.png",
+  plot_scat,
+  w = 9.5,
+  h = 8.5,
+  dpi = 600
+)
+
+```
+
+### 

@@ -1,0 +1,90 @@
+---
+title: "037: Scholarship Limits"
+date: "2023-06-28"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Add data
+
+```{r data-load, message=FALSE}
+# load csv public
+schol <- readr::read_csv("schol.csv")
+
+```
+
+### Make GT Table
+
+```{r gt-tables, warning=FALSE}
+# make limit table
+schol |> 
+  dplyr::select(sport, gender, type, div_one) |> 
+  dplyr::arrange(-div_one) |> 
+  dplyr::slice(1:20) |> 
+  gt::gt() |> 
+  gt::cols_label(
+    sport = "Sport",
+    gender = "Gender",
+    div_one = "Limit",
+  ) |> 
+  gt::tab_spanner(label = "Scholarships",
+                  columns = c(div_one)) |>
+  gtExtras::gt_fa_column(gender, palette = c("#99d0ff", "#ff9999")) |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(19),
+    fill = "#ff9d98",
+    bold_target_only = TRUE,
+    target_col = c(sport),
+  ) |> 
+  gtExtras::gt_theme_dot_matrix() |> 
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'capitalize'
+  ) -> male
+
+
+male
+
+schol |> 
+  dplyr::select(sport, gender, type, div_one) |> 
+  dplyr::arrange(-div_one) |> 
+  dplyr::slice(21:40) |> 
+  gt::gt() |> 
+  gt::cols_label(
+    sport = "Sport",
+    gender = "Gender",
+    div_one = "Limit",
+  ) |> 
+  gt::tab_spanner(label = "Scholarships",
+                  columns = c(div_one)) |>
+  gtExtras::gt_fa_column(gender, palette = c("#99d0ff", "#ff9999")) |> 
+  gtExtras::gt_theme_dot_matrix() |> 
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = gt::px(12),
+    column_labels.text_transform = 'capitalize'
+  ) -> female
+
+female 
+
+listed_tables <- list(male, female)
+
+obj <- htmltools::div(gt::html("<span style='font-size:15pt; font-weight:bold; font-family:Courier;'><center>NCAA Division-I Scholarship Limits<center></span>"),
+                      gt::html("<span style='font-size:9.5pt; font-weight:normal'; font-family:'Courier'><center>@dadgumboxscores | June 28, 2023 | data via scholarshipstats.com <center></span>"),
+                      gtExtras::gt_two_column_layout(listed_tables))
+
+gtExtras::gtsave_extra(obj, filename = "schol-table.png", vheight = 875, vwidth = 775)
+
+```
+
+### 
+
+### 

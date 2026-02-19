@@ -1,0 +1,395 @@
+---
+title: "116: SOR"
+date: "2024-11-04"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+execute:
+  echo: false
+---
+
+### Fetch data from ESPN, cfbfastR, and FEI
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+teams <- cfbfastR::cfbd_team_info(year = 2024) |> 
+  dplyr::select(school, mascot) |> 
+  dplyr::mutate(team = paste0(school, " ", mascot))
+
+sor_url <- "https://www.espn.com/college-football/fpi/_/view/resume"
+
+webpage <- rvest::read_html(sor_url)
+
+# organize table
+sor_tables <- webpage |>
+  rvest::html_nodes("table") |>
+  lapply(rvest::html_table)
+  
+
+sor <- sor_tables[[1]] |>
+  dplyr::bind_cols(sor_tables[[2]]) |> 
+  janitor::row_to_names(row_number = 1) |>
+  # Optional: clean the column names to remove spaces and special characters
+  janitor::clean_names() |> 
+  dplyr::left_join(teams, by = "team") |> 
+  dplyr::rename(team_name = school) |> 
+  dplyr::mutate(sor = as.numeric(sor),
+                fpi_rk = as.numeric(fpi)) |>
+  dplyr::mutate(
+    team_name = dplyr::case_match(
+      team_name,
+      "Kansas St" ~ "Kansas State",
+      "Oklahoma St" ~ "Oklahoma State",
+      "Florida St" ~ "Florida State",
+      "Washington St" ~ "Washington State",
+      "Boise St" ~ "Boise State",
+      "Arizona St" ~ "Arizona State",
+      "Mississippi St" ~ "Mississippi State",
+      "Fresno St" ~ "Fresno State",
+      "Michigan St" ~ "Michigan State",
+      "Texas St" ~ "Texas State",
+      "San José St" ~ "San Jose State",
+      "App State" ~ "Appalachian State",
+      "San Diego St" ~ "San Diego State",
+      "Arkansas St" ~ "Arkansas State",
+      "New Mexico St" ~ "New Mexico State",
+      "Georgia St" ~ "Georgia State",
+      "Sam Houston" ~ "Sam Houston State",
+      "Colorado St" ~ "Colorado State",
+      "Jax State" ~ "Jacksonville State",
+      "Kennesaw St" ~ "Kennesaw State",
+      "E Michigan" ~ "Eastern Michigan",
+      "C Michigan" ~ "Central Michigan",
+      "W Michigan" ~ "Western Michigan",
+      "Oregon St" ~ "Oregon State",
+      "FIU" ~ "Florida International",
+      "Southern Miss" ~ "Southern Mississippi",
+      "MTSU" ~ "Middle Tennessee",
+      "UL Monroe" ~ "Louisiana Monroe",
+      "GA Southern" ~ "Georgia Southern",
+      "Hawai'i" ~ "Hawaii",
+      "FAU" ~ "Florida Atlantic",
+      "Massachusetts" ~ "UMass",
+      "N Illinois" ~ "Northern Illinois",
+      "Western KY" ~ "Western Kentucky",
+      "Miami OH" ~ "Miami (OH)",
+      "Pitt" ~ "Pittsburgh",
+      "Coastal Car" ~ "Coastal Carolina",
+      team_name ~ team_name
+    )
+  ) |> 
+  dplyr::select(team_name, conf, sor, fpi_rk)
+
+fpi <- cfbfastR::espn_ratings_fpi(year = 2024) |>
+  dplyr::select(team_name, fpi) |>
+  dplyr::mutate(fpi = as.numeric(fpi)) |>
+  dplyr::arrange(dplyr::desc(fpi)) |>
+  dplyr::mutate(
+    fpi_rk = dplyr::row_number(),
+    fpi_ptile = dplyr::percent_rank(fpi)
+  ) |> 
+  dplyr::mutate(
+    team_name = dplyr::case_match(
+      team_name,
+      "Kansas St" ~ "Kansas State",
+      "Oklahoma St" ~ "Oklahoma State",
+      "Florida St" ~ "Florida State",
+      "Washington St" ~ "Washington State",
+      "Boise St" ~ "Boise State",
+      "Arizona St" ~ "Arizona State",
+      "Mississippi St" ~ "Mississippi State",
+      "Fresno St" ~ "Fresno State",
+      "Michigan St" ~ "Michigan State",
+      "Texas St" ~ "Texas State",
+      "San José St" ~ "San Jose State",
+      "App State" ~ "Appalachian State",
+      "San Diego St" ~ "San Diego State",
+      "Arkansas St" ~ "Arkansas State",
+      "New Mexico St" ~ "New Mexico State",
+      "Georgia St" ~ "Georgia State",
+      "Sam Houston" ~ "Sam Houston State",
+      "Colorado St" ~ "Colorado State",
+      "Jax State" ~ "Jacksonville State",
+      "Kennesaw St" ~ "Kennesaw State",
+      "E Michigan" ~ "Eastern Michigan",
+      "C Michigan" ~ "Central Michigan",
+      "W Michigan" ~ "Western Michigan",
+      "Oregon St" ~ "Oregon State",
+      "FIU" ~ "Florida International",
+      "Southern Miss" ~ "Southern Mississippi",
+      "MTSU" ~ "Middle Tennessee",
+      "UL Monroe" ~ "Louisiana Monroe",
+      "GA Southern" ~ "Georgia Southern",
+      "Hawai'i" ~ "Hawaii",
+      "FAU" ~ "Florida Atlantic",
+      "Massachusetts" ~ "UMass",
+      "N Illinois" ~ "Northern Illinois",
+      "Western KY" ~ "Western Kentucky",
+      "Miami OH" ~ "Miami (OH)",
+      "Pitt" ~ "Pittsburgh",
+      "Coastal Car" ~ "Coastal Carolina",
+      team_name ~ team_name
+    )
+  )
+
+sor_full <- sor |> 
+  dplyr::left_join(fpi, by = c("team_name", "fpi_rk"))
+
+# now pull fei 
+# fei resume
+fei_url <- "https://www.bcftoys.com/2024-fei/"
+
+webpage <- rvest::read_html(fei_url)
+
+# organize table
+fei <- webpage |>
+  rvest::html_node("table") |>
+  rvest::html_table() |>
+  dplyr::slice(-1) |>
+  dplyr::select(
+    record = X3,
+    fei_rank = X1,
+    team_name = X2,
+    fei = X5,
+    fei_resume_rank = X24,
+    fei_resume = X23
+  ) |>
+  dplyr::slice(-1) |>
+  dplyr::filter(fei_rank != "Rk") |>
+  na.omit() |>
+  dplyr::mutate_at(dplyr::vars(-team_name, -record), as.numeric) |>
+  dplyr::mutate(fei_ptile = dplyr::percent_rank(fei)) |> 
+  dplyr::mutate(
+    team_name = dplyr::case_match(
+      team_name,
+      "Connecticut" ~ "UConn",
+      "UL Monroe" ~ "Louisiana Monroe",
+      "Sam Houston" ~ "Sam Houston State",
+      "Massachusetts" ~ "UMass",
+      team_name ~ team_name
+    )
+  )
+
+# hardcode teams with 10% chance or better per fpi 
+# https://www.espn.com/college-football/fpi/_/sort/fpi.probmakeplayoffs/dir/desc
+teams_to_include <- c("Oregon", "Georgia", "Miami", "Ohio State", "Indiana",
+                      "Texas", "Penn State", "Tennessee", "Boise State", "BYU",
+                      "Notre Dame", "Alabama", "SMU", "Ole Miss", "Iowa State",
+                      "LSU", "Army", "Washington State", "Colorado", "Texas A&M",
+                      "Kansas State", "Tulane", "Pittsburgh", "UNLV"
+                      )
+
+# join the two tables 
+fei_espn <- sor_full |> 
+  dplyr::left_join(fei, by ="team_name") |> 
+  dplyr::filter(team_name %in% teams_to_include) |> 
+  dplyr::mutate(conf = dplyr::if_else(conf %in% c("FBS Indep.", "Pac-12"), 
+                                      "N/A", conf))
+
+
+```
+
+### GT table
+
+```{r gt-tbl, warning=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png'
+       style='height: 105px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC standings through October 26 games</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Sorted by overall conference win percentage.<br> Table includes opponent win percentages and point differentials in league play.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+# add in new column for opponents 
+opp_teams <- c(
+  # UGA plays Alabama, Texas, Ole Miss, Tennessee 
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/333.png' style='height: 25px; width: auto; vertical-align: -30%;'><img src='http://a.espncdn.com/i/teamlogos/ncaa/500/251.png' style='height: 25px; width: auto; vertical-align: -30%;'><img src='http://a.espncdn.com/i/teamlogos/ncaa/500/145.png' style='height: 25px; width: auto; vertical-align: -30%;'><img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Oregon plays Ohio State and Boise State
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/68.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/194.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Miami plays no one!
+  " ",
+  # BYU plays SMU and Kansas St
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2567.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2306.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Ohio State plays Oregon, Penn State, Indiana
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/213.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/84.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Penn State plays Ohio State
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/194.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Indiana plays Ohio State
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/194.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Tennessee plays Alabama, UGA 
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/333.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/61.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Texas plays UGA and Texas A&M
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/61.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/245.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Alabama plays UGA, Tenn, LSU
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/61.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/99.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Texas A&M plays Notre Dame, LSU, Texas
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/87.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/99.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/251.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # LSU plays Ole Miss, Texas A&M, Alabama
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/145.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/245.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/333.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # SMU plays BYU and Pitt
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/252.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/221.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Pitt plays SMU 
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2567.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Notre Dame plays Texas A&M and Army
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/245.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/349.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Boise State plays Oregon, UNLV, Washington State
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/265.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2439.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Iowa St plays Kansas St
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2306.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Ole Miss plays LSU, UGA
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/99.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/61.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Kansas St plays BYU, Colorado, Iowa State
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/252.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/38.png' style='height: 25px; width: auto; vertical-align: -30%;'> <img src='http://a.espncdn.com/i/teamlogos/ncaa/500/66.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Wash St plays Boise State
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/68.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Army plays Notre Dame
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/87.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Colorado plays Kansas St
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2306.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # Tulane plays Kansas St
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/2306.png' style='height: 25px; width: auto; vertical-align: -30%;'>",
+  # UNLV plays Boise Sate
+  "<img src='http://a.espncdn.com/i/teamlogos/ncaa/500/68.png' style='height: 25px; width: auto; vertical-align: -30%;'>"
+)
+
+sor_fei_comp <- fei_espn |>  
+    dplyr::select(conf, team_name, record, sor, fpi_ptile, 
+                  fei_resume, fei_resume_rank, fei_ptile) |> 
+  cbbplotR::gt_cbb_teams(team_name, team_name) |> 
+  dplyr::arrange(sor, fei_resume_rank) |> 
+  dplyr::mutate(opp = opp_teams) |> 
+  dplyr::group_by(conf) |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gt::fmt_markdown(team_name) |>
+  gt::fmt_markdown(opp) |> 
+  gt::cols_align(
+    columns = c(team_name, opp), align = "left") |> 
+  gtExtras::gt_merge_stack(
+    col1 = "fei_resume_rank",
+    col2 = "fei_resume",
+  ) |> 
+  gtUtils::gt_color_pills(fpi_ptile,
+     domain = c(0.6, 1), format_type = "percent", digits = 1,
+        palette =  c("#FF4500", "#ADFF2F", "#008000")
+  ) |> 
+  gtUtils::gt_color_pills(fei_ptile,
+     domain = c(0.6, 1), format_type = "percent", digits = 1,
+    palette =  c("#FF4500", "#ADFF2F", "#008000")
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    sor = list(heading = "SOR", subtitle = "Rank"),
+    fpi_ptile = list(heading = "FPI", subtitle = "% Tile"),
+    fei_resume_rank = list(heading = "Résumé", subtitle = "Rank"),
+    fei_ptile = list(heading = "Rating", subtitle = "% Tile"),
+    opp = list(heading = "Opponents", subtitle = "Common"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(
+    team_name = "",
+    record = "W-L"
+  ) |> 
+   gt::tab_style(
+    style = list(
+      gt::cell_text(weight = "bold")
+      ),
+    locations = gt::cells_body(
+      columns = sor,
+    )
+  ) |> 
+  gt::tab_spanner(
+    columns = c(sor, fpi_ptile),
+    label = gt::html("ESPN")
+  ) |> 
+   gt::tab_spanner(
+    columns = c(fei_resume_rank, fei_resume, fei_ptile),
+    label = gt::html("FEI")
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(record, fpi_ptile, fei_ptile),
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_header(title = "2024 College Football Playoff Résumé Comparison",
+                 subtitle = "Shows the 24 teams with at least a 10% chance or 
+                 greater to make the 12-team playoff according to ESPN. Table compares résumé metrics from ESPN.com and bcftoys.com (FEI).") |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from {cfbfastR} and theme for {gtUtils}<br>
+        SOR is from ESPN and it stands for strength of record. This metric reflects the chance that an average Top 25 team would have the team's record or better, given the team's schedule.<br>
+        FEI résumé uses GWD or 'good' team win differential as teams that are one standard deviation above average, showing the difference between actual wins and strength of schedule.<br>
+        Notre Dame and Washington State are not eligible to play in a conference championship game.
+                <hr><b>Table by Chris at Bless your chart | November 4, 2024</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(
+        color = "#C5C5FF"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+     gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+      ),
+    locations = gt::cells_body(
+      columns = team_name
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(650))
+  
+  
+
+gtUtils::gt_save_crop(
+  sor_fei_comp,
+  file = "sor_fei_comp.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+
+sor_fei_comp
+```

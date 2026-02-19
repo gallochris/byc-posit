@@ -1,0 +1,128 @@
+---
+title: "108: Delta pace of play"
+date: "2024-09-16"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch and scrape data
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+url <- "https://www.teamrankings.com/college-football/stat/seconds-per-play?date=2024-09-18"
+
+webpage <- rvest::read_html(url)
+
+
+pace <- webpage |>
+  rvest::html_node("table") |>
+  rvest::html_table() |>
+  dplyr::mutate(diff = `2023` - `2024`) |>
+  dplyr::select(Team, `2024`, `2023`, diff)
+
+
+slow_pace <- pace |>
+  dplyr::arrange(diff) |>
+  dplyr::slice(1:10) |>
+  dplyr::mutate(
+    Team = dplyr::case_match(
+      Team,
+      "W Michigan" ~ "Western Michigan",
+      "N Carolina" ~ "North Carolina",
+      "Middle Tenn" ~ "Middle Tennessee State",
+      "Colorado St" ~ "Colorado State",
+      Team ~ Team
+    )
+  ) |>
+  cbbplotR::gt_cbb_teams(Team, Team) |>
+  dplyr::mutate(category = "Slower")
+
+fast_pace <- pace |>
+  dplyr::arrange(-diff) |>
+  dplyr::slice(1:10) |>
+  dplyr::mutate(
+    Team = dplyr::case_match(
+      Team,
+      "Miss State" ~ "Mississippi State",
+      "San Diego St" ~ "San Diego State",
+      "TX El Paso" ~ "UTEP",
+      "San Jose St" ~ "San Jose State",
+      "E Carolina" ~ "ECU",
+      Team ~ Team
+    )
+  ) |>
+  cbbplotR::gt_cbb_teams(Team, Team) |>
+  dplyr::mutate(category = "Faster")
+
+all_pace_teams <- fast_pace |>
+  dplyr::bind_rows(slow_pace)
+```
+
+### GT Table for pace differences
+
+```{r gt-table-pace-difference}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://img.pikbest.com/png-images/qiantu/cartoon-small-alarm-clock-png-download_2689861.png'
+       style='height: 65px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>College football<br> Teams playing <em>faster</em> and <em>slower</em></span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the ten fastest and slowest teams compared to seconds per play on offense from last season to this season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+delta_tbl <-  all_pace_teams |>
+  dplyr::select(Team, `2024`, diff, `2023`, category) |>
+  dplyr::group_by(category) |>
+  gt::gt() |>
+  gt::fmt_number(columns = c(`2024`, `2023`, diff), decimals = 1) |>
+  gt::fmt_markdown(Team) |>
+  gtUtils::gt_theme_savant() |>
+  gt::cols_align(columns = c(-Team), "center") |>
+  gt::cols_align(columns = c(Team), "left") |>
+  gt::tab_options(column_labels.border.top.style = "none") |>
+  gtUtils::gt_column_subheaders(
+    `2024` = list(heading = "2024", subtitle = "Season"),
+    `2023` = list(heading = "2023", subtitle = "Season"),
+    diff = list(heading = "+/-", subtitle = "Change"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(Team = "") |>
+  gtExtras::gt_hulk_col_numeric(columns = c(diff), domain = c(-10, 10)) |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via TeamRankings, theme via {gtUtils}, and logos from ESPN.com. <br>2024 season data through September 14 games.",
+    "Table by Chris (@dadgumboxscores) + Bless your chart"
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_options(table.width = gt::px(550)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE)
+
+
+gtUtils::gt_save_crop(delta_tbl,
+                      file = "delta_tbl.png",
+                      whitespace = 40,
+                      bg = "white")
+
+delta_tbl
+```
+
+### 

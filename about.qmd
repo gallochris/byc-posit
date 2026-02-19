@@ -1,0 +1,22 @@
+---
+title: "about"
+about:
+  template: marquee
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/dadgumboxscores
+    - icon: github
+      text: Github
+      href: https://github.com/gallochris/carolina
+---
+
+This is where I share code for any of the posts for [**Bless your chart**](https://blessyourchart.substack.com/), a weekly publication about Carolina sports. All charts and graphs are written in **R**.
+
+You may know me from Twitter ([\@dadgumboxscores](https://twitter.com/dadgumboxscores)), where I\'ve shared in-game GIFs, video clips, charts, and commentary as a Carolina sports fan. In the past, I [collected every box score](https://dadgumboxscores.com/) from the 2003-04 season until 2020-21 season.
+
+### What\'s up with the name?
+
+It\'s a bad pun. *Bless your heart* is a one of the more versatile phrases in Southern lexicon. It can mean so many different things. Good, bad, and ugly. It\'s all in the tone and context of how you use it.
+
+As you visualize data, the same thing can apply. One person might draw completely different conclusions than another person. So as you read this publication, you might say \"bless your ~~heart~~ chart\".

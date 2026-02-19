@@ -1,0 +1,299 @@
+---
+title: "162: Rivalry week"
+date: "2025-11-26"
+categories:
+  - cfbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+rivals <- readr::read_csv("unc-rivals.csv")
+
+
+# function to save table 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+```
+
+### Rival table 
+
+```{r rival-table, warning=FALSE, message=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina record against in-state rivals over past 40 years</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Carolina has lost to all three of its in-state rivals in the same season twice: 1988 and 1989. <br>UNC is a 7.5 point underdog at NC State on Saturday.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+rival_tbl <- rivals |>
+  dplyr::mutate(record_1 = paste0(W_1, "-", L_1),
+                record_2 = paste0(W_2, "-", L_2)) |>
+  gt::gt() |>
+  gt::cols_hide(columns = c(W_1, L_1, W_2, L_2)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gtExtras::gt_merge_stack(col1 = Season_1, col2 = record_1,
+                           palette = c("black", "#333333")) |>
+  gtExtras::gt_merge_stack(col1 = Season_2, col2 = record_2,
+                           palette = c("black", "#333333")) |>
+  gtUtils::gt_theme_gtutils() |>
+  gtUtils::gt_column_subheaders(
+    Season_1 = list(heading = "Season", subtitle = "Record"),
+    Duke_1 = list(heading = "Duke", subtitle = "13-7"),
+    NCState_1 = list(heading = "State", subtitle = "6-13"),
+    Wake_1 = list(heading = "Wake", subtitle = "6-5"),
+    Season_2 = list(heading = "Season", subtitle = "Record"),
+    Duke_2 = list(heading = "Duke", subtitle = "16-4"),
+    NCState_2 = list(heading = "State", subtitle = "11-9"),
+    Wake_2 = list(heading = "Wake", subtitle = "13-6"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::sub_missing(columns = c(-Empty, -NCState_1),
+                  missing_text = "---") |>
+  gt::sub_missing(columns = c(Empty), missing_text = "") |>
+  gt::sub_missing(columns = c(NCState_1), missing_text = "?") |>
+  gt::cols_label(Empty = "", ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Team's logo denotes a win in the given season. Head-to-head records over the 20-year period listed below each header.<br>UNC has swept all three of its in-state rivals in the same season nine times: 1993, 1994, 1995, 1996, 1997, 1998, 2004, 2015, 2020.<br><hr>Data via sports-reference.com, theme via {gtUtils} and logo from ESPN.<hr><b>Table by Chris at Bless your Chart | November 26, 2025</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(650)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(font = gt::google_font("Signika Negative"))),
+    locations = gt::cells_body(columns = everything())
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = c(NCState_1),
+    rows = c(1),
+    fill = "#ffffb1"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = c(Season_2, Duke_2, NCState_2, Wake_2),
+    rows = c(17, 18),
+    bold_target_only = TRUE,
+    fill = "#ffe9ec"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    columns = c(Season_2, Duke_2, NCState_2, Wake_2),
+    rows = c(8:13, 2),
+    fill = "#d3e6f3"
+  )  |>
+  gtExtras::gt_highlight_rows(
+    columns = c(Season_1, Duke_1, NCState_1, Wake_1),
+    rows = c(6, 11),
+    fill = "#d3e6f3"
+  ) |> 
+   gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) 
+
+
+gt_save_crop(
+  rival_tbl,
+  file = "rival_tbl_two.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+```
+
+### Dunks
+
+```{r dunk-tbl, warning=FALSE, message=FALSE}
+dunks <- tibble::tribble(
+    ~season,~games,~class,~player,~school,~dunks,~attempts,~pct,
+    "2016-17",36,"Sophomore","Tacko Fall","UCF",104,108,.963,
+    "2017-18",36,"Sophomore","Udoka Azubuike","Kansas",122,132,.924,
+    "2018-19",32,"Sophomore","Daniel Gafford","Arkansas",86,91,.945,
+    "2019-20",31,"Sophomore","Obi Toppin","Dayton",107,115,.930,
+    "2020-21",31,"Sophomore","Kofi Cockburn","Illinois",78,82,.951,
+    "2021-22",32,"Sophomore","Clifford Omoruyi","Rutgers",93,107,.869,
+    "2022-23",34,"Sophomore","Aziz Bandaogo","Utah Valley",90,99,.909,
+    "2023-24",39,"Senior","Zach Edey","Purdue",113,120,.942,
+    "2024-25",35,"Senior","Ryan Kalkbrenner","Creighton",107,115,.930,
+    "2025-26",6,"Freshman","Caleb Wilson","North Carolina",25,27,.959
+)
+
+
+bball_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Dunks per game over past 10 seasons</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows leaders in dunks per game and total dunks over past 10 seasons.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+dunk_tbl <- dunks |> 
+  dplyr::mutate(
+    dpg = dunks/games,
+    dunklist = paste0(dunks, "-", attempts, " (", pct, ")"),
+    gamelist = paste0(games, " games"),
+    class_school = paste0(class, " | ", school)
+  ) |> 
+  dplyr::arrange(-dpg) |> 
+  dplyr::select(season, gamelist, player, class_school, dpg, dunklist) |> 
+  gt::gt() |>
+  gt::fmt_number(
+    dpg, decimals = 2
+  ) |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gt::cols_align(
+    columns = c(player, class_school), align = "left") |>
+  gtExtras::gt_merge_stack(
+    col1 = season,
+    col2 = gamelist,
+        palette = c("black", "#333333")
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = player,
+    col2 = class_school,
+        palette = c("black", "#333333")
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = dpg,
+    col2 = dunklist,
+    palette = c("black", "#333333")
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    season = list(heading = "Season", subtitle = "Total Games"),
+    player = list(heading = "Player", subtitle = "Class | Team"),
+    dpg = list(heading = "Dunks Per Game", subtitle = "Dunks-Attempts (%)"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+    gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::data_color(
+    columns = c(dpg),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#fdae61", 
+                "#ffffbf", "#a6d96a", 
+                "#1a9641"),
+    alpha = 0.6
+  ) |> 
+  gt::tab_header(title = gt::html(bball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via barttorvik.com | theme via {gtUtils} <br>
+        <hr><b>Table by Chris at Bless your Chart | 2025-2026 data through November 25 games</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::tab_options(table.width = gt::px(425)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |> 
+   gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) 
+
+gt_save_crop(
+  dunk_tbl,
+  file = "dunk_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+dunk_tbl
+```

@@ -1,0 +1,339 @@
+---
+title: "114: Carolina football coaching records"
+date: "2024-10-24"
+categories:
+  - gtUtils
+  - indicator_boxes
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch data from cfbfastR
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+
+get_unc_records <- function(start_year = 1988,
+                            end_year = 2024) {
+  years <- start_year:end_year
+  
+  all_games <- purrr::map_df(years,
+                             ~ cfbfastR::cfbd_game_info(year = .x, team = "North Carolina"))
+  
+  processed_games <- all_games |>
+    dplyr::mutate(
+      game_result = dplyr::case_when(
+        home_team == "North Carolina" & home_points > away_points ~ "W",
+        home_team == "North Carolina" &
+          home_points < away_points ~ "L",
+        home_team != "North Carolina" &
+          home_points < away_points ~ "W",
+        home_team != "North Carolina" &
+          home_points > away_points ~ "L",
+        TRUE ~ "T"  # For ties, if any
+      )
+    )
+  
+  return(processed_games)
+}
+
+
+add_game_numbers <- function(df) {
+  # First, number the actual games
+  numbered_games <- df |>
+    dplyr::group_by(season) |>
+    dplyr::mutate(game_number = dplyr::row_number()) |>
+    dplyr::ungroup()
+  
+  # Create a template with all seasons and 14 game numbers
+  template <- tidyr::expand_grid(season = unique(df$season), game_number = 1:14)
+  
+  # Join the actual data with the template
+  complete_games <- template |>
+    dplyr::left_join(numbered_games, by = c("season", "game_number"))
+  
+  return(complete_games)
+}
+
+get_unc_records() -> unc_records
+
+unc_records |>
+  add_game_numbers() -> unc_with_games
+
+
+# bowl game fixes - this was way too tedius
+unc_tbl <- unc_with_games |>
+  dplyr::select(season, game_number, game_result) |>
+  dplyr::mutate(
+    game_result = dplyr::case_when(
+      game_number == 12 & season == 1992 ~ "W",
+      game_number == 13 & season == 1993 ~ "L",
+      game_number == 12 & season == 1994 ~ "L",
+      game_number == 12 & season == 1995 ~ "W",
+      game_number == 12 & season == 1996 ~ "W",
+      game_number == 12 & season == 1997 ~ "W",
+      game_number == 12 & season == 1998 ~ "W",
+      game_number == 13 & season == 2001 ~ "W",
+      game_number == 12 & season == 2004 ~ "L",
+      game_number == 13 & season == 2008 ~ "L",
+      game_number == 13 & season == 2009 ~ "L",
+      game_number == 13 & season == 2010 ~ "W",
+      game_number == 13 & season == 2011 ~ "L",
+      game_number == 13 & season == 2013 ~ "W",
+      game_number == 13 & season == 2014 ~ "L",
+      game_number == 14 & season == 2015 ~ "L",
+      game_number == 13 & season == 2016 ~ "L",
+      game_number == 13 & season == 2019 ~ "W",
+      game_number == 12 & season == 2020 ~ "L",
+      game_number == 13 & season == 2021 ~ "L",
+      game_number == 14 & season == 2022 ~ "L",
+      game_number == 13 & season == 2023 ~ "L",
+      TRUE ~ game_result
+    )
+  ) |>
+  dplyr::mutate(game_result = dplyr::case_match(game_result, "W" ~ 1, "L" ~ 0, "T" ~ NA)) |>
+  tidyr::pivot_wider(names_from = game_number, values_from = game_result, ) |>
+  dplyr::arrange(-season) |>  # add w-l records and percentages
+  dplyr::mutate(
+    coach = dplyr::case_when(
+      season %in% c(2019:2024) ~ "Mack Brown 2.0 56.9% | 41-31",
+      season %in% c(2012:2018) ~ "Larry Fedora 51.1% | 45-43",
+      season == 2011 ~ "Everett Withers 53.8% | 7-6",
+      season %in% c(2007:2010) ~ "Butch Davis 54.9% | 28-23",
+      season %in% c(2001:2006) ~ "John Bunting 37.5% | 27-45",
+      season %in% c(1998:2000) ~ "Carl Torbush 48.6% | 17-18 (excludes 1998 Gator Bowl)",
+      season %in% c(1988:1997) ~ "Mack Brown 1.0 60% | 69-46"
+    )
+  )
+
+```
+
+### GT table one
+
+```{r gt-tbl, warning=FALSE}
+
+
+# custom header
+custom_header <- glue::glue(
+   "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina: Losing streaks by season since 1998</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the <span style='font-weight: bold; color:#56a0d3'>wins</span> and <span style='font-weight: bold; color:#e75480'>losses</span> by game number of each season. <br>UNC has lost at least four consecutive games in 12 of its last 26 seasons.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+unc_coach_tbl <- unc_tbl |>
+  dplyr::filter(season > 1997) |> 
+  gt::gt(groupname_col = "coach") |>
+  gtUtils::gt_indicator_boxes(
+    key_columns = "season",
+    color_yes = "#56a0d3",
+    color_no = "#e75480",
+    color_na = "#e1e1e1"
+  ) |>
+  gt::cols_label(season = "") |>
+  gtUtils::gt_theme_sofa() |>
+  gt::tab_spanner(columns = c(-season), label = "Game Number") |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via cfbfastR, theme via {gtUtils}. <br>2024 season data through October 23.
+    <br>",
+    "<b>Table by Chris at Bless your chart</b>"
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(750)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Sofia Sans Condensed"),
+      weight = 650,
+      transform = "uppercase",
+      decorate = NULL,
+      size = gt::px(12)
+    )
+  ) |> 
+  gt::tab_style(
+      locations = gt::cells_column_labels(),
+      style = gt::cell_text(
+        weight = 'bold',
+        font = gt::google_font('Sofia Sans Condensed'),
+        size = gt::px(14),
+        color = "#acacac"
+      )
+    ) |> 
+ # gtExtras::gt_highlight_rows(
+#    rows = c(37),
+#    columns = c(2:7, 9:12),
+#    fill = "#D6DCF0"
+#  ) |> 
+#   gtExtras::gt_highlight_rows(
+#    rows = c(36),
+#    columns = c(3:12),
+#    fill = "#D6DCF0"
+#  ) |> 
+     gtExtras::gt_highlight_rows(
+    rows = c(26),
+    columns = c(4:10),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(25),
+    columns = c(6:9),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(23),
+    columns = c(7:12),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(22),
+    columns = c(2:6),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(19),
+    columns = c(5:11),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(18),
+    columns = c(3:6),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(12),
+    columns = c(4:7),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(11),
+    columns = c(4:7),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(8),
+    columns = c(5:10),
+    fill = "#D6DCF0"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(7),
+    columns = c(5:10),
+    fill = "#D6DCF0"
+  ) |>
+    gtExtras::gt_highlight_rows(
+    rows = c(3),
+    columns = c(12:15),
+    fill = "#D6DCF0"
+  ) |> 
+   gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(5:8),
+    fill = "#D6DCF0"
+  ) 
+
+gtUtils::gt_save_crop(
+  unc_coach_tbl,
+  file = "unc_modern.png",
+  whitespace = 40,
+  bg = "#F0EAD6"
+)
+
+unc_coach_tbl
+```
+
+### GT table two
+
+```{r mack-gt-table, warning=FALSE}
+
+# custom header
+custom_mack_header <- glue::glue(
+   "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina under Mack Brown</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the <span style='font-weight: bold; color:#56a0d3'>wins</span> and <span style='font-weight: bold; color:#e75480'>losses</span> by game number of each season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+unc_mack_tbl <- unc_tbl |>
+  dplyr::filter(coach %in% c("Mack Brown 1.0 60% | 69-46", 
+  "Mack Brown 2.0 56.9% | 41-31")) |>
+  dplyr::arrange(season) |> 
+  gt::gt(groupname_col = "coach") |>
+  gtUtils::gt_indicator_boxes(
+    key_columns = "season",
+    color_yes = "#56a0d3",
+    color_no = "#e75480",
+    color_na = "#e1e1e1"
+  ) |>
+  gt::cols_label(season = "") |>
+  gtUtils::gt_theme_sofa() |>
+  gt::tab_spanner(columns = c(-season), label = "Game Number") |>
+  gt::tab_header(title = gt::html(custom_mack_header)) |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via cfbfastR, theme via {gtUtils}. <br>2024 season data through October 23.
+    <br>UNC won 1998 Gator Bowl from 1997 season, however, this win came under Carl Torbush and it's not counted in the overall win/loss record for the Brown 1.0 era.",
+    "<b>Table by Chris at Bless your chart</b>"
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(750)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Sofia Sans Condensed"),
+      weight = 650,
+      transform = "uppercase",
+      decorate = NULL,
+      size = gt::px(12)
+    )
+  ) |> 
+  gt::tab_style(
+      locations = gt::cells_column_labels(),
+      style = gt::cell_text(
+        weight = 'bold',
+        font = gt::google_font('Sofia Sans Condensed'),
+        size = gt::px(14),
+        color = "#acacac"
+      )
+    ) 
+
+gtUtils::gt_save_crop(
+  unc_mack_tbl,
+  file = "unc_mack.png",
+  whitespace = 40,
+  bg = "#F0EAD6"
+)
+
+unc_mack_tbl
+```

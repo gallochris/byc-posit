@@ -1,0 +1,209 @@
+---
+title: "086: NCAAT WAB"
+date: "2024-03-26"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+
+# TourneyWAB
+# Idea is we don't need home or away because all games are neutral 
+# Semi-home would be interesting, but not sure that is worth sorting out
+
+# Add the efficiency ratings for the neutral 
+barts <- cbbdata::cbd_torvik_ratings(year = "2024") |>
+  dplyr::select(team, barthag, adj_o, adj_d) |>
+  dplyr::mutate(
+    N = (adj_o ^ 11.5) / (adj_o ^ 11.5 + adj_d ^ 11.5)
+  ) |>
+  tidyr::pivot_longer(cols = c(N),
+                      names_to = "location",
+                      values_to = "rtg")
+
+# NCAA Tournament seeds and teams 
+# Excluding the First Four because none of those teams advanced 
+seeds <- readr::read_csv("https://gist.githubusercontent.com/gallochris/86fc2a21dd4b30e3dd9ea79516594f05/raw/1e2dfa7eae2d196f5dee9ecf5fe95e5f76ba827d/ncaat_seeds.csv") |> 
+  dplyr::select(seed = Seed, team = Team, region = Region)
+
+ncaat_teams <- seeds |> 
+  dplyr::filter(!team %in% c("Virginia", "Boise St.", "Montana St.", "Howard")) |> 
+  dplyr::pull(team) 
+
+
+# Add the played schedule for the tournament teams only 
+ncaat_sched <- cbbdata::cbd_torvik_game_stats(year = 2024, type = "post") |> 
+  dplyr::filter(date > "2024-03-20") |> 
+  dplyr::filter(team %in% ncaat_teams) |> 
+  dplyr::left_join(seeds, by ="team") |> 
+  dplyr::select(seed, region, date, game_id, team, conf, opp, opp_conf, 
+                location, result, pts_scored, pts_allowed, tempo, 
+                game_score, off_ppp, off_efg,off_to, off_or, 
+                off_ftr, def_ppp, def_efg,def_to, def_or, def_ftr) |> 
+
+  dplyr::mutate(opp_location = dplyr::case_match(location,
+                                                 "N" ~ "N")) |>
+  dplyr::arrange(date)
+
+# Use the worst 4 seed by Alabama
+barts |>
+  dplyr::filter(team == "Alabama" & location == "N") |>
+  dplyr::pull(rtg) -> bubbleNeut 
+  
+
+# Calculate the WabW 
+ncaat_with_rtg <- ncaat_sched |>
+  dplyr::left_join(barts, by = c("team" = "team",
+                                 "location" = "location")) |>
+  dplyr::left_join(barts, by = c("opp" = "team",
+                                 "opp_location" = "location"))  |>
+  dplyr::rename(team_rtg = rtg.x, opp_rtg = rtg.y)  |>
+  dplyr::mutate(
+    bub_rtg = dplyr::case_when(
+      location == "N" ~ bubbleNeut
+    )
+  ) |>
+  dplyr::mutate(
+    #bub_win_prob = log(bub_rtg / (1 - opp_rtg), base = 5),
+    bub_win_prob = (bub_rtg - bub_rtg * opp_rtg) / (bub_rtg + opp_rtg - 2 * bub_rtg * opp_rtg),
+    # team A is bubble, team B is opponent
+    wab = dplyr::case_when(
+      result == "W" ~ (1 - bub_win_prob),
+      result == "L" ~ (0 - bub_win_prob),
+    ),
+    wab_opp = 1 - bub_win_prob,
+    score = paste0(pts_scored, "-", pts_allowed),
+  ) |>
+  dplyr::select(
+    date,
+    seed,
+    region,
+    team,
+    opp,
+    conf,
+    opp_conf,
+    location,
+    result,
+    score,
+    opp_location,
+    team_rtg,
+    opp_rtg,
+    bub_rtg,
+    bub_win_prob,
+    wab,
+    wab_opp
+  ) 
+
+# now pull in the sweet 16 
+sweet16 <- c("North Carolina", "Arizona", "Clemson", "Alabama", 
+             "Purdue", "Gonzaga", "Tennessee", "Creighton", "North Carolina St.", 
+             "Marquette", "Duke", "Houston", "Connecticut", "San Diego St.", 
+             "Illinois", "Iowa St.")
+
+ncaat_with_rtg |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarize(wins = sum(result == "W")) |> 
+  dplyr::filter(wins == 2) |> 
+  dplyr::pull(team) -> s16list
+
+ncaat_with_rtg |> 
+  dplyr::group_by(team) |> 
+  dplyr::summarize(wins = sum(result == "W")) |> 
+  dplyr::filter(wins == 1) |> dplyr::pull(team) -> r32loserlist
+
+
+# sweet 16 list 
+ncaat_with_rtg |> 
+  dplyr::filter(team %in% c(r32loserlist,s16list)) |> 
+  dplyr::left_join(seeds, by = c("opp" = "team")) |> 
+  dplyr::rename(opp_seed = seed.y, seed = seed.x, region = region.x) |> 
+  dplyr::group_by(team,region,conf,seed) |> 
+  dplyr::select(seed,region,team,conf,bub_win_prob,wab, opp_seed) |> 
+  dplyr::summarize(bwp1 = dplyr::first(bub_win_prob),
+                   bwp2 = dplyr::last(bub_win_prob),
+                   wab1 = dplyr::first(wab),
+                   wab2 = dplyr::last(wab),
+                   opp_seed_list = list(opp_seed)) |> 
+  dplyr::mutate(wabT = bwp1 * bwp2,
+                sumWAB = wab1 + wab2) |> 
+  dplyr::arrange(wabT) |> 
+  dplyr::filter(team %in% s16list) |> 
+  dplyr::select(team, conf, seed, region, opp_seed_list, wabT) |> 
+  dplyr::ungroup() -> s16_tbl
+
+
+```
+
+### Sweet 16 WAB Table
+
+```{r gt-table, warning = FALSE}
+
+ s16_tbl |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::mutate(conf = dplyr::case_match(conf,
+                  "BE" ~ "Big East",
+                  "B12" ~ "Big 12", 
+                  "B10" ~ "Big Ten",
+                  "P12" ~ "Pac-12", 
+                  "MWC" ~ "MW",
+                  conf ~ conf)) |> 
+  gt::gt() |>  
+  gt::fmt_markdown(team) |> 
+  gt::fmt_percent(columns = (wabT), decimals = 1) |> 
+  gt::cols_label(
+    team = "", 
+    conf = "", 
+    seed = "Seed", 
+    region = "Region", 
+    opp_seed_list = gt::html("Opponent<br>Seeds"),
+    wabT = gt::html("WAB <br>Bracket Luck"),
+  ) |> 
+  cbbplotR::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = c(team, conf)) |>
+  gt::data_color(
+    columns = c(wabT), 
+    palette = "BuGn"
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(conf), sides = "right", color = "black") |> 
+  gt::tab_header(title = "Sweet 16: WAB-determined Bracket Luck",
+                 subtitle = gt::html("Shows the
+                                     percent chance the <b>overall 16 seed</b> would win the two games each team played to earn a trip to the Sweet 16. The <b>higher</b> the percentage, the <em>easier</em> the Sweet 16 path.")) |>
+  gt::tab_source_note(source_note = gt::html("<hr>Wins-above-baseline is defined by the lowest rated 4 seed (Alabama) or the worst team <em>expected</em> to make the Sweet 16. A lower percentage means a more difficult Sweet 16 path.<br> <hr><b>Data by Ryan (@5th_Factor) and Chris (@dadgumboxscores)<br>
+                                               Data from Bart Torvik, cbbdata, and cbbplotR")) |> 
+  gt::tab_style(
+    locations = gt::cells_title(groups = "subtitle"),
+    style = gt::cell_text(
+      size = "small"
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      size = "x-small"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) -> wabBL_tbl
+
+
+gtExtras::gtsave_extra(wabBL_tbl,
+                       filename = "wabBL.png",
+                       vheight = 950,
+                       vwidth = 650)
+
+wabBL_tbl
+```
+
+### 

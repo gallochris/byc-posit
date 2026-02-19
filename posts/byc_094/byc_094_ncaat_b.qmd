@@ -1,0 +1,334 @@
+---
+title: "094: NCAA Baseball Regionals"
+date: "2024-05-30"
+categories:
+  - gtExtras
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+
+# notes from downloading the fthe data online
+# https://docs.google.com/spreadsheets/d/18iojV5_t-i9to4TUWxgBRUp8_fyPC0erROHm0icLAdE/edit#gid=0
+# seed_data <- readr::read_csv("cws_seeds.csv") |> 
+#  dplyr::rename(team_name = team)
+
+# read in dsr data 
+# https://d1baseball.com/diamond-sports-ranking/
+# dsr <- readr::read_csv("dsr.csv") |> 
+#  dplyr::rename(team_name = Team) 
+
+
+# join the data 
+# team_dsrs <- dplyr::inner_join(dsr, seed_data, by = "team_name") 
+
+# RPI function
+# rpi_ranks <- function(url) {
+
+# rpi_page <- rvest::read_html(url)
+
+# rpi_rk <- rpi_page |> 
+#  rvest::html_nodes("table") |> 
+#  rvest::html_table(fill = TRUE)
+
+# rpi_table <- as.data.frame(rpi_rk) 
+
+# rpi_table <- rpi_table |>
+#  dplyr::mutate(record = stringr::str_split(Record, "-", simplify = T),
+#                wins = record[,1],
+#                losses = record[,2]
+#  )
+# }
+
+# rpi <- rpi_ranks(url = "https://www.ncaa.com/rankings/baseball/d1/rpi")
+
+# make rpi table
+# ncaa_rpi <- rpi |>
+#  dplyr::select(School, Rank) |>
+#  dplyr::rename(team_name = School, rpi = Rank) |> 
+#  dplyr::mutate(team_name = dplyr::case_match(team_name,
+#                                "Oklahoma St." ~ "Oklahoma State",
+#                                "Fresno St." ~ "Fresno State",
+#                                "Florida St." ~ "Florida State",
+#                                "Indiana St." ~ "Indiana State",
+#                                "Army West Point" ~ "Army",
+#                                "UNCW" ~ "UNC Wilmington",
+#                                "Mississippi St." ~ "Mississippi State",
+#                                "Oregon St." ~ "Oregon State",
+#                                "DBU" ~ "Dallas Baptist",
+#                                "UConn" ~ "Connecticut",
+#                                "St. John's (NY)" ~ "St. John's",
+#                                "LIU" ~ "Long Island",
+#                                "Kansas St." ~ "Kansas State",
+#                                "Louisiana" ~ "UL Lafayette",
+#                                "Southern Miss." ~ "Southern Miss",
+#                                "Southeast Mo. St." ~ "Southeast Missouri",
+#                                "Western Mich." ~ "Western Michigan",
+#                                "Northern Ky." ~ "Northern Kentucky",
+#                                team_name ~ team_name
+#                                 ))
+
+# join the rest of the data
+# team_dsrs_rpi <- team_dsrs |> 
+#  dplyr::inner_join(ncaa_rpi, by = "team_name") 
+
+# now add the wab data
+# https://docs.google.com/spreadsheets/d/1OpvUmgjy854Mc_E96UA6B0NzwtxSP4D5w42wFn91rIY/edit#gid=28410142
+# wab <- readr::read_csv("wab_2024.csv") |> 
+# dplyr::select(team_name = School, wab_rank = Rank, WAB)
+
+# final addition
+# team_metrics <- team_dsrs_rpi |> 
+#  dplyr::inner_join(wab, by = "team_name")
+
+# logos 
+# logos <- readr::read_csv("https://raw.githubusercontent.com/Kazink36/cfbplotR/main/data-raw/logo_ref_2.csv") |> 
+#  dplyr::mutate(
+#    school = dplyr::case_match(school,
+#                               "Southeast Missouri State" ~ "Southeast Missouri",
+#                               "Louisiana" ~ "UL Lafayette",
+#                               "Pennsylvania" ~ "Penn",
+#                               school ~ school)
+#  ) |> 
+#  dplyr::add_row(
+#    school = "Dallas Baptist", 
+#    logo = "https://a.espncdn.com/i/teamlogos/ncaa/500/2164.png") |> 
+#  dplyr::add_row(
+#    school = "Long Island", 
+#    logo = "https://a.espncdn.com/i/teamlogos/ncaa/500/112358.png"
+#  ) |> 
+#  dplyr::rename(team_name = school)
+
+# team_metrics |> 
+#  dplyr::left_join(logos, by = "team_name") |> 
+#  dplyr::mutate(bracket = dplyr::case_match(regional,
+#                  "Chapel Hill" ~ "one",
+#                  "Tucson" ~ "one", 
+#                  "Charlottesville" ~ "one", 
+#                  "Fayetteville" ~ "one",
+#                  "Tallahasse" ~ "two", 
+#                  "Norman" ~ "two",
+#                  "Greenville" ~ "two",
+#                  "Knoxville" ~ "two",
+#                  "Lexington" ~ "three",
+#                  "Corvallis" ~ "three",
+#                  "Raleigh" ~ "three",
+#                  "Athens" ~ "three",
+#                  "Clemson" ~ "four", 
+#                  "Stillwater" ~ "four",
+#                  "Santa Barbara" ~ "four",
+#                  "College Station" ~ "four")) |> 
+#  dplyr::select(bracket, super, regional, seed, logo, team_name, `W-L-T`, WPCT, 
+#                `DSR Rank`, rpi, `wab_rank`, `SOS Rank`) -> bracket_metrics
+
+# read the odds from draftkings
+# https://sportsbook.draftkings.com/leagues/baseball/ncaa-baseball?category=team-futures&subcategory=cws-regionals
+bm <- readr::read_csv("bracket_metrics.csv") |> 
+  dplyr::mutate(prob = dplyr::if_else(odds > 0,
+                              100 / (odds + 100),
+                              -odds / (-odds + 100))) |> 
+  dplyr::select(-c(...1, odds, `SOS Rank`)) |> 
+  dplyr::mutate(regional = paste0(regional, " Regional"))
+```
+
+### GT Theme
+
+```{r gt-theme, message = FALSE, warning=FALSE}
+
+gt_theme_chris <- function(gt_object, ...) {
+  stopifnot("'gt_object' must be a 'gt_tbl', have you accidentally passed raw data?" = "gt_tbl" %in% class(gt_object))
+  
+  gt_object |> 
+    gt::tab_options(
+      heading.align = "left",
+      table.border.top.style = "none",
+      column_labels.border.bottom.style = "none",
+      column_labels.border.bottom.color = "black",
+      table_body.border.top.style = "none",
+      table_body.border.bottom.color = "white",
+      heading.border.bottom.style = "none",
+      data_row.padding = gt::px(5),
+      table.font.size = gt::px(12),
+      column_labels.font.size = gt::px(12),
+      column_labels.font.weight = "bolder",
+      column_labels.border.bottom.width = gt::px(1),
+      ...
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        color = "#333333",
+        font = gt::google_font("Roboto"),
+        transform = "uppercase"
+      ),
+      locations = list(
+        gt::cells_column_labels(),
+        gt::cells_stubhead()
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        font = gt::google_font("Roboto"),
+        weight = 800
+      ),
+      locations = gt::cells_title(groups = "title")
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        font = gt::google_font("Roboto"),
+        weight = 400
+      ),
+      locations = gt::cells_body()
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "subtitle"),
+      style = gt::cell_text(
+        size = "small"
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "title"),
+      style = gt::cell_text(
+        size = "large"
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_source_notes(),
+      style = gt::cell_text(
+        size = "x-small"
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    )  |> 
+    gt::tab_style(
+      locations = gt::cells_row_groups(groups = gt::everything()),
+      style = list(
+        gt::cell_text(
+          size = "small",
+          weight = "bold"
+        ), 
+        gt::cell_fill(color = "#FFFEE0")
+      )) |> 
+    gt::tab_style(
+      style = list(
+        gt::cell_fill(color = "#FFFEE0"),
+        gt::cell_text(color = "#333333", size = gt::px(12), weight = "bold"),
+        gt::cell_borders(sides = "right", color = "black", weight = gt::px(2)),
+        gt::cell_borders(sides = "bottom", color = "black", weight = gt::px(2))
+      ),
+      locations = list(
+        gt::cells_column_spanners(
+          spanners = gt::everything()
+        )
+      )
+    )
+} 
+
+```
+
+### Function to make the GT tables
+
+```{r func-table, message=FALSE, warning=FALSE}
+
+ncaab_tbl <- function(bracket) {
+  
+  # Set the title of the plot
+  table_title <- "College World Series: Regionals by the Numbers"
+  
+  bm |>
+    dplyr::filter(bracket == {
+      {
+        bracket
+      }
+    }) |>
+    dplyr::arrange(seed, super) |> 
+    dplyr::relocate(prob, .before = `DSR Rank`) |> 
+    gt::gt(groupname_col = "regional") |> 
+    gtExtras::gt_img_rows(columns = logo, 
+                          img_source = "web", height = 30) |> 
+    gt::cols_hide(columns = c(bracket, super)) |> 
+    gt::cols_label(
+      seed = "",
+      logo = "",
+      team_name = "",
+      `W-L-T` = "Record",
+      WPCT = "Win %",
+      prob = "Odds",
+      `DSR Rank` = "DSR",
+      rpi = "RPI",
+      wab_rank = "WAB",
+    ) |>
+    gt_theme_chris() |> 
+    gt::tab_spanner(label = "Rankings", 
+                    columns = c(`DSR Rank`,
+                                wab_rank, rpi)) |> 
+    gt::cols_align(align = "left", columns = c(logo, team_name)) |>
+    gtExtras::gt_hulk_col_numeric(columns = c(`DSR Rank`,
+                                              wab_rank, rpi),
+                                  reverse = TRUE) |>
+    gtExtras::gt_hulk_col_numeric(columns = c(prob)) |>
+    gt::fmt_percent(columns = c(prob), decimals = 1) |> 
+    gtExtras::gt_add_divider(columns = c(WPCT, prob), 
+                             sides = "right", color = "black") |> 
+    gt::tab_header(title = table_title,
+                   subtitle = gt::html("Regionals grouped by national seeds. Data inclues overall record, win percentage, odds to win regional, and numerical rankings across various D-I metrics.")) |>
+    gt::tab_source_note(source_note = gt::html("<hr><br>
+                                       Odds to win regional from DraftKings<br>
+                                       DSR is the Diamond Sports Ranking computed by 643charts.com<br>
+                                       RPI is from the stats.ncaa.org<br>
+                                       WAB is wins-above-bubble computed by Seth Burn<br>
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | | May 30, 2024</b>")) |> 
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    ) -> ncaabt_table
+  
+    ncaabt_table
+} 
+
+ncaab_tbl(bracket = "one") -> tbl_one
+
+ncaab_tbl(bracket = "two") -> tbl_two
+
+ncaab_tbl(bracket = "three") -> tbl_three
+
+ncaab_tbl(bracket = "four") -> tbl_four
+
+gtExtras::gtsave_extra(tbl_one,
+                       filename = "nccat_tbl_one.png",
+                       vheight = 1200,
+                       vwidth = 750)
+
+gtExtras::gtsave_extra(tbl_two,
+                       filename = "nccat_tbl_twos.png",
+                       vheight = 1200,
+                       vwidth = 750)
+
+gtExtras::gtsave_extra(tbl_three,
+                       filename = "nccat_tbl_three.png",
+                       vheight = 1200,
+                       vwidth = 750)
+
+gtExtras::gtsave_extra(tbl_four,
+                       filename = "nccat_tbl_four.png",
+                       vheight = 1200,
+                       vwidth = 750)
+
+# example!
+tbl_one
+
+
+```

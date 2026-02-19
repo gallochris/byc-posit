@@ -1,0 +1,65 @@
+regional,seed,national.seed,team,city,latitude,longitude,dest_lat,dest_long,distance,conf
+AUBURN,1,13,Auburn,"Auburn, Alabama",32.6099,-85.4808,32.6099,-85.4808,0,SEC
+AUBURN,4,NA,Penn,"Philadelphia, Pennsylvania",39.9526,-75.1652,32.6099,-85.4808,766.3649455,Ivy
+AUBURN,3,NA,Samford,"Birmingham, Alabama",33.5207,-86.8025,32.6099,-85.4808,99.19111998,Southern
+AUBURN,2,NA,Southern Miss,"Hattiesburg, Mississippi",31.3271,-89.2903,32.6099,-85.4808,240.4888368,Sun Belt
+BATON ROUGE,1,5,LSU,"Baton Rouge, Louisiana",30.4515,-91.1871,30.4515,-91.1871,0,SEC
+BATON ROUGE,2,NA,Oregon State,"Corvallis, Oregon",44.5646,-123.262,30.4515,-91.1871,1994.109621,Pac-12
+BATON ROUGE,3,NA,Sam Houston State,"Huntsville, Texas",30.7235,-95.5508,30.4515,-91.1871,260.5035999,WAC
+BATON ROUGE,4,NA,Tulane,"New Orleans, Louisiana",29.9511,-90.0715,30.4515,-91.1871,75.13890047,American
+CHARLOTTESVILLE,4,NA,Army,"West Point, New York",41.3912,-73.9626,38.0293,-78.4767,334.2338576,Patriot
+CHARLOTTESVILLE,2,NA,East Carolina,"Greenville, North Carolina",35.6127,-77.3663,38.0293,-78.4767,178.1028741,American
+CHARLOTTESVILLE,3,NA,Oklahoma,"Norman, Oklahoma",35.2226,-97.4395,38.0293,-78.4767,1068.461634,Big 12
+CHARLOTTESVILLE,1,7,Virginia,"Charlottesville, Virginia",38.0293,-78.4767,38.0293,-78.4767,0,ACC
+CLEMSON,3,NA,Charlotte,"Charlotte, North Carolina",35.2271,-80.8431,34.6834,-82.8398,119.278588,CUSA
+CLEMSON,1,4,Clemson,"Clemson, South Carolina",34.6834,-82.8398,34.6834,-82.8398,0,ACC
+CLEMSON,4,NA,Lipscomb,"Nashville, Tennessee",36.1627,-86.7816,34.6834,-82.8398,244.5889902,ASUN
+CLEMSON,2,NA,Tennessee,"Knoxville, Tennessee",35.9606,-83.9207,34.6834,-82.8398,107.35819,SEC
+COLUMBIA,2,NA,Campbell,"Buies Creek, North Carolina",35.407,-78.7386,34.0007,-80.9339,158.2534727,Big South
+COLUMBIA,4,NA,Central Connecticut,"New Britain, Connecticut",41.6759,-72.7795,34.0007,-80.9339,692.3297472,Northeast
+COLUMBIA,3,NA,North Carolina State,"Raleigh, North Carolina",35.7796,-78.6382,34.0007,-80.9339,179.1708283,ACC
+COLUMBIA,1,15,South Carolina,"Columbia, South Carolina",34.0007,-80.9339,34.0007,-80.9339,0,SEC
+CONWAY,1,10,Coastal Carolina,"Conway, South Carolina",33.8361,-79.0228,33.8361,-79.0228,0,Sun Belt
+CONWAY,2,NA,Duke,"Durham, North Carolina",35.994,-78.8986,33.8361,-79.0228,149.4295591,ACC
+CONWAY,4,NA,Rider,"Lawrenceville, New Jersey",40.2859,-74.7389,33.8361,-79.0228,504.7603433,MAAC
+CONWAY,3,NA,UNCW,"Wilmington, North Carolina",34.2257,-77.9447,33.8361,-79.0228,67.42084222,Colonial
+CORAL GABLES,3,NA,Louisiana,"Lafayette, Louisiana",30.2241,-92.0198,25.7215,-80.2717,781.7829373,Sun Belt
+CORAL GABLES,4,NA,Maine,"Orono, Maine",44.9016,-68.9496,25.7215,-80.2717,1469.178429,America East
+CORAL GABLES,1,9,Miami (FL),"Coral Gables, Florida",25.7215,-80.2717,25.7215,-80.2717,0,ACC
+CORAL GABLES,2,NA,Texas,"Austin, Texas",30.2672,-97.7431,25.7215,-80.2717,1111.08884,Big 12
+FAYETTEVILLE,3,NA,Arizona,"Tucson, Arizona",32.2226,-110.9747,36.0631,-94.1574,997.2727973,Pac-12
+FAYETTEVILLE,1,3,Arkansas,"Fayetteville, Arkansas",36.0631,-94.1574,36.0631,-94.1574,0,SEC
+FAYETTEVILLE,4,NA,Santa Clara,"Santa Clara, California",37.3541,-121.9552,36.0631,-94.1574,1538.504141,WCC
+FAYETTEVILLE,2,NA,TCU,"Fort Worth, Texas",32.7555,-97.3308,36.0631,-94.1574,291.746645,Big 12
+GAINESVILLE,1,2,Florida,"Gainesville, Florida",29.6516,-82.3248,29.6516,-82.3248,0,SEC
+GAINESVILLE,4,NA,Florida A&M,"Tallahassee, Florida",30.4383,-84.2807,29.6516,-82.3248,129.134407,SWAC
+GAINESVILLE,3,NA,Texas Tech,"Lubbock, Texas",33.5779,-101.8543,29.6516,-82.3248,1180.041786,Big 12
+GAINESVILLE,2,NA,Connecticut,"Storrs, Connecticut",41.8084,-72.2504,29.6516,-82.3248,1011.807301,Big East
+LEXINGTON,4,NA,Ball State,"Muncie, Indiana",40.1934,-85.3963,38.0406,-84.5037,156.4233346,MAC
+LEXINGTON,3,NA,Indiana,"Bloomington, Indiana",39.1653,-86.5264,38.0406,-84.5037,134.1854596,Big Ten
+LEXINGTON,1,12,Kentucky,"Lexington, Kentucky",38.0406,-84.5037,38.0406,-84.5037,0,SEC
+LEXINGTON,2,NA,West Virginia,"Morgantown, West Virginia",39.6295,-79.9566,38.0406,-84.5037,268.4794405,Big 12
+NASHVILLE,4,NA,Eastern Illinois,"Charleston, Illinois",39.4844,-88.1762,36.1627,-86.7816,242.0602403,OVC
+NASHVILLE,2,NA,Oregon,"Eugene, Oregon",44.0521,-123.0868,36.1627,-86.7816,1979.013927,Pac-12
+NASHVILLE,1,6,Vanderbilt,"Nashville, Tennessee",36.1627,-86.7816,36.1627,-86.7816,0,SEC
+NASHVILLE,3,NA,Xavier,"Cincinnati, Ohio",39.1031,-84.512,36.1627,-86.7816,238.3572057,Big East
+STANFORD,3,NA,Cal State Fullerton,"Fullerton, California",33.8704,-117.9243,37.4275,-122.167,342.5700619,Big West
+STANFORD,4,NA,San Jose State,"San Jose, California",37.3382,-121.8863,37.4275,-122.167,16.61864076,MWC
+STANFORD,1,8,Stanford,"Stanford, California",37.4275,-122.167,37.4275,-122.167,0,Pac-12
+STANFORD,2,NA,Texas A&M,"College Station, Texas",30.6263,-96.3344,37.4275,-122.167,1548.065318,SEC
+STILLWATER,2,NA,Dallas Baptist,"Dallas, Texas",32.7767,-96.7969,36.1156,-97.0584,231.4349355,CUSA
+STILLWATER,1,11,Oklahoma State,"Stillwater, Oklahoma",36.1156,-97.0584,36.1156,-97.0584,0,Big 12
+STILLWATER,4,NA,Oral Roberts,"Tulsa, Oklahoma",36.1539,-95.9928,36.1156,-97.0584,59.58783106,Summit
+STILLWATER,3,NA,Washington,"Seattle, Washington",47.6062,-122.3321,36.1156,-97.0584,1514.988748,Pac-12
+TERRE HAUTE,1,14,Indiana State,"Terre Haute, Indiana",39.4667,-87.4139,39.4667,-87.4139,0,Missouri Valley
+TERRE HAUTE,2,NA,Iowa,"Iowa City, Iowa",41.6611,-91.5302,39.4667,-87.4139,264.1957899,Big Ten
+TERRE HAUTE,3,NA,North Carolina,"Chapel Hill, North Carolina",35.9132,-79.0558,39.4667,-87.4139,519.0314069,ACC
+TERRE HAUTE,4,NA,Wright State,"Dayton, Ohio",39.7589,-84.1916,39.4667,-87.4139,172.8827617,Horizon
+TUSCALOOSA,1,16,Alabama,"Tuscaloosa, Alabama",33.2098,-87.5692,33.2098,-87.5692,0,SEC
+TUSCALOOSA,2,NA,Boston College,"Chestnut Hill, Massachusetts",42.3358,-71.1674,33.2098,-87.5692,1093.549904,ACC
+TUSCALOOSA,4,NA,Nicholls,"Thibodaux, Louisiana",29.7958,-90.8227,33.2098,-87.5692,304.2328721,Southland
+TUSCALOOSA,3,NA,Troy,"Troy, Alabama",31.8088,-85.9672,33.2098,-87.5692,134.6200139,Sun Belt
+WINSTON-SALEM,4,NA,George Mason,"Fairfax, Virginia",38.8462,-77.308,36.0999,-80.2442,249.1017201,A10
+WINSTON-SALEM,2,NA,Maryland,"College Park, Maryland",38.9869,-76.9439,36.0999,-80.2442,269.4782155,Big Ten
+WINSTON-SALEM,3,NA,Northeastern,"Boston, Massachusetts",42.3601,-71.0589,36.0999,-80.2442,654.8223645,Colonial
+WINSTON-SALEM,1,1,Wake Forest,"Winston-Salem, North Carolina",36.0999,-80.2442,36.0999,-80.2442,0,ACC

@@ -1,0 +1,235 @@
+"","pos_team","total","punt_td"
+"1","North Carolina",9,2
+"2","Nebraska",8,1
+"3","Princeton",8,1
+"4","Texas",8,0
+"5","Buffalo",7,1
+"6","Harvard",7,0
+"7","Pittsburgh",7,2
+"8","Arizona",6,3
+"9","Georgia State",6,5
+"10","Georgia Tech",6,2
+"11","UL Monroe",6,5
+"12","UNLV",6,1
+"13","UTEP",6,0
+"14","Utah",6,3
+"15","Virginia",6,2
+"16","Arkansas",5,2
+"17","Charlotte",5,2
+"18","Davidson",5,1
+"19","Florida Atlantic",5,0
+"20","Georgia Southern",5,2
+"21","Iowa State",5,0
+"22","Lafayette",5,1
+"23","Maryland",5,0
+"24","New Mexico State",5,0
+"25","Northern Illinois",5,1
+"26","Purdue",5,0
+"27","Tulsa",5,1
+"28","UCF",5,3
+"29","Abilene Christian",4,0
+"30","Ball State",4,1
+"31","Bowling Green",4,1
+"32","Colorado State",4,2
+"33","Duke",4,1
+"34","Indiana",4,2
+"35","Iowa",4,0
+"36","Marist",4,2
+"37","Marshall",4,1
+"38","Massachusetts",4,0
+"39","Memphis",4,1
+"40","Mercer",4,1
+"41","Miami (OH)",4,0
+"42","Michigan State",4,0
+"43","Murray State",4,0
+"44","New Mexico",4,4
+"45","Norfolk State",4,2
+"46","North Carolina A&T",4,1
+"47","North Carolina Central",4,2
+"48","Oklahoma State",4,0
+"49","Rice",4,1
+"50","South Dakota State",4,2
+"51","Stanford",4,0
+"52","Texas Tech",4,1
+"53","Troy",4,0
+"54","Vanderbilt",4,2
+"55","Washington",4,1
+"56","West Virginia",4,3
+"57","Alabama A&M",3,2
+"58","Alabama State",3,0
+"59","Arkansas State",3,0
+"60","Austin Peay",3,1
+"61","Central Arkansas",3,0
+"62","Clemson",3,1
+"63","Delaware",3,0
+"64","East Carolina",3,1
+"65","Florida International",3,0
+"66","Hawai'i",3,0
+"67","Houston Christian",3,2
+"68","Idaho State",3,1
+"69","Jackson State",3,0
+"70","James Madison",3,2
+"71","Kansas",3,1
+"72","Lincoln (CA)",3,2
+"73","Louisiana Tech",3,2
+"74","Louisville",3,0
+"75","Michigan",3,1
+"76","Navy",3,1
+"77","North Alabama",3,1
+"78","Northwestern",3,0
+"79","Oklahoma",3,1
+"80","Oregon",3,0
+"81","Penn State",3,0
+"82","Robert Morris",3,0
+"83","San Diego State",3,0
+"84","Southern Miss",3,2
+"85","Stephen F. Austin",3,0
+"86","Syracuse",3,1
+"87","TCU",3,0
+"88","Texas A&M",3,2
+"89","Texas State",3,1
+"90","Toledo",3,1
+"91","Tulane",3,0
+"92","UCLA",3,2
+"93","Utah State",3,0
+"94","Virginia University Of Lynchburg",3,1
+"95","Wake Forest",3,0
+"96","Youngstown State",3,1
+"97","Air Force",2,0
+"98","Alabama",2,0
+"99","Alcorn State",2,0
+"100","Army",2,0
+"101","Baylor",2,1
+"102","Bucknell",2,0
+"103","California",2,0
+"104","Central Michigan",2,1
+"105","Chattanooga",2,2
+"106","Coastal Carolina",2,1
+"107","Columbia",2,0
+"108","Cornell",2,0
+"109","Drake",2,1
+"110","Duquesne",2,1
+"111","Eastern Illinois",2,0
+"112","Eastern Kentucky",2,1
+"113","Eastern New Mexico",2,0
+"114","Eastern Washington",2,0
+"115","Elon",2,0
+"116","Florida",2,0
+"117","Florida A&M",2,2
+"118","Fordham",2,0
+"119","Fresno State",2,1
+"120","Hampton",2,0
+"121","Holy Cross",2,2
+"122","Idaho",2,1
+"123","Illinois",2,0
+"124","Incarnate Word",2,0
+"125","Indiana State",2,0
+"126","Jacksonville State",2,1
+"127","Kent State",2,0
+"128","Kentucky",2,0
+"129","Lamar",2,1
+"130","Merrimack",2,0
+"131","Miami",2,0
+"132","Middle Tennessee",2,1
+"133","Mississippi State",2,1
+"134","Missouri",2,0
+"135","Missouri State",2,0
+"136","Morgan State",2,0
+"137","NC State",2,0
+"138","Nevada",2,1
+"139","Nicholls",2,2
+"140","North Texas",2,0
+"141","Ole Miss",2,1
+"142","Oregon State",2,0
+"143","SMU",2,0
+"144","San Diego",2,0
+"145","San José State",2,1
+"146","South Alabama",2,1
+"147","South Carolina",2,1
+"148","South Carolina State",2,0
+"149","South Dakota",2,1
+"150","South Florida",2,1
+"151","Southeast Missouri State",2,0
+"152","Southern",2,1
+"153","Stetson",2,1
+"154","Tennessee",2,0
+"155","Towson",2,2
+"156","UAB",2,1
+"157","UConn",2,2
+"158","VMI",2,0
+"159","Valparaiso",2,1
+"160","Wagner",2,0
+"161","Weber State",2,0
+"162","Wofford",2,1
+"163","Akron",1,0
+"164","App State",1,1
+"165","Arizona State",1,1
+"166","Arkansas-Pine Bluff",1,1
+"167","Ave Maria University",1,1
+"168","Boise State",1,0
+"169","Butler",1,0
+"170","Campbell",1,0
+"171","Central Connecticut",1,1
+"172","Charleston Southern",1,0
+"173","Colorado",1,0
+"174","Dayton",1,0
+"175","Eastern Michigan",1,0
+"176","Edward Waters",1,0
+"177","Furman",1,1
+"178","Gardner-Webb",1,1
+"179","Georgetown",1,0
+"180","Georgia",1,0
+"181","Houston",1,1
+"182","Kennesaw State",1,1
+"183","Kentucky Christian",1,0
+"184","LSU",1,0
+"185","Lane College",1,0
+"186","Lehigh",1,0
+"187","Liberty",1,0
+"188","Lindenwood",1,0
+"189","Maine",1,0
+"190","Mercyhurst",1,1
+"191","Michigan Tech",1,1
+"192","Minnesota",1,0
+"193","Mississippi Valley State",1,0
+"194","Monmouth",1,1
+"195","Montana",1,0
+"196","Morehead State",1,0
+"197","North American University",1,0
+"198","North Dakota",1,0
+"199","North Dakota State",1,0
+"200","North Greenville",1,1
+"201","Northern Iowa",1,0
+"202","Northwestern State",1,1
+"203","Ohio",1,1
+"204","Ohio State",1,0
+"205","Old Dominion",1,1
+"206","Pennsylvania",1,0
+"207","Prairie View",1,0
+"208","Prairie View A&M",1,0
+"209","Presbyterian",1,1
+"210","Richmond",1,0
+"211","SE Louisiana",1,1
+"212","Sam Houston",1,0
+"213","Southern Utah",1,0
+"214","St. Francis (PA)",1,1
+"215","St. Thomas (MN)",1,1
+"216","Stonehill",1,1
+"217","Tennessee State",1,1
+"218","Tennessee Tech",1,1
+"219","Texas A&M-Commerce",1,0
+"220","Texas Southern",1,0
+"221","The Citadel",1,1
+"222","Tuskegee",1,0
+"223","UAlbany",1,0
+"224","UC Davis",1,0
+"225","UT Martin",1,1
+"226","Utah Tech",1,0
+"227","Virginia Tech",1,0
+"228","Washington State",1,0
+"229","Western Carolina",1,0
+"230","Western Kentucky",1,1
+"231","Western Michigan",1,0
+"232","Western Oregon",1,1
+"233","Wisconsin",1,0
+"234","Wyoming",1,0

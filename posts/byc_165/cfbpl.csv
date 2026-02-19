@@ -1,0 +1,51 @@
+﻿Rk,Team,Date,Season,PtDif,Day,G#,,Opp.,Round,Result,Pts,PtsO,PtDif,PC,Round
+1,Oregon,1/1/15,2014,39,Thu,14,N,Florida State,Semifinal,W 59-20,59,20,39,79,1
+2,Ohio State,1/1/15,2014,7,Thu,14,N,Alabama,Semifinal,W 42-35,42,35,7,77,1
+3,Ohio State,1/12/15,2014,22,Mon,15,N,Oregon,Final,W 42-20,42,20,22,62,4
+4,Clemson,12/31/15,2015,20,Thu,14,N,Oklahoma,Semifinal,W 37-17,37,17,20,54,1
+5,Alabama,12/31/15,2015,38,Thu,14,N,Michigan State,Semifinal,W 38-0,38,0,38,38,1
+6,Alabama,1/11/16,2015,5,Mon,15,N,Clemson,Final,W 45-40,45,40,5,85,4
+7,Clemson,12/31/16,2016,31,Sat,14,N,Ohio State,Semifinal,W 31-0,31,0,31,31,1
+8,Alabama,12/31/16,2016,17,Sat,14,N,Washington,Semifinal,W 24-7,24,7,17,31,1
+9,Clemson,1/9/17,2016,4,Mon,15,N,Alabama,Final,W 35-31,35,31,4,66,4
+10,Georgia,1/1/18,2017,6,Mon,14,N,Oklahoma,Semifinal,W 54-48 (2OT),54,48,6,102,1
+11,Alabama,1/1/18,2017,18,Mon,13,N,Clemson,Semifinal,W 24-6,24,6,18,30,1
+12,Alabama,1/8/18,2017,3,Mon,14,N,Georgia,Final,W 26-23 (OT),26,23,3,49,4
+13,Clemson,12/29/18,2018,27,Sat,14,N,Notre Dame,Semifinal,W 30-3,30,3,27,33,1
+14,Alabama,12/29/18,2018,11,Sat,14,N,Oklahoma,Semifinal,W 45-34,45,34,11,79,1
+15,Clemson,1/7/19,2018,28,Mon,15,N,Alabama,Final,W 44-16,44,16,28,60,4
+16,LSU,12/28/19,2019,35,Sat,14,N,Oklahoma,Semifinal,W 63-28,63,28,35,91,1
+17,Clemson,12/28/19,2019,6,Sat,14,N,Ohio State,Semifinal,W 29-23,29,23,6,52,1
+18,LSU,1/13/20,2019,17,Mon,15,N,Clemson,Final,W 42-25,42,25,17,67,4
+19,Ohio State,1/1/21,2020,21,Fri,7,N,Clemson,Semifinal,W 49-28,49,28,21,77,1
+20,Alabama,1/1/21,2020,17,Fri,12,N,Notre Dame,Semifinal,W 31-14,31,14,17,45,1
+21,Alabama,1/11/21,2020,28,Mon,13,N,Ohio State,Final,W 52-24,52,24,28,76,4
+22,Georgia,12/31/21,2021,23,Fri,14,N,Michigan,Semifinal,W 34-11,34,11,23,45,1
+23,Alabama,12/31/21,2021,21,Fri,14,N,Cincinnati,Semifinal,W 27-6,27,6,21,33,1
+24,Georgia,1/10/22,2021,15,Mon,15,N,Alabama,Final,W 33-18,33,18,15,51,4
+25,Texas Christian,12/31/22,2022,6,Sat,14,N,Michigan,Semifinal,W 51-45,51,45,6,96,1
+26,Georgia,12/31/22,2022,1,Sat,14,N,Ohio State,Semifinal,W 42-41,42,41,1,83,1
+27,Georgia,1/9/23,2022,58,Mon,15,N,Texas Christian,Final,W 65-7,65,7,58,72,4
+28,Washington,1/1/24,2023,6,Mon,14,N,Texas,Semifinal,W 37-31,37,31,6,68,1
+29,Michigan,1/1/24,2023,7,Mon,14,N,Alabama,Semifinal,W 27-20 (OT),27,20,7,47,1
+30,Michigan,1/8/24,2023,21,Mon,15,N,Washington,Final,W 34-13,34,13,21,47,4
+31,Notre Dame,12/20/24,2024,10,Fri,13,,Indiana,First Round,W 27-17,27,17,10,44,1
+32,Texas,12/21/24,2024,14,Sat,14,,Clemson,First Round,W 38-24,38,24,14,62,1
+33,Penn State,12/21/24,2024,28,Sat,14,,SMU,First Round,W 38-10,38,10,28,48,1
+34,Ohio State,12/21/24,2024,25,Sat,13,,Tennessee,First Round,W 42-17,42,17,25,59,1
+35,Penn State,12/31/24,2024,17,Tue,15,N,Boise State,Quarterfinal,W 31-14,31,14,17,45,2
+36,Texas,1/1/25,2024,8,Wed,15,N,Arizona State,Quarterfinal,W 39-31 (2OT),39,31,8,70,2
+37,Ohio State,1/1/25,2024,20,Wed,14,N,Oregon,Quarterfinal,W 41-21,41,21,20,62,2
+38,Notre Dame,1/2/25,2024,13,Thu,14,N,Georgia,Quarterfinal,W 23-10,23,10,13,33,2
+39,Notre Dame,1/9/25,2024,3,Thu,15,N,Penn State,Semifinal,W 27-24,27,24,3,51,3
+40,Ohio State,1/10/25,2024,14,Fri,15,N,Texas,Semifinal,W 28-14,28,14,14,42,3
+41,Ohio State,1/20/25,2024,11,Mon,16,N,Notre Dame,Final,W 34-23,34,23,11,57,4
+42,Alabama,12/19/25,2025,10,Fri,14,@,Oklahoma,First Round,W 34-24,34,24,10,58,1
+43,Oregon,12/20/25,2025,17,Sat,13,,James Madison,First Round,W 51-34,51,34,17,85,1
+44,Ole Miss,12/20/25,2025,31,Sat,13,,Tulane,First Round,W 41-10,41,10,31,51,1
+45,Miami (FL),12/20/25,2025,7,Sat,13,@,Texas A&M,First Round,W 10-3,10,3,7,13,1
+46,Miami (FL),1/1/26,2025,7,Sat,13,N,Ohio State,Quarterfinal,W 24-14,24,14,10,38,2
+47,Oregon,1/1/26,2025,7,Sat,13,N,Texas Tech,Quarterfinal,W 23-0,23,0,23,23,2
+48,Indiana,1/1/26,2025,7,Sat,13,N,Alabama,Quarterfinal,W 38-3,38,3,35,41,2
+49,Ole Miss,1/1/26,2025,7,Sat,13,N,Georgia,Quarterfinal,W 39-34,39,34,5,73,2
+50,Miami (FL),1/8/26,2025,4,Thur,15,N,Ole Miss,Semifinal,W 31-27,31,27,4,58,3

@@ -1,0 +1,16 @@
+{
+  "hash": "1a97d2af5b7c126a2db8f31957c66652",
+  "result": {
+    "markdown": "---\ntitle: \"023: Radars\"\ndate: \"2023-03-23\"\ncategories:\n  - ggRadar\n  - ggiraphExtra\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\n # use hoopR to grab stats\ncont <- kp_height(min_year = 2023, max_year = 2023)\n\nrdr <- cont %>% \n      select(team, conf, continuity_rk, experience_rk, bench_rk, avg_hgt_rk)\n\nteams <- c(\"N.C. State\", \"North Carolina\", \"Wake Forest\", \"Duke\", \"Kansas St.\", \"Michigan St.\", \"Connecticut\", \"Arkansas\", \"Florida Atlantic\", \"Tennessee\", \"Gonzaga\", \"UCLA\", \"Xavier\", \"Texas\", \"San Diego St.\", \"Alabama\", \"Miami FL\", \"Houston\", \"Princeton\", \"Creighton\")\n```\n:::\n\n\n### Create Radar plot\n\n\n::: {.cell}\n\n```{.r .cell-code}\natt_radar <- rdr %>% \n    filter(team %in% teams) %>% \n    mutate(bench_rk = dense_rank(desc(bench_rk)),\n           experience_rk = dense_rank(desc(experience_rk)),\n           continuity_rk = dense_rank(desc(continuity_rk)),\n           avg_hgt_rk = dense_rank(desc(avg_hgt_rk))\n    ) %>%\n    rename(`1` = avg_hgt_rk,\n           `2` = continuity_rk,\n           `3` = experience_rk,\n           `4` = bench_rk) %>%\n    ggRadar(aes(color =team), scales = \"free\") + \n    facet_wrap(~team, nrow=4, strip.position = \"bottom\") +\n    labs(\n        title = \"Roster Attributes for Sweet 16  \\n(plus big four #goacc)\",\n        subtitle = \"1: Average Height  \\n2: Minutes Continuity  \\n3: Experience  \\n4: Bench Minutes\",\n        x = \"\",\n        y = \"\",\n        caption = \"@dadgumboxscores | March 23, 2023 | data via hoopR + kenpom\"\n    ) +\n    theme_fivethirtyeight() +\n    theme(legend.position = \"none\", strip.text = element_cfb_logo(size = 1), plot.title = element_markdown(), plot.subtitle = element_markdown(), text=element_text(family=\"Arial\"), panel.grid = element_blank(),\n          axis.text.y = element_blank()) \n\nggsave(\n  \"radar.png\",\n  att_radar,\n  w = 9,\n  h = 9,\n  dpi = 600,\n  type = 'cairo'\n)\n\natt_radar\n```\n\n::: {.cell-output-display}\n![](byc_023_radars_files/figure-html/radar-plot-1.png){width=672}\n:::\n:::\n\n\n#### \n",
+    "supporting": [
+      "byc_023_radars_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

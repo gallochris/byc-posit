@@ -1,0 +1,280 @@
+---
+title: "166: Free Throw Rates"
+date: "2025-12-29"
+categories:
+  - gtUtils
+  - ggbeeswarm
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+gs <- readr::read_csv("game_stats.csv")
+
+
+# function to save table 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+```
+
+### Free throw rate table
+
+```{r summary-tbl, warning=FALSE, message=FALSE}
+
+sum_tbl <- gs |> 
+  dplyr::filter(
+    year > 2021,
+    lubridate::month(date) == 11 | (lubridate::month(date) == 12 &
+                                      lubridate::day(date) < 29)
+  ) |>
+  dplyr::mutate(
+        fouls = pf + opp_pf
+  ) |> 
+  dplyr::group_by(team, year) |> 
+  dplyr::summarise(
+    total_fga = sum(fga),
+    total_fta = sum(fta), 
+    total_fouls = sum(fouls),
+    ftr = total_fta / total_fga * 100
+  ) 
+
+
+sum_tbl |> 
+    dplyr::group_by(year) |> 
+    dplyr::summarise(
+        avg_ftr = mean(ftr)
+    )
+
+# make the table 
+bball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Free Throw Rate Changes by Season</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the Free Throw Rate percentile for a given value by season.<br>Only games played <em>before</em> December 29 of each season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+lookup_values <- seq(30, 40, by = 1)
+
+ptile <- sum_tbl |>
+  dplyr::group_by(year) |>
+  dplyr::summarise(
+    stats = list(
+      purrr::map_df(lookup_values, ~tibble::tibble(
+        target_ftr = .x,
+        percentile = stats::ecdf(ftr)(.x)
+      ))
+    ),
+    .groups = "drop"
+  ) |>
+  tidyr::unnest(stats) |>
+  tidyr::pivot_wider(
+    names_from = year, 
+    values_from = percentile
+  ) |>
+  dplyr::rename("FTR" = target_ftr)
+
+ftr_tbl <- ptile |> 
+  dplyr::arrange(-FTR) |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gtUtils::gt_column_subheaders(
+    `FTR` = list(heading = "FTR", subtitle = "FTA/FGA * 100"),
+    `2022` = list(heading = "2021-22", subtitle = "358 teams"),
+    `2023` = list(heading = "2022-23", subtitle = "363 teams"),
+    `2024` = list(heading = "2023-24", subtitle = "362 teams"),
+    `2025` = list(heading = "2024-25", subtitle = "364 teams"),
+    `2026` = list(heading = "2025-26", subtitle = "365 teams"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::fmt_number(
+    columns = c(FTR),
+    decimals = 1
+  ) |>
+  gt::fmt_percent(
+    columns = c(-FTR),
+    decimals = 1
+  ) |>
+  gt::data_color(
+    columns = c(-FTR),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.15, .999),
+    alpha = 0.6,
+  ) |> 
+  gt::tab_header(title = gt::html(bball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via barttorvik.com | theme via {gtUtils} <br>
+        Data only for games played in a given season before December 29<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::tab_options(table.width = gt::px(550)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#0d1e2d", "#c1d6e2",
+                                   "#f07e1d"))
+
+
+gt_save_crop(
+  ftr_tbl,
+  file = "ftr_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+ftr_tbl
+  
+```
+
+### FTR beeswarm 
+
+```{r ftr-beeswarm, warning=FALSE, message=FALSE}
+
+ftr_plot <- sum_tbl |>
+  dplyr::mutate(
+    year_label = dplyr::case_match(
+      year,
+      2022 ~ "2021-22\n29.7\n358 teams",
+      2023 ~ "2022-23\n31.1\n363 teams",
+      2024 ~ "2023-24\n33.1\n362 teams",
+      2025 ~ "2024-25\n33.2\n364 teams",
+      2026 ~ "2025-26\n35.6\n365 teams"
+    )
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(x = factor(year_label), y = ftr)) +
+  ggplot2::geom_jitter(
+    ggplot2::aes(color = factor(year)),
+    width = 0.2,
+    alpha = 0.5,
+    size = 2.5,
+    show.legend = FALSE
+  ) +
+  ggplot2::stat_summary(
+    fun = mean,
+    geom = "line",
+    ggplot2::aes(group = 1),
+    color = "#2c3e50",
+    linewidth = 1.2
+  ) +
+  ggplot2::stat_summary(
+    fun = mean,
+    geom = "point",
+    shape = 21,
+    fill = "#2c3e50",
+    color = "white",
+    size = 4,
+    stroke = 1.5
+  ) +
+  ggplot2::scale_color_viridis_d(option = "mako",
+                                 begin = 0.3,
+                                 end = 0.8) +
+  ggplot2::scale_x_discrete(position = "top") +
+  ggplot2::scale_y_continuous(breaks = seq(15, 55, 5)) +
+  ggplot2::labs(
+    title = "Free Throw Rate is Rising",
+    subtitle = "Shows how average D-I Free Throw Rates are climbing up. \nData for all games played through December 29 of each season.  \n",
+    x = "",
+    y = "FT Rate (FTR)",
+    caption = "FTR = (FTA / FGA) * 100 | data: barttorvik.com  \nViz by Chris at Bless your chart"
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::theme(
+    # text = ggplot2::element_text(family = "mono"),
+    plot.title = ggplot2::element_text(
+      color = "black",
+      face = "bold",
+      size = 16
+    ),
+    plot.subtitle = ggplot2::element_text(size = 11, lineheight = 1.1),
+    axis.text.x.top = ggplot2::element_text(
+      face = "bold",
+      color = "black",
+      size = 10
+    ),
+    axis.text.y = ggplot2::element_text(
+      color = "black",
+      size = 10
+    ),
+    legend.position = "none",
+    panel.grid.major.x = ggplot2::element_line(color = "#f0f0f0", linewidth = 0.3)
+  )
+
+ggplot2::ggsave("ftr_plot.png",
+                ftr_plot,
+                w = 6.5,
+                h = 7.5,
+                dpi = 600,
+                type = "cairo")
+
+ftr_plot
+
+```

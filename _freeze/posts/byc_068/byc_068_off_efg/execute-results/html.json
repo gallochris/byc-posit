@@ -1,0 +1,16 @@
+{
+  "hash": "f3301942992059164ea597e28c127ebc",
+  "result": {
+    "markdown": "---\ntitle: \"068: Winning Ugly\"\ndate: \"2024-01-11\"\ncategories:\n  - geom_tufteboxplot\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n### Data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nunc_facts <- cbbdata::cbd_torvik_game_factors(team = \"North Carolina\", year = \"2024\")\n```\n:::\n\n\n### Tufte Box Plot\n\n\n::: {.cell}\n\n```{.r .cell-code}\nefg_plot <- unc_facts |> \n    ggplot2::ggplot(ggplot2::aes(x = type, y = off_efg)) + \n    ggthemes::geom_tufteboxplot() + \n    ggplot2::geom_hline(yintercept = 50, linetype = \"dashed\") +\n    ggplot2::coord_flip() +\n    ggthemes::theme_clean() +\n    ggplot2::scale_x_discrete(labels = c(\"Conference\", \"Non-Conference\")) +\n    ggplot2::theme(legend.position = \"none\",\n                   plot.title = ggtext::element_markdown()) +\n    ggplot2::labs(x = \"\",\n                  y = \"Effective Field Goal %\",\n                  title = \"<span style='color:#56a0d3;'>North Carolina's</span> worst offense shooting percentages have come in ACC play so far\",\n                  subtitle = \"Shows median effective field goal percentages in non-conference and conference games this season.\",\n                  caption = \"Bless your chart | data via cbbdata | January 11, 2023\"\n    ) +\n    ggplot2::annotate(\n        \"label\",\n        x = 0.7,\n        y = 55,\n        label = \"Carolina is 4-0 in ACC play without  \\nposting an eFG above 50 yet\",\n        size = 3.5,\n        color = \"#333333\",\n        fill = \"white\"\n    ) +\n    ggplot2::annotate(\n        \"text\",\n        x = 1.2,\n        y = 45.4,\n        label = \"45.4 eFG  \\nfour games\",\n        size = 3.5,\n        color = \"#333333\",\n    ) +\n    ggplot2::annotate(\n        \"text\",\n        x = 2.2,\n        y = 52.5,\n        label = \"52.5 eFG  \\n11 games\",\n        size = 3.5,\n        color = \"#333333\",\n    ) -> efg_plot \n\nggplot2::ggsave(\n  \"efg_plot.png\",\n  efg_plot,\n  w = 10,\n  h = 6,\n  dpi = 600,\n  type = 'cairo'\n)\n\nefg_plot\n```\n\n::: {.cell-output-display}\n![](byc_068_off_efg_files/figure-html/box-plot-1.png){width=672}\n:::\n:::\n\n\n### \n",
+    "supporting": [
+      "byc_068_off_efg_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

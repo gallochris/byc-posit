@@ -1,0 +1,196 @@
+---
+title: "087: Shot luck"
+date: "2024-03-30"
+categories:
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+seeds <- readr::read_csv("https://gist.githubusercontent.com/gallochris/86fc2a21dd4b30e3dd9ea79516594f05/raw/1e2dfa7eae2d196f5dee9ecf5fe95e5f76ba827d/ncaat_seeds.csv") |> 
+  dplyr::select(seed = Seed, team = Team, region = Region)
+
+ncaat_teams <- seeds |> 
+  dplyr::pull(team) 
+
+
+# Add the played schedule for the tournament teams only 
+ncaat_sched <- cbbdata::cbd_torvik_game_stats(year = 2024, type = "post") |> 
+  dplyr::filter(team %in% ncaat_teams) 
+
+
+e8team <- c("Alabama", "Clemson", "Connecticut", "Duke", 
+          "Purdue", "Tennessee", "Illinois", "North Carolina St.")
+
+ncaat_sched |> 
+  dplyr::filter(team %in% e8team) |> 
+  dplyr::group_by(
+        team    
+  ) |> 
+  dplyr::summarise(
+    o_twopm = sum(fgm) - sum(tpm),
+    o_twopa = sum(fga) - sum(tpa),
+    o_twopct = o_twopm / o_twopa,
+    o_fga = sum(fga),
+    o_ftm = sum(ftm), 
+    o_fta = sum(fta), 
+    o_ft_pct = o_ftm / o_fta,   
+    o_threepm = sum(tpm),
+    o_threepa = sum(tpa), 
+    o_threepct = o_threepm / o_threepa,
+    o_threerate = o_threepa / o_fga,
+    o_efg = ((o_threepm * .5) + (o_twopm + o_threepm)) / o_fga,
+    d_twopm = sum(opp_fgm) - sum(opp_tpm),
+    d_twopa = sum(opp_fga) - sum(opp_tpa),
+    d_twopct = d_twopm / d_twopa,
+    d_fga = sum(opp_fga),
+    d_ftm = sum(opp_ftm), 
+    d_fta = sum(opp_fta), 
+    d_ft_pct = d_ftm / d_fta,   
+    d_threepm = sum(opp_tpm),
+    d_threepa = sum(opp_tpa), 
+    d_threepct = d_threepm / d_threepa,
+    d_threerate = d_threepa / d_fga,
+    d_efg = ((d_threepm * .5) + (d_twopm + d_threepm)) / d_fga,
+  ) -> eliters
+
+```
+
+### Elite 8 tables
+
+```{r gt-table, warning = FALSE}
+## offense
+eliters |> 
+  dplyr::select(team, o_efg, o_twopm, o_twopa, o_twopct, o_ftm, o_fta, o_ft_pct,
+                o_threepm, o_threepa, o_threepct, o_threerate) |> 
+  dplyr::arrange(-o_efg) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  gt::gt() |>  
+  gt::fmt_markdown(team) |> 
+  gt::fmt_percent(columns = c(o_twopct, o_ft_pct, o_threepct, 
+                              o_efg, o_threerate), decimals = 1) |> 
+  gt::cols_label(
+    team = "",
+    o_efg = "eFG",
+    o_twopm = "2PTM", 
+    o_twopa = "2PTA", 
+    o_twopct = "2PT%",
+    o_ftm = "FTM",
+    o_fta = "FTA", 
+    o_ft_pct = "FT%",
+    o_threepm = "3PTM", 
+    o_threepa = "3PTA",
+    o_threepct = "3PT%", 
+    o_threerate = "3PTRate"
+  ) |> 
+  cbbplotR::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = c(team)) |>
+  gt::tab_spanner(columns = c(o_twopm, o_twopa, o_twopct), label = "Two-Pointers") |> 
+  gt::tab_spanner(columns = c(o_ftm, o_fta, o_ft_pct), label = "Free Throws") |>
+  gt::tab_spanner(columns = c(o_threepm, o_threepa, o_threepct, o_threerate), label = "Three-Pointers") |>
+  gtExtras::gt_hulk_col_numeric(columns = c(o_twopct, o_ft_pct, o_threepct, 
+                                            o_efg)) |>  
+  gtExtras::gt_add_divider(columns = c(o_efg, o_twopct, o_ft_pct), sides = "right", color = "black") |> 
+  gt::tab_header(title = "Elite 8 Offense: Team Shooting Performances in NCAA Tournament",
+                 subtitle = gt::html("Shows the shooting splits on offense for teams in the Elite 8 through March 29 games.")) |>
+  gt::tab_source_note(source_note = gt::html("<hr><b>This is a three-game sample size, so proceed with caution on your hot takes.</b><br><br>Table by Chris (@dadgumboxscores) | Bless your chart <br>
+                                               Data from Bart Torvik, cbbdata, and cbbplotR")) |> 
+  gt::tab_style(
+    locations = gt::cells_title(groups = "subtitle"),
+    style = gt::cell_text(
+      size = "small"
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      size = "x-small"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) -> offense
+
+## defense
+eliters |> 
+  dplyr::select(team, d_efg, d_twopm, d_twopa, d_twopct, d_ftm, d_fta, d_ft_pct,
+                d_threepm, d_threepa, d_threepct, d_threerate) |> 
+  dplyr::arrange(d_efg) |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  gt::gt() |>  
+  gt::fmt_markdown(team) |> 
+  gt::fmt_percent(columns = c(d_twopct, d_ft_pct, d_threepct, 
+                              d_efg, d_threerate), decimals = 1) |> 
+  gt::cols_label(
+    team = "",
+    d_efg = "eFG",
+    d_twopm = "2PTM", 
+    d_twopa = "2PTA", 
+    d_twopct = "2PT%",
+    d_ftm = "FTM",
+    d_fta = "FTA", 
+    d_ft_pct = "FT%",
+    d_threepm = "3PTM", 
+    d_threepa = "3PTA",
+    d_threepct = "3PT%", 
+    d_threerate = "3PTRate"
+  ) |> 
+  cbbplotR::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = c(team)) |>
+  gt::tab_spanner(columns = c(d_twopm, d_twopa, d_twopct), label = "Two-Pointers") |> 
+  gt::tab_spanner(columns = c(d_ftm, d_fta, d_ft_pct), label = "Free Throws") |>
+  gt::tab_spanner(columns = c(d_threepm, d_threepa, d_threepct, d_threerate), label = "Three-Pointers") |>
+  gtExtras::gt_hulk_col_numeric(columns = c(d_twopct, d_ft_pct, d_threepct, 
+                                            d_efg), reverse = TRUE) |>  
+  gtExtras::gt_add_divider(columns = c(d_efg, d_twopct, d_ft_pct), sides = "right", color = "black") |> 
+  gt::tab_header(title = "Elite 8 Defense: Team Shooting Performances in NCAA Tournament",
+                 subtitle = gt::html("Shows the shooting splits on defense for teams in the Elite 8 through March 29 games.")) |>
+  gt::tab_source_note(source_note = gt::html("<hr><b>This is a three-game sample size, so proceed with caution on your hot takes.</b><br><br>Table by Chris (@dadgumboxscores) | Bless your chart <br>
+                                               Data from Bart Torvik, cbbdata, and cbbplotR")) |> 
+  gt::tab_style(
+    locations = gt::cells_title(groups = "subtitle"),
+    style = gt::cell_text(
+      size = "small"
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      size = "x-small"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) -> defense
+
+gtExtras::gtsave_extra(offense,
+                       filename = "e8off.png",
+                       vheight = 650,
+                       vwidth = 950)
+
+gtExtras::gtsave_extra(defense,
+                       filename = "e8def.png",
+                       vheight = 650,
+                       vwidth = 950)
+
+offense
+
+defense 
+
+
+```
+
+### 

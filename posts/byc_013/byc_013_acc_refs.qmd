@@ -1,0 +1,196 @@
+---
+title: "013: ACC Refs"
+date: "2023-01-26"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(ggtext)
+library(hoopR)
+library(gt)
+library(gtExtras)
+```
+
+### Load data and manipulate
+
+```{r load-data, message = FALSE}
+# load data scraped from kp to find official ids
+# kp_data <- read_csv("data.csv")
+
+# find ids
+# ids <- kp_data$ref_id
+
+# loop function 
+# add_fun <- function(id) {
+#   kp_referee(referee = id, year = 2023)
+# }
+
+# save refs - this is terribly inefficient 
+# refs <- lapply(ids, add_fun)
+
+# make dataframe and filter down to acc
+# acc_refs <- as.data.frame(do.call(rbind, refs)) %>%
+# 			filter(conference == "ACC")
+
+acc_refs <- read_csv("acc_refs_jan_26.csv")
+
+full <- acc_refs %>%
+			add_row(referee_name ="Jenna Reneau", thrill_score = 12.5) %>%
+			add_row(referee_name ="Courtney Smith", thrill_score = 50.4) %>%
+			group_by(referee_name) %>%
+			summarize(avg_t = mean(thrill_score),
+			count = n()) %>%
+			arrange(count)
+
+# get full rankings
+ranks <- kp_officials(year = most_recent_mbb_season()) %>%
+		 rename(referee_name = official_name)
+
+# combine with previous table 
+acc_rks <- merge(ranks, full, by = "referee_name") %>%
+		   select(referee_name, rk, ref_rating, gms, avg_t, count) %>%
+		   arrange(rk)
+```
+
+### Set the themes for the plot
+
+```{r themes}
+# theme
+  theme_me <- function () {
+    theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular") %+replace%
+      theme (
+        plot.title = element_text(
+          hjust = 0.5,
+          size = 24,
+          face = "bold"
+        ),
+        plot.subtitle = element_text(
+          hjust = 0.5,
+          size = 10,
+          lineheight = 0.25,
+          vjust = -0.5
+        ),
+        plot.caption = element_text(
+          hjust = 1,
+          size = 6,
+          lineheight = 0.35,
+          margin = margin(t = 20)
+        ),
+        panel.grid.minor = element_blank(),
+        plot.background = element_rect(fill = "floral white", color = "floral white")
+      )
+  }
+
+```
+
+### Make the bar plot
+
+```{r plot-bar, warning=FALSE}
+ref_plot <- full %>%
+  mutate(referee_name = factor(referee_name, levels = .$referee_name)) %>%
+  mutate(color = case_when(count > 9 ~ "#e9a3c9",
+                           count > 4 ~ "#a1d76a",
+                           ## all others should be gray
+                           TRUE ~ "#acacac")) %>%
+  ggplot(aes(count, referee_name, fill = color)) +
+  geom_col() +
+  scale_x_continuous(breaks = seq(0, 14, 1), limits = c(0, 14)) +
+  labs(
+    x = "Games",
+    y = "",
+    title = "<span style='color:#333333;'>Who are the *referees* on the court for ACC games? </span>",
+    caption = "dadgumboxscores | January 26, 2023 | data via kenpom"
+  ) +
+  theme_me() +
+  scale_fill_identity(guide = "none") +
+  theme(plot.title = element_textbox_simple()) +
+  annotate(
+    "text",
+    x = 12.8,
+    y = 35,
+    label = "10 or  \n more games",
+    family = "Chalkboard Bold",
+    size = 4,
+    fontface = "bold",
+    color = "#e9a3c9",
+  ) +
+  annotate(
+    "text",
+    x = 9,
+    y = 29,
+    label = "5 or  \nmore games",
+    family = "Chalkboard Bold",
+    size = 4,
+    fontface = "bold",
+    color = "#a1d76a",
+  ) +
+  annotate(
+    "text",
+    x = 5,
+    y = 13,
+    label = "Fewer than \n5 games",
+    family = "Chalkboard Bold",
+    size = 4,
+    color = "#acacac",
+    fontface = "bold",
+  )
+
+# save it
+ggsave(
+  "ref.png",
+  ref_plot,
+  w = 6.5,
+  h = 8,
+  dpi = 300,
+  type = 'cairo'
+)
+
+
+ref_plot
+```
+
+### Make the ref tables
+
+```{r gt-tables, warning=FALSE}
+table <- acc_rks %>%
+  gt() %>%
+  cols_label(
+    # rename columns
+    referee_name = "Ref",
+    rk = "Rank",
+    ref_rating = "Rating",
+    gms = "G",
+    avg_t = "Rating",
+    count = "G"
+  ) %>%
+  tab_spanner(label = "ACC only",
+              columns = c(avg_t, count)) %>%
+  tab_spanner(label = "All Games",
+              columns = c(rk, ref_rating)) %>%
+  fmt_number(columns = avg_t,
+             decimals = 2,
+             use_seps = FALSE) %>%
+  gt_theme_dot_matrix() %>%
+  tab_header(title = md("Ref ratings from kenpom with #goacc refs")) %>%
+  tab_source_note(source_note = "@dadgumboxscores | January 19, 2023 | data via kenpom") %>%
+  tab_options (
+    source_notes.font.size = px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = px(10),
+    column_labels.text_transform = 'capitalize'
+  )
+
+gtsave_extra(table,
+             "ref_table.png",
+             vwidth = 650,
+             vheight = 650)
+
+table
+```

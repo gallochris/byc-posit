@@ -1,0 +1,456 @@
+---
+title: "115: ACC standings with diffs"
+date: "2024-10-29"
+categories:
+  - gtUtils
+  - nanoplots
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Fetch data from cfbfastR
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+final_standings <- readRDS("conf_standings.RDS")
+
+# saved this in a RDS file avoid fetching it each time 
+
+# commenting out the code below, these uses existing code from the byc app
+# https://github.com/gallochris/evdev-byc/blob/main/data/conference_standings.R
+
+# fetch schedule 
+# conf_sched <- cfbfastR::cfbd_game_info(year = 2024) |>
+#  dplyr::filter(home_conference == away_conference) |>
+#  dplyr::filter(!game_id %in% c("401636618", "401636864")) |>  
+  # Arizona at Kansas St is not a conference game
+  # Baylor and Utah also not a conference game *shakes fist at Big 12*
+#  dplyr::mutate(conf = home_conference) |>
+#  dplyr::select(game_id, 
+#                season,
+#                week,
+#                conf,
+#                home_team,
+#                home_points,
+#                away_team,
+#                away_points)
+
+# function to pivot data and get one row per opponent
+# pivot_sched <- function(df) {
+#  home_games <- df |>
+#    dplyr::mutate(
+#      team = home_team,
+#      opponent = away_team,
+#      points_for = home_points,
+#      points_against = away_points,
+#      differential = home_points - away_points
+#    )
+  
+#  away_games <- df |>
+#    dplyr::mutate(
+#      team = away_team,
+#      opponent = home_team,
+#      points_for = away_points,
+#      points_against = home_points,
+#      differential = away_points - home_points
+#    )
+  
+#  all_games <- dplyr::bind_rows(home_games, away_games) |>
+#    dplyr::mutate(
+#      status = dplyr::case_when(
+#        is.na(points_for) | is.na(points_against) ~ "remaining",
+#        .default = "played"
+#      )
+#    ) |>
+#    dplyr::select(team, opponent, week, conf, status, points_for, points_against, differential) |>
+#    dplyr::arrange(team, week)
+  
+#  return(all_games)
+# }
+
+# pivot_sched(conf_sched) -> sched_for_teams
+
+
+# standings_with_win_pct <- conference_standings |> 
+#  dplyr::mutate(conf_win_pct = conf_win / (conf_win + conf_loss)) |> 
+#  dplyr::select(
+#    conf, 
+#    full_diff,
+#    team,
+#    conf_win,
+#    conf_loss,
+#    conf_win_pct
+#  )
+
+# played_win_pct <- sched_for_teams |> 
+#  dplyr::left_join(standings_with_win_pct, by = c("opponent" = "team")) |>
+#  dplyr::filter(status == "played") |>
+#  dplyr::group_by(team) |>
+#  dplyr::summarise(
+#    played_win_pct = sum(conf_win) / (sum(conf_win) + sum(conf_loss)),
+#    games_played = dplyr::n(),
+#    diff_list = list(differential)
+#  )
+
+# remaining_win_pct <- sched_for_teams |> 
+#  dplyr::left_join(standings_with_win_pct, by = c("opponent" = "team")) |>
+#  dplyr::filter(status == "remaining") |>
+#  dplyr::group_by(team) |>
+#  dplyr::summarise(
+#    remaining_win_pct = sum(conf_win) / (sum(conf_win) + sum(conf_loss)),
+#    games_left = dplyr::n()
+#  )
+
+# combined_win_pct <-  sched_for_teams |> 
+#  dplyr::left_join(standings_with_win_pct, by = c("opponent" = "team")) |>
+#  dplyr::group_by(team) |>
+#  dplyr::summarise(
+#    combined_win_pct = sum(conf_win) / (sum(conf_win) + sum(conf_loss))
+#  )
+
+
+# final_standings <- standings_with_win_pct |> 
+#  dplyr::left_join(played_win_pct, by = "team") |> 
+#  dplyr::left_join(remaining_win_pct, by ="team") |> 
+#  dplyr::left_join(combined_win_pct, by ="team") |> 
+#  dplyr::select(
+#    conf, 
+#    team,
+#    conf_win,
+#    conf_loss,
+#    conf_win_pct,
+#    games_played,
+#    played_win_pct,
+#    games_left,
+#    remaining_win_pct,
+#    combined_win_pct,
+#    full_diff,
+#    diff_list
+#  )
+
+# saveRDS(final_standings, "conf_standings.RDS")
+
+```
+
+### GT table one
+
+```{r gt-tbl, warning=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png'
+       style='height: 105px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC standings through October 26 games</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Sorted by overall conference win percentage.<br> Table includes opponent win percentages and point differentials in league play.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+acc_standings <- final_standings |>
+  dplyr::filter(conf == "ACC") |>
+  dplyr::mutate(win_loss = paste0(conf_win, "-", conf_loss)) |>
+  dplyr::relocate(win_loss, .before = conf_win) |>
+  dplyr::add_row(
+    diff_list = list(c(7, 42, 18)),
+    full_diff = 67,
+    team = "Notre Dame",
+    win_loss = "3-0",
+    conf_win_pct = 1.00,
+    games_played = 3,
+    played_win_pct = 0.4375,
+    games_left = 2,
+    remaining_win_pct = .250,
+    combined_win_pct = .357,
+    conf_win = 3,
+    conf_loss = 0
+  ) |>
+  dplyr::arrange(-conf_win_pct, -games_played, -combined_win_pct, -full_diff) |> 
+  dplyr::mutate(
+    rank_order = dplyr::case_when(
+      team == "Notre Dame" ~ max(dplyr::row_number()) + 1,  # Assign the highest rank
+      TRUE ~ dplyr::row_number()  # Keep original row numbers for other rows
+    )
+  ) |> 
+  dplyr::arrange(rank_order) |> 
+  cbbplotR::gt_cbb_teams(team, team, include_name = FALSE) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gt::cols_hide(columns = c(conf, conf_win, conf_loss, rank_order)) |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::cols_nanoplot(
+    columns = diff_list,
+    autohide = TRUE,
+    plot_type = "bar",
+    after = "full_diff",
+    new_col_label = "Trend",
+    options = gt::nanoplot_options(
+      data_bar_fill_color = "lightgreen",
+      data_bar_negative_fill_color = "lightpink",
+      data_bar_stroke_color = "#333333",
+      show_data_area = FALSE,
+    )
+  ) |>
+  gt::fmt(
+    columns = c(full_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gt::fmt_number(columns = ends_with("win_pct"), decimals = 3) |>
+  gt::cols_align(columns = c(team), align = "left") |>
+  gtUtils::gt_color_pills(
+    conf_win_pct,
+    domain = c(0, 1),
+    format_type = "number",
+    digits = 3,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000")
+  ) |>
+  gtUtils::gt_color_pills(
+    combined_win_pct,
+    domain = c(0, 1),
+    format_type = "number",
+    digits = 3,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000")
+  ) |>
+  gtUtils::gt_column_subheaders(
+    conf_win_pct = list(heading = "ACC", subtitle = "Win %"),
+    games_played = list(heading = "Games", subtitle = "Played"),
+    played_win_pct = list(heading = "Win %", subtitle = "Played"),
+    games_left = list(heading = "Games", subtitle = "Left"),
+    remaining_win_pct = list(heading = "Win %", subtitle = "Remaining"),
+    combined_win_pct = list(heading = "Win %", subtitle = "Combined"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(
+    full_diff = "+/-",
+    team = "",
+    win_loss = "W-L",
+    nanoplots = ""
+  ) |>
+  gtUtils::gt_color_pills(
+    full_diff,
+    domain = c(-90, 120),
+    format_type = "number",
+    digits = 0,
+    palette = c("lightpink", "lightgreen")
+  ) |>
+  gt::tab_spanner(
+    columns = c(full_diff, nanoplots),
+    label = gt::html("Point Differentials")
+  )  |>
+  gt::tab_spanner(
+    columns = c(
+      games_played,
+      played_win_pct,
+      games_left,
+      remaining_win_pct,
+      combined_win_pct
+    ),
+    label = gt::html("Opponent Records")
+  ) |>
+  gt::tab_spanner(
+    columns = c(team, win_loss, conf_win_pct),
+    label = gt::html("Conference Play")
+  ) |>
+  gtExtras::gt_add_divider(columns = c(conf_win_pct,
+                                       combined_win_pct),
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from {cfbfastR} and theme for {gtUtils}<br>
+                ACC features 17 teams, plus Notre Dame plays five ACC opponents as part of its part-time membership. Irish not eligible for conference championship game.<br>
+                The fifth tie breaker for the conference championship game is the winning percentage of conference opponents in conference games only.<br>
+                <hr><b>Table by Chris at Bless your chart | October 28, 2024</b>"
+      )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+  gtExtras::gt_highlight_rows(rows = c(18),
+                              columns = c(1:10),
+                              fill = "#FFFFC5") |>
+  gt::tab_options(table.width = gt::px(750))
+
+
+gtUtils::gt_save_crop(
+  acc_standings,
+  file = "acc_standings.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+acc_standings
+```
+
+### GT table two: FEI progression
+
+```{r gt-tbl-two}
+
+# load as RDS
+fei_ratings <- readRDS("fei-progress.RDS")
+
+
+  fei_change_plot <- fei_ratings |> 
+                    dplyr::select(category, pre_fei_ptile, range_list, 
+                                  current_fei_ptile, team) |> 
+  dplyr::group_by(category) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gtUtils::gt_theme_gtutils() |> 
+  gt::cols_nanoplot(
+    columns = range_list,
+    autohide = TRUE,
+    plot_type = "line",
+    before = "current_fei_ptile",
+    new_col_label = "Progression",
+    autoscale = TRUE,
+    reference_line = .50,
+    options = gt::nanoplot_options(
+      data_area_fill_color = "lightgreen",
+      data_line_stroke_color = "#9E9ECC",
+      data_point_stroke_color = "floralwhite",
+      data_point_fill_color = "#333333",
+      data_line_type = "curved",
+      reference_line_color = "#333333",
+      show_data_area = TRUE,
+      show_data_points = FALSE
+    )
+  ) |> 
+  gt::cols_align(columns = c(-team), "center") |>
+  gt::cols_align(columns = c(team), "left") |> 
+  gtUtils::gt_column_subheaders(
+    pre_fei_ptile = list(heading = "Preseason", subtitle = "Percentile"),
+    current_fei_ptile = list(heading = "Current", subtitle = "Percentile"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(team = "",
+                 nanoplots = "Progression") |> 
+  gtUtils::gt_color_pills(
+    pre_fei_ptile,
+    domain = c(0, 1),
+    format_type = "percent",
+    digits = 1,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000")
+  ) |> 
+  gtUtils::gt_color_pills(
+    current_fei_ptile,
+    domain = c(0, 1),
+    format_type = "percent",
+    digits = 1,
+    palette = c("#8B0000", "#FF0000", "#FF4500", "#ADFF2F", "#008000")
+  ) |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_style(
+    locations = gt::cells_column_labels(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "right"
+      ),
+      gt::cell_fill(
+        color = "#C5C5FF"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "right"
+      ),
+      gt::cell_fill(
+        color = "#C5C5FF"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_column_labels(columns = gt::everything()),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 650,
+        size = gt::px(12),
+        color = "#333333"
+      )
+    )
+  ) |> 
+  gt::tab_header(
+    title = "FEI ratings progression from preseason to week 9",
+    subtitle = gt::md("Uses the percentile from overall FEI ratings to show progression since
+                      the start of the season. The dotted line is the 50th percentile.")
+  ) |> 
+  gtUtils::gt_border_bars_bottom("#C5C5FF",
+                        bar_height = 45,
+                        img = "https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png",
+                        text = gt::html("Data from bcftoys.com + theme from {gtUtils} <br> 
+                                        Table by Chris at Bless your chart"),
+                        img_width = 30, img_height = 30, text_size = 10, text_weight = "normal",
+                        text_color = "black"
+  ) |> 
+  gt::tab_options(table.width = gt::px(450))
+  
+  gtUtils::gt_save_crop(
+  fei_change_plot,
+  file = "fei_change_plot.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+  
+  fei_change_plot
+```

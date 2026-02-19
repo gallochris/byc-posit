@@ -1,0 +1,65 @@
+regional,seed,national.seed,team,city,latitude,longitude,dest_lat,dest_long
+AUBURN,1,13,Auburn," Auburn, Alabama",32.6099,-85.4808,32.6099,-85.4808
+AUBURN,4,,Penn," Philadelphia, Pennsylvania",39.9526,-75.1652,32.6099,-85.4808
+AUBURN,3,,Samford," Birmingham, Alabama",33.5207,-86.8025,32.6099,-85.4808
+AUBURN,2,,Southern Miss," Hattiesburg, Mississippi",31.3271,-89.2903,32.6099,-85.4808
+BATON ROUGE,1,5,LSU," Baton Rouge, Louisiana",30.4515,-91.1871,30.4515,-91.1871
+BATON ROUGE,2,,Oregon State," Corvallis, Oregon",44.5646,-123.262,30.4515,-91.1871
+BATON ROUGE,3,,Sam Houston State," Huntsville, Texas",30.7235,-95.5508,30.4515,-91.1871
+BATON ROUGE,4,,Tulane," New Orleans, Louisiana",29.9511,-90.0715,30.4515,-91.1871
+CHARLOTTESVILLE,4,,Army," West Point, New York",41.3912,-73.9626,38.0293,-78.4767
+CHARLOTTESVILLE,2,,East Carolina," Greenville, North Carolina",35.6127,-77.3663,38.0293,-78.4767
+CHARLOTTESVILLE,3,,Oklahoma," Norman, Oklahoma",35.2226,-97.4395,38.0293,-78.4767
+CHARLOTTESVILLE,1,7,Virginia," Charlottesville, Virginia",38.0293,-78.4767,38.0293,-78.4767
+CLEMSON,3,,Charlotte," Charlotte, North Carolina",35.2271,-80.8431,34.6834,-82.8398
+CLEMSON,1,4,Clemson," Clemson, South Carolina",34.6834,-82.8398,34.6834,-82.8398
+CLEMSON,4,,Lipscomb," Nashville, Tennessee",36.1627,-86.7816,34.6834,-82.8398
+CLEMSON,2,,Tennessee," Knoxville, Tennessee",35.9606,-83.9207,34.6834,-82.8398
+COLUMBIA,2,,Campbell," Buies Creek, North Carolina",35.407,-78.7386,34.0007,-80.9339
+COLUMBIA,4,,Central Connecticut," New Britain, Connecticut",41.6759,-72.7795,34.0007,-80.9339
+COLUMBIA,3,,North Carolina State," Raleigh, North Carolina",35.7796,-78.6382,34.0007,-80.9339
+COLUMBIA,1,15,South Carolina," Columbia, South Carolina",34.0007,-80.9339,34.0007,-80.9339
+CONWAY,1,10,Coastal Carolina," Conway, South Carolina",33.8361,-79.0228,33.8361,-79.0228
+CONWAY,2,,Duke," Durham, North Carolina",35.994,-78.8986,33.8361,-79.0228
+CONWAY,4,,Rider," Lawrenceville, New Jersey",40.2859,-74.7389,33.8361,-79.0228
+CONWAY,3,,UNCW," Wilmington, North Carolina",34.2257,-77.9447,33.8361,-79.0228
+CORAL GABLES,3,,Louisiana," Lafayette, Louisiana",30.2241,-92.0198,25.7215,-80.2717
+CORAL GABLES,4,,Maine," Orono, Maine",44.9016,-68.9496,25.7215,-80.2717
+CORAL GABLES,1,9,Miami (FL)," Coral Gables, Florida",25.7215,-80.2717,25.7215,-80.2717
+CORAL GABLES,2,,Texas," Austin, Texas",30.2672,-97.7431,25.7215,-80.2717
+FAYETTEVILLE,3,,Arizona," Tucson, Arizona",32.2226,-110.9747,36.0631,-94.1574
+FAYETTEVILLE,1,3,Arkansas," Fayetteville, Arkansas",36.0631,-94.1574,36.0631,-94.1574
+FAYETTEVILLE,4,,Santa Clara," Santa Clara, California",37.3541,-121.9552,36.0631,-94.1574
+FAYETTEVILLE,2,,TCU," Fort Worth, Texas",32.7555,-97.3308,36.0631,-94.1574
+GAINESVILLE,1,2,Florida," Gainesville, Florida",29.6516,-82.3248,29.6516,-82.3248
+GAINESVILLE,4,,Florida A&M," Tallahassee, Florida",30.4383,-84.2807,29.6516,-82.3248
+GAINESVILLE,3,,Texas Tech," Lubbock, Texas",33.5779,-101.8543,29.6516,-82.3248
+GAINESVILLE,2,,Connecticut," Storrs, Connecticut",41.8084,-72.2504,29.6516,-82.3248
+LEXINGTON,4,,Ball State," Muncie, Indiana",40.1934,-85.3963,38.0406,-84.5037
+LEXINGTON,3,,Indiana," Bloomington, Indiana",39.1653,-86.5264,38.0406,-84.5037
+LEXINGTON,1,12,Kentucky," Lexington, Kentucky",38.0406,-84.5037,38.0406,-84.5037
+LEXINGTON,2,,West Virginia," Morgantown, West Virginia",39.6295,-79.9566,38.0406,-84.5037
+NASHVILLE,4,,Eastern Illinois," Charleston, Illinois",39.4844,-88.1762,36.1627,-86.7816
+NASHVILLE,2,,Oregon," Eugene, Oregon",44.0521,-123.0868,36.1627,-86.7816
+NASHVILLE,1,6,Vanderbilt," Nashville, Tennessee",36.1627,-86.7816,36.1627,-86.7816
+NASHVILLE,3,,Xavier," Cincinnati, Ohio",39.1031,-84.512,36.1627,-86.7816
+STANFORD,3,,Cal State Fullerton," Fullerton, California",33.8704,-117.9243,37.4275,-122.167
+STANFORD,4,,San Jose State," San Jose, California",37.3382,-121.8863,37.4275,-122.167
+STANFORD,1,8,Stanford," Stanford, California",37.4275,-122.167,37.4275,-122.167
+STANFORD,2,,Texas A&M," College Station, Texas",30.6263,-96.3344,37.4275,-122.167
+STILLWATER,2,,Dallas Baptist," Dallas, Texas",32.7767,-96.7969,36.1156,-97.0584
+STILLWATER,1,11,Oklahoma State," Stillwater, Oklahoma",36.1156,-97.0584,36.1156,-97.0584
+STILLWATER,4,,Oral Roberts," Tulsa, Oklahoma",36.1539,-95.9928,36.1156,-97.0584
+STILLWATER,3,,Washington," Seattle, Washington",47.6062,-122.3321,36.1156,-97.0584
+TERRE HAUTE,1,14,Indiana State," Terre Haute, Indiana",39.4667,-87.4139,39.4667,-87.4139
+TERRE HAUTE,2,,Iowa," Iowa City, Iowa",41.6611,-91.5302,39.4667,-87.4139
+TERRE HAUTE,3,,North Carolina," Chapel Hill, North Carolina",35.9132,-79.0558,39.4667,-87.4139
+TERRE HAUTE,4,,Wright State," Dayton, Ohio",39.7589,-84.1916,39.4667,-87.4139
+TUSCALOOSA,1,16,Alabama," Tuscaloosa, Alabama",33.2098,-87.5692,33.2098,-87.5692
+TUSCALOOSA,2,,Boston College," Chestnut Hill, Massachusetts",42.3358,-71.1674,33.2098,-87.5692
+TUSCALOOSA,4,,Nicholls," Thibodaux, Louisiana",29.7958,-90.8227,33.2098,-87.5692
+TUSCALOOSA,3,,Troy," Troy, Alabama",31.8088,-85.9672,33.2098,-87.5692
+WINSTON-SALEM,4,,George Mason," Fairfax, Virginia",38.8462,-77.308,36.0999,-80.2442
+WINSTON-SALEM,2,,Maryland," College Park, Maryland",38.9869,-76.9439,36.0999,-80.2442
+WINSTON-SALEM,3,,Northeastern," Boston, Massachusetts",42.3601,-71.0589,36.0999,-80.2442
+WINSTON-SALEM,1,1,Wake Forest," Winston-Salem, North Carolina",36.0999,-80.2442,36.0999,-80.2442

@@ -1,0 +1,149 @@
+---
+title: "093: Long Ball"
+date: "2024-05-16"
+categories:
+  - ggQC
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+
+# notes from downloading the files from stats.ncaa.org and then joining them
+# files <- list.files(pattern="*.xlsx")
+
+# obp_data <- data.frame()
+
+# for (file in files) {
+#  data <- readxl::read_xlsx(file)
+#  obp_data <- rbind(obp_data, data)
+# } 
+
+# load in hr data
+# files <- list.files(pattern="*.xlsx")
+
+# hr_data <- data.frame()
+
+# for (file in files) {
+#  data <- readxl::read_xlsx(file)
+#  hr_data <- rbind(hr_data, data)
+# } 
+
+# load in runs data 
+# files <- list.files(pattern="*.xlsx")
+
+
+# run_data <- data.frame()
+
+
+# for (file in files) {
+#  data <- readxl::read_xlsx(file)
+#  run_data <- rbind(run_data, data)
+# } 
+
+# combine all the data by year 
+# hr_data |> 
+#  dplyr::group_by(Year) |> 
+#  dplyr::summarise(
+#    hr_g = sum(G),
+#    total_hr = sum(HR),
+#    max_team = Team[which.max(HR)],
+#    max_hr = max(HR),
+#    hrs_per_game = mean(HR/G),
+#    list_hr = list(rev(HR/G))
+#  ) |> 
+#  dplyr::arrange(-hrs_per_game) -> hrpg 
+
+# run_data |> 
+#   dplyr::group_by(Year) |> 
+#  dplyr::summarise(
+#    run_g = sum(G),
+#    total_runs = sum(R),
+#    runs_per_game = mean(R/G)
+#  ) |> 
+#  dplyr::arrange(-runs_per_game) -> runpg
+
+# obp_data |> 
+#  dplyr::group_by(Year) |> 
+#  dplyr::summarise(
+#    obp_g = sum(G),
+#    total_abs = sum(AB),
+#    mean_obp = mean(PCT)
+#  )  -> obp_pg
+
+
+# hitdata <- runpg |> 
+#  dplyr::left_join(hrpg, by = "Year") |> 
+#  dplyr::left_join(obp_pg, by = "Year") |> 
+#  dplyr::mutate(
+#    ab_hr = total_abs/total_hr,
+#  ) |> 
+#  dplyr::select(-list_hr)
+
+dingers <- readr::read_csv("dingers-24.csv")
+```
+
+### xMR plot 
+
+```{r xmr-plot, message = FALSE, warning=FALSE}
+
+dingers |> 
+  ggplot2::ggplot(ggplot2::aes(x = Year, y = hrs_per_game,
+                               label = round(hrs_per_game, 2))) +
+  ggplot2::geom_point(color = "#333333", size = 3, shape = 21) + 
+  ggplot2::geom_line(color = "#333333", linewidth = 1) + 
+  ggplot2::geom_text(vjust = -2.25) +
+  ggplot2::scale_x_continuous(breaks = seq(2014, 2024, 1)) +
+  ggplot2::scale_y_continuous(breaks = seq(0, 1.5, .25), limits = c(0, 1.25)) +
+  ggQC::stat_QC(method = "XmR",  color.qc_limits = "#b2182b", 
+                color.qc_center = "#2b83ba") +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::labs(
+    title = "College Baseball: Home Runs per game by season",
+    subtitle = "Teams are hitting more and more home runs per game over the past decade.<br>  \nChart shows variation using the <span style='color:#2b83ba'>average</span>, plus the 
+    <span style='color:#b2182b'>upper control and lower control</span> over this span of time.",
+    x = "",
+    y = "HRs per game",
+    caption = "<br>Viz by Chris @dadgumboxscores & Bless your chart<br>  \nData via stats.ncaa.org through May 12, 2024 games"
+  ) +
+  ggplot2::theme(legend.position = "none", 
+                 plot.title = ggtext::element_markdown(), 
+                 plot.subtitle = ggtext::element_textbox_simple(),
+                 plot.caption = ggtext::element_markdown(),
+                 text= ggplot2::element_text(family="Arial"), 
+                 panel.grid = ggplot2::element_blank()
+       ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2020,
+    y = 0.25,
+    color = "#333333",
+    fill = "#ffffbf",
+    label = "COVID cancelled 2020  \nseason in March",
+    size = 3.25,
+    fontface = 'bold',
+    alpha = 0.3
+  ) -> dinger_xmr_plot 
+
+ggplot2::ggsave(
+  "xmr_hrs.png",
+  dinger_xmr_plot,
+  w = 9.5,
+  h = 8.5,
+  dpi = 300,
+  type = 'cairo'
+)
+
+
+dinger_xmr_plot
+
+
+```
+
+### 

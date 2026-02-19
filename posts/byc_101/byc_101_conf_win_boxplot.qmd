@@ -1,0 +1,493 @@
+---
+title: "101: Power conference win totals"
+date: "2024-07-24"
+categories:
+  - geom_boxplot
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+cfb_2024_sched <- readr::read_csv("2024_sched_win_totals.csv") 
+
+
+# check by conferences 
+confs_only <- cfbfastR::cfbd_team_info(year = 2024) |>
+dplyr::select(opponent = school, opp_conf = conference)
+
+cfb_by_conf <- cfb_2024_sched |>
+dplyr::full_join(confs_only, by = "opponent")
+
+
+p4_nd <- c("ACC", "SEC",
+        "Big 12", "Big Ten", "ND")
+
+cfb_by_conf |> 
+    dplyr::mutate(opp_conf = dplyr::if_else(opponent == "Notre Dame", "ND", opp_conf)) |> 
+    dplyr::filter(opp_conf %in% p4_nd) |> 
+    dplyr::group_by(conference) |> 
+    dplyr::summarise(
+        teams = dplyr::n_distinct(team_name),
+        sec_count = sum(opp_conf == "SEC"),
+        acc_count = sum(opp_conf == "ACC"),
+        big_12_count = sum(opp_conf == "Big 12"),
+        big_ten_count = sum(opp_conf == "Big Ten"),
+        nd_count = sum(opp_conf == "ND")
+    ) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+        other_conf_count = sum(c(
+            sec_count * (conference != "SEC"),
+            acc_count * (conference != "ACC"),
+            big_12_count * (conference != "Big 12"),
+            big_ten_count * (conference != "Big Ten"),
+            nd_count * (conference != "ND")
+        )),
+        per_team = other_conf_count/teams
+    ) |>
+    dplyr::ungroup() -> tray_conf
+
+# playoff odds 
+podds <- tibble::tribble(
+  ~team, ~odds, ~win_total,~conf,
+  "Ohio State",-650,10.5,"Big Ten",
+  "Georgia",-600,10.5,"SEC",
+  "Oregon",-290,10.5,"Big Ten",
+  "Texas",-230,10.5,"SEC",
+  "Notre Dame",-170,10.5,"Independent",
+  "Penn State",-145,9.5,"Big Ten",
+  "Ole Miss",-125,9.5,"SEC",
+  "Alabama",+100,9.5,"SEC",
+  "Michigan",+110,8.5,"Big Ten",
+  "LSU",+125,9.5,"SEC",
+  "Florida State",+160,9.5,"ACC",
+  "Tennessee",+170,8.5,"SEC",
+  "Missouri",180,9.5,"SEC",
+  "Clemson",200,9.5,"ACC",
+  "Miami",210,9.5,"ACC",
+  "Texas A&M",240,8.5,"SEC",
+  "Utah",260,9.5,"Big 12",
+  "Kansas State",310,9.5,"Big 12"
+) |> 
+  dplyr::mutate(prob = dplyr::if_else(odds > 0,
+                              100 / (odds + 100),
+                              -odds / (-odds + 100)),
+                ) 
+
+```
+
+### Boxplot
+
+```{r box-plot, message=FALSE, warning=FALSE}
+
+cfb_2024_sched |> 
+  dplyr::filter(conference %in% c("ACC", "SEC", "Big 12", "Big Ten")) |> 
+  dplyr::distinct(team_name, .keep_all = TRUE) |> 
+  ggplot2::ggplot(ggplot2::aes(x = conference, y = team_total, group = conference)) + 
+  ggplot2::geom_boxplot(
+    outliers = FALSE,
+    color = "#474747", 
+    fill = "transparent", 
+    stat = "boxplot"
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::theme(
+    axis.text.x = cfbplotR::element_cfb_logo(size = 1.25), 
+    axis.text.x.top = cfbplotR::element_cfb_logo(size = 1.25),
+    legend.position = "none"
+  ) +
+  ggplot2::scale_x_discrete(
+    position = "top", # Add x-axis to the top
+    labels = c("ACC", "Big 12", "Big Ten", "SEC")
+  ) +
+  ggplot2::labs(title = "2024 College Football: Preseason Win Totals for 'Power' Conferences",
+                    subtitle = "Shows the range of preseason win totals for teams in the ACC, Big 12, Big Ten, and SEC.  \nTeams with the highest (9.5 and up) and lowest (4.5 and below) win totals in each league are highlighted.",
+                    caption = "Data via FanDuel + cfbfastR + cfbplotR | July 24, 2024  \nPlot by Chris (@dadgumboxscores) | Bless your chart",
+                    x = "", 
+                    y = "Win Totals") +
+  ggplot2::scale_y_continuous(
+    breaks = seq(0, 10.5, 3.5),
+    labels = c(0, 3.5, 7.0, 10.5)
+  ) -> base_plot 
+
+```
+
+### Annotations
+
+```{r annotations, warning = FALSE, message = FALSE}
+
+base_plot +
+ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3,
+    y = 4.4,
+    team = "Purdue",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3.2,
+    y = 4.4,
+    team = "Michigan State",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.8,
+    y = 4.4,
+    team = "Northwestern",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.9,
+    y = 10.5,
+    team = "Oregon",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3.1,
+    y = 10.5,
+    team = "Ohio State",
+    height = .045,
+    alpha = 0.8
+  ) +
+    ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3,
+    y = 9.5,
+    team = "Penn State",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.1,
+    y = 9.5,
+    team = "Utah",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1.9,
+    y = 9.5,
+    team = "Kansas State",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1.9,
+    y = 4.5,
+    team = "BYU",
+    height = .045,
+    alpha = 0.8
+  ) +
+    ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2.1,
+    y = 4.5,
+    team = "Arizona State",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 2,
+    y = 3.3,
+    team = "Houston",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1,
+    y = 3.3,
+    team = "Stanford",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1.2,
+    y = 9.5,
+    team = "Florida State",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1,
+    y = 9.5,
+    team = "Clemson",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 0.8,
+    y = 9.5,
+    team = "Miami",
+    height = .045,
+    alpha = 0.8
+  ) +
+      ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 0.8,
+    y = 4.5,
+    team = "Boston College",
+    height = .045,
+    alpha = 0.8
+  ) +
+        ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1,
+    y = 4.5,
+    team = "Wake Forest",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 1.2,
+    y = 4.5,
+    team = "Virginia",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 4.1,
+    y = 10.5,
+    team = "Georgia",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3.9,
+    y = 10.5,
+    team = "Texas",
+    height = .045,
+    alpha = 0.8
+  ) +
+    ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3.7,
+    y = 9.7,
+    team = "Ole Miss",
+    height = .045,
+    alpha = 0.8
+  ) +
+     ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3.9,
+    y = 9.7,
+    team = "LSU",
+    height = .045,
+    alpha = 0.8
+  ) +
+       ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 4.1,
+    y = 9.7,
+    team = "Alabama",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 4.3,
+    y = 9.7,
+    team = "Missouri",
+    height = .045,
+    alpha = 0.8
+  ) +
+     ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 3.9,
+    y = 4.5,
+    team = "Arkansas",
+    height = .045,
+    alpha = 0.8
+  ) +
+       ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 4.1,
+    y = 4.5,
+    team = "Florida",
+    height = .045,
+    alpha = 0.8
+  ) +
+    ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 4,
+    y = 3.5,
+    team = "Mississippi State",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x = 4,
+    y = 2.3,
+    team = "Vanderbilt",
+    height = .045,
+    alpha = 0.8
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 1,
+    y = 6.5,
+    color = "#333333",
+    fill = "#e3e3e3",
+    label = "17 teams  \nMax: 9.5  \nMedian: 7.5  \nMin: 3.5",
+    size = 3.25,
+    fontface = 'bold',
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 2,
+    y = 6.5,
+    color = "#333333",
+    fill = "#e3e3e3",
+    label = "16 teams  \nMax: 9.5  \nMedian: 7.5  \nMin: 3.5",
+    size = 3.25,
+    fontface = 'bold',
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 3,
+    y = 6.5,
+    color = "#333333",
+    fill = "#e3e3e3",
+    label = "18 teams  \nMax: 10.5  \nMedian: 6.5  \nMin: 4.5",
+    size = 3.25,
+    fontface = 'bold'
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 4,
+    y = 6.5,
+    color = "#333333",
+    fill = "#e3e3e3",
+    label = "16 teams  \nMax: 10.5  \nMedian: 8.0  \nMin: 2.5",
+    size = 3.25,
+    fontface = 'bold'
+  ) -> win_total_boxplot
+  
+
+
+ggplot2::ggsave(
+  "conf_win_totals.png",
+  win_total_boxplot,
+  w = 9.5,
+  h = 8.5,
+  dpi = 300,
+  type = 'cairo'
+)
+
+win_total_boxplot
+
+```
+
+### GT Table for playoff odds
+
+```{r playoff-odds, warning=FALSE, message=FALSE}
+podds |>
+  cbbplotR::gt_cbb_teams(team, team) |>
+  dplyr::mutate(sentence = paste0(conf, " | Win Total: ", win_total)) |>
+  dplyr::select(team, sentence, odds, prob) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gtExtras::gt_merge_stack(
+    col1 = team,
+    col2 = sentence,
+    palette = c("black", "black"),
+    font_weight = c("normal", "bold")
+  ) |>
+  gt::cols_label(
+    team = "",
+    sentence = "",
+    odds = "Odds",
+    prob = "% Chance"
+  ) |>
+  gt::tab_spanner(label = "Playoff Chances", columns = c(odds, prob)) |>
+  gt::cols_align(align = "left", columns = c(team)) |>
+  gt::data_color(
+    columns = odds,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("Greens"),
+    reverse = TRUE
+  ) |>
+  gt::data_color(
+    columns = prob,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("Greens")
+  ) |>
+  gt::fmt_percent(columns = c(prob), decimals = 1) |>
+  gtExtras::gt_add_divider(columns = c(team),
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_header(
+    title = "2024 College Football: Preseason Win Totals and Odds to Make College Football Playoff",
+    subtitle = gt::html(
+      "Shows the probability to make college football playoff and preseason win totals using FanDuel data."
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<br>Odds and win totals from FanDuel as of July 24, 2024<br>
+      <hr><b>Table by Chris (@dadgumboxscores) + Bless your chart</b>"
+    )
+  ) |>
+  gt::fmt(
+    columns = c(odds),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+  gtExtras::gt_theme_excel() |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = c("top"),
+      color = 'black',
+      weight = gt::px(1.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = gt::everything())
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(groups = gt::everything()),
+    style = list(
+      gt::cell_text(align = "center"),
+      gt::cell_borders(
+        sides = c("all"),
+        color = "black",
+        weight = gt::px(2)
+      )
+    )
+  ) -> podds_tbl
+
+gtExtras::gtsave_extra(podds_tbl,
+                       filename = "podds-tbl.png",
+                       vwidth = 550,
+                       expand = 10)
+
+podds_tbl
+
+```

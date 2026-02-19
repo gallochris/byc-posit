@@ -1,0 +1,288 @@
+---
+title: "173: WAB by category"
+date: "2026-02-12"
+categories:
+  - gt_utils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+wab <- readr::read_csv("wab_2025.csv")
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# function to find top wab
+get_top_wab <- function(data, filter_expr, suffix = "", n = 15) {
+  col_name <- paste0(suffix, "wab")
+  record_name <- paste0(suffix, "record")
+  
+  if (!missing(filter_expr)) {
+    data <- dplyr::filter(data, {{ filter_expr }})
+  }
+  
+  data |>
+    dplyr::group_by(team) |>
+    dplyr::summarise(
+      !!col_name := sum(wab, na.rm = TRUE),
+      wins = sum(result == "W", na.rm = TRUE),
+      losses = sum(result == "L", na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      !!record_name := paste0(wins, "-", losses)
+    ) |>
+    dplyr::select(-wins, -losses) |>
+    dplyr::arrange(dplyr::desc(!!rlang::sym(col_name))) |>
+    dplyr::slice_head(n = n)
+}
+
+overall_wab <- get_top_wab(wab, suffix = "")
+home_wab <- get_top_wab(wab, location == "H", suffix = "home_")
+road_wab <- get_top_wab(wab, location == "A", suffix = "road_")
+neut_wab <- get_top_wab(wab, location == "N", suffix = "neut_")
+non_conf_wab <- get_top_wab(wab, type == "nc", suffix = "non_conf_")
+conf_wab <- get_top_wab(wab, type == "conf", suffix = "conf_")
+
+q1_wab <- get_top_wab(wab, quad %in% c("Q1", "Q1A"), suffix = "q1_")
+q2_wab <- get_top_wab(wab, quad == "Q2", suffix = "q2_")
+q3_wab <- get_top_wab(wab, quad == "Q3", suffix = "q3_")
+q4_wab <- get_top_wab(wab, quad == "Q4", suffix = "q4_")
+
+# reduce to combine the data
+all_wab_list <- list(
+  overall_wab,
+  home_wab,
+  road_wab,
+  neut_wab,
+  conf_wab,
+  non_conf_wab,
+  q1_wab,
+  q2_wab,
+  q3_wab,
+  q4_wab
+)
+
+all_wab <- purrr::reduce(all_wab_list, dplyr::full_join, by = "team")
+
+# pivot it wider
+all_wab_wide <- dplyr::bind_cols(
+  overall_wab |> dplyr::mutate(rank = dplyr::row_number()) |> dplyr::select(rank, overall_team = team, wab, record),
+  home_wab |> dplyr::select(home_team = team, home_wab, home_record),
+  road_wab |> dplyr::select(road_team = team, road_wab, road_record),
+  neut_wab |> dplyr::select(neut_team = team, neut_wab, neut_record),
+  conf_wab |> dplyr::select(conf_team = team, conf_wab, conf_record),
+  non_conf_wab |> dplyr::select(non_conf_team = team, non_conf_wab, non_conf_record),
+  q1_wab |> dplyr::select(q1_team = team, q1_wab, q1_record),
+  q2_wab |> dplyr::select(q2_team = team, q2_wab, q2_record),
+  q3_wab |> dplyr::select(q3_team = team, q3_wab, q3_record),
+  q4_wab |> dplyr::select(q4_team = team, q4_wab, q4_record),
+)
+```
+
+### WAB table
+
+```{r wab-tbl, warning=FALSE, message=FALSE}
+
+bball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Top Teams in Wins-Above-Bubble by Category</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'><br>
+       Shows the top-15 teams in WAB overall, by location, type, and quadrant.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+wab_tbl <- all_wab_wide |> 
+  cbbplotR::gt_cbb_teams(overall_team, overall_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(home_team, home_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(road_team, road_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(neut_team, neut_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(conf_team, conf_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(non_conf_team, non_conf_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(q1_team, q1_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(q2_team, q2_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(q3_team, q3_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  cbbplotR::gt_cbb_teams(q4_team, q4_team, include_name = FALSE, 
+                         logo_height = 20) |> 
+  dplyr::mutate(
+    dplyr::across(dplyr::ends_with("wab"), ~{
+      val <- as.numeric(.x)
+      
+      bg_col <- dplyr::case_when(
+        val >= 6.0 ~ "#2D6A4F", # Dark Green
+        val >= 3.5 ~ "#52B788", # Medium Green
+        val >= 1.5 ~ "#B7E4C7", # Light Green/Mint
+        TRUE       ~ "#FFD60A"  # Yellow (1.5 and below)
+      )
+      
+      text_col <- ifelse(val >= 3.5, "#FFFFFF", "#000000")
+      
+      sprintf(
+        '<span style="background-color: %s; color: %s; 
+        padding: 2px 4px; border-radius: 2px; 
+        font-weight: bold; display: inline-block;
+        min-width: 30px; text-align: center; font-size: 12.5px;">%s%.2f</span>',
+        bg_col,
+        text_col,
+        ifelse(val > 0, "+", ""),
+        val
+      )
+    })
+  )  |> 
+  gt::gt() |> 
+  gt::fmt_markdown(columns = gt::ends_with("team")) |> 
+  gt::fmt_markdown(columns = gt::ends_with("wab")) |>
+  gt::fmt_markdown(columns = gt::ends_with("record")) |>
+  gt::cols_merge(
+    columns = c(overall_team, wab, record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(home_team, home_wab, home_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(road_team, road_wab, road_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(neut_team, neut_wab, neut_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(conf_team, conf_wab, conf_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(non_conf_team, non_conf_wab, non_conf_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(q1_team, q1_wab, q1_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(q2_team, q2_wab, q2_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(q3_team, q3_wab, q3_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gt::cols_merge(
+    columns = c(q4_team, q4_wab, q4_record),
+    pattern = "{1}<br>{2}<br><span style='font-size: 10.5px; color: gray;'>{3}</span>"
+  ) |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::cols_add(overall_gap = "", .before = home_team) |>
+  gt::cols_add(type_gap = "", .before = conf_team) |>
+  gt::cols_add(quad_gap = "", .before = q1_team) |>
+  gtUtils::gt_column_subheaders(
+    overall_team = list(heading = "Overall", subtitle = "WAB (W-L)"),
+    home_team = list(heading = "Home", subtitle = "WAB (W-L)"),
+    road_team = list(heading = "Away", subtitle = "WAB (W-L)"),
+    neut_team = list(heading = "Neutral", subtitle = "WAB (W-L)"),
+    conf_team = list(heading = "Conf", subtitle = "WAB (W-L)"),
+    non_conf_team = list(heading = "Non-Conf", subtitle = "WAB (W-L)"),
+    q1_team = list(heading = "Q1", subtitle = "WAB (W-L)"),
+    q2_team = list(heading = "Q2", subtitle = "WAB (W-L)"),
+    q3_team = list(heading = "Q3", subtitle = "WAB (W-L)"),
+    q4_team = list(heading = "Q4", subtitle = "WAB (W-L)"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::cols_label(
+    rank = "",
+    overall_gap = "",
+    type_gap = "",
+    quad_gap = ""
+  ) |> 
+  gt::tab_header(title = gt::html(bball_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>
+        WAB calculated using Torvik ratings and quadrants defined by NCAA's NET rankings<br><br>
+        Data via barttorvik.com through February 11, 2026 games | theme via {gtUtils} <br>
+        <hr><b>Table by Chris at Bless your chart</b><hr>"
+      )
+  ) |>
+  gt::tab_options(
+    table.width = gt::px(650),
+    table.font.size = gt::px(12.5),
+    column_labels.font.size = gt::px(14),
+    source_notes.font.size = gt::px(10),
+    heading.title.font.size = gt::px(16),
+    table.border.bottom.color = "black"
+  ) |> 
+  gt::tab_spanner(label = "Location", columns = c(home_team, road_team, neut_team)) |> 
+  gt::tab_spanner(label = "Type", columns = c(conf_team, non_conf_team)) |> 
+  gt::tab_spanner(label = "Quadrant", columns = gt::starts_with("q")) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "bottom", "top"),
+      color = "black",
+      weight = gt::px(1)
+    )),
+    locations = list(
+      gt::cells_body()
+    )
+  )
+
+gt_save_crop(wab_tbl,
+             file = "wab_tbl.png",
+             whitespace = 60,
+             bg = "white")
+
+wab_tbl
+```
+
+### 
+
+### 

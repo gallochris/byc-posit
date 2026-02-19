@@ -1,0 +1,298 @@
+---
+title: "107: Double-digit dogs"
+date: "2024-09-09"
+categories:
+  - gt
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data from double-digit dogs + ATS
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+dd <- readr::read_csv("dd.csv")
+
+```
+
+### GT Table for double-digit losers
+
+```{r gt-table-dd-losers}
+
+dd_chart <- dd |>
+  dplyr::filter(team %in% c("Notre Dame", "Miami", "Rice", "Air Force", "Clemson",
+                            "Liberty", "N Carolina")) |>
+  dplyr::mutate(team = dplyr::case_match(team,
+                                         "N Carolina" ~ "North Carolina",
+                                         "Miami" ~ "Miami FL",
+                                         team ~ team),
+                opponent = dplyr::case_match(opponent,
+                                             "N Mex State" ~ "New Mexico State",
+                                             "Connecticut" ~ "UConn",
+                                             "VA Tech" ~ "Virginia Tech",
+                                             "Sam Hous St" ~ "Sam Houston State",
+                                             "Middle Tenn" ~ "Middle Tennessee State",
+                                             "GA Tech" ~ "Georgia Tech",
+                                             "S Carolina" ~ "South Carolina",
+                                             "N Illinois" ~ "Northern Illinois",
+                                             opponent ~ opponent)) |>
+  dplyr::mutate(score = dplyr::if_else(score == "23-Mar", "3-23", score),
+                score = dplyr::if_else(score == "28-Jul", "7-28", score),
+                score = paste0("L, ", score)) |>
+  dplyr::arrange(spread) |>
+  dplyr::select(team, date, opponent, spread, location = ...5, score) |>
+  cbbplotR::gt_cbb_teams(team, team) |>
+  gt::gt(groupname_col = "team",
+         row_group_as_column = TRUE,
+         process_md = TRUE) |>
+  gt::fmt_markdown(team) |>
+  gt::cols_label(
+    date = "Date",
+    opponent = "Opponent",
+    spread = "Spread",
+    location = "Location",
+    score = "Result",
+  ) |>
+  gt::data_color(
+    columns = spread,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = "OrRd",
+    reverse = TRUE
+  ) |>
+  gtExtras::gt_add_divider(columns = c(team, opponent),
+                           sides = "right", color = "black") |>
+  gt::tab_header(title = "Outright losses as a double-digit favorite",
+                 subtitle = gt::html("Shows the seven teams that have at least three outright losses as a double-digit favorite over past three seasons.")) |>
+  gt::tab_source_note(source_note = gt::html("<hr><br>
+                                       Data from TeamRankings BetIQ | Theme and logos from cbbplotR<br>
+                                       <br>
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | September 10, 2024</b>")) |>
+  cbbplotR::gt_theme_athletic() |>
+  gt::cols_align(align = "left", columns = c(date, opponent, location, score)) |>
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) |>
+  gt::tab_options(
+    heading.align = "left",
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(groups = gt::everything()),
+    style = list(
+      gt::cell_text(
+        align = "left"
+      ),
+      gt::cell_borders(sides = c("top", "right"), color = "black", weight = gt::px(2))
+    )) |> 
+    gt::tab_style(
+    style = gt::cell_borders(
+      sides = "top",
+      color = 'black',
+      weight = gt::px(3.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = c(2, 3, 4, 7, 12, 13))
+  ) |> 
+  gt::tab_options(
+  table.width = gt::pct(55),
+  )
+
+
+gtExtras::gtsave_extra(
+  dd_chart,
+  filename = "dd_chart.png",
+  vwidth = 100
+  )
+
+dd_chart
+```
+
+### Fetch ND-NIU drives data + make table
+
+```{r nd-drives-data, message=FALSE, warning=FALSE}
+
+cfbfastR::cfbd_drives(week = 2, year = 2024) |>
+  dplyr::filter(game_id == "401628977") |>
+  dplyr::mutate(
+    available_yards = dplyr::if_else(yards < 0, 0, yards / start_yards_to_goal),
+    time_seconds_elapsed = stringr::str_pad(time_seconds_elapsed, width = 2, pad = "0"),
+    plays_yards = paste0(
+      plays,
+      " plays, ",
+      yards,
+      " yards",
+      "<br>",
+      time_minutes_elapsed,
+      ":",
+      time_seconds_elapsed
+    ),
+    yds_play = round(yards / plays, 2),
+    points = end_offense_score - start_offense_score,
+    drive_start = dplyr::if_else(
+      start_yards_to_goal > 50,
+      100 - start_yards_to_goal,
+      start_yards_to_goal
+    ),
+    drive_end = dplyr::if_else(
+      offense == "Northern Illinois" & end_yardline != 0,
+      100 - end_yardline,
+      end_yardline
+    ),
+    drive_end = dplyr::if_else(
+      offense == "Northern Illinois" & end_yardline == 0,
+      100,
+      end_yardline
+    )
+  ) |>
+  dplyr::select(
+    offense,
+    defense,
+    drive_number,
+    qrt = start_period,
+    drive_start,
+    drive_end,
+    plays_yards,
+    drive_result,
+    points,
+    yds_play,
+    available_yards
+  ) |>
+  cbbplotR::gt_cbb_teams(offense, offense) -> nd_drives
+
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2459.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+       <span style='display: block; text-align: left; font-size: 14px;'>
+       <br>
+       <b>Total drives</b>: 10<br>
+       <b>Scoring drives</b>: 4<br>
+       <b>Avg. start</b>: Own 29
+       </span>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Northern Illinois 16, Notre Dame 14</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Drive chart showing each team's possessions and available yards gained.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/87.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+              <span style='display: block;  text-align: left; font-size: 14px;'>
+              <br>
+       <b>Total drives</b>: 11<br>
+       <b>Scoring drives</b>: 2<br>
+       <b>Avg. start</b>: Own 31
+       </span>
+     </div>
+   </div>
+  <br>"
+)
+
+
+nd_drives |>
+  gt::gt(
+    groupname_col = "offense",
+    row_group_as_column = TRUE,
+    process_md = TRUE,
+    rowname_col = "row",
+  ) |>
+  gt::fmt_markdown(offense) |>
+  gt::cols_hide(columns = c(defense, drive_number, qrt)) |>
+  gtExtras::gt_merge_stack(
+    col1 = drive_result,
+    col2 = plays_yards,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_plt_bar_pct(column = available_yards,
+                           labels = TRUE,
+                           fill = "lightgreen") |>
+  gt::fmt_number(columns = yds_play, decimals = 1) |>
+  gt::tab_spanner(columns = c(drive_start, drive_end, drive_result),
+                  label = "Drives") |>
+  gt::tab_spanner(columns = c(points, yds_play, available_yards),
+                  label = "Performance") |>
+  gt::cols_label(
+    drive_start = "Start",
+    drive_end = "End",
+    points = "Points",
+    drive_result = "Result",
+    yds_play = "Yds/Play",
+    available_yards = "Available Yards"
+  ) |>
+  gt::data_color(
+    columns = points,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = "YlGn"
+  ) |>
+  gtExtras::gt_add_divider(columns = c(yds_play),
+                           sides = "right",
+                           color = "black") |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr><br>
+                                       Data from cfbfastR | Theme and logos from cbbplotR<br>
+                                       Any negative drive results is capped at 0% of available yards gained.
+                                       <br>
+                                       Drives that end in opponent territory are greater than 50. For example, a drive ending on the 96 yard-line means the opponent's four yard-line.
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | September 9, 2024</b>"
+    )
+  ) |>
+  cbbplotR::gt_theme_savant() |>
+  gt::cols_align(align = "left", columns = c(drive_result)) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "top",
+      color = 'black',
+      weight = gt::px(1.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = gt::everything())
+  ) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "top",
+      color = 'black',
+      weight = gt::px(3.5),
+      style = 'solid'
+    ),
+    locations = gt::cells_body(rows = c(2))
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(
+        color = "#333333",
+        size = gt::px(12),
+        weight = "bold"
+      ),
+      gt::cell_borders(
+        sides = "bottom",
+        color = "black",
+        weight = gt::px(2)
+      )
+    ),
+    locations = list(gt::cells_column_spanners(spanners = gt::everything()))
+  ) |>
+  gt::tab_options(heading.align = "center", ) -> nd_chart
+
+gtExtras::gtsave_extra(nd_chart,
+                       filename = "nd_chart.png",
+                       vwidth = 950,
+                       expand = 10,
+                       zoom = 5)
+
+nd_chart
+```
+
+### 

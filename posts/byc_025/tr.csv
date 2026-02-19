@@ -1,0 +1,15 @@
+div,team,rpi,o_w,o_l,Pool,W,L,w_pct,full_diff,h_w,h_l,home_diff,a_w,a_l,away_diff
+Atlantic,Boston College,14,34,17,C,16,14,0.533333333,-1,8,7,6,8,7,-7
+Atlantic,Clemson,7,39,17,C,20,10,0.666666667,45,9,6,12,11,4,33
+Coastal,Duke,19,35,19,D,16,13,0.551724138,-1,8,6,0,8,7,-1
+Atlantic,Florida St.,59,23,31,X,9,21,0.3,-94,6,9,-31,3,12,-63
+Coastal,Georgia Tech,53,30,25,B,12,18,0.4,-25,7,8,6,5,10,-31
+Atlantic,Louisville,41,31,24,X,10,20,0.333333333,-31,8,7,5,2,13,-36
+Coastal,Miami (FL),18,37,18,D,18,12,0.6,7,12,3,47,6,9,-40
+Atlantic,NC State,26,34,18,D,13,16,0.448275862,12,9,6,19,4,10,-7
+Coastal,North Carolina,29,33,21,B,14,14,0.5,13,7,8,6,7,6,7
+Atlantic,Notre Dame,48,30,22,A,15,15,0.5,11,9,6,22,6,9,-11
+Coastal,Pittsburgh,74,23,30,A,10,18,0.357142857,-91,5,8,-54,5,10,-37
+Coastal,Virginia,9,44,11,B,19,11,0.633333333,51,11,4,45,8,7,6
+Coastal,Virginia Tech,43,30,21,C,12,17,0.413793103,16,7,8,10,5,9,6
+Atlantic,Wake Forest,1,45,9,A,22,7,0.75862069,88,11,3,35,11,4,53

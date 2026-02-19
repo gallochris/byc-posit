@@ -1,0 +1,119 @@
+---
+title: "095: Super Regionals"
+date: "2024-06-05"
+categories:
+  - gtExtras
+  - geom_bar
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+
+library(cbbplotR)
+# data: https://vsin.com/mlb/ncaa-baseball-super-regional-betting-preview/
+# make the table manually
+supers <- tibble::tribble(
+    ~super,~price,~odds,~team,
+    "Knoxville",270,-800,"Tennessee",
+    "Knoxville",12000,480,"Evansville",
+    "Tallahassee",1300,-320,"Florida St.",
+    "Tallahassee",10000,235,"Connecticut",
+    "Charlottesville",1400,-250,"Virginia",
+    "Charlottesville",5000,190,"Kansas St.",
+    "Chapel Hill",900,-250,"North Carolina",
+    "Chapel Hill",3500,190,"West Virginia",
+    "Lexington",900,-128,"Kentucky",
+    "Lexington",1300,-102,"Oregon St.",
+    "Athens",1400,-130,"Georgia",
+    "Athens",2300,102,"NC State",
+    "Clemson",1000,-210,"Clemson",
+    "Clemson",3000,162,"Florida",
+    "College Station",340,-390,"Texas A&M",
+    "College Station",5000,265,"Oregon",
+) |> 
+  dplyr::mutate(prob_super = dplyr::if_else(odds > 0,
+                              100 / (odds + 100),
+                              -odds / (-odds + 100)),
+                prob_cws = dplyr::if_else(price > 0,
+                              100 / (price + 100),
+                              -price / (-price + 100))
+                ) 
+    
+```
+
+### Make the GT table
+
+```{r func-table, message=FALSE, warning=FALSE}
+
+supers |> 
+      dplyr::select(super, team, odds, prob_super, price, prob_cws) |>     
+      cbbplotR::gt_cbb_teams(team, team) |> 
+      gt::gt(groupname_col = "super", 
+           row_group_as_column = TRUE) |> 
+      gt::fmt_markdown(team) |> 
+      gt::cols_label(
+        super = "Super Regional",
+        team = "",
+        odds = "Odds",
+        prob_super = "% Chance",
+        price = "Odds",
+        prob_cws = "% Chance"
+    ) |>
+    gt::tab_spanner(label = "Make CWS", 
+                    columns = c(odds, prob_super)) |> 
+    gt::tab_spanner(label = "Win CWS", 
+                    columns = c(price, prob_cws)) |> 
+    gt::cols_align(align = "left", columns = c(team)) |>
+    gtExtras::gt_hulk_col_numeric(columns = c(price, odds),
+                                  
+                                  reverse = TRUE) |>
+    gtExtras::gt_hulk_col_numeric(columns = c(prob_super, prob_cws)) |>
+    gt::fmt_percent(columns = c(prob_super, prob_cws), decimals = 1) |> 
+    gtExtras::gt_add_divider(columns = c(team, prob_super), 
+                             sides = "right", color = "black") |> 
+    gt::tab_header(title = "Super Regionals: Odds to Make and Win College World Series",
+                   subtitle = gt::html("Shows the probability to advance to CWS and win the national championship using odds from VSiN.com. Super Regionals are grouped by pairings and bracket in Omaha.")) |>
+    gt::tab_source_note(source_note = gt::html("<hr><br>
+                                       Odds from VSiN.com and Aaron Moore<br>
+                                       If all favorites win, the initial matchups in Omaha are Tennessee-Florida State, Virginia-North Carolina, Kentucky-Georgia, Clemson-Texas A&M. <br>Holy SEC and ACC teams batman!
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | June 5, 2024</b>")) |> 
+   gt::fmt(
+    columns = c(price, odds),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) |>
+   cbbplotR::gt_theme_savant() |> 
+      gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    ) |> 
+   gt::tab_options(
+      heading.align = "left",
+   ) |> 
+    gt::tab_style(
+      locations = gt::cells_row_groups(groups = gt::everything()),
+      style = list(
+        gt::cell_text(
+          align = "center"
+        ),
+        gt::cell_borders(sides = c("top", "right"), color = "black", weight = gt::px(2))
+      )) -> super_pack
+
+gtExtras::gtsave_extra(super_pack,
+                       filename = "nccat_supers.png",
+                       vheight = 850,
+                       vwidth = 650)
+
+super_pack
+
+```

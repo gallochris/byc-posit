@@ -1,0 +1,200 @@
+---
+title: "025: ACC Baseball"
+date: "2023-04-06"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(rvest)
+library(baseballr)
+library(gt)
+library(gtExtras)
+library(tidyverse)
+library(cfbplotR)
+```
+
+### Load data
+
+```{r data-load, message=FALSE}
+# load rds
+acc_base_teams <- readRDS("~/byc/posts/bless-your-chart/byc_025/acc_base_teams.rds")
+
+# find ids
+ids <- acc_base_teams$team_id
+
+# function to scrape schedule 
+acc_results <- function(id) {
+  ncaa_schedule_info(team_id = id, year = 2023) %>% 
+  filter(home_team_conference == "ACC" & away_team_conference == "ACC") %>% 
+  filter(!is.na(home_team_score))
+}
+
+# grab acc games
+acc_scores <- lapply(ids, acc_results)
+
+acc_results_2023 <- as.data.frame(do.call(rbind, acc_scores)) %>% 
+  distinct(contest_id, .keep_all = TRUE )
+
+# find differential by team 
+home_diffs <- acc_results_2023 %>% 
+             mutate(h_diff = home_team_score - away_team_score) %>% 
+            group_by(home_team) %>% 
+            summarize(home_diff = sum(h_diff)) %>% 
+            rename(team = home_team)
+            
+
+away_diffs <- acc_results_2023 %>% 
+  mutate(a_diff = away_team_score - home_team_score) %>% 
+  group_by(away_team) %>% 
+  summarize(away_diff = sum(a_diff))  %>% 
+  rename(team = away_team)
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team") %>% 
+  mutate(full_diff = (home_diff + away_diff)) %>% 
+  select(team, full_diff, home_diff, away_diff)
+
+# find conference records by team
+home_results <- acc_results_2023 %>% 
+  mutate(h_result = if_else(home_team_score > away_team_score, "W", "L")) %>% 
+  group_by(home_team, h_result) %>% 
+  count() %>% 
+  pivot_wider( 
+    names_from = h_result,
+    values_from = n) %>% 
+  rename(team = home_team, h_w = W, h_l = L)
+
+away_results <- acc_results_2023 %>% 
+  mutate(a_result = if_else(away_team_score > home_team_score, "W", "L")) %>% 
+  group_by(away_team, a_result) %>% 
+  count() %>% 
+  pivot_wider( 
+    names_from = a_result,
+    values_from = n) %>% 
+  rename(team = away_team, a_w = W, a_l = L)
+
+full_recs <- merge(home_results, away_results, by = "team") %>% 
+              replace(is.na(.), 0) %>% 
+              mutate(W = (h_w + a_w), L = (h_l + a_l)) %>% 
+              select(team, W, L, h_w, h_l, a_w, a_l)
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+
+# function to get RPI data 
+rpi_ranks <- function(url) {
+  
+  rpi_page <- read_html(url)
+  
+  rpi_rk <- rpi_page %>%
+    html_nodes("table") %>%
+    .[1] %>%
+    html_table(fill = TRUE)
+  
+  rpi_table <- as.data.frame(rpi_rk) 
+  
+  rpi_table <- rpi_table %>% 
+    mutate(record = str_split(Record, "-", simplify = T),
+           wins = record[,1],
+           losses = record[,2]
+    )
+}
+
+rpi <- rpi_ranks(url = "https://www.ncaa.com/rankings/baseball/d1/rpi")
+
+# make rpi table
+acc_rpi <- rpi %>% 
+           filter(Conference == "ACC") %>% 
+           select(School, Rank, wins, losses) %>% 
+           rename(team = School, rpi = Rank, o_w = wins, o_l = losses)
+
+# atlantic teams 
+atl_teams = c("Wake Forest", "Boston College", "Louisville", "NC State", "Notre Dame", "Florida St.", "Clemson")
+
+
+# make the big table
+total_records <- merge(acc_rpi, diffs_recs, by = "team") %>% 
+                 mutate(div = if_else(team %in% atl_teams, "Atlantic", "Coastal")) %>% 
+                 select(div, team, rpi, o_w, o_l, W, L, full_diff, h_w, h_l, home_diff, a_w, a_l, away_diff)
+
+```
+
+### Create GT Table
+
+```{r gt-table, warning=FALSE}
+the_table <- total_records %>%
+  mutate(team = if_else(team == "Miami (FL)", "Miami", team)) %>% 
+  mutate(logo = team) %>%
+  relocate(logo, .before = team) %>%
+  arrange(-full_diff) %>% 
+  gt(groupname_col = "div") %>%
+  cols_label(
+    # rename columns
+    logo = "",
+    team = "Team",
+    rpi = "RPI",
+    o_w = "W",
+    o_l = "L",
+    full_diff = "+/-",
+    h_w = "W",
+    h_l = "L",
+    home_diff = "+/-",
+    a_w = "W",
+    a_l = "L",
+    away_diff = "+/-",
+  ) %>%
+  tab_spanner(label = "ACC Play",
+              columns = c(W, L, full_diff)) %>%
+  tab_spanner(label = "Home (ACC)",
+              columns = c(h_w, h_l, home_diff)) %>%
+  tab_spanner(label = "Away (ACC)",
+              columns = c(a_w, a_l, away_diff)) %>%
+  gt_fmt_cfb_logo(columns = "logo") %>%
+  fmt(
+    columns = c(full_diff, home_diff, away_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) %>%
+  data_color(
+    columns = c(full_diff, home_diff, away_diff),
+    colors = scales::col_numeric(
+      c(
+        "#0a4c6a",
+        "#73bfe2",
+        "#cfe8f3",
+        "#fff2cf",
+        "#fdd870",
+        "#fdbf11",
+        "#ca5800"
+      ),
+      domain = NULL
+    )
+  ) %>%
+  tab_header(title = "ACC Baseball: Conference Records and Run Differential") %>%
+  tab_source_note(source_note = "@dadgumboxscores | through April 5 games | data via baseballr")  %>%
+  gt_theme_538() %>%
+  tab_style(
+    style = list(
+      cell_borders(
+        sides = c("left"),
+        color = "#c1c1c1",
+        weight = px(2)
+      )
+    ),
+    locations = list(
+      cells_body(
+        columns = c(o_w, W, h_w, a_w)
+      )
+    )
+  )
+
+
+the_table
+```
+
+#### 

@@ -1,0 +1,487 @@
+---
+title: "155: Bowling scorecard"
+date: "2025-09-30"
+categories:
+  - gtUtils
+  - geom_smooth
+  - gt_stack_tables
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+
+# gt save function
+gt_save_crop <- function(data,
+                         file = NULL,
+                         bg = "white",
+                         whitespace = 50,
+                         zoom = 2,
+                         expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# load massey data
+massey <- readr::read_csv("massey.csv")
+
+```
+
+### Massey plot
+
+```{r massey-plot, warning=FALSE, message=FALSE}
+
+week_cols <- massey[, c("Week0", "Week1", "Week2",
+                        "Week3", "Week4", "Week5")]
+
+team_stats <- massey |>
+  dplyr::mutate(
+    std_dev = apply(week_cols, 1, function(x) sd(x, na.rm = TRUE)),
+    min_rank = apply(week_cols, 1, function(x) min(x, na.rm = TRUE)),
+    max_rank = apply(week_cols, 1, function(x) max(x, na.rm = TRUE)),
+    avg_rank = apply(week_cols, 1, function(x) mean(x, na.rm = TRUE)),
+    range = max_rank - min_rank,
+    max_change = apply(week_cols, 1, function(x) {
+      changes <- abs(diff(x))
+      if(length(changes) > 0) max(changes, na.rm = TRUE) else 0
+    })
+  ) |>
+  dplyr::select(Team, Conf, std_dev,
+                range, max_change, min_rank,
+                max_rank, avg_rank)
+
+
+# teams to highlight with colors
+highlight_teams <- c("Clemson", "North Carolina", "North Texas", "Oklahoma St", "Virginia Tech", "Wisconsin")
+
+custom_teams_colors <- list(
+  "Clemson" = "#F56600",
+  "North Carolina" = "#56a0d3",
+  "Virginia Tech" = "#861F41",
+  "North Texas" = "#00853E",
+  "Oklahoma St" = "#000000",
+  "Wisconsin" = "#C5050C"
+)
+
+
+# reshape data longer for plotting
+massey_long <- massey |>
+  tidyr::pivot_longer(
+    cols = tidyr::starts_with("Week"),
+    names_to = "Week",
+    values_to = "Rank"
+  ) |>
+  dplyr::mutate(
+    Week_num = as.numeric(stringr::str_extract(Week, "\\d+"))
+  ) |>
+  dplyr::mutate(
+    highlight = Team %in% highlight_teams
+  )
+
+
+highlight_colors <- unlist(custom_teams_colors[highlight_teams])
+names(highlight_colors) <- highlight_teams
+
+
+massey_plot <- ggplot2::ggplot(massey_long, 
+                               ggplot2::aes(x = Week_num, 
+                                            y = Rank, 
+                                            group = Team)) +
+  ggplot2::geom_smooth(
+    data = massey_long |> dplyr::filter(!highlight),
+    alpha = 0.2,
+    color = "#f1f1f1",
+    size = 0.5
+  ) +
+  ggplot2::geom_smooth(
+    data = massey_long |> dplyr::filter(highlight),
+    ggplot2::aes(color = Team),
+    size = 1.2,
+    alpha = 0.9
+  ) +
+  ggplot2::geom_point(
+    data = massey_long |> dplyr::filter(highlight),
+    ggplot2::aes(color = Team),
+    size = 2,
+    alpha = 0.9
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = 0:5,
+    labels = paste0("Week ", 0:5)
+  ) +
+  ggplot2::scale_y_reverse(
+    breaks = seq(0, 140, 20),
+    limits = c(140, 0)
+  ) +
+  ggplot2::scale_color_manual(
+    values = highlight_colors,
+    name = "Selected Teams"
+  ) +
+  # Labels and theme
+  ggplot2::labs(
+    title = "Changes in 2025 Composite College Football Rankings  \n Through First Six Weeks of Season",
+    subtitle = "Highlights teams with significant ranking changes over course of the season.",
+    x = "",
+    y = "Composite Ranking",
+    caption = "Viz by Chris at Bless your Chart | data via masseyratings.com"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(family = "Roboto Condensed"),
+    plot.subtitle = ggtext::element_markdown(family = "Roboto Condensed"),
+    axis.title = ggplot2::element_text(family = "Roboto Condensed"),
+    axis.text = ggplot2::element_text(family = "Roboto Condensed"),
+    legend.position = "none"
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x =5.2,
+    y = 93,
+    team = "North Carolina",
+    height = 0.06,
+    alpha = 0.45
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x =5.2,
+    y = 32,
+    team = "North Texas",
+    height = 0.06,
+    alpha = 0.45
+  ) +
+   ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x =5.2,
+    y = 64,
+    team = "Clemson",
+    height = 0.06,
+    alpha = 0.45
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x =5.2,
+    y = 72.5,
+    team = "Wisconsin",
+    height = 0.06,
+    alpha = 0.45
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x =5.2,
+    y = 78,
+    team = "Virginia Tech",
+    height = 0.06,
+    alpha = 0.45
+  ) +
+  ggplot2::annotate(
+    cfbplotR::GeomCFBlogo,
+    x =5.2,
+    y = 123,
+    team = "Oklahoma State",
+    height = 0.06,
+    alpha = 0.45
+  ) 
+
+
+# Save the plot
+ggplot2::ggsave("massey-change.png", 
+                plot = massey_plot, 
+                width = 10, 
+                height = 8, 
+                dpi = 300, 
+                bg = "white")
+
+massey_plot
+```
+
+### 
+
+### Bowling plot
+
+```{r bowling-tbl, warning=FALSE, message=FALSE}
+
+# scrape possessions from statbroadcast pbp
+oregon_poss <- tibble::tibble(
+  possession = 1:10,
+  points = c(0, 0, 0, 3, 0, 7, 7, 0, 7, 6),
+  plays = c(6, 11, 9, 10, 6, 10, 10, 6, 7, 1),
+  yards_gained = c(16, 32, 46, 51, 30, 80, 75, 7, 25, 25),
+  yards_available = c(75, 68, 75, 75, 90, 80, 75, 75, 25, 25)
+) |>
+  dplyr::mutate(
+    yard_percentage = round((yards_gained / yards_available) * 100, 1)
+  )
+
+psu_poss <- tibble::tibble(
+  possession = 1:10,
+  points = c(0, 3, 0, 0, 0, 0, 7, 7, 7, 0),
+  plays = c(3, 11, 3, 9, 9, 3, 4, 15, 3, 1),
+  yards_gained = c(5, 32, 3, 24, 39, 1, 75, 62, 25, 0),
+  yards_available = c(85, 68, 71, 75, 75, 75, 75, 62, 25, 25)
+) |>
+  dplyr::mutate(
+    yard_percentage = round((yards_gained / yards_available) * 100, 1)
+  )
+
+poss_scorecard <- function(data, team_name = "Team") {
+  
+  data_formatted <- data |>
+    dplyr::mutate(
+      frame_details = glue::glue("{plays} play(s)<br>{yard_percentage}%"),
+      points_display = dplyr::case_when(
+        points == 0 ~ "0",
+        TRUE ~ as.character(points)
+      )
+    ) |>
+    dplyr::select(possession, frame_details, points_display) |>
+    tidyr::pivot_longer(
+      cols = c(frame_details, points_display),
+      names_to = "row_type",
+      values_to = "value"
+    ) |>
+    tidyr::pivot_wider(
+      names_from = possession,
+      values_from = value,
+      names_prefix = "P"
+    )
+  
+  gt_table <- data_formatted |>
+    gt::gt() |>
+    gt::fmt_markdown(columns = dplyr::everything(), rows = row_type == "frame_details") |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(size = "small", weight = "normal"),
+        gt::cell_borders(sides = c("left", "right", "top"), weight = gt::px(1))
+      ),
+      locations = gt::cells_body(rows = row_type == "frame_details")
+    ) |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(size = "x-large", weight = "bold", align = "center"),
+        gt::cell_borders(sides = c("left", "right", "bottom"), weight = gt::px(1))
+      ),
+      locations = gt::cells_body(rows = row_type == "points_display")
+    ) |>
+    gt::tab_style(
+      style = gt::cell_text(align = "center"),
+      locations = gt::cells_body()
+    ) |>
+    gt::tab_style(
+      style = gt::cell_text(weight = "bold"),
+      locations = gt::cells_column_labels()
+    ) |>
+    gt::cols_hide(columns = row_type) |>
+    gt::tab_header(
+      title = glue::glue("{team_name} Possessions"),
+    ) |>
+    # Table options
+    gt::tab_options(
+      table.border.top.width = 0,
+      table.border.bottom.width = 0,
+      heading.border.bottom.width = 0,
+      column_labels.border.bottom.style = "solid"
+    )
+  
+  return(gt_table)
+}
+
+
+oregon_scorecard <- oregon_poss |> 
+  poss_scorecard(team_name = "Oregon") |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(5, 7, 8, 10, 11),
+    fill = "#00e662"
+  ) |> 
+  gt::tab_options(table.width = gt::px(550))
+
+
+psu_scorecard <- psu_poss |> 
+  poss_scorecard(team_name = "Penn State") |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(3, 8:10),
+    fill = "#0a489e"
+  ) |> 
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr><span style='font-size: 10px;'>Data via statbroadcast.com | logos from ESPN.com <br>
+        Excludes Oregon's possession at end of regulation. <br>
+        Possessions 9 and 10 both came in overtime, so started at 25-yard line.</span><br>
+        <hr><b><span style='font-size: 10px;'>Table by Chris at Bless your chart</span></b>"
+      )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#007030", "#041E42", "#acacac")) |>
+  gt::tab_options(table.width = gt::px(550))
+
+# dummy header and table 
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2483.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Oregon 30, Penn State 24 (2OT)</span>
+       <span style='font-size: 10px; font-weight: normal; display: block; text-align: center;'>Shows possession chart for each team that includes number of plays, percentage of available yards gained, and points scored on each possesion.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/213.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+dummy <- tibble::tibble(x = "September 27, 2025 | State College, PA")
+
+gt_dummy <- dummy |> 
+  gt::gt() |> 
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::cols_label(x = "") |> 
+  gt::cols_align(x, align = "center") |> 
+  gt::tab_style(
+    style = gt::cell_text(size = gt::px(10)),
+    locations = gt::cells_body(columns = x)
+  ) |> 
+  gt::tab_options(
+    table.width = gt::px(550),
+    table.border.top.width = 0,
+    table.border.bottom.width = 0,
+    heading.border.bottom.width = 0,
+    column_labels.border.top.width = 0,
+    column_labels.border.bottom.width = 0,
+    table_body.border.top.width = 0,
+    table_body.border.bottom.width = 0
+  )
+
+
+tbls <- gtUtils::gt_stack_tables(list(
+  gt_dummy, oregon_scorecard, psu_scorecard
+))
+
+htmltools::save_html(tbls, file = "temp_table.html")
+
+webshot2::webshot(
+  url = "temp_table.html",
+  file = "drive_table.png",
+  vwidth = 772,
+  zoom = 2
+)
+```
+
+### UNC table
+
+```{r unc-tbl, message=FALSE, warning=FALSE}
+
+unc_games <- readr::read_csv("unc_games.csv")
+
+pd <- unc_games |>
+  dplyr::mutate(
+    point_diff = dplyr::case_when(
+      homeTeam == "North Carolina" ~ homePoints - awayPoints,
+      awayTeam == "North Carolina" ~ awayPoints - homePoints
+    )
+  )
+
+
+bad <- pd |>
+  dplyr::mutate(result = dplyr::case_when(point_diff > 0 ~ "W", point_diff < 0 ~ "L", point_diff == 0 ~ "T")) |>
+  dplyr::group_by(season) |>
+  dplyr::summarize(
+    big_losses = sum(point_diff <= -23.5, na.rm = TRUE),
+    wins = sum(result == "W", na.rm = TRUE),
+    losses = sum(result == "L", na.rm = TRUE),
+    ties = sum(result == "T", na.rm = TRUE),
+    record = paste0(wins, "-", losses, ifelse(ties > 0, paste0("-", ties), ""))
+  ) |>
+  dplyr::filter(big_losses > 1) |>
+  dplyr::arrange(-big_losses, -season)
+
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina football <br>Seasons with multiple 24+ point losses since 1980</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Shows seasons since 1980 where UNC has lost at least two games by 24 or more points.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+unc_tbl <- bad |>
+  dplyr::select(season, big_losses, record) |>
+  dplyr::mutate(record = dplyr::if_else(record == "2-2", "2-2 (??)", record)) |>
+  gt::gt() |>
+  gtUtils::gt_theme_athletic() |>
+  gtUtils::gt_column_subheaders(
+    season = list(heading = "Season", subtitle = "Since 1980"),
+    big_losses = list(heading = "# of Losses", subtitle = "By 24+ points"),
+    record = list(heading = "Record", subtitle = "Final W-L-T"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via collegefootballdata.com, theme via {gtUtils} and logo from ESPN.<br>2025 marks the 13th season over the past 36 seasons that Carolina has had multiple 24-point-plus losses in the same season.<hr><b>Table by Chris at Bless your Chart</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(550)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Spline Sans Mono"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(font = gt::google_font("Spline Sans Mono"))),
+    locations = gt::cells_body(columns = everything())
+  ) |>
+  gt::cols_align(columns = c(season), align = "right") |>
+  gt::cols_align(columns = c(big_losses, record), align = "center") |>
+  gtExtras::gt_highlight_rows(rows = c(8), fill = "#ffe9ec")
+
+gt_save_crop(unc_tbl,
+             file = "big_loss_unc.png",
+             whitespace = 60,
+             bg = "white")
+
+unc_tbl
+```
+
+### 

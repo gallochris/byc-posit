@@ -1,0 +1,135 @@
+---
+title: "117: Kansas and UNC"
+date: "2024-11-07"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data from sports-reference
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+ku <- readr:::read_csv("ku-unc.csv")
+
+```
+
+### GT table
+
+```{r gt-tbl, warning=FALSE}
+
+ku_gt <- ku |> 
+  dplyr::select(Date, Location, Winner, Result, Type, Order) |> 
+  cbbplotR::gt_cbb_teams(Winner, Winner, include_name = FALSE) |> 
+  dplyr::group_by(Type) |> 
+  dplyr::arrange(Order) |> 
+  gt::gt() |> 
+  gt::cols_hide(Order) |> 
+  gtUtils::gt_theme_gtutils() |> 
+  gt::fmt_markdown(Winner) |>
+  gtExtras::gt_merge_stack(
+    col1 = "Date",
+    col2 = "Location",
+    palette = c("black", "#848484"),
+    small_cap = FALSE
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(Location),
+                           sides = "right",
+                           color = "black") |>
+  gt::cols_align(columns = c(Date, Location, Result),
+                 align = "left") |> 
+  gt::tab_header(title = gt::html("Stakes is high for <span style='color:#56a0d3'>North Carolina</span> when it plays <span style='color:#E8000D'>Kansas</span>"),
+                 subtitle = gt::html("The two teams have met seven times in the NCAA Tournament and 12 times overall since the 1957 season. The overall series is tied 6-6.<br>
+                                     Carolina plays its first game at Allen Fieldhouse on Friday since 1960.")) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data from Stathead and sports-reference.com, theme via {gtUtils}<hr>
+        <b>Table by Chris at Bless your chart</b>"
+      )
+  ) |>
+  gt::cols_label(
+    Date = "",
+    Winner = "",
+    Result = "",
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(16),
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(
+        color = "#C5C5FF"
+      )
+    )
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative")
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Date, Location, Result)
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(500)) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    color = "#E8000D"
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Result),
+      rows = c(1, 3, 5, 6, 7, 10)
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    color = "#56a0d3"
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(Result),
+      rows = c(2, 4, 8, 9, 11, 12)
+    )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) 
+
+gtUtils::gt_save_crop(
+  ku_gt,
+  file = "ku_gt.png",
+  whitespace = 30,
+  bg = "#FFFDF5"
+)
+
+ku_gt
+```

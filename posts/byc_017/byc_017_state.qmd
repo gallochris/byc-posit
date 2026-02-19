@@ -1,0 +1,123 @@
+---
+title: "017: State 77, Carolina 69"
+date: "2023-02-19"
+draft: true
+categories:
+  - geom_step
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(ncaahoopR)
+library(ggalt)
+library(ggtext)
+```
+
+### Gameflow function
+
+```{r ncaahoopr, message=FALSE, warning=FALSE}
+game_flow <- function(game_id, home_col, away_col) {
+  ### Error Testing
+  if(is.na(game_id)) {
+    stop("game_id is missing with no default")
+  }
+  if(is.na(home_col)) {
+    stop("home_col is missing with no default")
+  }
+  if(is.na(away_col)) {
+    stop("away_col is missing with no default")
+  }
+
+  ### Get Data
+  data <- get_pbp_game(game_id, extra_parse = F)
+  if(is.null(data)) {
+    warning("PBP Data Not Available for Game Flow Chart")
+    return(NULL)
+  }
+  home_team <- data$home[1]
+  away_team <- data$away[1]
+  plot_lines <- 1200
+  msec <- max(data$secs_remaining_absolute)
+  sec <- msec - 2400
+  ot_counter <- 0
+  while(sec > 0) {
+    sec <- sec - 300
+    plot_lines <- c(plot_lines, 2400 + ot_counter * 300)
+    ot_counter <- ot_counter + 1
+  }
+  date <- format(as.Date(data$date[1]), "%B %d, %Y")
+
+  ### Get into Appropriate Format
+  x <- rbind(
+    dplyr::select(data, secs_remaining_absolute, home_score) %>%
+      dplyr::mutate("score" = home_score, team = "home") %>%
+      dplyr::select(-home_score),
+    dplyr::select(data, secs_remaining_absolute, away_score) %>%
+      dplyr::mutate("score" = away_score,
+                    "team" = "away") %>%
+      dplyr::select(-away_score)
+  ) %>%
+    dplyr::mutate("secs_elapsed" = max(secs_remaining_absolute) - secs_remaining_absolute)
+
+
+  ### Make Plot
+  ggplot2::ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, col = team)) +
+    ggplot2::geom_step(size = 1) +
+    ggplot2::geom_vline(xintercept = plot_lines/60, lty = 2, alpha = 0.5, size = 0.8) +
+    ggplot2::labs(x = "Minutes",
+                  y = "Score",
+                  col = "",
+                  title = "<span style='color:#CC0000;'>NC State 77</span>  \n<span style='color:#56a0d3;'>North Carolina 69</span>",
+                  caption = "ncaahoopR | @dadgumboxscores | Feb. 19, 2023") +
+                  theme_me() +
+                  theme(legend.position = "none", plot.title = element_markdown()) +
+    ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
+    ggplot2::scale_y_continuous(breaks = seq(0, 80, 5), limits = c(0, 80)) +
+    ggplot2::scale_color_manual(values = c(away_col, home_col),
+                                labels = c(away_team, home_team))
+}
+```
+
+### Set the theme for plots
+
+```{r themes, message = FALSE}
+# theme
+  theme_me <- function () {
+    theme_minimal(base_size = 10, base_family = "RobotoCondensed-Regular") %+replace%
+      theme (
+        plot.title = element_text(
+          hjust = 0.5,
+          size = 24,
+          face = "bold"
+        ),
+        plot.subtitle = element_text(
+          hjust = 0.5,
+          size = 10,
+          lineheight = 0.25,
+          vjust = -0.5
+        ),
+        plot.caption = element_text(
+          hjust = 1,
+          size = 6,
+          lineheight = 0.35,
+          margin = margin(t = 20)
+        ),
+        panel.grid.minor = element_blank(),
+        plot.background = element_rect(fill = "floral white", color = "floral white")
+      )
+  }
+
+```
+
+### Make geom_step
+
+```{r geom_step, message = FALSE, warning=FALSE }
+
+```
+
+### 

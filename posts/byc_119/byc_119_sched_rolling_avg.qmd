@@ -1,0 +1,582 @@
+---
+title: "119: Schedule and Rolling average"
+date: "2024-11-20"
+categories:
+  - zoo_roll_mean
+  - ggthemes
+  - geom_textcurve
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Make CFP data
+
+```{r cfp-data, warning=FALSE}
+cfb_ranks <- tibble::tribble(~team_name, ~conf, ~cfp_rank,
+                             "Illinois", "Big Ten", 25,
+                             "UNLV", "Mountain West", 24,
+                             "Missouri", "SEC", 23,
+                             "Iowa State", "Big 12", 22,
+                             "Arizona State", "Big 12", 21,
+                             "Tulane", "American", 20,
+                             "Army", "American", 19,
+                             "South Carolina", "SEC", 18,
+                             "Clemson", "ACC", 17,
+                             "Colorado", "Big 12", 16,
+                             "Texas A&M", "SEC", 15,
+                             "BYU", "Big 12", 14,
+                             "SMU", "ACC", 13,
+                             "Boise State", "Mountain West", 12,
+                             "Tennessee", "SEC", 11,
+                             "Georgia", "SEC", 10,
+                             "Ole Miss", "SEC", 9,
+                             "Miami", "ACC", 8,
+                             "Alabama", "SEC", 7,
+                             "Notre Dame", "Independents", 6,
+                             "Indiana", "Big Ten", 5,
+                             "Penn State", "Big Ten", 4,
+                             "Texas", "SEC", 3,
+                             "Ohio State", "Big Ten", 2,
+                             "Oregon", "Big Ten", 1)
+# ----------------------------------------------------
+# annotations
+oregon_boise <- "Oregon 37, Boise State 34"
+clem_uga <- "Georgia 34, Clemson 3"
+sc_clem <- "Nov 30: South Carolina at Clemson"
+nd_army <- "Nov 23: Army vs Notre Dame"
+smu_byu <- "BYU 18, SMU 15"
+tam_nd <- "Notre Dame 23, Texas A&M 13"
+
+sec_teams <- "12 games between  \nthese 8 SEC teams" 
+big_12_teams <- "1 game between  \nthese 4 Big 12 teams"
+big_ten_teams <- "5 games between  \nthese 5 Big 10 teams"
+acc_teams <- "0 games between  \nthese 3 ACC teams"
+
+```
+
+### Make annotation chart 
+
+```{r annotation-chart, message=FALSE, warning=FALSE}
+base_plot <- cfb_ranks |> 
+  dplyr::mutate(conf = factor(conf, 
+                              levels = c("SEC", "Independents", "Mountain West",
+                                         "Big 12","American", "Big Ten", "ACC"))) |> 
+  ggplot2::ggplot(ggplot2::aes(x = conf, y = cfp_rank, group = conf)) + 
+  cfbplotR::geom_cfb_logos(ggplot2::aes(team = team_name), 
+                           width = 0.035,
+                           position = ggplot2::position_jitter(width = 0, 
+                                                               height = 0.55,
+                                                               seed = 124)) + 
+  ggplot2::scale_y_reverse() + 
+  ggthemes::theme_fivethirtyeight() + 
+  ggplot2::labs(
+    title = "College Football Playoff Rankings: Common Non-Conference Opponents",
+    subtitle = "Shows the common non-conference opponents amongst the top-25 teams in the November 19 playoff rankings.  \n",
+    caption = "Bless your chart | November 20, 2024 | data via bcftoys.com",
+    x = "Playoff Ranking",
+    y = ""
+  ) +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(face = "bold"), 
+    axis.text.x.bottom = ggplot2::element_blank(),      
+    axis.text.x.top = ggplot2::element_text(face = "bold"), 
+    axis.ticks.x.top = ggplot2::element_line(),        
+    axis.title.x.top = ggplot2::element_blank(),
+    plot.title = ggtext::element_markdown()
+  ) +
+  ggplot2::scale_x_discrete(position = "top") 
+
+text_plot <- base_plot +
+  geomtextpath::geom_textcurve(ggplot2::aes(x = 3, y = 11.8, xend = 5.8, yend = 1), 
+                hjust = 0.4, color = "#154733", linetype = "dotted",
+                 curvature = -0.35, size = 3.5, label = oregon_boise,
+                family = 'sans') +
+  geomtextpath::geom_textcurve(ggplot2::aes(x = 1.1, y = 10.2, xend = 6.9, yend = 17), 
+                               hjust = 0.4, color = "#000000", linetype = "dotted",
+                               curvature = -0.2, size = 3.5, label = clem_uga,
+                               family = 'sans') +
+  geomtextpath::geom_textcurve(ggplot2::aes(x = 1.1, y = 18.2, xend = 6.9, yend = 17), 
+                               hjust = 0.4, color = "#F56600", linetype = "dotted",
+                               curvature = 0.4, size = 3.5, label = sc_clem,
+                               family = 'sans') +
+  geomtextpath::geom_textcurve(ggplot2::aes(x = 4.1, y = 13.7, xend = 6.9, yend = 12.7), 
+                               hjust = 0.4, color = "#002E5D", linetype = "dotted",
+                               curvature = -0.4, size = 3.5, label = smu_byu,
+                               family = 'sans') +
+  geomtextpath::geom_textcurve(ggplot2::aes(x = 2.1, y = 6.1, xend = 5.1, yend = 18.8), 
+                               hjust = 0.4, color = "#C99700", linetype = "dotted",
+                               curvature = -0.4, size = 3.5, label = nd_army,
+                               family = 'sans') +
+  geomtextpath::geom_textcurve(ggplot2::aes(x = 2, y = 6.4, xend = 1.1, yend = 15), 
+                               hjust = 0.4, color = "#C99700", linetype = "dotted",
+                               curvature = -0.2, size = 3.5, label = tam_nd,
+                               family = 'sans') +
+  ggplot2::annotate(
+    geom = "label",
+    x = 1,
+    y = 1.5,
+    label =  sec_teams,
+    fill = "#22356B",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 3,
+    y = 2.5,
+    label =  "Boise State 29  \nUNLV 24  \nonly game between  \nthese teams",
+    fill = "#FA4616",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 4,
+    y = 18.5,
+    label =  big_12_teams,
+    fill = "darkred",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 5,
+    y = 4.5,
+    label =  "Army vs Tulane  \nDecember 6  \nConference Title Game",
+    fill = "red",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 6,
+    y = 7.5,
+    label =  big_ten_teams,
+    fill = "#0088CE",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 7,
+    y = 2.5,
+    label =  acc_teams,
+    fill = "#013CA6",
+    color = "#333333",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = .3,
+    hjust = 0.5
+  ) 
+  
+ggplot2::ggsave(
+  "text_plot.png",
+  text_plot,
+  w = 10.5,
+  h = 8.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+text_plot
+
+```
+
+### Intra-conference data 
+
+```{r intra-conf-data, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+cfb_conf <- tibble::tribble(~conf,~teams,~cfp_ranked,~game_count,~possible_games,~results,~by_team,
+                             "SEC", 16, 8, 12, 28, "1. Georgia 30, Texas 15  \n2. Alabama 41, Georgia 34  \n3. Alabama 27, South Carolina 25  \n4. Alabama 34, Missouri 0  \n5. Tennessee 24, Alabama 17  \n6. Ole Miss 27, South Carolina 3  \n7. Ole Miss 28, Georgia 10  \n8. Georgia 31, Tennessee 17  \n9. Texas A&M 41, Missouri 10  \n10. South Carolina 44, Texas A&M 20  \n11. South Carolina 34, Missouri 30  \n12. Nov. 30: Texas at Texas A&M \n","Alabama: 4  \nGeorgia: 4  \nSouth Carolina: 4  \nTexas A&M: 3  \nMissouri: 3  \nTennessee: 2  \nOle Miss: 2  \nTexas: 1",
+                  "Big Ten", 18, 5, 5, 10, "1. Oregon 32, Ohio State 31  \n2. Oregon 38, Illinois 9  \n3. Ohio State 20, Penn State 13  \n4. Penn State 21, Illinois 7  \n5. Nov 23: Indiana at Ohio Sate  \n","Ohio State: 3  \nOregon: 2  \nPenn State: 2  \nIllinois: 2  \nIndiana: 1",
+                  "Big 12", 16, 4, 1, 6, "1. Nov 23: BYU at Arizona State", "BYU: 1  \nArizona State: 1",
+                  "ACC", 17, 3, 0, 3, "1. 0 regular-season games!", "ACC Championship Game  \nwill feature 2 of these 3 teams") |> 
+  dplyr::mutate(pct_games = game_count / possible_games) |> 
+  dplyr::relocate(pct_games, .before = results)
+# ----------------------------------------------------
+```
+
+### Make GT table 
+
+```{r gt-confs}
+conf_tbl <- cfb_conf |> 
+    cbbplotR::gt_cbb_conferences(conf, logo_height = 14) |>
+    dplyr::arrange(-pct_games) |>
+    gt::gt() |> 
+    gtUtils::gt_theme_sofa() |>
+    gt::fmt_markdown(columns = c(conf, results, by_team)) |> 
+    gt::cols_align(conf, align = "left") |>
+    gtUtils::gt_column_subheaders(
+    teams = list(heading = "Total Teams", subtitle = "in the League"),
+    cfp_ranked = list(heading = "CFP", subtitle = "Ranked"),
+    game_count = list(heading = "Games", subtitle = "Between teams"),
+    possible_games = list(heading = "Possible", subtitle = "Game count"),
+    pct_games = list(heading = "Possible", subtitle = "Games %"),
+    results = list(heading = "Results", subtitle = "Between teams"),
+    by_team = list(heading = "Games", subtitle = "By team"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(conf = "") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gtUtils::gt_color_pills(pct_games,
+     domain = c(0.0, 1), format_type = "percent", digits = 1,
+    palette =  c("#FF4500", "#ADFF2F", "#008000")
+  ) |> 
+  gt::tab_header(title = "What's the point of being in the same conference if you don't play each other?",
+                 subtitle = "Shows intra-conference games between Power 4 conference teams ranked in the latest College Football Playoff top-25 as of November 19.") |> 
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via bcftoys.com, theme via {gtUtils}, and logos from ESPN.com.",
+    "Table by Chris (@dadgumboxscores) + Bless your chart"
+  ) |> 
+    gt::tab_options(table.width = gt::px(750)) |> 
+      gt::tab_style(
+    style = list(
+      gt::cell_text(size = gt::px(8.5)
+      )
+      ),
+    locations = gt::cells_body(
+      columns = c(results, by_team)
+    )
+  )
+  
+
+gtUtils::gt_save_crop(
+  conf_tbl,
+  file = "conf_tbl.png",
+  whitespace = 40,
+  bg = "#F0EAD6"
+)
+
+
+conf_tbl
+
+```
+
+### Load data from sports-reference and compute rolling average
+
+```{r load-data, message = FALSE, warning=FALSE}
+
+paige <- readr::read_csv("paige-davis.csv")
+
+roll_data <- paige |> 
+  dplyr::group_by(Player) |>
+  dplyr::arrange(Rk) |>
+  dplyr::mutate(t_roll = zoo::rollmean(
+    `3P%`,
+    k = 5,
+    fill = NA, # This will fill NA values at edges
+    align = 'center'
+  )) |>
+  dplyr::ungroup()
+
+
+```
+
+### Plot the rolling avg
+
+```{r roll-average, warning=FALSE, message=FALSE}
+
+paige_davis_plot <- roll_data |> 
+  ggplot2::ggplot(ggplot2::aes(x = Rk, y = `3P%`)) +
+  ggplot2::geom_smooth(
+    ggplot2::aes(x = Rk, y = t_roll, color = Player), 
+    method = "loess",
+    span = 0.70, 
+    level = 0.68,
+    na.rm = TRUE
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::theme(legend.position = "none") +
+  ggplot2::scale_color_manual(values = c("RJ Davis" = "#56a0d3",
+                                         "Marcus Paige" = "#13294B"
+                                         )) +
+ggplot2::scale_x_continuous(breaks = seq(0, 150, 15), limits = c(0, 150)) +
+ggplot2::scale_y_continuous(labels = scales::percent,
+                            breaks = seq(.20, .45, .05), limits = c(.20,.45)) +
+  ggplot2::labs(
+    title = "Career 3PT Shooting Percentages: RJ Davis and Marcus Paige",
+    subtitle = "Five-game rolling average of three-point shooting percentages during career of each player (both have played 141 games).",
+    caption = "Bless your chart | November 20, 2024 | data via Stathead and sports-reference.com",
+    x = "Games",
+    y = "3PT%"
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 144,
+    y = 0.37,
+    color = "#333333",
+    fill = "#56a0d3",
+    label = "Davis  \n279-762  \n(36.6%)",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = 0.35
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = 144,
+    y = 0.315,
+    color = "#333333",
+    fill = "#132949",
+    label = "Paige  \n299-798  \n(37.5%)",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'sans',
+    alpha = 0.35
+  ) +
+    ggplot2::geom_vline(
+    xintercept = c(69),
+    linetype = "dashed",
+    color = "#56a0d3",
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#56a0d3",
+    x = 55,
+    y = .40,
+    xend = 69,
+    yend = .30,
+    curvature = -.3,
+    arrow = ggplot2::arrow(length = ggplot2::unit(4, "mm"))
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 45,
+    y = .40,
+    label = "Junior season  \nstarts for Davis",
+    family = "sans",
+    size = 3.5,
+    color = "#333333",
+    fontface = "bold",
+    fill = "#56a0d3",
+    alpha = .35
+  ) +
+  ggplot2::geom_vline(
+    xintercept = c(35),
+    linetype = "dashed",
+    color = "#132949",
+  ) +
+  ggplot2::annotate(
+    geom = "curve",
+    color = "#132949",
+    x = 48,
+    y = .26,
+    xend = 35,
+    yend = .33,
+    curvature = -.3,
+    arrow = ggplot2::arrow(length = ggplot2::unit(4, "mm"))
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 50,
+    y = .25,
+    label = "Sophomore season  \nstarts for Paige",
+    family = "sans",
+    size = 3.5,
+    color = "#333333",
+    fontface = "bold",
+    fill = "#132949",
+    alpha = .35
+  ) 
+
+ggplot2::ggsave(
+  "paige_davis_plot.png",
+  paige_davis_plot,
+  w = 10.5,
+  h = 8.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+paige_davis_plot
+```
+
+### UNC football coaching records 
+
+```{r fetch-unc-records, warning=FALSE}
+
+library(cbbplotR)
+library(rlang)
+
+
+get_unc_records <- function(start_year = 2012,
+                            end_year = 2024) {
+  years <- start_year:end_year
+  
+  all_games <- purrr::map_df(years,
+                             ~ cfbfastR::cfbd_game_info(year = .x, team = "North Carolina"))
+  
+  processed_games <- all_games |>
+    dplyr::mutate(
+      game_result = dplyr::case_when(
+        home_team == "North Carolina" & home_points > away_points ~ "W",
+        home_team == "North Carolina" &
+          home_points < away_points ~ "L",
+        home_team != "North Carolina" &
+          home_points < away_points ~ "W",
+        home_team != "North Carolina" &
+          home_points > away_points ~ "L",
+        TRUE ~ "T"  # For ties, if any
+      )
+    )
+  
+  return(processed_games)
+}
+
+
+add_game_numbers <- function(df) {
+  # First, number the actual games
+  numbered_games <- df |>
+    dplyr::group_by(season) |>
+    dplyr::mutate(game_number = dplyr::row_number()) |>
+    dplyr::ungroup()
+  
+  # Create a template with all seasons and 14 game numbers
+  template <- tidyr::expand_grid(season = unique(df$season), game_number = 1:14)
+  
+  # Join the actual data with the template
+  complete_games <- template |>
+    dplyr::left_join(numbered_games, by = c("season", "game_number"))
+  
+  return(complete_games)
+}
+
+get_unc_records() -> unc_records
+
+unc_records |>
+  add_game_numbers() -> unc_with_games
+
+
+# bowl game fixes - this was way too tedius
+unc_tbl <- unc_with_games |>
+  dplyr::select(season, game_number, game_result) |>
+  dplyr::mutate(
+    game_result = dplyr::case_when(
+      game_number == 13 & season == 2013 ~ "W",
+      game_number == 13 & season == 2014 ~ "L",
+      game_number == 14 & season == 2015 ~ "L",
+      game_number == 13 & season == 2016 ~ "L",
+      game_number == 13 & season == 2019 ~ "W",
+      game_number == 12 & season == 2020 ~ "L",
+      game_number == 13 & season == 2021 ~ "L",
+      game_number == 14 & season == 2022 ~ "L",
+      game_number == 13 & season == 2023 ~ "L",
+      TRUE ~ game_result
+    )
+  ) |>
+  dplyr::mutate(game_result = dplyr::case_match(game_result, "W" ~ 1, "L" ~ 0, "T" ~ NA)) |>
+  tidyr::pivot_wider(names_from = game_number, values_from = game_result, ) |>
+  dplyr::arrange(-season) |>  # add w-l records and percentages
+  dplyr::mutate(
+    coach = dplyr::case_when(
+      season %in% c(2019:2024) ~ "Mack Brown 2.0 58.7% | 44-31",
+      season %in% c(2012:2018) ~ "Larry Fedora 51.1% | 45-43",
+    )
+  )
+
+```
+
+### GT table for coaching records 
+
+```{r mack-v-fedora, warning=FALSE}
+custom_header <- glue::glue(
+   "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina's Record by Coach Since 2012</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the <span style='font-weight: bold; color:#56a0d3'>wins</span> and <span style='font-weight: bold; color:#e75480'>losses</span> by game number of each season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+unc_coach_tbl <- unc_tbl |>
+  gt::gt(groupname_col = "coach") |>
+  gtUtils::gt_indicator_boxes(
+    key_columns = "season",
+    color_yes = "#56a0d3",
+    color_no = "#e75480",
+    color_na = "#e1e1e1"
+  ) |>
+  gt::cols_label(season = "") |>
+  gtUtils::gt_theme_sofa() |>
+  gt::tab_spanner(columns = c(-season), label = "Game Number") |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via cfbfastR, theme via {gtUtils}. <br>2024 season data through November 19.
+    <br>",
+    "<b>Table by Chris at Bless your chart</b>"
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(450)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Sofia Sans Condensed"),
+      weight = 650,
+      transform = "uppercase",
+      decorate = NULL,
+      size = gt::px(12)
+    )
+  ) |> 
+  gt::tab_style(
+      locations = gt::cells_column_labels(),
+      style = gt::cell_text(
+        weight = 'bold',
+        font = gt::google_font('Sofia Sans Condensed'),
+        size = gt::px(14),
+        color = "#acacac"
+      )
+    ) 
+ 
+
+gtUtils::gt_save_crop(
+  unc_coach_tbl,
+  file = "unc_mack_vs_fedora.png",
+  whitespace = 40,
+  bg = "#F0EAD6"
+)
+
+unc_coach_tbl
+```

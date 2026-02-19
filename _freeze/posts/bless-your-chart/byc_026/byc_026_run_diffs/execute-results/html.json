@@ -1,0 +1,16 @@
+{
+  "hash": "8b2ef01d32655a715e9103552c3ece2c",
+  "result": {
+    "markdown": "---\ntitle: \"026: Run differentials\"\ndate: \"2023-04-13\"\ncategories:\n  - geom_line\n  - slope\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Code\"\neditor: visual\n---\n\n\n\n\n### Load data\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# load rds\ntotal_records <- read_csv(\"acc-recs.csv\")\n\n# pivot data to make more friendly \nacc_diffs <- total_records %>% \n            rename(Home = home_diff, Away = away_diff) %>% \n            select(team, Home, Away) %>% \n            pivot_longer(cols = c(Home, Away), names_to = \"diff\", values_to = \"value\")\n```\n:::\n\n\n### Create slope chart\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndiff_chart <- acc_diffs %>% ggplot(aes(\n  x = diff,\n  y = value,\n  group = team,\n  color = team,\n  alpha = 1\n)) +\n  geom_line(size = 0.5, color = \"grey75\") +\n  geom_line(\n    data = acc_diffs %>% filter(team %in% c(\"North Carolina\", \"Miami (FL)\")),\n    mapping = aes(\n      x = diff,\n      y = value,\n      group = team,\n      color = team,\n      alpha = 1\n    ),\n    size = 4\n  ) + scale_x_discrete(expand = expansion(mult = c(0, 0.5)), position = \"top\") + \n  scale_y_continuous(breaks = seq(-40, 40, 10)) +\n  scale_color_manual(values = c(\"#F47321\", \"#56a0d3\")) + \n  annotate(\n    geom = \"label\",\n    x = 2,\n    y = 40,\n    label = \"  Miami  \\n +38 (Home)  \\n -33 (Away)\",\n    hjust = -0.1,\n    vjust = 0.9,\n    fill = \"#F47321\",\n    alpha = 0.1,\n    size = 4\n  ) +\n  annotate(\n    geom = \"label\",\n    x = 2,\n    y = 0,\n    hjust = -0.1,\n    label = \"  North Carolina  \\n 0 (Home) \\n +14 (Away)\",\n    fill = \"#56a0d3\",\n    alpha = 0.1,\n    size = 4,\n  ) +\n  labs(\n    x = element_blank(),\n    y = element_blank(),\n    title = \"Home & Away Run Differential  \\nin ACC Baseball Games\",\n    caption = \"@dadgumboxscores | April 13 | data via baseballR\"\n  ) +\n  theme_fivethirtyeight() +\n  theme(\n    panel.grid = element_blank(),\n    legend.position = \"none\",\n    text = element_text(family = \"Arial\"),\n    plot.title = element_markdown()\n  )\n\n# save it\nggsave(\n  \"acc-diffs.png\",\n  diff_chart,\n  w = 6,\n  h = 8,\n  dpi = 600,\n  type = 'cairo'\n)\n\n\ndiff_chart\n```\n\n::: {.cell-output-display}\n![](byc_026_run_diffs_files/figure-html/slope-chart-1.png){width=672}\n:::\n:::\n\n\n#### \n",
+    "supporting": [
+      "byc_026_run_diffs_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

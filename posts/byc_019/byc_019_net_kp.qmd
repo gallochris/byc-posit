@@ -1,0 +1,200 @@
+---
+title: "019: Nothing but NET"
+date: "2023-03-01"
+categories:
+  - gtExtras
+  - hoopR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+```{r load-packages-and-data, include=FALSE, echo=FALSE, warning=FALSE, fig.width=16, fig.height=20}
+library(tidyverse)
+library(hoopR)
+library(gt)
+library(gtExtras)
+```
+
+### Data wrangling
+
+```{r data-fun, message=FALSE}
+# load december
+dec <- read_csv("dec_28_net.csv") %>%
+  select(Team, Conference, NET) %>%
+  rename(dec_28 = NET)
+
+# load today
+mar <- read_csv("march_1_net.csv") %>%
+  select(Team, NET) %>%
+  rename(march_1 = NET)
+
+# combine the data
+net_comp <- merge(dec, mar, by = "Team")
+
+# filter by conferences
+confs <-
+  c("Big 12",
+    "Big Ten",
+    "SEC",
+    "Big East",
+    "Pac-12",
+    "Mountain West",
+    "ACC")
+
+conf_comp <- net_comp %>%
+  filter(Conference %in% confs) %>%
+  mutate(delta = dec_28 - march_1) %>%
+  arrange(delta)
+
+# find the median change
+med_change <- conf_comp %>%
+  group_by(Conference) %>%
+  summarize(med_change = median(delta)) %>%
+  arrange(med_change)
+
+# now let's do kenpom
+dec_kp <- kp_pomeroy_archive_ratings(date = "2022-12-28") %>%
+  select(team, conf, adj_em_rk) %>%
+  rename(dec_rank = adj_em_rk)
+
+mar_kp <- kp_pomeroy_ratings(min_year = 2023, max_year = 2023)  %>%
+  select(team, rk) %>%
+  rename(march_rank = rk)
+
+# combine the data
+kp_comp <- merge(dec_kp, mar_kp, by = "team")
+
+# filter by conferences
+confs_kp <- c("B12", "B10", "SEC", "BE", "P12", "MWC", "ACC")
+
+kp_conf_comp <- kp_comp %>%
+  filter(conf %in% confs_kp) %>%
+  mutate(delta = dec_rank - march_rank) %>%
+  arrange(delta)
+
+# find the median change
+kp_med_change <- kp_conf_comp %>%
+  group_by(conf) %>%
+  summarize(med_change = median(delta)) %>%
+  arrange(med_change) %>%
+  mutate(
+    conf = case_match(
+      conf,
+      "B12" ~ "Big 12",
+      "B10" ~ "Big Ten",
+      "BE" ~ "Big East",
+      "P12" ~ "Pac-12",
+      "MWC" ~ "Mountain West",
+      conf ~ conf
+    )
+  ) %>%
+  rename(Conference = conf, kp_med_change = med_change)
+
+# combine those two changes
+net_kp_comp <- merge(med_change, kp_med_change, by = "Conference")
+
+# try to combine the two
+kp_c <- kp_conf_comp %>%
+  rename(Team = team, kp_delta = delta) %>%
+  select(Team, march_rank, dec_rank, kp_delta)
+
+net_c <- conf_comp %>%
+  select(Team, Conference, dec_28, march_1, delta) %>%
+  rename(net_delta = delta) %>%
+  mutate(
+    Team = case_match(
+      Team,
+      "UConn" ~ "Connecticut",
+      "N.C. State" ~ "NC State",
+      "Miami (FL)" ~ "Miami FL",
+      "Ole Miss" ~ "Mississippi",
+      "NC State" ~ "N.C. State",
+      "St. John's (NY)" ~ "St. John's",
+      "Southern California" ~ "USC",
+      Team ~ Team
+    )
+  )
+
+# combine the two tables 
+mega_comp <- merge(net_c, kp_c, by = "Team")
+```
+
+### Make gt table
+
+```{r gt-table}
+comp_table <- net_kp_comp %>%
+  arrange(kp_med_change) %>%
+  gt() %>%
+  cols_label(# rename columns
+    med_change = "NET +/-",
+    kp_med_change = "kenpom +/-") %>%
+  fmt(
+    columns = c(med_change, kp_med_change),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) %>%
+  fmt_number(
+    columns = c(med_change, kp_med_change),
+    decimals = 1,
+    use_seps = FALSE
+  ) %>%
+  gt_theme_nytimes() %>%
+  tab_header(title = "Conference median change in NET and kenpom rating from December 28 to March 1",
+             subtitle = "Negative number means worse rating and positive number means better rating.") %>%
+  tab_source_note(source_note = "@dadgumboxscores | March 1, 2023 | data via ncaa + kenpom") %>%
+  tab_options (source_notes.font.size = px(8),
+               table.font.size = px(10),)
+
+gtsave_extra(comp_table,
+             "comp_table.png",
+             vwidth = 275,
+             vheight = 275)
+
+comp_table
+
+# make a big GT table of all of it
+mega_table <- mega_comp %>%
+  select(Team, Conference, dec_28, march_1, net_delta, dec_rank, march_rank, kp_delta) %>% 
+  arrange(Conference) %>%
+  gt() %>%
+  cols_label(# rename columns
+    dec_28 = "Dec 28",
+    march_1 = "March 1",
+    dec_rank = "Dec 28",
+    march_rank = "March 1",
+    net_delta = "+/-",
+    kp_delta = "+/-",) %>%
+  fmt(
+    columns = c(net_delta, kp_delta),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  ) %>%
+   tab_spanner(label = "NET",
+              columns = c(dec_28, march_1, net_delta)) %>%
+  tab_spanner(label = "kenpom",
+              columns = c(dec_rank, march_rank, kp_delta)) %>%
+  gt_theme_dot_matrix() %>%
+  tab_header(title = "NET and kenpom rating changes between December 28 and today (March 1)",
+             subtitle = "Negative number means worse rating and positive number means better rating.") %>%
+  tab_source_note(source_note = "@dadgumboxscores | March 1, 2023 | data via ncaa + kenpom") %>%
+  tab_options (
+    source_notes.font.size = px(10),
+    row.striping.background_color = '#ffffed',
+    table.font.size = px(10),
+    column_labels.text_transform = 'capitalize'
+  )
+
+gtsave_extra(mega_table,
+             "mega_table.png",
+             vwidth = 650,
+             vheight = 650)
+
+mega_table
+```
+
+### 

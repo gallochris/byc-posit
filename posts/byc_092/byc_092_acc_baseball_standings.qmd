@@ -1,0 +1,279 @@
+---
+title: "092: ACC Baseball Table"
+date: "2024-05-09"
+categories:
+  - gtExtras
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+library(cbbplotR)
+acc_base_teams <- readRDS("acc_base_teams.rds")
+
+# find ids
+ids <- acc_base_teams$team_id
+
+# function to scrape schedule 
+acc_results <- function(id) {
+  baseballr::ncaa_schedule_info(team_id = id, year = 2024) |>
+    dplyr::filter(home_team_conference == "ACC" & away_team_conference == "ACC") |>
+    dplyr::filter(!is.na(home_team_score))
+}
+
+# grab acc games
+acc_scores <- lapply(ids, acc_results)
+
+acc_results_2024 <- as.data.frame(do.call(rbind, acc_scores)) |>
+  dplyr::distinct(contest_id, .keep_all = TRUE ) |> 
+  dplyr::mutate(away_team = dplyr::if_else(away_team == "Virginia ", "Virginia", away_team))
+
+# find differential by team 
+home_diffs <- acc_results_2024 |>
+  dplyr::mutate(h_diff = home_team_score - away_team_score) |>
+  dplyr::group_by(home_team) |>
+  dplyr::summarize(home_diff = sum(h_diff)) |>
+  dplyr::rename(team = home_team)
+
+
+away_diffs <- acc_results_2024 |>
+  dplyr::mutate(a_diff = away_team_score - home_team_score) |>
+  dplyr::group_by(away_team) |>
+  dplyr::summarize(away_diff = sum(a_diff)) |>
+  dplyr::rename(team = away_team)
+
+full_diffs <- merge(home_diffs, away_diffs, by = "team")|>
+  dplyr::mutate(full_diff = (home_diff + away_diff))|>
+  dplyr::select(team, full_diff, home_diff, away_diff)
+
+# find conference records by team
+home_results <- acc_results_2024 |>
+  dplyr::mutate(h_result = dplyr::if_else(home_team_score > away_team_score, "W", "L")) |>
+  dplyr::group_by(home_team, h_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = h_result,
+    values_from = n)|>
+  dplyr::rename(team = home_team, h_w = W, h_l = L)
+
+away_results <- acc_results_2024 |>
+  dplyr::mutate(a_result = dplyr::if_else(away_team_score > home_team_score, "W", "L")) |>
+  dplyr::group_by(away_team, a_result) |>
+  dplyr::count() |>
+  tidyr::pivot_wider( 
+    names_from = a_result,
+    values_from = n) |>
+  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+  dplyr::mutate(across(everything(), ~ replace(.x, is.na(.x), 0))) 
+
+full_recs <- merge(home_results, away_results, by = "team") |>
+  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l))|>
+  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+diffs_recs <- merge(full_diffs, full_recs, by ="team")
+```
+
+### RPI Function
+
+```{r rpi-func, message = FALSE}
+# function to get RPI data 
+rpi_ranks <- function(url) {
+  
+  rpi_page <- rvest::read_html(url)
+  
+  rpi_rk <- rpi_page |> 
+    rvest::html_nodes("table") |> 
+    rvest::html_table(fill = TRUE)
+  
+  rpi_table <- as.data.frame(rpi_rk) 
+  
+  rpi_table <- rpi_table |>
+    dplyr::mutate(record = stringr::str_split(Record, "-", simplify = T),
+           wins = record[,1],
+           losses = record[,2]
+    )
+}
+
+rpi <- rpi_ranks(url = "https://www.ncaa.com/rankings/baseball/d1/rpi")
+
+# make rpi table
+acc_rpi <- rpi |>
+  dplyr::filter(Conference == "ACC") |>
+  dplyr::select(School, Rank, wins, losses) |>
+  dplyr::rename(team = School, rpi = Rank, o_w = wins, o_l = losses)
+
+# atlantic teams 
+atl_teams = c("Wake Forest", "Boston College", "Louisville", "NC State", "Notre Dame", "Florida St.", "Clemson")
+
+# make the big table
+total_records <- merge(acc_rpi, diffs_recs, by ="team") |> 
+  dplyr::mutate(div = dplyr::if_else(team %in% atl_teams, "Atlantic", "Coastal")) |>
+  dplyr::select(div, team, rpi, o_w, o_l, W, L, full_diff, h_w, h_l, home_diff, a_w, a_l, away_diff)
+
+
+```
+
+### Custom GT theme
+
+```{r gt-them-chris, message = FALSE}
+gt_theme_chris <- function(gt_object, ...) {
+  stopifnot("'gt_object' must be a 'gt_tbl', have you accidentally passed raw data?" = "gt_tbl" %in% class(gt_object))
+  
+  gt_object |> 
+    gt::tab_options(
+      heading.align = "left",
+      table.border.top.style = "none",
+      column_labels.border.bottom.style = "none",
+      column_labels.border.bottom.color = "black",
+      table_body.border.top.style = "none",
+      table_body.border.bottom.color = "white",
+      heading.border.bottom.style = "none",
+      data_row.padding = gt::px(7),
+      column_labels.font.size = gt::px(14),
+      column_labels.border.bottom.width = gt::px(2),
+      ...
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        color = "#333333",
+        font = gt::google_font("Roboto"),
+        transform = "uppercase"
+      ),
+      locations = list(
+        gt::cells_column_labels(),
+        gt::cells_stubhead()
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        font = gt::google_font("Roboto"),
+        weight = 800
+      ),
+      locations = gt::cells_title(groups = "title")
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_text(
+        font = gt::google_font("Roboto"),
+        weight = 400
+      ),
+      locations = gt::cells_body()
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "subtitle"),
+      style = gt::cell_text(
+        size = "small"
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_title(groups = "title"),
+      style = gt::cell_text(
+        size = "x-large"
+      )
+    ) |> 
+    gt::tab_style(
+      locations = gt::cells_source_notes(),
+      style = gt::cell_text(
+        size = "x-small"
+      )
+    ) |> 
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+      locations = gt::cells_body(
+        rows = gt::everything()
+      )
+    )  |> 
+    gt::tab_style(
+      locations = gt::cells_row_groups(groups = gt::everything()),
+      style = list(
+        gt::cell_text(
+          size = "medium",
+          weight = "bold"
+        ), 
+        gt::cell_fill(color = "#FFFEE0")
+      )) |> 
+    gt::tab_style(
+      style = list(
+        gt::cell_fill(color = "#FFFEE0"),
+        gt::cell_text(color = "#333333", size = gt::px(16), weight = "bold"),
+        gt::cell_borders(sides = "right", color = "black", weight = gt::px(2)),
+        gt::cell_borders(sides = "bottom", color = "black", weight = gt::px(2))
+      ),
+      locations = list(
+        gt::cells_column_spanners(
+          spanners = gt::everything()
+        )
+      )
+    )
+} 
+
+
+```
+
+### GT Table for standings
+
+```{r gt-table, warning = FALSE}
+total_records |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::arrange(-W, -full_diff)|> 
+  gt::gt(groupname_col = "div")|>
+  gt::fmt_markdown(team) |> 
+  gt::cols_label(
+    # rename columns
+    team = "",
+    rpi = "RPI",
+    o_w = "W",
+    o_l = "L",
+    full_diff = "+/-",
+    h_w = "W",
+    h_l = "L",
+    home_diff = "+/-",
+    a_w = "W",
+    a_l = "L",
+    away_diff = "+/-",
+  )|>
+  gt::tab_spanner(label = "Overall",
+                  columns = c(rpi, o_w, o_l))|>
+  gt::tab_spanner(label = "ACC Only",
+              columns = c(W, L, full_diff))|>
+  gt::tab_spanner(label = "Home (ACC)",
+              columns = c(h_w, h_l, home_diff))|>
+  gt::tab_spanner(label = "Away (ACC)",
+              columns = c(a_w, a_l, away_diff))|>
+  gt::fmt(
+    columns = c(full_diff, home_diff, away_diff),
+    fns = function(x) {
+      ifelse(x > 0, paste0("+", x), x)
+    }
+  )|>
+  gtExtras::gt_hulk_col_numeric(columns = c(full_diff, away_diff, home_diff)) |> 
+  gtExtras::gt_hulk_col_numeric(columns = c(rpi), reverse = TRUE) |> 
+  gt::tab_header(title = "ACC Baseball Standings: League Records and Run Differentials by Location", 
+                 subtitle = "Shows RPI, overall record, and conference records by location with run differentials through May 18 games.") |>
+  gt::tab_source_note(source_note = gt::html("<hr><b>Table by Chris (@dadgumboxscores) + Bless your chart | data via baseballr and ncaa.org</b>")) |>
+  gt_theme_chris() |> 
+  gt::tab_footnote(footnote = 
+                     gt::md(
+                       "UNC clinched first place in Coastal Division."
+                     ),
+                   locations = gt::cells_body(
+                     columns = W,
+                     rows = 1
+                   )) |> 
+  gt::cols_align(align = "left", columns = c(team)) |>
+  gtExtras::gt_add_divider(columns = c(o_l, full_diff, home_diff, away_diff), 
+                           sides = "right", color = "black") -> acc_tbl 
+
+gtExtras::gtsave_extra(acc_tbl,
+                       filename = "acc_base_table.png",
+                       vheight = 875,
+                       vwidth = 875)
+
+acc_tbl
+```
+
+### 

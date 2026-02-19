@@ -1,0 +1,234 @@
+---
+title: "174: Node Graphs"
+date: "2026-02-19"
+categories:
+  - tidygraph
+  - ggraph
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+clean_cbb_names <- function(team_name) {
+  dplyr::case_when(
+    team_name %in% c("Florida St.", "Florida State") ~ "Florida State",
+    team_name %in% c("N.C. State", "NC State")       ~ "NC State",
+    team_name %in% c("Miami FL", "Miami")             ~ "Miami (FL)",
+    TRUE ~ team_name
+  )
+}
+
+# --- Process Data ------------------------------------------------------------
+
+acc_2004_edges <- readr::read_csv("acc_2004.csv") |>
+  dplyr::mutate(
+    t1 = clean_cbb_names(Team),
+    t2 = clean_cbb_names(Opp)
+  ) |>
+  dplyr::filter(t1 < t2) |>
+  dplyr::group_by(t1, t2) |>
+  dplyr::summarise(games = dplyr::n(), .groups = "drop")
+
+acc_2026_edges <- readr::read_csv("acc_2026.csv") |>
+  dplyr::mutate(
+    t1 = clean_cbb_names(team),
+    t2 = clean_cbb_names(opp)
+  ) |>
+  dplyr::filter(t1 < t2) |>
+  dplyr::group_by(t1, t2) |>
+  dplyr::summarise(games = dplyr::n(), .groups = "drop")
+
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### Node graph
+
+```{r node-graph, warning=FALSE, message=FALSE}
+
+plot_node_logos <- function(edge_df, line_color_single, line_color_double,
+                            logo_width = 0.05) {
+  graph  <- tidygraph::as_tbl_graph(edge_df, directed = FALSE)
+  layout <- ggraph::create_layout(graph, layout = "circle")
+  
+  ggraph::ggraph(layout) +
+    ggraph::geom_edge_link(
+      ggplot2::aes(
+        width = factor(games),
+        color = factor(games),
+        alpha = factor(games)
+      ),
+      show.legend = FALSE
+    ) +
+    cbbplotR::geom_cbb_teams(
+      data = layout,
+      ggplot2::aes(x = x, y = y, team = name),
+      width = logo_width
+    ) +
+    ggraph::scale_edge_color_manual(
+      values = c("1" = line_color_single, "2" = line_color_double)
+    ) +
+    ggraph::scale_edge_width_manual(values = c("1" = 0.4, "2" = 2.0)) +
+    ggraph::scale_edge_alpha_manual(values = c("1" = 0.25, "2" = 0.85)) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = 0.18)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = 0.18)) +
+    ggplot2::theme_void() +
+    ggplot2::theme(
+      plot.background  = ggplot2::element_rect(fill = "white", color = NA),
+      panel.background = ggplot2::element_rect(fill = "white", color = NA),
+      plot.margin      = ggplot2::margin(10, 10, 10, 10)
+    )
+}
+
+# --- Generate Plots ----------------------------------------------------------
+p1_node <- plot_node_logos(
+  acc_2004_edges,
+  line_color_single = "#c7e9c0",
+  line_color_double = "#31a354"
+)
+
+p2_node <- plot_node_logos(
+  acc_2026_edges,
+  line_color_single = "#fdbe85",
+  line_color_double = "#d94701",
+)
+
+# --- Panel Titles ------------------------------------------------------------
+p1_titled <- cowplot::ggdraw() +
+  cowplot::draw_plot(p1_node) +
+  cowplot::draw_label(
+    "2003-04: 9 Teams\nRound-robin (play every team twice)",
+    x = 0.5, y = 0.97,
+    fontface = "plain",
+    size = 14,
+    hjust = 0.5,
+    vjust = 1,
+    fontfamily = "Roboto Condensed"
+  )
+
+p2_titled <- cowplot::ggdraw() +
+  cowplot::draw_plot(p2_node) +
+  cowplot::draw_label(
+    "2025-26: 18 Teams\nOnly play two teams twice",
+    x = 0.5, y = 0.97,
+    fontface = "plain",
+    size = 14,
+    hjust = 0.5,
+    vjust = 1,
+    fontfamily = "Roboto Condensed"
+  )
+
+# --- Side-by-Side Layout ----------------------------------------------------
+side_by_side <- cowplot::plot_grid(
+  p1_titled,
+  p2_titled,
+  ncol = 2,
+  align = "h"
+)
+
+final_plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(side_by_side, y = 0.03, height = 0.92) +
+  cowplot::draw_label(
+    "ACC Regular Season Scheduling Comparison",
+    x = 0.5, y = 0.97,
+    size = 16,
+    fontface = "bold",
+    hjust = 0.5,
+    vjust = 1,
+    color = "black",
+    fontfamily = "Roboto Condensed"
+  ) +
+  cowplot::draw_label(
+    "Data via sports-reference.com | Viz by Chris at Bless your Chart",
+    x = 0.5,
+    y = 0.01,
+    size = 11,
+    fontface = "italic",
+    fontfamily = "Roboto Condensed",
+    color = "gray40",
+    hjust = 0.5,
+    vjust = 0
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 0.50,
+    y = 0.20,
+    label = paste0(
+      "9 pairs of conference opponents\n",
+      "don't play each other:\n\n",
+      "Florida State-Louisville\n",
+      "Cal-NC State\n",
+      "Notre Dame-Wake Forest\n",
+      "Stanford-Syracuse\n",
+      "Pittsburgh-Virginia Tech\n",
+      "Clemson-Virginia\n",
+      "Duke-Miami\n",
+      "Georgia Tech-SMU\n",
+      "Boston College-North Carolina"
+    ),
+    size = 3.4,
+    color = "#333333",
+    family = "Roboto Condensed",
+    fontface = "plain",
+    fill =  "#d94701",
+    alpha = 0.4,
+    label.padding = ggplot2::unit(6, "pt"),
+    label.r = ggplot2::unit(3, "pt"),
+    label.size = 0.5,
+    hjust = 0.5,
+    vjust = 0.5,
+    lineheight = 1.0
+  ) +
+  ggplot2::annotate(
+    "curve",
+    x = 0.50, 
+    y = 0.35,
+    xend = 0.55, 
+    yend = 0.60,
+    curvature = -0.3,
+    color = "#d94701",
+    arrow = ggplot2::arrow(length = grid::unit(2, "mm"))
+  )
+
+final_plot
+
+ggplot2::ggsave(
+  "acc_scheduling_comparison.png",
+  final_plot,
+  width = 14,
+  height = 7,
+  dpi = 300,
+  bg = "white"
+)
+```
+
+### 
+
+### 

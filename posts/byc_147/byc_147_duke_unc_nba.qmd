@@ -1,0 +1,249 @@
+---
+title: "147: Duke, UNC, NBA Draft"
+date: "2025-06-22"
+categories:
+  - gtUtils
+  - gt_indicator_boxes
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+unc_first_rounders <- tibble::tribble(
+  ~row, ~player,              ~year, ~round, ~pick, ~games,
+  2,   "Day'Ron Sharpe",      2021,     1,    29, 29,
+  3,   "Cole Anthony",        2020,     1,    15, 22,
+  5,   "Cameron Johnson",     2019,     1,    11, 62,
+  6,   "Nassir Little",       2019,     1,    25, 36,
+  7,   "Coby White",          2019,     1,     7, 35,
+  8,   "Tony Bradley",        2017,     1,    28, 38,
+  10,   "Justin Jackson",      2017,     1,    15, 118,
+  11,   "Brice Johnson",       2016,     1,    25, 148, 
+  14,   "P.J. Hairston",       2014,     1,    26, 71,
+  15,   "Reggie Bullock",      2013,     1,    25, 100, 
+  16,   "Harrison Barnes",     2012,     1,     7, 75,
+  17,   "John Henson",         2012,     1,    14, 109,
+  18,   "Kendall Marshall",    2012,     1,    13, 73, 
+  19,   "Tyler Zeller",        2012,     1,    17, 117,
+  20,   "Ed Davis",            2010,     1,    13, 61,
+  21,   "Wayne Ellington",     2009,     1,    28, 115,
+  23,   "Tyler Hansbrough",    2009,     1,    13, 142,
+  24,   "Ty Lawson",           2009,     1,    18, 105,
+  26,   "Brandan Wright",      2007,     1,     8, 37, 
+  28,   "Raymond Felton",      2005,     1,     5, 101,
+  29,   "Sean May",            2005,     1,    13, 77,
+  30,   "Rashad McCants",      2005,     1,    14, 98,
+  31,   "Marvin Williams",     2005,     1,     2, 36,
+) |>
+  dplyr::mutate(team = "UNC")
+
+duke_first_rounders <- tibble::tribble(
+  ~row, ~player,              ~year, ~round, ~pick, ~games, 
+  2,  "Jared McCain",        2024,     1,    16, 36,
+  3,  "Dereck Lively II",    2023,     1,    12, 34,
+  4,  "Dariq Whitehead",     2023,     1,    22, 28,
+  5,  "Paolo Banchero",      2022,     1,     1, 39,
+  6,  "AJ Griffin",          2022,     1,    16, 39,
+  8,  "Wendell Moore Jr.",   2022,     1,    26, 88,
+  9,  "Mark Williams",       2022,     1,    15, 62, 
+  10,  "Jalen Johnson",       2021,     1,    20, 13,
+  14,  "RJ Barrett",          2019,     1,     3, 38,
+  15,  "Cam Reddish",         2019,     1,    10, 36,
+  16,  "Zion Williamson",     2019,     1,     1, 33,
+  17,  "Grayson Allen",       2018,     1,    21, 142, 
+  18,  "Marvin Bagley III",   2018,     1,     2, 33,
+  19,  "Wendell Carter Jr.",  2018,     1,     7, 37,
+  21,  "Harry Giles",         2017,     1,    20, 26,
+  23,  "Luke Kennard",        2017,     1,    12, 73,
+  24,  "Jayson Tatum",        2017,     1,     3, 29,
+  25,  "Brandon Ingram",      2016,     1,     2, 36,
+  26,  "Tyus Jones",          2015,     1,    24, 39,
+  27,  "Jahlil Okafor",       2015,     1,     3, 38,
+  28,  "Justise Winslow",     2015,     1,    10, 39,
+  29,  "Rodney Hood",         2014,     1,    23, 67,
+  30,  "Jabari Parker",       2014,     1,     2, 35,
+  32,  "Mason Plumlee",       2013,     1,    22, 141,
+  33,  "Miles Plumlee",       2012,     1,    26, 135,
+  34,  "Austin Rivers",       2012,     1,    10, 34, 
+  35,  "Kyrie Irving",        2011,     1,     1, 11,
+  37,  "Nolan Smith",         2011,     1,    21, 143,
+  38,  "Gerald Henderson",    2009,     1,    12, 103,
+  40,  "JJ Redick",           2006,     1,    11, 139,
+  41,  "Shelden Williams",    2006,     1,     5, 139,
+  43,  "Luol Deng",           2004,     1,     7, 37
+) |>
+  dplyr::mutate(team = "Duke")
+
+
+
+first_rounders <- dplyr::bind_rows(unc_first_rounders, duke_first_rounders)
+```
+
+### 1st round picks
+
+```{r nba-tbl, warning=FALSE, message=FALSE}
+
+all_picks <- 1:30
+all_years <- 2004:2024
+
+all_combos <- base::expand.grid(year = all_years, pick = all_picks)
+
+first_rounders <- dplyr::bind_rows(unc_first_rounders, duke_first_rounders)
+
+df_marks <- first_rounders |>
+  dplyr::filter(year %in% all_years, pick %in% all_picks) |>
+  dplyr::select(year, pick, team) |>
+  dplyr::mutate(
+    value = dplyr::if_else(team == "UNC", 1L, 0L, missing = NA_integer_)
+  ) |>
+  dplyr::select(-team)
+
+
+result_long <- all_combos |>
+  dplyr::left_join(df_marks, by = c("year", "pick"))
+
+
+result_wide <- result_long |>
+  tidyr::pivot_wider(
+    names_from  = pick,
+    values_from = value,
+    names_prefix = "pick_"
+  ) |>
+  dplyr::arrange(year)
+
+
+
+
+### custom header
+key_info <- tibble::tibble(
+  color = c("#003087", "#56a0d3"),
+  label = c("Duke (32)", "UNC (23)")
+)
+
+key_html <- key_info |>
+  dplyr::mutate(
+    key_item = glue::glue(
+      "<div style='display: flex; align-items: center; margin-right: 15px;'>
+            <span style='display: inline-block; margin-right: 5px; width: 15px; height: 15px; background-color: {color};'></span>
+            <span style='font-size:12px; vertical-align:20%'>{label}</span>
+          </div>"
+    )
+  ) |>
+  dplyr::pull(key_item) |>
+  paste(collapse = ' ')
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/150.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+      <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+        <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>First Round NBA
+        Draft Picks Since 2004
+                <div style='margin-bottom: 5px; display: flex; justify-content: center;
+                align-items: center;'>{key_html}</div>
+      </div>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+    </div>
+    <br>"
+)
+
+
+## table 
+result_wide |>
+  dplyr::rename_with(~ stringr::str_remove(., "^pick_"), .cols = dplyr::starts_with("pick_")) |>
+  dplyr::arrange(-year) |>
+  gt::gt() |>
+  gtUtils::gt_indicator_boxes(key_columns = c("year"),
+                              color_yes = "#56a0d3", color_no = "#003087",
+                              color_na = "#e1e1e1", border_color = "black",
+                              border_width = ".75",
+                              box_width = "14", box_height = "14") |>
+  gtUtils::gt_theme_gtutils() |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>
+        <b>Total first round picks from</b>: 2004 to 2010: UNC (9), Duke (4) |
+        2011 to 2024: Duke (28), UNC (14)<br>
+        <b>Longest drought without first round pick</b>: Duke, two seasons (2007, 2008) |
+        UNC: three seasons (2022 to 2024)<br>
+        First round of NBA draft expanded to 30 picks in 2004, however, the Minnesota Timberwolves forfeited their first round pick in 2004.<br>
+        <hr>Data from Stathead and sports-reference.com, theme via {gtUtils} | Table by Chris at Bless your Chart | June 22, 2025</b>"
+      )
+  ) |>
+  gt::cols_add(
+    `14.5` = "",
+    .after = `14`
+  ) |>
+  gt::cols_label(
+    year = "Year",
+    `14.5` = ""
+  ) |>
+  gtExtras::gt_add_divider(columns = c(year), sides = "right",
+                           color = "black") |>
+  gt::tab_spanner(columns = c(2:15), label =
+                    gt:::md("Lottery Picks")) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(15)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 350
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(12.5),
+      )
+    ),
+    locations = gt::cells_body(
+      columns = c(year)
+    )
+  ) |>
+  gtExtras::gt_highlight_rows(columns = `30`, rows = 21,
+                              fill = "lightpink") |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gtUtils::gt_border_bars_bottom(c("#003087", "#56a0d3", "#BBD9ED")) -> du
+
+gtUtils::gt_save_crop(
+  du,
+  file = "duke_unc_nba.png",
+  whitespace = 50,
+  bg = "#FFFDF5"
+)
+
+du
+```
+
+### 
+
+### 
+
+### 
+
+### 

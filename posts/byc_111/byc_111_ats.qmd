@@ -1,0 +1,80 @@
+---
+title: "111: ATS fun"
+date: "2024-10-08"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+library(rlang)
+
+ats_fun <- readr::read_csv("ats-recs.csv") |> 
+  dplyr::select(-1)
+```
+
+### GT Table
+
+```{r gt-table-ats}
+full_tbl <- ats_fun |>
+  cbbplotR::gt_cbb_teams(team, team) |>
+  dplyr::relocate(record, .before = ats_record) |>
+  dplyr::mutate(favored_count = as.numeric(favored_count)) |>
+  dplyr::group_by(category) |>
+  dplyr::arrange(category, favored_count) |>
+  gt::gt() |>
+  gt::fmt_markdown(team) |>
+  gt::cols_hide(columns = c(ats_pct, category, avg_spread, total_games)) |>
+  gt::cols_align(columns = c(team), align = "left") |>
+  gtExtras::gt_add_divider(columns = c(record), sides = "right") |>
+  gtUtils::gt_theme_savant() |>
+  gtUtils::gt_538_caption(
+    "<hr>Data via {cfbfastR}, logos from ESPN.com, and theme via {gtUtils}<br>
+                          Only games between FBS teams recorded through October 5 games",
+    "Table by Chris (@dadgumboxscores) + Bless your chart"
+  ) |>
+  gtUtils::gt_column_subheaders(
+    record = list(heading = "Overall", subtitle = "FBS only"),
+    ats_record = list(heading = "ATS", subtitle = "Against spread"),
+    favored_count = list(heading = "Favorite", subtitle = "# of games"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::cols_label(team = "") |>
+  gt::data_color(
+    columns = favored_count,
+    direction = c("column"),
+    method = c("numeric"),
+    palette = "Paired",
+    alpha = 0.6
+  ) |>
+  gt::cols_width(favored_count ~ px(10)) |>
+  gt::tab_style(locations = gt::cells_body(columns = c(favored_count)),
+                gt::cell_text(weight = "bold")) |>
+  gt::tab_options(column_labels.border.top.style = "none") |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gtUtils::gt_border_bars_top("black", bar_height = 5) |> 
+  gt::tab_header(
+    title = "2024 FBS: ATS summary",
+    subtitle = gt::md("Teams that are *perfect* and *winless* against the spread.")
+  )
+
+gtUtils::gt_save_crop(full_tbl,
+                      file = "ats_chart.png",
+                      whitespace = 60,
+                      bg = "white")
+
+full_tbl
+
+```
+
+### 

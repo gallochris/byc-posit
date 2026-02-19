@@ -1,0 +1,536 @@
+---
+title: "161: Circle of parity"
+date: "2025-11-16"
+categories:
+  - cfbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+
+# scrape from cfbtxt dot come
+results <- tibble::tribble(
+  ~winner,          ~loser,             ~score,
+  "Notre Dame",     "Navy",             "49-10",
+  "Navy",           "South Florida",    "41-38",
+  "South Florida",  "Florida",          "18-16",
+  "Florida",        "Texas",            "29-21",
+  "Texas",          "Oklahoma",         "23-6",
+  "Oklahoma",       "South Carolina",   "26-7",
+  "South Carolina", "Virginia Tech",    "24-11",
+  "Virginia Tech",  "NC State",         "23-21",
+  "NC State",       "Georgia Tech",     "48-36",
+  "Georgia Tech",   "Wake Forest",      "30-29",
+  "Wake Forest",    "SMU",              "13-12",
+  "SMU",            "Stanford",         "34-10",
+  "Stanford",       "Florida State",    "20-13",
+  "Florida State",  "Alabama",          "31-17",
+  "Alabama",        "LSU",              "20-9",
+  "LSU",            "Clemson",          "17-10",
+  "Clemson",        "Louisville",       "20-19",
+  "Louisville",     "Miami",            "24-21",
+  "Miami",          "Notre Dame",       "27-24"
+)
+
+# make the order
+start <- "Notre Dame"
+order_walk <- character(0)
+curr <- start
+seen <- setNames(logical(0), character(0))
+
+for(i in seq_len(nrow(results))) {
+  order_walk <- c(order_walk, curr)
+  seen[curr] <- TRUE
+  next_team <- results$loser[results$winner == curr]
+  if(length(next_team) == 0) break
+  curr <- next_team
+  if(curr == start) {
+    order_walk <- c(order_walk, curr) 
+    break
+  }
+}
+
+circle_order <- unique(order_walk)
+
+all_teams <- unique(c(results$winner, results$loser))
+if(!setequal(circle_order, all_teams)) {
+  missing <- setdiff(all_teams, circle_order)
+  circle_order <- c(circle_order, missing)
+}
+
+n <- length(circle_order)
+angles <- (seq(0, -2*pi, length.out = n+1)[1:n]) + pi/2  
+circle_positions <- tibble::tibble(
+  team = circle_order,
+  angle = angles,
+  x = cos(angle),
+  y = sin(angle)
+)
+
+edges <- results |>
+  dplyr::left_join(circle_positions, by = c("winner" = "team")) |>
+  dplyr::rename(x1 = x, y1 = y) |>
+  dplyr::left_join(circle_positions, by = c("loser" = "team")) |>
+  dplyr::rename(x2 = x, y2 = y)
+```
+
+### Circle plot
+
+```{r circle-plot, warning=FALSE, message=FALSE}
+
+# Plot: curved arcs (geom_curve) — adjust curvature to taste
+circle_plot <- ggplot2::ggplot() +
+  ggplot2::geom_curve(
+    data = edges,
+    ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
+    curvature = 0.22,
+    arrow = ggplot2::arrow(length = ggplot2::unit(0.15, "cm")),
+    linewidth = 0.8,
+    color = "gray30"
+  ) +
+  cfbplotR::geom_cfb_logos(
+    data = circle_positions,
+    ggplot2::aes(x = x, y = y, team = team),
+    width = 0.10
+  ) +
+  ggplot2::coord_equal() +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::labs(
+    x = "",
+    y = "",
+    caption = "Viz by Chris at Bless your chart  \ndata via collegefootballdata.com  \n Games through November 16, 2025"
+  ) +
+  ggplot2::theme(
+    panel.grid.major = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_blank(),
+    axis.ticks = ggplot2::element_blank(),
+    panel.background = ggplot2::element_rect(fill = "floralwhite", color = NA),
+    plot.background = ggplot2::element_rect(fill = "floralwhite", color = NA),
+    plot.caption = ggplot2::element_text(hjust = 0.5)
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    x = 0,
+    y = 0.15,
+    label = "Any Given Saturday  \n",
+    color = "#333333",
+    size = 9.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    hjust = 0.5
+  ) +
+   ggplot2::annotate(
+    geom = "text",
+    x = 0,
+    y = 0,
+    label = "College Football's  \nCircle of Parity",
+    color = "#333333",
+    size = 7.5,
+    alpha = 0.65,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    hjust = 0.5
+  ) +
+  # --- Notre Dame (49-10) over Navy ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.13,
+    y = 0.9,
+    label = "49-10",
+    fill = "#c99700", # Notre Dame Gold
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Navy (41-38) over South Florida ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.4,
+    y = 0.8,
+    label = "41-38",
+    fill = "#00205B", # Navy Blue
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- South Florida (18-16) over Florida ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.65,
+    y = 0.6,
+    label = "18-16",
+    fill = "#006747", # South Florida Green
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Florida (29-21) over Texas ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.75,
+    y = 0.40,
+    label = "29-21",
+    fill = "#FA4616", # Florida Orange (with Blue being secondary)
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Texas (23-6) over Oklahoma ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.80,
+    y = 0.10,
+    label = "23-6",
+    fill = "#BF5700", # Texas Burnt Orange
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Oklahoma (26-7) over South Carolina ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.78,
+    y = -0.20,
+    label = "26-7",
+    fill = "#841617", # Oklahoma Crimson
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- South Carolina (24-11) over Virginia Tech ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.68,
+    y = -0.50,
+    label = "24-11",
+    fill = "#73000A", # South Carolina Garnet
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Virginia Tech (23-21) over NC State ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.55,
+    y = -0.70,
+    label = "23-21",
+    fill = "#63002C", # Virginia Tech Maroon
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- NC State (48-36) over Georgia Tech ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0.30,
+    y = -0.85,
+    label = "48-36",
+    fill = "#CC0000", # NC State Red
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Georgia Tech (30-29) over Wake Forest ---
+  ggplot2::annotate(
+    geom = "label",
+    x = 0,
+    y = -0.85,
+    label = "30-29  \n(OT)",
+    fill = "#B3A369", # Georgia Tech Gold
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Wake Forest (13-12) over SMU ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.25,
+    y = -0.85,
+    label = "13-12",
+    fill = "#9E7E45", # Wake Forest Gold
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- SMU (34-10) over Stanford ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.55,
+    y = -0.7,
+    label = "34-10",
+    fill = "#0033A0", # SMU Blue
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Stanford (20-13) over Florida State ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.7,
+    y = -0.45,
+    label = "20-13",
+    fill = "#8C1515", # Stanford Cardinal
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Florida State (31-17) over Alabama ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.8,
+    y = -0.2,
+    label = "31-17",
+    fill = "#782F40", # Florida State Garnet
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Alabama (20-9) over LSU ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.8,
+    y = 0.10,
+    label = "20-9",
+    fill = "#820000", # Alabama Crimson
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- LSU (17-10) over Clemson ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.72,
+    y = 0.37,
+    label = "17-10",
+    fill = "#461D7C", # LSU Purple
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Clemson (20-19) over Louisville ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.6,
+    y = 0.65,
+    label = "20-19",
+    fill = "#F66733", # Clemson Orange
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Louisville (24-21) over Miami ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.40,
+    y = 0.8,
+    label = "24-21",
+    fill = "#AD0000", # Louisville Red
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  ) +
+  # --- Miami (27-24) over Notre Dame (Closes the circle) ---
+  ggplot2::annotate(
+    geom = "label",
+    x = -0.15,
+    y = 0.90,
+    label = "27-24",
+    fill = "#F49100", # Miami Orange
+    color = "#333333",
+    size =4,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .3,
+    hjust = 0.5
+  )
+
+ggplot2::ggsave(
+  "circle_plot.png",
+  circle_plot,
+  w = 8.5,
+  h = 8.5,
+  dpi = 600,
+  type = 'cairo'
+)
+
+circle_plot
+
+```
+
+### UNC no tds 
+
+```{r unc-no-td, warning=FALSE, message=FALSE}
+
+unc_bad <- readr::read_csv("unc-bad.csv")
+
+unc <- unc_bad |> 
+  janitor::row_to_names(row_number = 1) |>
+  janitor::clean_names() |>
+  dplyr::mutate(
+    Year = lubridate::year(lubridate::ymd(date)),
+    TD = as.numeric(td),
+    TD_category = ifelse(TD == 0, "0 TDs", "1+ TDs")
+  )
+
+td_counts <- unc |>
+  dplyr::count(TD_category) |>
+  tibble::deframe()
+
+
+unc_plot <- unc |>
+  ggplot2::ggplot(ggplot2::aes(x = as.factor(Year), y = TD, color = TD_category)) +
+  ggplot2::geom_jitter(width = 0.2, height = 0, size = 3.5) +
+  ggplot2::scale_color_manual(
+    values = c("0 TDs" = "#ff6a80", "1+ TDs" = "#56a0d3"),
+    name = ""
+  ) +
+  ggplot2::scale_y_continuous(breaks = seq(0, 11, 1), limits = c(-0.5, 11)) +
+  ggplot2::coord_flip() +
+  ggplot2::annotate(
+    geom = "label",
+    x = "2024",
+    y = 0,
+    label = "L, 12-28\nWake Forest",
+    fill = "#9E7E45",
+    color = "white",  
+    size = 3.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .8, 
+    hjust = 0.5,
+    label.size = 0
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = "2015",
+    y = 0,
+    label = "L, 3-34\nVirginia Tech",
+    fill = "#63002C",
+    color = "white",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .8,
+    hjust = 0.5,
+    label.size = 0
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = "2010",
+    y = 0,
+    label = "L, 0-13\nNC State",
+    fill = "#CC0000",
+    color = "white",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .8,
+    hjust = 0.5,
+    label.size = 0
+  ) +
+  ggplot2::annotate(
+    geom = "label",
+    x = "2012",
+    y = 11,
+    label = "W, 80-20\nOld Dominion",
+    fill = "#56a0d3",
+    color = "white",
+    size = 3.5,
+    fontface = 'bold',
+    family = 'Roboto Condensed',
+    alpha = .8,
+    hjust = 0.5,
+    label.size = 0
+  ) +
+  ggplot2::labs(
+    x = "", 
+    y = "Touchdowns", 
+    title = "<img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png' width='15'/> North Carolina: Games <span style='color: #ff6a80;'>Without</span> a <span style='color: #56a0d3;'>Touchdown</span>",
+    subtitle = "UNC has failed to score a touchdown just three times over its last 202 games or since the start of the 2010 season.",
+    caption = "Viz by Chris at Bless your Chart | Data via sports-reference.com + stathead.com"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_line(color = "gray90"),
+    legend.position = "none",
+    plot.title = ggtext::element_markdown(size = 18, face = "bold", lineheight = 1.2),
+    plot.subtitle = ggtext::element_markdown(size = 11, family = "Roboto Condensed", lineheight = 1.3),
+    plot.caption = ggplot2::element_text(size = 8, hjust = 0.5, color = "gray50")
+  )
+    
+ggplot2::ggsave(
+  "unc-bad.png",
+  unc_plot,
+  w = 10,
+  h = 8.5,
+  dpi = 600,
+  bg = "white",
+  type = 'cairo'
+)
+
+unc_plot
+```

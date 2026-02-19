@@ -1,0 +1,281 @@
+---
+title: "097: CWS Number One Overall Seeds"
+date: "2024-06-20"
+categories:
+  - gtExtras
+  - fmt_icon
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, message = FALSE}
+
+library(cbbplotR)
+# manually make data using wikipedia 
+# this is very time consuming, but did not find an easy way to scrape the data
+# example: https://en.wikipedia.org/wiki/2000_NCAA_Division_I_baseball_tournament#Men's_College_World_Series
+cws_one_seeds <- tibble::tribble(
+  ~year,~team,~reg,~super,~cws,~champ_game,~champions,
+  1999,"Miami FL","check","check","check","check","check",
+  2000,"South Carolina","check","check","circle-xmark","circle-xmark","circle-xmark",
+  2001,"Cal St. Fullerton","check","check","check","circle-xmark","circle-xmark",
+  2002,"Florida St.","check","check","circle-xmark","circle-xmark","circle-xmark",
+  2003,"Florida St.","check","check","circle-xmark","circle-xmark","circle-xmark",
+  2004,"Texas","check","check","check","check","circle-xmark",
+  2005,"Tulane","check","check","check","circle-xmark","circle-xmark",
+  2006,"Clemson","check","check","check","circle-xmark","circle-xmark",
+  2007,"Vanderbilt","check","circle-xmark","circle-xmark","circle-xmark","circle-xmark",
+  2008,"Miami FL","check","check","check","circle-xmark","circle-xmark",
+  2009,"Texas","check","check","check","check","circle-xmark",
+  2010,"Arizona St.","check","check","check","circle-xmark","circle-xmark",
+  2011,"Virginia","check","check","check","circle-xmark","circle-xmark",
+  2012,"Florida","check","check","check","circle-xmark","circle-xmark",
+  2013,"North Carolina","check","check","check","circle-xmark","circle-xmark",
+  2014,"Oregon St.","check","circle-xmark","circle-xmark","circle-xmark","circle-xmark",
+  2015,"UCLA","check","circle-xmark","circle-xmark","circle-xmark","circle-xmark",
+  2016,"Florida","check","check","check","circle-xmark","circle-xmark",
+  2017,"Oregon St.","check","check","check","circle-xmark","circle-xmark",
+  2018,"Florida","check","check","check","circle-xmark","circle-xmark",
+  2019,"UCLA","check","check","circle-xmark","circle-xmark","circle-xmark",
+  2020,"Duke","circle-xmark","circle-xmark","circle-xmark","circle-xmark","circle-xmark", # COVID placeholder
+  2021,"Arkansas","check","check","circle-xmark","circle-xmark","circle-xmark",
+  2022,"Tennessee","check","check","circle-xmark","circle-xmark","circle-xmark",
+  2023,"Wake Forest","check","check","check","circle-xmark","circle-xmark",
+  2024,"Tennessee","check","check","check","check","question",
+) 
+
+
+# add in a trophy for miami 
+# split the data, so we can show it side by side instead of using
+# two_column_layout 
+cws_one_seeds |> 
+  dplyr::mutate(champions = dplyr::if_else(champions == "check", "trophy", "circle-xmark")) |> 
+  dplyr::slice(1:13) -> cws_first
+
+
+cws_one_seeds |> 
+  dplyr::slice(14:26) -> cws_second
+
+# combine the data
+cws_full <- dplyr::bind_cols(cws_first, cws_second)
+```
+
+### Make the GT table with logo and icons
+
+```{r gt-table, message=FALSE, warning=FALSE}
+
+cws_title <- cbbplotR::gt_cbb_logo_title(title = 'Number One Overall Seed in the NCAA College Baseball Tournament Since 1999',
+                                          subtitle = "Shows the NCAA Tournament performance of every college baseball number one overall seed since 1999.<br> 
+                                         The number one overall seed last won the tournament in 1999 and last played for the title in 2009.",
+                                          logo_link = "https://www.ncaa.com/_flysystem/public-s3/2023-07/MCWS%20No%20Date%20Logo.png",
+                                          logo_height = 75)
+
+cws_full |> 
+  cbbplotR::gt_cbb_teams(team...2, team...2) |> 
+  cbbplotR::gt_cbb_teams(team...9, team...9) |> 
+  dplyr::mutate(team...9 = # fix the logo to be for COVID
+                  dplyr::if_else(year...8 == 2020, 
+                                 "<img src='https://a2.espncdn.com/combiner/i?img=%2Fi%2Fespn%2Fmisc_logos%2F500%2Fncaa.png' style='height: 25px; width: auto; vertical-align: -30%;'> COVID",
+                                 team...9)) |>  
+  gt::gt() |> 
+  gt::fmt_markdown(columns = c(team...2, team...9)) |> 
+  gt::cols_label(
+    year...1 = "Year",
+    team...2 = "1 Seed",
+    reg...3 = "Regionals",
+    super...4 = "Supers",
+    cws...5 = "Participant",
+    champ_game...6 = "Runner-Up",
+    champions...7 = "Champions",
+    year...8 = "Year",
+    team...9 = "1 Seed",
+    reg...10 = "Regionals",
+    super...11 = "Supers",
+    cws...12 = "Participant",
+    champ_game...13 = "Runner-Up",
+    champions...14 = "Champions",
+  ) |> 
+  gt::cols_align(align = "left", columns = c(team...2, team...9)) |> 
+  gt::tab_spanner(label = "College World Series", 
+                  columns = c(cws...5, 
+                              champ_game...6,
+                              champions...7)) |> 
+  gt::tab_spanner(label = "College World Series ", 
+                  columns = c(cws...12, 
+                              champ_game...13, 
+                              champions...14)) |> 
+  gt::fmt_icon(
+    columns = c(reg...3),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(reg...10),
+    rows = c(1:8, 10:13),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(super...4),
+    rows = c(1:8, 10:13),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(super...11),
+    rows = c(1:2, 5:8, 10:13),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(cws...5),
+    rows = c(1, 3, 6:8, 10:13),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(cws...12),
+    rows = c(1:2, 5:7, 12:13),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(champ_game...6),
+    rows = c(1, 6, 11),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(champ_game...13),
+    rows = c(13),
+    fill_color = "#056206",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(champions...7),
+    rows = c(1),
+    fill_color = "orange",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(reg...10),
+    rows = c(9),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(super...4),
+    rows = c(9),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(super...11),
+    rows = c(3:4, 9),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(cws...5),
+    rows = c(2, 4:5, 9),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(cws...12),
+    rows = c(3:4, 8:11),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(champ_game...6),
+    rows = c(2:5, 7:10, 12:13),
+    fill_color = "#ff4c4c",
+  ) |> 
+  gt::fmt_icon(
+    columns = c(champions...7),
+    rows = c(2:13),
+    fill_color = "#ff4c4c",
+  ) |>
+  gt::fmt_icon(
+    columns = c(champ_game...13, champions...14),
+    rows = c(1:12),
+    fill_color = "#ff4c4c",
+  ) |>
+  gt::fmt_icon(
+    columns = c(champions...14),
+    rows = c(13),
+    fill_color = "#acacac",
+  ) |>
+  gtExtras::gt_highlight_rows(rows = c(9), fill = "#FFEBEA", 
+                              columns = c(year...8,
+                                          team...9,
+                                          reg...10, 
+                                          super...11,
+                                          cws...12,
+                                          champ_game...13,
+                                          champions...14)) |> 
+  gtExtras::gt_highlight_rows(rows = c(1), fill = "#B2D8B2", 
+                              columns = c(year...1,
+                                          team...2,
+                                          reg...3, 
+                                          super...4,
+                                          cws...5,
+                                          champ_game...6,
+                                          champions...7)) |> 
+  gtExtras::gt_highlight_rows(rows = c(6, 11), fill = "#FFFEE0", 
+                              columns = c(year...1,
+                                          team...2,
+                                          reg...3, 
+                                          super...4,
+                                          cws...5,
+                                          champ_game...6)) |> 
+  gtExtras::gt_highlight_rows(rows = c(13), fill = "#FFFEE0", 
+                              columns = c(year...8,
+                                          team...9,
+                                          reg...10, 
+                                          super...11,
+                                          cws...12,
+                                          champ_game...13)) |> 
+  gtExtras::gt_add_divider(columns = c(year...8), 
+                           sides = "left", color = "black") |> 
+  gtExtras::gt_add_divider(columns = c(cws...5, cws...12), 
+                           sides = "left", style = "dotted", color = "#acacac") |> 
+  gt::tab_header(title = gt::html(cws_title)) |>
+  gt::tab_source_note(source_note = gt::html("<hr>
+                                       Data from wikipedia.com | Theme and logos from cbbplotR<br>
+                                       NCAA Tournament includes the following rounds: Regionals, Super Regionals, College World Series pool play, CWS three-game Championship Series<br>
+                                       Check mark means the team advanced in a given round, an `x` indicates the team was eliminated before reaching that round.
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | June 20, 2024</b>")) |> 
+  cbbplotR::gt_theme_savant() |> 
+  gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) |> 
+  gt::tab_options(
+    heading.align = "left",
+  ) |> 
+  gt::tab_style(
+    locations = gt::cells_row_groups(groups = gt::everything()),
+    style = list(
+      gt::cell_text(
+        align = "center"
+      ),
+      gt::cell_borders(sides = c("top", "right"), color = "black", weight = gt::px(2))
+    )) |> 
+     gt::tab_style(
+      style = list(
+        gt::cell_text(color = "#333333", size = gt::px(12), weight = "bold"),
+        gt::cell_borders(sides = "bottom", color = "black", weight = gt::px(2))
+      ),
+      locations = list(
+        gt::cells_column_spanners(
+          spanners = gt::everything()
+        )
+      )
+    ) -> cws_num_one
+
+
+
+gtExtras::gtsave_extra(cws_num_one,
+                       filename = "cws_num_one_tbl.png",
+                       vheight = 650,
+                       vwidth = 1050)
+
+cws_num_one
+
+```

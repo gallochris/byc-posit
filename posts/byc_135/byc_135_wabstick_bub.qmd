@@ -1,0 +1,335 @@
+---
+title: "135: WAB and Quads"
+date: "2025-03-15"
+categories:
+  - labeller
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+# this data is used in the evidence app, saving as a csv for static generation 
+# https://github.com/gallochris/evdev-byc/blob/main/data/college-basketball/wab_logs.R
+
+team_sched_by_wab <- readr::read_csv("wabstick.csv")
+
+bub_teams <- c("North Carolina", "Indiana", "Texas", "Xavier", "Boise St.", "UC Irvine") 
+
+wabstick <- team_sched_by_wab |> 
+  dplyr::group_by(team) |> 
+  dplyr::mutate(
+    total_wab = round(sum(wab_result), 2),
+    wins = sum(result == "W"),
+    loss = sum(result == "L"),
+    q1_wins = sum(result == "W" & quad == "Q1"),
+    q1_loss = sum(result == "L" & quad == "Q1"),
+    q2_wins = sum(result == "W" & quad == "Q2"),
+    q2_loss = sum(result == "L" & quad == "Q2"),
+    q3_wins = sum(result == "W" & quad == "Q3"),
+    q3_loss = sum(result == "L" & quad == "Q3"),
+    q4_wins = sum(result == "W" & quad == "Q4"),
+    q4_loss = sum(result == "L" & quad == "Q4")
+  ) |>  
+  dplyr::ungroup() |>  
+# bubble teams
+  dplyr::filter(team %in% bub_teams) |>
+  dplyr::group_by(team) |>
+  dplyr::summarize(
+    total_wab = dplyr::first(total_wab),
+    wins = dplyr::first(wins),
+    loss = dplyr::first(loss),
+    q1_wins = dplyr::first(q1_wins),
+    q1_loss = dplyr::first(q1_loss),
+    q2_wins = dplyr::first(q2_wins),
+    q2_loss = dplyr::first(q2_loss),
+    q3_wins = dplyr::first(q3_wins),
+    q3_loss = dplyr::first(q3_loss),
+    q4_wins = dplyr::first(q4_wins),
+    q4_loss = dplyr::first(q4_loss),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(desc(total_wab)) |>
+  dplyr::mutate(
+    safe_team_id = paste0("team", dplyr::row_number())
+  ) |>
+  dplyr::right_join(
+    team_sched_by_wab |> 
+      dplyr::filter(team %in% bub_teams),
+    by = "team"
+  ) |>
+  dplyr::mutate(
+    facet_label = safe_team_id,
+    team_label = paste0(
+      team, ": <b>", wins, "-", loss, "</b> | ",
+      "<span style='color:", ifelse(total_wab > 0, "#1a9850", "#c51b7d"), ";'>",
+      sprintf("%.2f", total_wab), " WAB</span>"
+    ),
+    quad_records = paste0(
+      "<span style='font-size:7.5pt;'>Q1: ", q1_wins, "-", q1_loss,
+      " | Q2: ", q2_wins, "-", q2_loss,
+      " | Q3: ", q3_wins, "-", q3_loss,
+      " | Q4: ", q4_wins, "-", q4_loss, "</span>"
+    )
+  )
+
+
+#----
+net_wab_data <- readr::read_csv("net_wab.csv")
+```
+
+### WABStick
+
+```{r wabstick-plot, warning=FALSE, message=FALSE}
+
+wabstick |> 
+  ggplot2::ggplot(ggplot2::aes(
+    x = wab_opp, 
+    y = wab, 
+    color = factor(wab > 0)
+  )) +
+  ggplot2::geom_segment(ggplot2::aes(xend = wab_opp, yend = 0), 
+                        linewidth = 0.75, alpha = 0.6) +
+  ggplot2::geom_point(ggplot2::aes(shape = quad), 
+                      size = 1.25, fill = "white", 
+                      stroke = 0.8) +
+  ggplot2::scale_shape_manual(
+    name = "Quadrant",
+    values = c("Q1" = 21, "Q2" = 22, 
+               "Q3" = 23, "Q4" = 24)
+  ) +
+  ggplot2::scale_color_manual(
+    values = c("#c51b7d", "#1a9850"),
+    guide = "none"
+  ) +  
+  ggplot2::scale_x_reverse(
+    limits = c(1, 0), 
+    breaks = seq(1, 0, by = -0.25), 
+    labels = scales::label_percent(accuracy = 1),
+    expand = c(0.02, 0.02)
+  ) +  
+  ggplot2::scale_y_continuous(
+    limits = c(-1, 1), 
+    breaks = seq(-1, 1, by = 0.25),
+    labels = scales::label_number(accuracy = 0.01),  # Smaller labels
+    expand = c(0.02, 0.02)
+  ) + 
+  ggplot2::facet_wrap(
+    ~ facet_label,
+    nrow = 3, 
+    ncol = 2,
+    labeller = ggplot2::labeller(facet_label = function(x) {
+
+      team_labels <- wabstick |>  
+        dplyr::distinct(facet_label, team_label, quad_records) |>
+        dplyr::mutate(quad_team_label = 
+                        paste0(team_label, "<br>", 
+                               quad_records)) |> 
+        dplyr::pull(quad_team_label, name = facet_label)
+      
+      return(team_labels[x])
+    })
+  ) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.6) +  
+  ggplot2::geom_vline(xintercept = 0.50, linetype = "dashed", linewidth = 0.6) +  
+  ggplot2::labs(
+    title = "WABStick  \nRésumé Comparison of Bubble Teams",
+    x = "<--- Harder Games | Easier Games --->",
+    y = "WAB",
+    caption = "Data via barttorvik.com | Viz by Chris at Bless your Chart & Ryan at Fifth Factor"
+  ) +
+  hrbrthemes::theme_ipsum_rc() +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(
+      hjust = 0.5,
+      size = 16,
+      family = "Roboto Condensed"
+    ),
+    strip.text = ggtext::element_markdown(
+      size = 8.5, 
+      face = "bold", 
+    ), 
+    legend.position = "top",
+    legend.title = ggplot2::element_text(size = 8.5),
+    legend.text = ggplot2::element_text(size = 8),
+    legend.key.size = ggplot2::unit(0.8, "lines"),
+    axis.title.x = ggplot2::element_text(size = 8.5, hjust = 0.5),
+    axis.title.y = ggplot2::element_text(size = 8.5),
+    axis.text.x = ggplot2::element_text(size = 6.5, 
+                                        family = "Roboto Condensed"),
+    axis.text.y = ggplot2::element_text(size = 6.5, family = "Roboto Condensed"),
+    plot.caption = ggplot2::element_text(size = 7, face = "plain"),
+    panel.grid.major = ggplot2::element_blank(),  
+    panel.grid.minor = ggplot2::element_line(color = "gray90", size = 0.25),
+    panel.spacing = ggplot2::unit(1, "lines")
+  ) -> wb_plot
+
+
+ggplot2::ggsave(
+  "wabstick_plot.png",
+  wb_plot,
+  h = 9.5,
+  w = 7.5,
+  bg = "white",
+  dpi = 600,
+  type = 'cairo'
+)
+
+wb_plot 
+
+```
+
+### 
+
+### WAB by Quadrant
+
+```{r wab-quad }
+
+nw_tbl <- net_wab_data |> 
+  dplyr::filter(team %in% bub_teams) |> 
+  dplyr::mutate(
+    record = paste0(wins, "-", losses),
+    q1_record = paste0(q1_win, "-", q1_loss),
+    q2_record = paste0(q2_win, "-", q2_loss),
+    q3_record = paste0(q3_win, "-", q3_loss),
+    q4_record = paste0(q4_win, "-", q4_loss)
+  ) |> 
+  dplyr::select(
+    team, total, record, quad_1, q1_record, 
+    quad_2, q2_record, 
+    quad_3, q3_record, 
+    quad_4, q4_record, 
+  ) 
+
+custom_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Bubble Teams: WAB by Quadrant</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the WAB earned by games played in each quadrant.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+
+net_tbl <- nw_tbl |> 
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::arrange(-total) |> 
+  gt::gt() |>
+  gtUtils::gt_theme_gtutils() |> 
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gtExtras::gt_merge_stack(
+    col1 = total,
+    col2 = record,
+        palette = c("black", "#333333")
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = quad_1,
+    col2 = q1_record,
+    palette = c("black", "#333333")
+  ) |> 
+gtExtras::gt_merge_stack(
+  col1 = quad_2,
+  col2 = q2_record,
+  palette = c("black", "#333333")
+) |> 
+gtExtras::gt_merge_stack(
+  col1 = quad_3,
+  col2 = q3_record,
+  palette = c("black", "#333333")
+) |> 
+gtExtras::gt_merge_stack(
+  col1 = quad_4,
+  col2 = q4_record,
+  palette = c("black", "#333333")
+) |> 
+  gtUtils::gt_column_subheaders(
+    total = list(heading = "WAB", subtitle = "Overall Record"),
+    quad_1 = list(heading = "Quad 1", subtitle = "WAB + Record"),
+    quad_2 = list(heading = "Quad 2", subtitle = "WAB + Record"),
+    quad_3 = list(heading = "Quad 3", subtitle = "WAB + Record"),
+    quad_4 = list(heading = "Quad 4", subtitle = "WAB + Record"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+    gt::cols_label(
+    team = ""
+  ) |> 
+    gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gtExtras::gt_add_divider(
+    columns = c(team),
+    sides = "right",
+    color = "black"
+  ) |> 
+  gt::data_color(
+    columns = c(total, quad_1, quad_2, quad_3, quad_4),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", 
+                "#ffffbf", "#a6d96a", 
+                "#1a9641"),
+    alpha = 0.6
+  ) |> 
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>Data via barttorvik.com | theme via {gtUtils} <br>
+        Quadrants are defined by the NCAA's NET rankings. WAB determined using data from barttorvik.com<br>
+        <hr><b>Table by Chris at Bless your chart | data through March 15 games</b>"
+      )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::tab_options(table.width = gt::px(675)) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5),
+      weight = 250
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(font = gt::google_font("Signika Negative"),
+                    size = gt::px(14)
+      )
+    ),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  )
+
+
+gtUtils::gt_save_crop(
+  net_tbl,
+  file = "net_tbl.png",
+  whitespace = 40,
+  bg = "#FFFDF5"
+)
+
+net_tbl
+
+```

@@ -1,0 +1,419 @@
+---
+title: "105: Defense"
+date: "2024-08-27"
+categories:
+  - gt
+  - nanoplots
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Scrape cfbfastR for schedules and matrix
+
+```{r load-data, message = FALSE, warning=FALSE}
+library(cbbplotR)
+# cfbfastR::cfbd_team_info(year = 2024) |>
+#  dplyr::rename(team = school) -> cfb_teams
+
+# full_teams <- cfb_teams |> 
+#  dplyr::pull(team)
+
+# cfbfastR function to pull schedules for all teams
+# sched <- function(team) {
+#  result_list <- purrr::map(team, function(team) {
+#    cfbfastR::cfbd_game_info(year = 2024,
+#                             season_type = "regular",
+#                             team = team) |>
+#      dplyr::select(date = start_date, week, neutral_site, conference, conference_game, home_team, away_team) |>
+#      tidyr::pivot_longer(
+#        cols = c(home_team, away_team),
+#        names_to = "home_away",
+#        values_to = "opponent"
+#      ) |>
+#      dplyr::filter(opponent != team) |>
+#      dplyr::mutate(team = team) |>
+#      dplyr::mutate(home_away = dplyr::case_match(home_away, "away_team" ~ "home", "home_team" ~ "away")) |>
+#      dplyr::mutate(home_away = dplyr::if_else(neutral_site == TRUE, "neutral", home_away)) |>
+#      dplyr::select(date, team, week, conference_game, home_away, opponent)
+    
+#  })
+  
+ # combined_result <- dplyr::bind_rows(result_list)
+  
+#  return(combined_result)
+# }
+
+# loop through teams to fetch schedules 
+# combined_result <- sched_win_totals(full_teams)
+
+# cfbfastR::cfbd_team_info(year = 2024) |>
+#     dplyr::select(opponent = school, opp_conf = conference) -> opp_confs
+
+# join opponent conferences 
+# full_sched <- combined_result |> 
+#  dplyr::left_join(opp_confs, by = "opponent")
+
+# write.csv(full_sched, "2024_sched.csv")
+
+sched <- readr::read_csv("2024_sched.csv")
+
+sched |> 
+    dplyr::mutate(conf = dplyr::case_match(conf,
+                                           "American Athletic" ~ "American",
+                                           "Pac-12" ~ "Pac-2",
+                                           "Conference USA" ~ "CUSA",
+                                           "FBS Independents" ~ "INDIE",
+                                           "Mid-American" ~ "MAC",
+                                           "Mountain West" ~ "MW",
+                                          conf ~ conf  )) |> 
+    dplyr::mutate(opp_conf = dplyr::case_match(opp_conf,
+                                           "American Athletic" ~ "American",
+                                           "Pac-12" ~ "Pac-2",
+                                           "Conference USA" ~ "CUSA",
+                                           "FBS Independents" ~ "INDIE",
+                                           "Mid-American" ~ "MAC",
+                                           "Mountain West" ~ "MW",
+                                           opp_conf ~ opp_conf  )) |> 
+    dplyr::group_by(conf, opp_conf) |> 
+    dplyr::summarise(
+        opp = dplyr::n(),
+        .groups = "drop"  # Explicitly drop the grouping
+    ) |> 
+    tidyr::pivot_wider(
+        names_from = opp_conf,
+        values_from = opp,
+        values_fill = 0
+    ) |> 
+    dplyr::mutate(
+        dplyr::across(
+            -conf,
+            ~ifelse(dplyr::cur_column() == conf, "-", as.character(.))
+        )
+    ) |> 
+    dplyr::select(-`NA`)-> conferences
+
+```
+
+### GT Table for conferences
+
+```{r gt-table-conf-matrix, message=FALSE, warning=FALSE}
+
+conferences |> 
+    gt::gt() |> 
+    gtExtras::gt_theme_dot_matrix() |> 
+    gt::tab_options (
+        source_notes.font.size = gt::px(10),
+        row.striping.background_color = '#EEEEEE',
+        table.font.size = gt::px(12),
+        column_labels.text_transform = 'uppercase'
+    ) |>
+    gt::tab_style(style = list(gt::cell_borders(
+        sides = c("left"),
+        color = "#eeeeee",
+        weight = gt::px(2)
+    )),
+    locations = list(gt::cells_body(
+        columns = gt::everything()
+    ))) |> 
+  gt::cols_label(
+    conf = ""
+  ) |> 
+  gt::tab_header(title = gt::html("<b>Games Scheduled Between FBS Conferences in 2024</b><hr>")) |> 
+  gt::tab_source_note(source_note = gt::html("Data via cfbfastR<br>
+  <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | August 28, 2024</b>"))-> conf_tbl 
+
+gtExtras::gtsave_extra(conf_tbl, 
+                       filename = "conf_tbl.png",
+                       vwidth = 650,
+                       expand = 10)
+  
+conf_tbl
+
+```
+
+### Historical SP+ data for UNC defense
+
+```{r sp-data, message=FALSE, warning=FALSE}
+
+total_def <- readr::read_csv("sp_historical.csv") |> 
+  dplyr::filter(team == "North Carolina") |> 
+  dplyr::filter(year > 1987) |> 
+  dplyr::mutate(def_pctile =  readr::parse_number(def_pctile)) |> 
+  dplyr::select(year, team, `Def. SP+`, def_pctile, def_rk = rank...11)
+
+# now just do 2023 - by scraping 2023 SP+ 
+  data <- readr::read_csv("2023-sp.csv")
+
+# function to clean table and correct names 
+# this is sort of sloppy and anti-dry (oh well)
+clean_sp_table <- function(sp) {
+  sp |> 
+    dplyr::mutate(team = gsub("[^a-zA-Z]", "", team),
+                  sp_rating = `SP+`,
+                  sp_off_rating = stringr::str_extract(`Off. SP+`, "\\d+\\.?\\d*"),
+                  sp_off_rk = stringr::str_extract(`Off. SP+`,
+                                                         pattern = "(?<=\\().*(?=\\))"),
+                  sp_def_rk = stringr::str_extract(`Def. SP+`,
+                                                         pattern = "(?<=\\().*(?=\\))"),
+                  sp_def_rating = stringr::str_extract(`Def. SP+`, "\\d+\\.?\\d*"),
+                  sp_st_rk = stringr::str_extract(`ST SP+`,
+                                                    pattern = "(?<=\\().*(?=\\))"),
+                  sp_st_rating = stringr::str_extract(`ST SP+`, "\\d+\\.?\\d*"),
+    ) |> 
+    dplyr::mutate_at(c('sp_rating', 'sp_off_rating', 'sp_off_rk', 'sp_def_rk', 'sp_def_rating', 
+                       'sp_st_rk', 'sp_st_rating'), as.numeric) |> 
+    dplyr::mutate(
+      # change names to be abbreviated
+      team = dplyr::case_match(team,
+                               'NCarolina' ~ 'North Carolina',
+                               'OhioSt' ~ 'Ohio State',
+                               'TexasAM' ~ 'Texas A&M',
+                               'PennSt' ~ 'Penn State',
+                               'IowaSt' ~ 'Iowa State',
+                               'NotreDame' ~ 'Notre Dame',
+                               'ArizonaSt' ~ 'Arizona State',
+                               'OleMiss' ~ 'Ole Miss',
+                               'MichiganSt' ~ 'Michigan State',
+                               'NCSt' ~ 'NC State',
+                               'MissSt' ~ 'Mississippi State',
+                               'OklahomaSt' ~ 'Oklahoma State',
+                               'KansasSt' ~ 'Kansas State',
+                               'CoastalCaro' ~ 'Coastal Carolina',
+                               'WakeForest' ~ 'Wake Forest',
+                               'SanDiegoSt' ~ 'San Diego State',
+                               'AppSt' ~ 'Appalachian State',
+                               'BoiseSt' ~ 'Boise State',
+                               'FloridaSt' ~ 'Florida State',
+                               'FresnoSt' ~ 'Fresno State',
+                               'VaTech' ~ 'Virginia Tech',
+                               "WVirginia" ~ "West Virginia",
+                               "TexasTech" ~ "Texas Tech",
+                               "BostonColl" ~ "Boston College",
+                               "JMU" ~ "James Madison",
+                               "WKU" ~ "Western Kentucky",
+                               "ECU" ~ "East Carolina", 
+                               "OregonSt" ~ "Oregon State",
+                               "WashSt" ~ "Washington State",
+                               "AirForce" ~ "Air Force",
+                               "ODU" ~ "Old Dominion", 
+                               'GaTech' ~ 'Georgia Tech',
+                               "SCarolina" ~ "South Carolina", 
+                               "SanJoseSt" ~ "San Jose State",
+                               "ColoradoSt" ~ "Colorado State",
+                               "FAU" ~ "Florida Atlantic", 
+                               "MTSU" ~ "Middle Tennessee",
+                               "EMU" ~ "Eastern Michigan",
+                               "MiamiOH" ~ "Miami (OH)",
+                               "GeorgiaSt" ~ "Georgia State",
+                               "UtahSt" ~ "Utah State",
+                               "KentSt" ~ "Kent State",
+                               "BallSt" ~ "Ball State",
+                               "SAlabama" ~ "South Alabama",
+                               "NIU" ~ "Northern Illinois",
+                               "USF" ~ "South Florida", 
+                               "LaTech" ~ "Louisiana Tech",
+                               "NTexas" ~ "North Texas",  
+                               "GaSouthern" ~ "Georgia Southern",
+                               "NewMexico" ~ "New Mexico",   
+                               "SoMiss" ~ "Southern Mississippi",
+                               "TexasSt" ~ "Texas State",
+                               "ArkansasSt" ~ "Arkansas State",   
+                               "CMU" ~ "Central Michigan",
+                               "ULM" ~ "Louisiana Monroe",
+                               "BGSU" ~ "Bowling Green",
+                               "WMU" ~ "Western Michigan",
+                               "NMSU" ~ "New Mexico State",
+                               "ULMonroe" ~ "Louisiana Monroe",
+                               "Massachusetts" ~ "UMass",
+                               "FIU" ~ "Florida International",
+                               "KennesawSt" ~ "Kennesaw State",
+                               "SamHouston" ~ "Sam Houston State",
+                               "SJSU" ~ "San Jose State",
+                               "SDSU" ~ "San Diego State",
+                               "JvilleSt" ~ "Jacksonville State",
+                               team ~ team
+      )
+    ) |> 
+    dplyr::select(team_name = team, sp_rating, sp_off_rk, sp_off_rating, sp_def_rk, 
+                  sp_def_rating, sp_st_rk, sp_st_rating) |> 
+    dplyr::arrange(-sp_rating) |> 
+    dplyr::mutate(sp_rk = dplyr::row_number()) |> 
+    dplyr::relocate(sp_rk, .before = team_name)
+}
+
+sp <- clean_sp_table(sp = data)
+
+unc_2023 <- sp |> 
+  dplyr::mutate(def_pctile = dplyr::percent_rank(sp_def_rating) * 100,
+                year = 2023) |> 
+  dplyr::filter(team_name == "North Carolina") |> 
+  dplyr::select(year, team = team_name, `Def. SP+` = sp_def_rating, def_pctile, def_rk = sp_def_rk)
+
+unc_defense <- total_def |> 
+  dplyr::bind_rows(unc_2023) |> 
+  dplyr::mutate(
+    coach = dplyr::case_when(
+      year %in% c(1988:1997) ~ "Mack Brown 1.0",
+      year %in% c(1998:2000) ~ "Carl Torbush",
+      year %in% c(2001:2006) ~ "John Bunting",
+      year %in% c(2007:2010) ~ "Butch Davis",
+      year == 2011 ~ "Everett Withers",
+      year %in% c(2012:2018) ~ "Larry Fedora",
+      year %in% c(2019:2023) ~ "Mack Brown 2.0"
+    )
+  ) |> 
+  dplyr::group_by(coach) |> 
+  dplyr::summarise(
+    avg_rtg = mean(`Def. SP+`),
+    avg_pct = mean(def_pctile),
+    sum_data = list(def_pctile),
+  ) |> 
+  dplyr::mutate(
+    record = dplyr::case_when(
+      coach == "Mack Brown 1.0" ~ "69-46",
+      coach == "Carl Torbush" ~ "17-18",
+      coach == "John Bunting" ~ "27-45",
+      coach == "Butch Davis" ~ "28-23",
+      coach == "Everett Withers" ~ "7-6",
+      coach == "Larry Fedora" ~ "45-43",
+      coach == "Mack Brown 2.0" ~ "38-27",
+  ),
+  win_pct =  dplyr::case_when(
+      coach == "Mack Brown 1.0" ~ .600,
+      coach == "Carl Torbush" ~ .486,
+      coach == "John Bunting" ~ .375,
+      coach == "Butch Davis" ~ .549,
+      coach == "Everett Withers" ~ .539,
+      coach == "Larry Fedora" ~ .511,
+      coach == "Mack Brown 2.0" ~ .585,
+  ),
+    rank =  dplyr::case_when(
+      coach == "Mack Brown 1.0" ~ 1,
+      coach == "Carl Torbush" ~ 2,
+      coach == "John Bunting" ~ 3,
+      coach == "Butch Davis" ~ 4,
+      coach == "Everett Withers" ~ 5,
+      coach == "Larry Fedora" ~ 6,
+      coach == "Mack Brown 2.0" ~ 8,
+  ),
+  tenure =  dplyr::case_when(
+      coach == "Mack Brown 1.0" ~ "1988-1997",
+      coach == "Carl Torbush" ~ "1998-2000",
+      coach == "John Bunting" ~ "2001-2006",
+      coach == "Butch Davis" ~ "2007-2010",
+      coach == "Everett Withers" ~ "2011",
+      coach == "Larry Fedora" ~ "2012-2018",
+      coach == "Mack Brown 2.0" ~ "2019-Present",
+  )
+  ) |> 
+  dplyr::arrange(-rank) |> 
+  dplyr::mutate(win_pct = sprintf("%.3f", win_pct))
+
+```
+
+### GT Table for UNC defenses with custom header
+
+```{r gt-tbl}
+
+# prepare the table by grabbing the widest range and slimmest range 
+
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>North Carolina defense under each coach since 1988</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the defensive performance using SP+ ratings and percentiles since the 1988 season.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png' 
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+unc_defense |> 
+    dplyr::relocate(rank, .before = coach) |> 
+  dplyr::relocate(record, .before = avg_rtg) |>
+  dplyr::relocate(win_pct, .before = avg_rtg) |> 
+    gt::gt() |> 
+  gt::cols_hide(rank) |> 
+    gtExtras::gt_merge_stack(
+    col1 = coach,
+    col2 = tenure,
+    palette = c("black", "#848484")
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = record,
+    col2 = win_pct,
+    palette = c("black", "#848484")
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(coach), 
+                           sides = "right", color = "black") |> 
+  gt::cols_label(
+    coach = "Coach",
+    record = "Overall Record",
+    avg_rtg = "Rating",
+    avg_pct = "Percentile",
+    sum_data = "",
+  ) |> 
+  gt::tab_spanner(columns = c(avg_rtg, avg_pct, sum_data),
+                  label = gt::html("SP+ Defense<br>Averages over tenure")) |>
+   gt::cols_nanoplot(
+        columns = sum_data,
+        reference_line = 70,
+        autohide = TRUE,
+        plot_type = "line",
+        new_col_label = "Performance",
+        options = gt::nanoplot_options(
+            data_area_fill_color = "#eabfff",
+            reference_line_color = "#333333",
+            show_data_area = TRUE,
+            show_data_points = FALSE
+        )
+    ) |> 
+  gt::fmt_number(columns = c(avg_rtg, avg_pct), decimals = 1) |> 
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(source_note = gt::html("<hr>
+                                       Data from Bill Connelly's SP+ system | Theme from cbbplotR and logos from ESPN.com<br>
+                                       Shows the average <b>defensive</b> SP+ rating and percentile over the coaching tenure.<br>                                       The <b>lower</b> average SP+ rating, the <b>better</b> the defense.<br>
+                                       The dotted line is the <b>70th percentile</b> and the <b>higher</b> the percentile, the <b>better</b> the defense.<br>
+                                       <hr>
+                                       <b>Table by Chris (@dadgumboxscores) + Bless your chart | August 28, 2024</b>")) |> 
+  cbbplotR::gt_theme_savant() |> 
+   gt::tab_style(
+    style = gt::cell_borders(sides = "top", color = 'black', weight = gt::px(1.5), style = 'solid'),
+    locations = gt::cells_body(
+      rows = gt::everything()
+    )
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(color = "#333333", size = gt::px(12), weight = "bold"),
+      gt::cell_borders(sides = "bottom", color = "black", weight = gt::px(2))
+    ),
+    locations = list(
+      gt::cells_column_spanners(
+        spanners = gt::everything()
+      )
+    )
+  ) |> 
+    gt::tab_options(
+    heading.align = "center",
+  ) -> unc_def_tbl
+
+gtExtras::gtsave_extra(unc_def_tbl, 
+                       filename = "unc_def_tbl.png",
+                       vwidth = 750,
+                       expand = 10)
+  
+unc_def_tbl
+```

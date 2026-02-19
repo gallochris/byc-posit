@@ -1,0 +1,13 @@
+---
+title: "code for all posts"
+listing:
+  contents: posts
+  fields: [date, title]
+  sort: "date desc"
+  type: table
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: false
+---

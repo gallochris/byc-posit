@@ -1,0 +1,319 @@
+---
+title: "137: Sweet 16"
+date: "2025-03-26"
+categories:
+  - gt
+  - gt_indicator_boxes
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+options(chromote.headless = "new")
+
+# scrape data manually 
+# https://www.ncaa.com/news/basketball-men/article/2024-10-14/kansas-alabama-uconn-lead-mens-basketball-ap-preseason-poll
+
+# rankings_pivoted <- rankings |> 
+#  dplyr::mutate(
+#    `Sweet 16` = ifelse(Season_Finish == "Sweet 16", 1, 0),
+#    `Round of 32` = ifelse(Season_Finish %in% c("Sweet 16", "Round of 32"), 1, 0),
+#    `Round of 64` = ifelse(Season_Finish %in% c("Sweet 16", "Round of 32", "Round of 64"), 1, 0),
+#    `First Four` = ifelse(Season_Finish == "First Four", 1, 0),
+#    `Missed Tournament` = ifelse(Season_Finish == "Missed Tournament", 1, 0)
+#  ) |> 
+#  dplyr::select(Rank, Team, `Sweet 16`, `Round of 32`, `Round of 64`, `First Four`, `Missed Tournament`)
+
+# load via csv for easier handling in quarto 
+rpivot <- readr::read_csv("rpivot.csv")
+
+# NCAAT shooting data with assist from cobrastats 
+ncaatg <- readr::read_csv("ncaat-shooting.csv")
+
+ncaalog <- ncaatg |> 
+  dplyr::mutate(round = dplyr::case_match(round,
+                                          "0. FIRST FOUR" ~ "First4",
+                                          "1. ROUND OF 64" ~ "R64",
+                                          "2. ROUND OF 32" ~ "R32",
+                                          "3. SWEET SIXTEEN" ~ "S16",
+                                          "4. ELITE EIGHT" ~ "E8",
+                                          "5. FINAL FOUR" ~ "Final4",
+                                          "6. CHAMPIONSHIP" ~ "F2"
+  )) |> 
+  dplyr::group_by(year, round) |> 
+  dplyr::summarise(
+    made_3 = sum(tpm),
+    attempt_3 = sum(tpa),
+    pct_3 = made_3 / attempt_3
+  ) |> 
+  dplyr::arrange(year)
+
+ncaalog_wide <- ncaalog |> 
+  dplyr::filter(year > 2010) |> 
+  dplyr::mutate(made_attempt = paste0(made_3, "-", attempt_3)) |> 
+  dplyr::select(year, round, made_attempt, pct_3) |> 
+  tidyr::pivot_wider(
+    names_from = round, 
+    values_from = c(made_attempt, pct_3),
+    names_glue = "{round}_{.value}"
+  ) |> 
+  dplyr::select(
+    year, 
+    First4_made_attempt, First4_pct_3,
+    R64_made_attempt, R64_pct_3,
+    R32_made_attempt, R32_pct_3,
+    S16_made_attempt, S16_pct_3,
+    E8_made_attempt, E8_pct_3,
+    Final4_made_attempt, Final4_pct_3,
+    F2_made_attempt, F2_pct_3
+  ) |> 
+  dplyr::ungroup()
+```
+
+### Table for AP Poll 
+
+```{r ap-poll, warning=FALSE, message=FALSE}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>NCAA Tournament Performance of the AP Preseason Top-25 Teams</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>11 teams ranked in the 2024-25 preseason AP Top-25 poll are still playing in the 2025 NCAA Tournament.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+ap_poll_tbl <- rpivot |>
+  cbbplotR::gt_cbb_teams(Team, Team, logo_height = 20) |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = Team) |>
+  gtUtils::gt_theme_gtutils() |>
+  gtUtils::gt_indicator_boxes(
+    key_columns = c("Rank", "Team"),
+    color_yes = "lightgreen",
+    color_no = "lightpink",
+    color_na = "#e1e1e1",
+    border_color = "black",
+    border_width = 0.5,
+    box_width = 16,
+    box_height = 16
+  ) |>
+  gt::cols_align(Team, align = "left") |>
+  gt::cols_align(Rank, align = "right") |>
+  gtUtils::gt_column_subheaders(
+    Rank = list(heading = "Rank", subtitle = "AP Top-25"),
+    `Missed Tournament` = list(heading = "Missed", subtitle = "NCAA Tournament"),
+    `First Four` = list(heading = "First Four", subtitle = "Round of 68"),
+    `Round of 64` = list(heading = "1st Round", subtitle = "Round of 64"),
+    `Round of 32` = list(heading = "2nd Round", subtitle = "Round of 32"),
+    `Sweet 16` = list(heading = "Sweet 16", subtitle = "2nd Weekend"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>11 of the top-25 teams are still playing and advanced to the Sweet 16.<br>Seven of the top-25 teams advanced to the Round of 32.<br>Four teams were knocked out in the 1st Round or First Four.<br>Three teams missed the tournament entirely.<br><hr><b>Table by Chris at Bless your Chart | data NCAA.com | March 26, 2025</b>"
+    )
+  ) |>
+  
+  gtExtras::gt_add_divider(
+    columns = c(`Round of 64`),
+    sides = "right",
+    color = "black"
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gt::tab_options(table.width = gt::px(575)) |>
+  gt::tab_style(
+    locations = gt::cells_row_groups(),
+    style = list(
+      gt::cell_text(
+        font = gt::google_font("Signika Negative"),
+        weight = 850,
+        size = gt::px(11.5),
+        color = "black",
+        align = "left"
+      ),
+      gt::cell_fill(color = "#C5C5FF")
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_column_spanners(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      weight = 850,
+      size = gt::px(14)
+    )
+  ) |>
+  gt::tab_style(
+    locations = gt::cells_source_notes(),
+    style = gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(10),
+      weight = 250
+    )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_text(
+      font = gt::google_font("Signika Negative"),
+      size = gt::px(11.5)
+    )),
+    locations = gt::cells_body(
+      rows = gt::everything(),
+      columns = gt::everything()
+    )
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 2,
+                          include_labels = FALSE) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#fdeba9", alpha = 0.6),  # SEC color
+    locations = gt::cells_body(columns = Team, rows = c(2, 4, 7, 10:12,
+                                                        14, 16, 21,
+                                                        23, 24))
+  ) |> 
+   gt::tab_style(
+    style = gt::cell_fill(color = "lightpink", alpha = 0.6),  # SEC color
+    locations = gt::cells_body(columns = Team, rows = c(17, 20, 25))
+  )
+
+
+gtUtils::gt_save_crop(
+  ap_poll_tbl,
+  file = "ap_poll_tbl.png",
+  whitespace = 60,
+  bg = "#FFFDF5"
+)
+
+ap_poll_tbl
+```
+
+### NCAAT 3PT shooting table
+
+```{r ncaat-shot-tbl, warning=FALSE, message=FALSE}
+ 
+ncaat_shots_tbl <- ncaalog_wide |>
+  dplyr::mutate(across(ends_with("made_attempt"), ~ tidyr::replace_na(., "-")),
+                across(ends_with("pct_3"), ~ tidyr::replace_na(., 0))) |>
+  dplyr::arrange(-year) |>
+  gt::gt() |>
+  gtExtras::gt_theme_dot_matrix() |>
+  gtExtras::gt_merge_stack(
+    col1 = First4_pct_3,
+    col2 = First4_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = R64_pct_3,
+    col2 = R64_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = R32_pct_3,
+    col2 = R32_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = S16_pct_3,
+    col2 = S16_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = E8_pct_3,
+    col2 = E8_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = Final4_pct_3,
+    col2 = Final4_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = F2_pct_3,
+    col2 = F2_made_attempt,
+    palette = c("black", "#333333")
+  ) |>
+  gt::fmt_percent(columns = ends_with("pct_3"), decimals = 1) |>
+   gt::fmt(
+    columns = ends_with("pct_3"),
+    fns = function(x) {
+      dplyr::case_when(
+        x == 0 ~ "-",   # Replace 0.0% with "-"
+        TRUE ~ scales::percent(x, accuracy = 0.1)  # Format as percentage
+      )
+    }
+  ) |> 
+        gt::data_color(
+          columns = ends_with("pct_3"),
+          palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+          # Middle color is neutral
+          alpha = 0.4
+        ) |>
+        gt::tab_style(
+          style = gt::cell_fill(color = "#eeeeee"),
+          # Light grey background
+          locations = gt::cells_body(
+            columns = c(S16_pct_3, E8_pct_3, Final4_pct_3, F2_pct_3),
+            rows = year == 2025  # Only target 2025 rows
+          )
+        ) |>
+        gt::tab_options (
+          source_notes.font.size = gt::px(10),
+          row.striping.background_color = 'white',
+          column_labels.text_transform = 'none'
+        ) |>
+        gt::tab_style(
+          locations = gt::cells_column_labels(),
+          style = gt::cell_text(weight = 850, )
+        ) |>
+        gtUtils::gt_column_subheaders(
+          First4_pct_3 = list(heading = "First 4", subtitle = "3PTM-3PTA"),
+          R64_pct_3 = list(heading = "1st Round", subtitle = "Round of 64"),
+          R32_pct_3 = list(heading = "2nd Round", subtitle = "Round of 32"),
+          S16_pct_3 = list(heading = "Sweet 16", subtitle = "3PTM-3PTA"),
+          E8_pct_3 = list(heading = "Elite 8", subtitle = "3PTM-3PTA"),
+          Final4_pct_3 = list(heading = "Final 4", subtitle = "3PTM-3PTA"),
+          F2_pct_3 = list(heading = "Title Game", subtitle = "3PTM-3PTA"),
+          heading_color = "black",
+          subtitle_color = "gray"
+        ) |>
+        gt::cols_label(year = "Year") |>
+        gt::tab_header(
+          title = gt::md("**NCAA Tournament: 3PT Shooting by Round Since 2011**"),
+          subtitle = "Shows the three-point shooting percentages by round of the NCAA Tournament since 2011."
+        ) |>
+        gt::tab_source_note(
+          source_note = gt::html(
+            "NCAA moved back the 3PT line to 22 feet, 1¾ inches at start of 2019-20 season.<br>Data through March 23, 2025 games<hr><br><b>Table by Chris at Bless your chart <br> data via barttorvik.com and @cobrastats</b>"
+          )
+        ) |>
+        gtUtils::gt_border_grid(color = "black",
+                                weight = 2,
+                                include_labels = FALSE)
+      
+gtUtils::gt_save_crop(
+        ncaat_shots_tbl,
+        file = "ncaat_shots_tbl.png",
+        whitespace = 40,
+        bg = "white"
+    )
+      
+ncaat_shots_tbl      
+```
