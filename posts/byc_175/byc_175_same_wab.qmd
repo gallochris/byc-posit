@@ -1,0 +1,170 @@
+---
+title: "175: Same, but different"
+date: "2026-02-26"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+equiv <- tibble::tribble(
+  ~group, ~win, ~location, ~loser, ~score, ~wab,
+
+  "Roughly +0.62 Wins-Above-Bubble", "Illinois", "Home", "Texas Tech", "81-77", 0.62,
+  "Roughly +0.62 Wins-Above-Bubble", "Michigan St.", "Neutral", "North Carolina", "74-58", 0.62,
+  "Roughly +0.62 Wins-Above-Bubble", "Vanderbilt", "Away", "UCF", "105-93", 0.63,
+  
+  "Around +0.61 Wins-Above-Bubble", "Virginia Tech", "Home", "Virginia", "95-85 (3OT)", 0.61,
+  "Around +0.61 Wins-Above-Bubble", "Stanford", "Neutral", "St. Louis", "78-77", 0.60,
+  "Around +0.61 Wins-Above-Bubble", "USC", "Away", "Minnesota", "70-69 (OT)", 0.60,
+  
+  "About +0.59 Wins-Above-Bubble", "Syracuse", "Home", "Tennessee", "62-60", 0.59,
+  "About +0.59 Wins-Above-Bubble", "Connecticut", "Neutral", "BYU", "86-84", 0.59,
+  "About +0.59 Wins-Above-Bubble", "Youngstown St.", "Away", "Grand Canyon", "90-81", 0.59,
+)
+
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### Equiv table
+
+```{r equiv-tbl, warning=FALSE, message=FALSE}
+
+# built using data from wabwatch 
+# wins <- wab_data |>
+#  dplyr::filter(result == "W", game_type == "played", !is.na(quad))
+
+# home_wins <- wins |> dplyr::filter(location == "H")
+# away_wins <- wins |> dplyr::filter(location == "A")
+# neutral_wins <- wins |> dplyr::filter(location == "N")
+
+
+# triplets <- purrr::map_dfr(seq_len(nrow(neutral_wins)), function(i) {
+#  nw <- neutral_wins[i, ]
+  
+#  h_match <- home_wins |>
+#    dplyr::filter(team != nw$team, opp != nw$opp) |>
+#    dplyr::mutate(wab_diff = abs(wab - nw$wab)) |>
+#    dplyr::slice_min(wab_diff, n = 1, with_ties = FALSE)
+  
+#  a_match <- away_wins |>
+#    dplyr::filter(team != nw$team, opp != nw$opp) |>
+#    dplyr::mutate(wab_diff = abs(wab - nw$wab)) |>
+#    dplyr::slice_min(wab_diff, n = 1, with_ties = FALSE)
+  
+#  if (nrow(h_match) == 0 || nrow(a_match) == 0) return(NULL)
+  
+#  tibble::tibble(
+#    h_team = h_match$team[1], h_opp = h_match$opp[1], h_score = h_match$score[1],
+#    h_date = h_match$date[1], h_quad = h_match$quad[1], h_wab = h_match$wab[1],
+#    h_rank = h_match$opp_net_rank[1],
+#    n_team = nw$team, n_opp = nw$opp, n_score = nw$score,
+#    n_date = nw$date, n_quad = nw$quad, n_wab = nw$wab,
+#    n_rank = nw$opp_net_rank,
+#    a_team = a_match$team[1], a_opp = a_match$opp[1], a_score = a_match$score[1],
+#    a_date = a_match$date[1], a_quad = a_match$quad[1], a_wab = a_match$wab[1],
+#    a_rank = a_match$opp_net_rank[1],
+#    total_diff = h_match$wab_diff[1] + a_match$wab_diff[1]
+#  )
+# })
+
+# triplets |>
+#  dplyr::arrange(total_diff) |>
+#  dplyr::slice_head(n = 15) |>
+#  dplyr::select(
+#    h_team, h_opp, h_quad, h_wab, h_rank,
+#    n_team, n_opp, n_quad, n_wab, n_rank,
+#    a_team, a_opp, a_quad, a_wab, a_rank,
+#    total_diff
+#  )
+
+equiv_tbl <- equiv |>
+  cbbplotR::gt_cbb_teams(win, win, include_name = FALSE) |>
+  cbbplotR::gt_cbb_teams(loser, loser, include_name = FALSE) |>
+  dplyr::mutate(
+    result = paste0(win, " ", score, " ", loser)
+  ) |>
+  dplyr::select(group, result, location, wab) |>
+  gt::gt(groupname_col = "group") |>
+  gtUtils::gt_theme_savant() |> 
+  gt::fmt_markdown(columns = c(result)) |>
+  gt::fmt_number(columns = wab, decimals = 2, force_sign = TRUE) |>
+  gt::cols_label(
+    result = "",
+    location = "Location",
+    wab = "WAB",
+  ) |>
+  gt::tab_header(
+    title = gt::html("The <em>same</em>, only <em>different</em>"),
+    subtitle = gt::md("Each group of three wins earned nearly identical Wins-Above-Bubble, despite different opponents and locations.")
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold", color = "#2e7d32"),
+    locations = gt::cells_body(columns = wab)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_row_groups()
+  ) |>
+  gt::tab_source_note(gt::html("data through February 25 games via barttorvik.com <br> Table by Chris at Bless your Chart")) |>
+  gt::tab_options(
+    table.font.size = gt::px(14),
+    heading.align = "left",
+    column_labels.font.weight = "bold",
+    row_group.font.size = gt::px(13),
+    row_group.background.color = "#f5f5f5"
+  ) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)  # Make it thicker than internal borders
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(450))
+
+gt_save_crop(equiv_tbl,
+             file = "equiv_tbl.png",
+             whitespace = 60,
+             bg = "white")
+
+
+equiv_tbl
+
+```
+
+### 
