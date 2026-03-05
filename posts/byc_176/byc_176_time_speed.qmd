@@ -1,0 +1,620 @@
+---
+title: "176: Speed and time"
+date: "2026-03-05"
+categories:
+  - grid::textGrob
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+apl_data <- readr::read_csv("apl_data.csv")
+
+overtime <- readr::read_csv("overtime.csv")
+
+duke <- readr::read_csv("duke.csv")
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### Dumbbell plot
+
+```{r dbell-plot, warning=FALSE, message=FALSE}
+
+
+highlight_teams <- c("Duke", "Michigan", "Florida", "Arizona",
+                     "Illinois", "Houston", "Purdue", "Michigan St.",
+                     "Iowa St.", "Connecticut")
+
+plot_data <- apl_data |>
+  dplyr::filter(Season == 2026, TeamName %in% highlight_teams) |>
+  dplyr::mutate(
+    APL_Off = round(APL_Off, 1),
+    APL_Def = round(APL_Def, 1)
+  ) |>
+  dplyr::arrange(dplyr::desc(AdjEM)) |>
+  dplyr::mutate(
+    axis_label = sprintf(
+      "<b>%s</b><br><span style='font-size:9pt; color:grey40'>%s / %s</span>",
+      TeamName, RankAPL_Off, RankAPL_Def
+    ),
+    TeamName = forcats::fct_reorder(TeamName, AdjEM),
+    team_chr = as.character(TeamName)
+  )
+
+logo_data <- plot_data
+
+time_plot <- plot_data |>
+  ggplot2::ggplot(ggplot2::aes(y = TeamName)) +
+  ggplot2::geom_segment(
+    ggplot2::aes(x = APL_Def, xend = APL_Off, yend = TeamName, color = team_chr),
+    linewidth = 0.8
+  ) +
+  ggplot2::geom_point(ggplot2::aes(x = APL_Def, color = team_chr), size = 3) +
+  ggplot2::geom_point(ggplot2::aes(x = APL_Off, color = team_chr), size = 3) +
+  ggplot2::geom_text(
+    ggplot2::aes(x = APL_Off, label = "O", color = team_chr),
+    hjust = 0.5, vjust = -1.1, size = 4.6, fontface = "bold",
+    family = "Roboto Condensed"
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(x = APL_Def, label = "D", color = team_chr),
+    hjust = 0.5, vjust = 1.8, size = 4.6, fontface = "bold",
+    family = "Roboto Condensed"
+  ) +
+  cbbplotR::geom_cbb_teams(
+    data = logo_data,
+    ggplot2::aes(x = 14, y = TeamName, team = team_chr),
+    width = 0.05
+  ) +
+  cbbplotR::scale_color_cbb_teams() +
+  ggplot2::scale_y_discrete(
+    labels = setNames(plot_data$axis_label, as.character(plot_data$TeamName))
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = seq(15, 20, 1),
+    expand = ggplot2::expansion(add = c(0.5, 0.5))
+  ) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::annotation_custom(
+    grid::textGrob(
+      "D-I rank\nOffense / Defense",
+      x = grid::unit(-0.06, "npc"),  # closer to panel left edge
+      y = grid::unit(1.02, "npc"),   # just above top of panel
+      hjust = 0.5, vjust = 0,
+      gp = grid::gpar(
+        fontsize = 8.5,
+        fontface = "bold",
+        col = "#333333",
+        fontfamily = "Roboto Condensed",
+        lineheight = 0.9
+      )
+    )
+  ) +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::labs(
+    title = "Some teams play <em>fast</em> <br> Others let the <em>opponent</em> play fast",
+    subtitle = "Average possession length in seconds on offense and defense<br>",
+    x = "Seconds",
+    y = "",
+    caption = "Shows only top-10 teams at kenpom.com through March 4 games  \nViz by Chris at Bless your chart"
+  ) +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 12.5,
+      lineheight = 1.5,
+      family = "Roboto Condensed"
+    ),
+    legend.position = "none",
+    plot.margin = ggplot2::margin(5, 30, 5, 40),
+    axis.text.x = ggplot2::element_text(
+      size = 12,
+      family = "Roboto Condensed",
+      face = "bold"
+    ),
+    axis.text.y = ggtext::element_markdown(
+      size = 10,
+      family = "Roboto Condensed",
+      hjust = 0.5,
+      lineheight = 1.3
+    ),
+    plot.caption = ggplot2::element_text(
+      face = "plain",
+      size = 10,
+      family = "Roboto Condensed"
+    )
+  )
+
+
+ggplot2::ggsave("time_plot.png",
+                time_plot,
+                h = 9,
+                w = 7.5,
+                dpi = 600,
+                bg = "white",
+                type = "cairo")
+```
+
+### Duke tempo plot 
+
+```{r tempo-plot, warning=FALSE, message=FALSE}
+
+duke_facet <- overtime |>
+  dplyr::filter(TeamName == "Duke") |>
+  dplyr::mutate(date = as.Date(date)) |>
+  tidyr::pivot_longer(
+    cols = c(AdjTempo, AdjEM),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  dplyr::mutate(
+    metric = dplyr::recode(metric,
+      "AdjTempo" = "Adjusted Tempo",
+      "AdjEM"    = "Adjusted Efficiency Margin"
+    )
+  )
+
+duke_plot <- duke_facet |>
+  ggplot2::ggplot(ggplot2::aes(x = date, y = value)) +
+  ggplot2::geom_smooth(
+    method = "loess", span = 0.5, se = FALSE, color = "#003087"
+  ) +
+  ggplot2::scale_x_date(
+    date_breaks = "1 month",
+    date_labels = "%B"
+  ) +
+  ggplot2::facet_wrap(
+    ~ metric,
+    scales = "free_y",
+    ncol = 1
+  ) +
+  ggh4x::facetted_pos_scales(
+    y = list(
+      metric == "Adjusted Tempo" ~ ggplot2::scale_y_continuous(
+        limits = c(64, 72),
+        breaks = seq(64, 72, 2)
+      ),
+      metric == "Adjusted Efficiency Margin" ~ ggplot2::scale_y_continuous(
+        limits = c(25, 45),
+        breaks = seq(25, 45, 5)
+      )
+    )
+  ) +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::labs(
+    title = "Duke is playing more <em>efficient</em> and  more <em>deliberate</em>",
+    subtitle = "How Duke's adjusted efficiency margin and adjusted tempo have changed this season. <br>As of March 4, Duke ranks <b>1st in the country</b> in kenpom efficiency margin and <b>287th</b> in adjusted tempo.",
+    x = NULL,
+    y = NULL,
+    caption = "Data via kenpom.com through March 4 games\nViz by Chris at Bless your chart"
+  ) +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5, size = 20, family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5, size = 12.5, lineheight = 1.5, family = "Roboto Condensed"
+    ),
+    strip.text = ggplot2::element_text(
+      size = 11, family = "Roboto Condensed", face = "bold"
+    ),
+    legend.position = "none",
+    plot.margin = ggplot2::margin(5, 30, 5, 40),
+    axis.text.x = ggplot2::element_text(
+      size = 10, family = "Roboto Condensed", face = "bold"
+    ),
+    axis.text.y = ggplot2::element_text(
+      size = 10, family = "Roboto Condensed"
+    ),
+    plot.caption = ggplot2::element_text(
+      face = "plain", size = 10, family = "Roboto Condensed"
+    )
+  )
+
+ggplot2::ggsave("duke_plot.png",
+                duke_plot,
+                w = 8,
+                h = 8,
+                dpi = 600,
+                bg = "white",
+                type = "cairo")
+duke_plot
+```
+
+### Game one: possession plot
+
+```{r duke-unc, warning=FALSE, message=FALSE}
+
+# set teams
+away_team <- "Duke"
+home_team <- "North Carolina"
+home_col <- "#56a0d3"
+away_col <- "#012169"
+
+
+# schedule <- bigballR::get_team_schedule(season = "2025-26", team.name = "North Carolina")
+
+
+# Get play by play for all games played so far in season
+# duke <- bigballR::get_play_by_play(schedule$Game_ID[23])
+
+no_fts <- duke |>
+  dplyr::filter(
+    Event_Type %in% c(
+      "Two Point Jumper",
+      "Three Point Jumper",
+      "Layup",
+      "Dunk",
+      "Hook",
+      "Tip Shot",
+      "Turnover"
+    )
+  ) |>
+  dplyr::mutate(
+    scoring = dplyr::case_match(Event_Result, "made" ~ TRUE, "missed" ~ FALSE, NA ~ FALSE),
+    pts_value = dplyr::case_when(
+      Event_Type == "Turnover" ~ -1,
+      Event_Result == "missed" & Shot_Value %in% c(2, 3) ~ 0,
+      Event_Result == "made" & Shot_Value == 2 ~ 2,
+      Event_Result == "made" & Shot_Value == 3 ~ 3,
+      .default = 0
+    )
+  )
+
+# handle fts separately
+fts <- duke |>
+  dplyr::filter(Event_Type == "Free Throw") |>
+  dplyr::mutate(
+    scoring = dplyr::case_match(Event_Result, "made" ~ TRUE, "missed" ~ FALSE, NA ~ FALSE),
+    pts_value = dplyr::case_when(
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "1of1") ~ 1,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "1of2") ~ 1,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "2of2")
+      & dplyr::lag(
+        stringr::str_detect(Event_Description, "1of2") &
+          Event_Result == "made"
+      ) ~ 2,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "2of2")
+      & dplyr::lag(
+        stringr::str_detect(Event_Description, "1of2") &
+          Event_Result == "missed"
+      ) ~ 1,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "1of3") ~ 1,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "2of3")
+      & dplyr::lag(
+        stringr::str_detect(Event_Description, "1of3") &
+          Event_Result == "made"
+      ) ~ 2,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "2of3")
+      & dplyr::lag(
+        stringr::str_detect(Event_Description, "1of3") &
+          Event_Result == "missed"
+      ) ~ 1,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "3of3")
+      & dplyr::lag(
+        stringr::str_detect(Event_Description, "2of3") &
+          Event_Result == "made"
+      ) ~ 3,
+      Event_Result == "made" &
+        stringr::str_detect(Event_Description, "3of3")
+      & dplyr::lag(
+        stringr::str_detect(Event_Description, "2of3") &
+          Event_Result == "missed"
+      ) ~ 2,
+      Event_Result == "missed" & Shot_Value == 1 ~ 0
+    )
+  )
+
+game_plot <- no_fts |>
+  dplyr::bind_rows(fts) |>
+  dplyr::arrange(Game_Seconds) |>
+  dplyr::filter(
+    Event_Type %in% c(
+      "Two Point Jumper",
+      "Three Point Jumper",
+      "Layup",
+      "Dunk",
+      "Hook",
+      "Tip Shot",
+      "Free Throw",
+      "Turnover"
+    )
+  ) |>
+  dplyr::mutate(
+    scoring_type = dplyr::case_when(
+      Event_Type == "Turnover" ~ "turnover",
+      Event_Type == "Free Throw" & scoring == TRUE ~ "free_throw",
+      Event_Type == "Free Throw" & scoring == FALSE ~ "miss_ft",
+      Shot_Value == 2 & scoring == TRUE ~ "two_pointer",
+      Shot_Value == 3 & scoring == TRUE ~ "three_pointer",
+      scoring == FALSE & Shot_Value == 2 ~ "miss_2",
+      scoring == FALSE & Shot_Value == 3 ~ "miss_3",
+      TRUE ~ NA_character_
+    ),
+    pts_shape = dplyr::case_when(
+      scoring_type == "turnover"      ~ 4L,
+      scoring_type == "miss_ft"       ~ 49L,
+      scoring_type == "miss_2"        ~ 50L,
+      scoring_type == "miss_3"        ~ 51L,
+      scoring_type == "free_throw"    ~ 49L,
+      scoring_type == "two_pointer"   ~ 50L,
+      scoring_type == "three_pointer" ~ 51L,
+      TRUE                            ~ 45L
+    ),
+    display_size = dplyr::case_when(
+      scoring_type == "turnover"      ~ 2.5,
+      scoring_type == "miss_ft"       ~ 2,
+      scoring_type == "miss_2"        ~ 2.5,
+      scoring_type == "miss_3"        ~ 2.5,
+      scoring_type == "free_throw"    ~ 3,
+      scoring_type == "two_pointer"   ~ 3.5,
+      scoring_type == "three_pointer" ~ 4,
+      TRUE                            ~ 2
+    ),
+    y_nudge = dplyr::case_when(
+      scoring_type == "three_pointer" ~ 0.16,
+      scoring_type == "two_pointer"   ~ 0.13,
+      scoring_type == "free_throw"    ~ 0.10,
+      scoring_type %in% c("miss_2", "miss_3", "miss_ft") ~ -0.10,
+      scoring_type == "turnover"      ~ -0.16,
+      TRUE ~ 0
+    )
+  ) |>
+  dplyr::filter(!is.na(scoring_type))
+
+score_diff_overlay <- game_plot |>
+  dplyr::select(Game_Seconds, Away_Score, Home_Score) |>
+  dplyr::distinct() |>
+  dplyr::mutate(
+    score_diff = Away_Score - Home_Score,
+    max_diff = max(abs(score_diff)),
+    # Flip the sign so ribbon goes DOWN when away (Duke) leads
+    diff_scaled = 1.5 - (score_diff / max_diff * 0.25)
+  )
+
+max_unc_lead <- score_diff_overlay |>
+  dplyr::filter(score_diff == max(score_diff)) |>
+  dplyr::slice(1)
+
+max_duke_lead <- score_diff_overlay |>
+  dplyr::filter(score_diff == min(score_diff)) |>
+  dplyr::slice(1)
+
+game_plot |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = Game_Seconds,
+      y = as.numeric(factor(Poss_Team)) + y_nudge,
+      color = scoring_type,
+      size = display_size
+    )
+  ) +
+  ggplot2::geom_point(ggplot2::aes(shape = pts_shape)) +
+  ggplot2::scale_shape_identity() +
+  ggplot2::scale_size_identity() +
+  ggplot2::scale_y_continuous(breaks = seq_along(sort(unique(
+    game_plot$Poss_Team
+  ))), labels = sort(unique(game_plot$Poss_Team))) +
+  ggplot2::scale_color_manual(
+    values = c(
+      "free_throw"    = "#2E8B57",
+      "two_pointer"   = "#006400",
+      "three_pointer" = "#004225",
+      "miss_ft"       = "#cc0000",
+      "miss_2"        = "#cc0000",
+      "miss_3"        = "#cc0000",
+      "turnover"      = "#cc0000"
+    )
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = c(0, 600, 1200, 1800, 2400),
+    labels = c("1 minute", "10 minutes", "Halftime", "30 Minutes", "40 minutes")
+  ) +
+  ggplot2::geom_vline(xintercept = 1200,
+                      linetype = "dashed",
+                      color = "#333333") +
+  ggthemes::theme_fivethirtyeight() +
+  ggplot2::theme(
+    legend.position = "none",
+    axis.text.y = cbbplotR::element_cbb_teams(size = 0.9),
+    panel.grid.major = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.background = ggplot2::element_blank(),
+    plot.title = ggtext::element_markdown(),
+    plot.subtitle = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "Possessions",
+    y = "",
+    title = "North Carolina 71, Duke 68",
+    subtitle = "Scoring possessions shown in different shades of green: <span style='color:#2E8B57'>free throw trips</span>, <span style='color:#006400'>two-pointers</span>, <span style='color:#004225'>three-pointers</span><br>Empty possessions shown in red: <span style='color:#CC0000'>missed shots</span> or <span style='color:#CC0000'>turnovers (x)</span>",
+    caption = "data via bigballR + logos via cbbplotR | February 7, 2026 \nTable by Chris at Bless your Chart"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 200,
+    y = 2.45,
+    label = "UNC: 1.11 PPP  \nDuke: 1.07 PPP  \n64 possessions",
+    size = 2.5,
+    color = "#333333",
+    fill = "floralwhite",
+    fontface = "bold",
+    alpha = .3
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 1200,
+    y = 2.5,
+    label = "Duke 41, UNC 29",
+    size = 2.5,
+    color = "#333333",
+    fill = "floralwhite",
+    fontface = "bold"
+  ) +
+  ggplot2::geom_ribbon(
+    data = score_diff_overlay,
+    ggplot2::aes(
+      x = Game_Seconds,
+      ymin = 1.5,
+      ymax = diff_scaled,
+      fill = score_diff > 0
+    ),
+    alpha = 0.7,
+    inherit.aes = FALSE
+  ) +
+  ggplot2::geom_line(
+    data = score_diff_overlay,
+    ggplot2::aes(x = Game_Seconds, y = diff_scaled),
+    color = "#333333",
+    size = 0.8,
+    inherit.aes = FALSE
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 325,
+    y = 1.58,
+    label = "Duke 10-0 run",
+    size = 2.5,
+    color = "#333333",
+    fill = "floralwhite",
+    fontface = "bold"
+  ) +
+    ggplot2::annotate(
+    "label",
+    x = 485,
+    y = 2.25,
+    label = "CALEB WILSON",
+    size = 2.5,
+    color = "#333333",
+    fill = home_col,
+    alpha = 0.4,
+    fontface = "bold"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2300,
+    y = 1.58,
+    label = "UNC 9-0 run",
+    size = 2.5,
+    color = "#333333",
+    fill = "floralwhite",
+    fontface = "bold"
+  ) +
+  ggplot2::geom_hline(
+    yintercept = 1.5,
+    linetype = "dotted",
+    color = "#666666",
+    alpha = 0.5
+  ) +
+  # Add a reference line for tied game
+  ggplot2::geom_hline(
+    yintercept = 1.5,
+    linetype = "dotted",
+    color = "#666666",
+    alpha = 0.5
+  ) +
+  ggplot2::scale_fill_manual(values = c("TRUE" = away_col, "FALSE" = home_col),
+                             guide = "none") +
+  ggplot2::geom_vline(
+    xintercept = 2399,
+    linetype = "solid",
+    color = home_col,
+    linewidth = 0.6,
+    alpha = 0.2
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2500,
+    y = 1.35,
+    label = "UNC leads\n(0.4 secs)",
+    size = 2.5,
+    color = "#333333",
+    fill = home_col,
+    alpha = 0.1,
+    fontface = "bold"
+  ) +
+ggplot2::geom_vline(
+  xintercept = 2399,
+  linetype = "solid",
+  color = home_col,
+  linewidth = 0.6,
+  alpha = 0.2
+) +
+  ggplot2::annotate(
+    "label",
+    x = 2500,
+    y = 1.35,
+    label = "UNC leads\n(0.4 secs)",
+    size = 2.5,
+    color = "#333333",
+    fill = home_col,
+    alpha = 0.4,
+    fontface = "bold"
+  ) +
+  ggplot2::annotate(
+    "label",
+    x = 2100,
+    y = 0.75,
+    label = "Duke missed 13 of \nits last 17 shots",
+    size = 2.5,
+    color = "#333333",
+    fill = home_col,
+    alpha = 0.4,
+    fontface = "bold"
+  ) -> plot
+
+
+
+# save the plot
+ggplot2::ggsave(
+  "unc_duke_plot.png",
+  plot,
+  w = 9.5,
+  h = 7,
+  dpi = 600,
+  type = 'cairo'
+)
+
+plot
+```
