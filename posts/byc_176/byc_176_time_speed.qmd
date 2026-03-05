@@ -166,6 +166,8 @@ ggplot2::ggsave("time_plot.png",
                 dpi = 600,
                 bg = "white",
                 type = "cairo")
+
+time_plot
 ```
 
 ### Duke tempo plot 
