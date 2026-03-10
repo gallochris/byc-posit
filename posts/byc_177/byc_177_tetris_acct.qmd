@@ -1,0 +1,346 @@
+---
+title: "177: Tetris"
+date: "2026-03-10"
+categories:
+  - grid::textGrob
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+acc_champs <- readr::read_csv("acc-champs.csv")
+
+wab_data <- readr::read_csv("wab-data.csv")
+
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### ACC Tournament table 
+
+```{r acct-tbl, warning=FALSE, message=FALSE}
+
+team_colors <- tibble::tribble(
+  ~team,             ~color,
+  "Duke",            "#003087",
+  "North Carolina",  "#56a0d3",
+  "NC State",        "#CC0000",
+  "Wake Forest",     "#9E7E38",
+  "Georgia Tech",    "#B3A369",
+  "Virginia",        "#E57200",
+  "Florida State",   "#782F40",
+  "Maryland",        "#E03A3E",
+  "Miami",           "#F47321",
+  "Notre Dame",      "#AE9142",
+  "South Carolina",  "#73000A",
+  "Virginia Tech",   "#861F41"
+)
+
+acc_champs <- dplyr::bind_rows(
+  acc_champs,
+  tibble::tibble(
+    year = 1954:1959,
+    team = c("NC State", "NC State", "NC State", "North Carolina", "Maryland", "NC State")
+  )
+)
+
+acct_logos <- acc_champs |>
+  cbbplotR::gt_cbb_teams(team, team, include_name = FALSE) |>
+  dplyr::mutate(decade = paste0(floor(year / 10) * 10, "s")) |>
+  dplyr::group_by(decade) |>
+  dplyr::mutate(col_name = paste0("year_", dplyr::row_number())) |>
+  dplyr::ungroup() |>
+  tidyr::pivot_wider(id_cols = decade,
+                     names_from = col_name,
+                     values_from = team) |>
+  dplyr::mutate(
+    decade = factor(
+      decade,
+      levels = c("2020s", "2010s", "2000s", "1990s", "1980s", "1970s", "1960s", "1950s")
+    ),
+    year_10 = dplyr::if_else(decade == "1950s", year_6, year_10),
+    year_9  = dplyr::if_else(decade == "1950s", year_5, year_9),
+    year_8  = dplyr::if_else(decade == "1950s", year_4, year_8),
+    year_7  = dplyr::if_else(decade == "1950s", year_3, year_7),
+    year_6  = dplyr::if_else(decade == "1950s", year_2, year_6),
+    year_5  = dplyr::if_else(decade == "1950s", year_1, year_5),
+    year_4  = dplyr::if_else(decade == "1950s", NA_character_, year_4),
+    year_3  = dplyr::if_else(decade == "1950s", NA_character_, year_3),
+    year_2  = dplyr::if_else(decade == "1950s", NA_character_, year_2),
+    year_1  = dplyr::if_else(decade == "1950s", NA_character_, year_1)
+  ) |>
+  dplyr::arrange(decade)
+
+accwide <- acc_champs |>
+  dplyr::mutate(decade = paste0(floor(year / 10) * 10, "s")) |>
+  dplyr::group_by(decade) |>
+  dplyr::mutate(col_name = paste0("year_", dplyr::row_number())) |>
+  dplyr::ungroup() |>
+  tidyr::pivot_wider(id_cols = decade,
+                     names_from = col_name,
+                     values_from = team) |>
+  dplyr::mutate(
+    decade = factor(
+      decade,
+      levels = c("2020s", "2010s", "2000s", "1990s", "1980s", "1970s", "1960s", "1950s")
+    ),
+    year_10 = dplyr::if_else(decade == "1950s", year_6, year_10),
+    year_9  = dplyr::if_else(decade == "1950s", year_5, year_9),
+    year_8  = dplyr::if_else(decade == "1950s", year_4, year_8),
+    year_7  = dplyr::if_else(decade == "1950s", year_3, year_7),
+    year_6  = dplyr::if_else(decade == "1950s", year_2, year_6),
+    year_5  = dplyr::if_else(decade == "1950s", year_1, year_5),
+    year_4  = dplyr::if_else(decade == "1950s", NA_character_, year_4),
+    year_3  = dplyr::if_else(decade == "1950s", NA_character_, year_3),
+    year_2  = dplyr::if_else(decade == "1950s", NA_character_, year_2),
+    year_1  = dplyr::if_else(decade == "1950s", NA_character_, year_1)
+  ) |>
+  dplyr::arrange(decade)
+
+
+acct_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/acc.png'
+       style='height: 105px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>ACC Tournament Champions<br>1954–2025</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the ACC Tournament Champion for each season since 1954.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+year_cols <- dplyr::select(accwide, dplyr::starts_with("year"))
+
+get_team_locations <- \(team_name) {
+  purrr::map(seq_len(ncol(year_cols)), \(col_i) {
+    rows <- which(year_cols[[col_i]] == team_name)
+    if (length(rows) == 0)
+      return(NULL)
+    gt::cells_body(rows = rows, columns = col_i + 1L)
+  }) |> purrr::compact()
+}
+
+acct_logos[1, "year_1"] <- paste0(
+  "<span style='opacity: 0.15'>", acct_logos[1, "year_1"], "</span>"
+)
+
+acct_tbl <- acct_logos |>
+  gt::gt() |>
+  gt::fmt_markdown(columns = c(gt::starts_with("year"))) |>
+  gtUtils::gt_theme_savant() |>
+  gt::tab_header(title = gt::html(acct_header)) |>
+  gt::cols_label_with(columns = gt::starts_with("year"), fn = \(x) "") |>
+  gt::cols_label(decade = "") |>
+  gt::sub_missing(columns = gt::starts_with("year"),
+                  missing_text = "") |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>
+                <b>Programs with at least 3 ACC Tournament Titles:</b><br>
+                23....Duke<br>
+                18....North Carolina<br>
+                11....NC State<br>
+                4.....Wake Forest, Georgia Tech<br>
+                3.....Virginia<br>
+                <hr>
+                2020 ACC Tournament ended early due to COVID-19, Florida State declared winner<br><hr>
+        Data from wikipedia.com and theme from {gtUtils}<br>
+        2026 ACC Tournament begins Tuesday, March 10 in Charlotte, NC<br>
+                <b>Table by Chris at Bless your chart | March 10, 2026</b>"
+      )
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |>
+  gt::tab_options(column_labels.hidden = TRUE) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "top",
+      color = "black",
+      weight = gt::px(2)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |>
+  (\(tbl) {
+    purrr::reduce(seq_len(nrow(team_colors)), \(tbl, i) {
+      gt::tab_style(
+        tbl,
+        style = gt::cell_fill(color = team_colors$color[i], alpha = 0.25),
+        locations = get_team_locations(team_colors$team[i])
+      )
+    }, .init = tbl)
+  })() 
+
+
+gt_save_crop(acct_tbl,
+             file = "acct_tbl.png",
+             whitespace = 60,
+             bg = "white")
+  
+```
+
+### WABStick tetris
+
+```{r wab-tetris, warning=FALSE, message=FALSE}
+plot_wabstick_six <- function(
+    wab_data,
+    teams,
+    color_pos = "#1a9850",
+    color_neg = "lightpink",
+    ncol = 2
+) {
+  if (length(teams) != 4) {
+    rlang::abort("`teams` must be a character vector of exactly six team names.")
+  }
+  
+  # 1. Data Preparation
+  plot_data <- wab_data |>
+    dplyr::filter(
+      team %in% teams,
+      game_type == "played",
+      is.na(type) | type != "nond1",
+      !is.na(wab),
+      !is.na(bub_win_prob)
+    )
+  
+  # 2. Summary stats for the strip labels
+  team_summaries <- plot_data |>
+    dplyr::summarise(
+      wins      = sum(result == "W", na.rm = TRUE),
+      losses    = sum(result == "L", na.rm = TRUE),
+      total_wab = sum(wab, na.rm = TRUE),
+      .by = team
+    ) |>
+    dplyr::arrange(dplyr::desc(total_wab)) |>
+    dplyr::mutate(
+      strip_label = sprintf("%s (%d-%d, %+.2f WAB)", team, wins, losses, total_wab)
+    )
+  
+  # 3. Join and Factorize for consistent ordering
+  plot_data <- plot_data |>
+    dplyr::left_join(team_summaries, by = "team") |>
+    dplyr::mutate(
+      strip_label = factor(strip_label, levels = team_summaries$strip_label),
+      bar_fill    = dplyr::if_else(wab >= 0, color_pos, color_neg)
+    )
+  
+  # 4. Alpha Scaling
+  max_wab_val <- max(abs(plot_data$wab), na.rm = TRUE)
+  plot_data$bar_alpha <- scales::rescale(abs(plot_data$wab), to = c(0.4, 1), from = c(0, max_wab_val))
+  
+  # Plot Parameters
+  bar_width <- 0.009
+  wab_limit <- ceiling(max(abs(plot_data$wab), 0.5) * 2) / 2
+  
+  # 5. The Plot
+  ggplot2::ggplot(plot_data) +
+    ggplot2::geom_rect(
+      ggplot2::aes(
+        xmin = bub_win_prob - bar_width, xmax = bub_win_prob + bar_width,
+        ymin = 0, ymax = wab,
+        fill = bar_fill, alpha = bar_alpha
+      ),
+      color = "white", linewidth = 0.1
+    ) +
+    ggplot2::geom_hline(yintercept = 0, linewidth = 0.8, color = "gray20") +
+    ggplot2::geom_hline(yintercept = c(-0.5, 0.5), linetype = "dashed", linewidth = 0.3, color = "gray60") +
+    ggplot2::geom_vline(xintercept = 0.5, linetype = "dotted", linewidth = 0.4, color = "gray60") +
+    ggplot2::scale_fill_identity() +
+    ggplot2::scale_alpha_identity() +
+    ggplot2::scale_x_reverse(
+      labels = scales::label_percent(), 
+      breaks = c(0, 0.25, 0.5, 0.75, 1),
+      expand = c(0.05, 0.05)
+    ) +
+    ggplot2::scale_y_continuous(
+      limits = c(-wab_limit, wab_limit),
+      breaks = seq(-wab_limit, wab_limit, by = 0.5),
+      labels = scales::label_number(accuracy = 0.1)
+    ) +
+    ggplot2::coord_flip() +
+    ggplot2::facet_wrap(~ strip_label, ncol = ncol) +
+    ggplot2::labs(
+      title    = "R\u00e9sum\u00e9 Tetris <br>Wins-Above-Bubble",
+      subtitle = "Right is positive WAB (wins), left is negative WAB (losses).<br>Toughest games towards top and easier games towards bottom.",
+      x        = "<--- Easier Games | Harder Games --->",
+      y        = "<--- Negative WAB | Positive WAB --->",
+      caption  = "Data via barttorvik.com through March 9 games <br> Only games against D-I opponents are surfaced <br> <br> Viz by Chris at Bless your chart"
+    ) +
+    hrbrthemes::theme_ipsum_rc(grid = "XY") +
+    ggplot2::theme(
+      plot.title      = ggtext::element_markdown(hjust = 0.5, face = "bold", size = 16),
+      plot.subtitle   = ggtext::element_markdown(hjust = 0.5, size = 10, margin = ggplot2::margin(b = 15)),
+      plot.caption    = ggtext::element_markdown(),
+      strip.background = ggplot2::element_rect(fill = "gray92", color = NA),
+      strip.text      = ggplot2::element_text(size = 9, face = "bold"),
+      panel.spacing   = ggplot2::unit(1.5, "lines"),
+      axis.title.x    = ggplot2::element_text(size = 9, color = "gray30", hjust = 0.5),
+      axis.title.y    = ggplot2::element_text(size = 9, color = "gray30", hjust = 0.5)
+    )
+}
+
+# Usage
+teams <- c(
+  "Miami OH", "Auburn", "Virginia Tech",
+  "Santa Clara"
+)
+
+four_plot <- plot_wabstick_six(
+  wab_data,
+  teams = teams
+)
+
+ggplot2::ggsave("four_plot.png",
+                four_plot,
+                h = 11.5,
+                w = 8.5,
+                dpi = 600,
+                bg = "white",
+                type = "cairo")
+
+four_plot
+```
