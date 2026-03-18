@@ -1,0 +1,445 @@
+---
+title: "179: Widening gap"
+date: "2026-03-18"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Load data
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+
+# --- Pull data from kenpom API 
+# archive_2024 <- kp_get_archive(date = "2024-03-17") |>
+#  dplyr::mutate(season = "2023-24")
+
+# archive_2025 <- kp_get_archive(date = "2025-03-16") |>
+#  dplyr::mutate(season = "2024-25")
+
+# current_2026 <- ranks |>
+#  dplyr::mutate(season = "2025-26")
+
+# all_seasons <- dplyr::bind_rows(archive_2024, archive_2025, current_2026)
+
+# write.csv(all_seasons, "kp_rank_data.csv")
+
+all_seasons <- readr::read_csv("kp_rank_data.csv")
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### Gap plot
+
+```{r gap-plot, warning=FALSE, message=FALSE}
+
+plot_data <- all_seasons |>
+  dplyr::mutate(
+    seed_tier = dplyr::case_when(
+      Seed %in% 1:4   ~ "1-4",
+      Seed %in% 5:8   ~ "5-8",
+      Seed %in% 9:12  ~ "9-12",
+      Seed %in% 13:16 ~ "13-16",
+      TRUE            ~ "Unseeded"
+    ),
+    seed_tier = factor(seed_tier, levels = c("1-4", "5-8", "9-12", "13-16", "Unseeded")),
+    season = factor(season, levels = c("2023-24", "2024-25", "2025-26"))
+  )
+
+# --- Compute median AdjEM per seed tier ---
+tier_medians <- plot_data |>
+  dplyr::filter(seed_tier != "Unseeded") |>
+  dplyr::group_by(season, seed_tier) |>
+  dplyr::summarise(
+    median_adjEM = round(median(AdjEM, na.rm = TRUE), 1),
+    .groups = "drop"
+  )
+
+# --- Formatting for the Dynamic Subtitle ---
+med <- tier_medians |>
+  dplyr::mutate(key = paste0(season, "_", seed_tier)) |>
+  dplyr::select(key, median_adjEM) |>
+  tibble::deframe()
+
+# --- Colors ---
+col_14   <- "#2166ac"
+col_58   <- "#4dac26"
+col_912  <- "#ef8a62" 
+col_1316 <- "#b2182b"
+
+# --- Subtitle with Bold Seeds ---
+subtitle_text <- glue::glue(
+  "KenPom adjusted efficiency margin for all teams across the last three seasons.<br>",
+  "Median AdjEM by seed line:<br>",
+  "<b>Seeds:&nbsp;</b><span style='color:{col_14}'><b> &nbsp;1-4</b></span> | ",
+  "<span style='color:{col_58}'><b>5-8</b></span> | ",
+  "<span style='color:{col_912}'><b>9-12</b></span> | ",
+  "<span style='color:{col_1316}'><b>13-16</b></span><br>",
+  "<b>2025-26: &nbsp;+{med['2025-26_1-4']} | +{med['2025-26_5-8']} | +{med['2025-26_9-12']} | {med['2025-26_13-16']}</b><br>",
+  "<span style='color:#888888'>2024-25: &nbsp;+{med['2024-25_1-4']} | +{med['2024-25_5-8']} | +{med['2024-25_9-12']} | +{med['2024-25_13-16']}</span><br>",
+  "<span style='color:#888888'>2023-24: &nbsp;+{med['2023-24_1-4']} | +{med['2023-24_5-8']} | +{med['2023-24_9-12']} | +{med['2023-24_13-16']}</span><br>"
+)
+
+# --- Rank labels (cleaning up "Rank" text) ---
+rank_labels <- plot_data |>
+  dplyr::filter(RankAdjEM %in% c(1, 25, 100, 250, 300, 350)) |>
+  dplyr::select(season, RankAdjEM, AdjEM) |>
+  dplyr::mutate(
+    label_text = ifelse(RankAdjEM == 1, paste0("Rank ", RankAdjEM), as.character(RankAdjEM))
+  )
+
+# --- Plot ---
+gap_plot <- (\(df) {
+  ggplot2::ggplot(df, ggplot2::aes(x = 1, y = AdjEM)) +
+    # Unseeded — gray cloud
+    ggplot2::geom_point(
+      data = dplyr::filter(df, seed_tier == "Unseeded"),
+      color = "#cccccc",
+      alpha = 0.25,
+      size = 1.1,
+      position = ggplot2::position_jitter(width = 0.12, height = 0, seed = 123)
+    ) +
+    # Seeded — larger points
+    ggplot2::geom_point(
+      data = dplyr::filter(df, seed_tier != "Unseeded"),
+      ggplot2::aes(color = seed_tier),
+      alpha = 0.8,
+      size = 2.4,
+      position = ggplot2::position_jitter(width = 0.1, height = 0, seed = 123)
+    ) +
+    # Median "Shelves" — Wider and more prominent
+    ggplot2::geom_errorbar(
+      data = tier_medians,
+      ggplot2::aes(x = 1, y = median_adjEM, ymin = median_adjEM, ymax = median_adjEM, color = seed_tier),
+      width = 0.65, 
+      linewidth = 1.4, 
+      inherit.aes = FALSE
+    ) +
+    # Reference labels — "Rank" only on the first one
+    ggplot2::geom_text(
+      data = rank_labels,
+      ggplot2::aes(x = 0.5, y = AdjEM, label = label_text),
+      hjust = 1,
+      size = 2.8,
+      color = "#555555",
+      family = "Roboto Condensed",
+      inherit.aes = FALSE
+    ) +
+    ggplot2::scale_color_manual(
+      values = c("1-4" = col_14, "5-8" = col_58, "9-12" = col_912, "13-16" = col_1316)
+    ) +
+    ggplot2::scale_x_continuous(limits = c(0.2, 1.8)) +
+    ggplot2::scale_y_continuous(
+      limits = c(-35, 42),
+      breaks = seq(-30, 40, by = 10),
+      oob = scales::squish
+    ) +
+    ggplot2::facet_wrap(~season, ncol = 3) +
+    ggplot2::labs(
+      title = "College basketball's **widening gap**",
+      subtitle = subtitle_text,
+      x = NULL,
+      y = "Adjusted Efficiency Margin",
+      caption = "Viz by Chris at Bless your Chart | data via kenpom.com\n2023-24 & 2024-25 data from Selection Sunday",
+      color = NULL
+    ) +
+    hrbrthemes::theme_ipsum_rc() +
+    ggplot2::theme(
+      plot.title = ggtext::element_markdown(hjust = 0.5, size = 22,  family = "Roboto Condensed"),
+      plot.subtitle = ggtext::element_markdown(hjust = 0.5, size = 10, lineheight = 1.6,  family = "Roboto Condensed"),
+      strip.text = ggplot2::element_text(size = 14, face = "bold", hjust = 0.5,  family = "Roboto Condensed"),
+      legend.position = "none",
+      axis.text.x = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_blank()
+    )
+})(plot_data)
+
+
+ggplot2::ggsave("kp_gaps.png", gap_plot,
+                width = 8, height = 9.5, dpi = 600, bg = "white")
+
+gap_plot
+
+```
+
+### Gap table
+
+```{r gap-tbl, warning=FALSE, message=FALSE}
+# --- Build table data ---
+seed_medians <- plot_data |>
+    dplyr::filter(Seed %in% 1:16) |>
+    dplyr::group_by(Seed, season) |>
+    dplyr::summarise(
+        median_adjEM = round(median(AdjEM, na.rm = TRUE), 1),
+        .groups = "drop"
+    ) |>
+    tidyr::pivot_wider(
+        names_from  = season,
+        values_from = median_adjEM
+    ) |>
+    dplyr::arrange(Seed)
+
+# --- Header ---
+bball_header <- glue::glue(
+    "<div style='display: flex; justify-content: space-between; align-items: center;'>
+    <div>
+      <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+      style='height: 40px; width: auto; vertical-align: middle;'>
+    </div>
+    <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+      <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>College basketball's <br>widening gap</span>
+      <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>
+        Shows the<b> median adjusted efficiency margin by seed</b> across the last three NCAA Tournaments.<br>
+      </span>
+    </div>
+    <div>
+      <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+      style='height: 40px; width: auto; vertical-align: middle;'>
+    </div>
+  </div>
+  <br>"
+)
+
+# --- Table ---
+gap_tbl <- seed_medians |>
+    gt::gt() |>
+    gtUtils::gt_theme_savant() |> 
+    gtUtils::gt_column_subheaders(
+        `Seed`    = list(heading = "Seed",    subtitle = ""),
+        `2023-24` = list(heading = "2024", subtitle = ""),
+        `2024-25` = list(heading = "2025", subtitle = ""),
+        `2025-26` = list(heading = "2026", subtitle = ""),
+        heading_color  = "black",
+        subtitle_color = "gray"
+    ) |>
+    gt::data_color(
+        columns   = c(`2023-24`, `2024-25`, `2025-26`),
+        direction = "row",
+        method    = "numeric",
+        palette = c("#e5f5e0", "#74c476", "#00441b"),
+        alpha     = 0.85
+    ) |>
+    gt::fmt_number(
+        columns  = c(`2023-24`, `2024-25`, `2025-26`),
+        decimals = 1,
+        force_sign = TRUE
+    ) |>
+    gt::cols_align(align = "center", columns = gt::everything()) |>
+    gt::cols_width(
+        Seed      ~ gt::px(60),
+        `2023-24` ~ gt::px(120),
+        `2024-25` ~ gt::px(120),
+        `2025-26` ~ gt::px(120)
+    ) |>
+    gt::tab_header(title = gt::html(bball_header)) |>
+    gt::tab_source_note(
+        source_note = gt::html(
+            "<hr>2025-26 data as of March 17 via <b>kenpom.com</b><br>
+       2023-24 & 2024-25 snapshots taken on Selection Sunday<br>
+       <hr><b>Table by Chris at Bless your Chart</b>"
+        )
+    ) |>
+    gt::tab_options(table.width = gt::px(480)) |>
+    gt::tab_style(
+        style = list(gt::cell_borders(
+            sides  = c("left", "right", "top", "bottom"),
+            color  = "black",
+            weight = gt::px(2)
+        )),
+        locations = list(
+            gt::cells_body(),
+            gt::cells_column_labels(),
+            gt::cells_row_groups()
+        )
+    ) |>
+    gtUtils::gt_border_bars_bottom(c("#0d1e2d", "#c1d6e2", "#f07e1d"))
+
+gt_save_crop(
+    gap_tbl,
+    file       = "gap_tbl.png",
+    whitespace = 40,
+    bg         = "#FFFDF5"
+)
+
+gap_tbl
+```
+
+### Game Score Grid
+
+```{r gs-grid, warning=FALSE, message=FALSE}
+
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+tt <- readr::read_csv("tt.csv")
+bracket_info <- readr::read_csv("https://t.co/WwZZVMuKsd") |> 
+  dplyr::mutate(
+    team = dplyr::if_else(team == "Pennsylvania", "Penn", team),
+    team = dplyr::if_else(team == "LIU Brooklyn", "LIU", team),
+    team = dplyr::if_else(team == "North Carolina St.", "N.C. State", team),
+  )
+
+ncaat_teams <- bracket_info |>
+  dplyr::pull(team)
+
+# ── Helper: always format to 1 decimal ───────────────────────────────────────
+fmt1 <- function(x) formatC(round(x, 1), format = "f", digits = 1)
+
+# ── Build cells ───────────────────────────────────────────────────────────────
+team_cells <- tt |>
+  dplyr::filter(team %in% ncaat_teams) |>
+  dplyr::group_by(team) |>
+  dplyr::summarise(
+    median_gs = fmt1(median(game_score)),
+    high_gs   = fmt1(max(game_score)),
+    low_gs    = fmt1(min(game_score)),
+    .groups   = "drop"
+  ) |>
+  dplyr::left_join(
+    bracket_info |> dplyr::select(team, seed, region),
+    by = "team"
+  ) |>
+  dplyr::mutate(eliminated = team %in% c("N.C. State", "UMBC")) |>  # <-- before gt_cbb_teams
+  cbbplotR::gt_cbb_teams(team, team, include_name = FALSE, logo_height = 18) |>
+  dplyr::mutate(
+    cell = glue::glue(
+      "<div style='text-align: center; line-height: 1.6;'>
+        <div style='display: flex; align-items: center; justify-content: center; gap: 6px;'>
+          {team}
+          <span style='font-weight: bold; font-size: 13px;'>{median_gs}</span>
+        </div>
+        <div>
+          <span style='color: #1a9641; font-size: 11.5px; font-weight: bold;'>▲ {high_gs}</span>
+          <span style='color: #d7191c; font-size: 11.5px; font-weight: bold;'>&nbsp;▼ {low_gs}</span>
+        </div>
+      </div>"
+    ),
+    cell = dplyr::if_else(
+      eliminated,
+      glue::glue("<div style='opacity: 0.35;'>{cell}</div>"),
+      cell
+    )
+  )
+
+# ── Handle play-in seeds ──────────────────────────────────────────────────────
+team_cells_combined <- team_cells |>
+  dplyr::select(seed, region, cell, eliminated) |>
+  dplyr::group_by(seed, region) |>
+  dplyr::arrange(eliminated, .by_group = TRUE) |>
+  dplyr::summarise(
+    cell = paste(cell, collapse = "<hr style='margin: 2px 0; border-color: #cccccc;'>"),
+    .groups = "drop"
+  )
+
+# ── Pivot: rows = seeds, columns = regions ────────────────────────────────────
+grid <- team_cells_combined |>
+  tidyr::pivot_wider(
+    names_from  = region,
+    values_from = cell
+  ) |>
+  dplyr::arrange(seed) |>
+  dplyr::select(seed, East, South, West, Midwest)
+
+# ── Header ────────────────────────────────────────────────────────────────────
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+    <div>
+     <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+     style='height: 40px; width: auto; vertical-align: middle;'>
+   </div>
+   <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+     <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 Field of 68: Torvik Game Score Grid</span>
+     <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows the <b>median Game Score</b> for every team in the 2026 NCAA Tournament.<br>
+     <span style='color: #1a9641; font-size: 11.5px; font-weight: bold;'>▲ Season high</span> &nbsp;|&nbsp;
+     <span style='color: #d7191c; font-size: 11.5px; font-weight: bold;'>▼ Season low</span></span>
+   </div>
+   <div>
+     <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+     style='height: 40px; width: auto; vertical-align: middle;'>
+   </div>
+ </div>
+<br>"
+)
+
+# ── Table ─────────────────────────────────────────────────────────────────────
+grid |>
+  gt::gt() |>
+  gtUtils::gt_theme_savant() |>
+  gt::fmt_markdown(columns = c(East, South, West, Midwest)) |>
+  gt::cols_label(
+    seed    = "Seed",
+    East    = "East",
+    South   = "South",
+    West    = "West",
+    Midwest = "Midwest"
+  ) |>
+  gt::cols_align(align = "center", columns = c(East, South, West, Midwest)) |>
+  gt::cols_align(align = "center", columns = seed) |>
+  gt::cols_width(
+    seed    ~ gt::px(55),
+    East    ~ gt::px(150),
+    South   ~ gt::px(150),
+    West    ~ gt::px(150),
+    Midwest ~ gt::px(150)
+  ) |>
+  # row shading by first-round matchup pairs
+  # shade A — 1v16, 3v14, 5v12, 7v10
+  gt::tab_style(
+    locations = gt::cells_body(rows = seed %in% c(1, 16, 3, 14, 5, 12, 7, 10)),
+    style = gt::cell_fill(color = "#ebebeb")
+  ) |>
+  # shade B — 2v15, 4v13, 6v11, 8v9 stay white/default
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>data via barttorkvik.com | theme from {gtUtils}<br>
+       Game Score ranges from 0 (bad) to 50 (average) to 100 (perfect)<br>
+       Table by Chris at Bless your Chart"
+    )
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |>
+  gt::tab_options(
+    table.width = gt::px(680)
+  ) |>
+  gtUtils::gt_border_grid(
+    color          = "black",
+    weight         = 2,
+    include_labels = FALSE
+  ) -> grid_tbl
+
+gt_save_crop(
+  grid_tbl,
+  file       = "ncaat_grid.png",
+  whitespace = 60,
+  bg         = "white"
+)
+
+grid_tbl
+
+```
