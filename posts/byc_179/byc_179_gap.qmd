@@ -3,6 +3,7 @@ title: "179: Widening gap"
 date: "2026-03-18"
 categories:
   - gtUtils
+  - geom_errorbar
 format:
   html:
     code-fold: true
