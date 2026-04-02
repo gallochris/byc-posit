@@ -72,17 +72,18 @@ all_teams_srs <- purrr::map(teams, \(team) {
 }) |>
   dplyr::bind_rows()
 
+write.csv(all_teams_srs, "all_teams_srs.csv")
 
 #--------------------------------------------------------------------
 
-df <- readr::read_csv("srs_combined.csv") |>
+df <- all_teams_srs  |>
   dplyr::mutate(
     year   = as.integer(stringr::str_sub(Season, 1, 4)),
-    is_unc = Team == "North Carolina"
+    is_unc = team_name == "North Carolina"
   ) |>
   dplyr::filter(year >= 1960) |>
-  dplyr::arrange(Team, year) |>
-  dplyr::group_by(Team) |>
+  dplyr::arrange(team_name, year) |>
+  dplyr::group_by(team_name) |>
   dplyr::mutate(
     srs_roll = zoo::rollmean(SRS, k = 5, fill = NA, align = "center")
   ) |>
@@ -95,32 +96,11 @@ unc_label <- unc |>
   dplyr::filter(!is.na(srs_roll)) |>
   dplyr::slice_tail(n = 1)
 
-# Era markers: coach name + start year
-eras <- tibble::tibble(
-  year  = c(1962, 1997, 2003, 2021),
-  label = c("Dean Smith", "Bill Guthridge /\nMatt Doherty", "Roy Williams", "Hubert Davis")
-)
 
 ggplot2::ggplot() +
-  ggplot2::geom_vline(
-    data     = eras,
-    mapping  = ggplot2::aes(xintercept = year),
-    color    = "#CCCCCC",
-    linetype = "dotted",
-    linewidth = 0.5
-  ) +
-  ggplot2::geom_text(
-    data    = eras,
-    mapping = ggplot2::aes(x = year, y = 32, label = label),
-    color   = "#AAAAAA",
-    size    = 2.6,
-    hjust   = 0,
-    nudge_x = 0.4,
-    lineheight = 0.85
-  ) +
   ggplot2::geom_line(
     data      = gray_teams,
-    mapping   = ggplot2::aes(x = year, y = srs_roll, group = Team),
+    mapping   = ggplot2::aes(x = year, y = srs_roll, group = team_name),
     color     = "#D0D0D0",
     linewidth = 0.4,
     alpha     = 0.5,
@@ -152,13 +132,14 @@ ggplot2::ggplot() +
     y        = unc_label$srs_roll,
     label    = "North Carolina",
     color    = "#4B9CD3",
+    family = "Roboto Condensed",
     hjust    = 0,
     size     = 3.3,
     fontface = "bold"
   ) +
   ggplot2::scale_x_continuous(
     limits = c(1960, 2030),
-    breaks = seq(1960, 2030, by = 10),
+    breaks = seq(1960, 2030, by = 5),
     expand = ggplot2::expansion(mult = c(0.01, 0.12))
   ) +
   ggplot2::scale_y_continuous(
@@ -166,22 +147,22 @@ ggplot2::ggplot() +
     labels = function(x) dplyr::if_else(x == 35, "35 (higher = better)", as.character(x))
   ) +
   ggplot2::labs(
-    title    = "North Carolina Basketball SRS Over Time",
-    subtitle = "5-year rolling average ",
-    x        = NULL,
+    title    = "Carolina basketball's continues to strive for sustained consistency",
+    subtitle = "5-year rolling SRS (simple-rating-system) across 75+ major-conference programs since 1960. North Carolina in blue, all others programs in gray.",
+    x        = "",
     y        = "Simple Rating System (SRS)",
-    caption  = "Source: Sports-Reference · 5-year centered rolling mean (±2 seasons)"
+    caption  = "data via sports-reference.com <br><br>Viz by Chris at Bless your chart"
   ) +
-  ggplot2::theme_minimal(base_size = 13) +
+ hrbrthemes::theme_ipsum(
+   base_family = "Roboto Condensed",
+ ) +
   ggplot2::theme(
-    plot.title       = ggplot2::element_text(face = "bold", size = 16,
-                                             margin = ggplot2::margin(b = 4)),
-    plot.subtitle    = ggplot2::element_text(color = "#555555", size = 11,
-                                             margin = ggplot2::margin(b = 12)),
-    plot.caption     = ggplot2::element_text(color = "#888888", size = 8, hjust = 1),
+    plot.title    = ggtext::element_markdown(face = "bold", size = 14, family = "Roboto Condensed"),
+    plot.subtitle = ggtext::element_markdown(size = 10, colour = "grey40", family = "Roboto Condensed"),
+    plot.caption  = ggtext::element_markdown(size = 8, colour = "grey50", family = "Roboto Condensed", face = "plain"),
     panel.grid.minor = ggplot2::element_blank(),
     panel.grid.major = ggplot2::element_line(color = "#EEEEEE"),
-    axis.title.y     = ggplot2::element_text(size = 10, color = "#444444"),
+    axis.title.y     = ggplot2::element_text(size = 10, color = "#444444", family = "Roboto Condensed"),
     axis.text.x      = ggplot2::element_text(size = 10),
     legend.position  = "none",
     plot.margin      = ggplot2::margin(16, 24, 12, 16)

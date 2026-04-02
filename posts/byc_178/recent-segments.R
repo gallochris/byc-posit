@@ -1,4 +1,4 @@
-pbp <- bigballR::get_play_by_play(schedule$Game_ID[24:32])
+pbp <- bigballR::get_play_by_play(schedule$Game_ID[24:33])
 
 scores_by_5min_span <- pbp |>
   dplyr::mutate(
@@ -11,6 +11,7 @@ scores_by_5min_span <- pbp |>
       Game_Seconds <= 1800 ~ 30,
       Game_Seconds <= 2100 ~ 35,
       Game_Seconds <= 2400 ~ 40,
+      Game_Seconds <= 2700 ~ 45,
       TRUE ~ NA_real_
     )
   ) |>
@@ -69,6 +70,11 @@ unc_spans_wide_full <- scores_by_5min_span |>
     score_30   = paste0(UNC_Points_In_Span_30, "-", Opponent_Points_In_Span_30),
     score_35   = paste0(UNC_Points_In_Span_35, "-", Opponent_Points_In_Span_35),
     score_40   = paste0(UNC_Points_In_Span_40, "-", Opponent_Points_In_Span_40),
+    score_45   = dplyr::if_else(
+      !is.na(UNC_Points_In_Span_45),
+      paste0(UNC_Points_In_Span_45, "-", Opponent_Points_In_Span_45),
+      NA_character_
+    ),
     diff_t         = rowSums(dplyr::across(dplyr::starts_with("UNC_Span_Diff_")),           na.rm = TRUE),
     UNC_total      = rowSums(dplyr::across(dplyr::starts_with("UNC_Points_In_Span_")),      na.rm = TRUE),
     Opponent_total = rowSums(dplyr::across(dplyr::starts_with("Opponent_Points_In_Span_")), na.rm = TRUE),
@@ -88,6 +94,7 @@ totals_row <- unc_spans_wide_full |>
     score_30    = paste0(UNC_Points_In_Span_30, "-", Opponent_Points_In_Span_30),
     score_35    = paste0(UNC_Points_In_Span_35, "-", Opponent_Points_In_Span_35),
     score_40    = paste0(UNC_Points_In_Span_40, "-", Opponent_Points_In_Span_40),
+    score_45    = paste0(UNC_Points_In_Span_45, "-", Opponent_Points_In_Span_45),
     score_total = paste0(UNC_total, "-", Opponent_total)
   )
 
@@ -117,19 +124,20 @@ unc_spans_with_totals <- dplyr::bind_rows(
 # make table
 diff_tbl_a <- unc_spans_with_totals |>
   dplyr::mutate(
-      opp_desc = dplyr::case_when(
-        UNC_Opponent_Label == "Miami FL"    ~ paste0("Away | ", Date),
-        UNC_Opponent_Label == "Pittsburgh"  ~ paste0("Home | ", Date),
-        UNC_Opponent_Label == "NC State"    ~ paste0("Away | ", Date),
-        UNC_Opponent_Label == "Syracuse"    ~ paste0("Away | ", Date),
-        UNC_Opponent_Label == "Louisville"  ~ paste0("Home | ", Date),
-        UNC_Opponent_Label == "Virginia Tech" ~ paste0("Home | ", Date),
-        UNC_Opponent_Label == "Clemson (1)" ~ paste0("Home | ", Date),
-        UNC_Opponent_Label == "Duke"        ~ paste0("Away | ", Date),
-        UNC_Opponent_Label == "Clemson (2)" ~ paste0("Neutral (ACCT) | ", Date),
-        UNC_Opponent_Label == "TOTALS"      ~ "5-4 in this span",
-        TRUE ~ Date
-      ),
+    opp_desc = dplyr::case_when(
+      UNC_Opponent_Label == "Miami FL"    ~ paste0("Away | ", Date),
+      UNC_Opponent_Label == "Pittsburgh"  ~ paste0("Home | ", Date),
+      UNC_Opponent_Label == "NC State"    ~ paste0("Away | ", Date),
+      UNC_Opponent_Label == "Syracuse"    ~ paste0("Away | ", Date),
+      UNC_Opponent_Label == "Louisville"  ~ paste0("Home | ", Date),
+      UNC_Opponent_Label == "Virginia Tech" ~ paste0("Home | ", Date),
+      UNC_Opponent_Label == "Clemson (1)" ~ paste0("Home | ", Date),
+      UNC_Opponent_Label == "Duke"        ~ paste0("Away | ", Date),
+      UNC_Opponent_Label == "Clemson (2)" ~ paste0("Neutral (ACCT) | ", Date),
+      UNC_Opponent_Label == "VCU" ~ paste0("Neutral (NCAAT R64) | ", Date),
+      UNC_Opponent_Label == "TOTALS"      ~ "5-5 in this span",
+      TRUE ~ Date
+    ),
     team_lookup = dplyr::case_when(
       UNC_Opponent_Label == "TOTALS"                          ~ "North Carolina",
       stringr::str_detect(UNC_Opponent_Label, "NC State")     ~ "NC State Wolfpack",
@@ -147,6 +155,10 @@ diff_tbl_a <- unc_spans_with_totals |>
       TRUE ~ UNC_Opponent_Label
     ),
     Date = dplyr::if_else(is.na(Date), "", Date)
+  ) |>
+  dplyr::mutate(
+    score_45 = dplyr::if_else(is.na(score_45), "", score_45),
+    diff_45  = dplyr::if_else(is.na(diff_45),  NA_real_, diff_45)  # keep numeric NA for data_color to skip
   ) |>
   dplyr::relocate(team_lookup) |>
   gt::gt(groupname_col = "row_group") |>
@@ -167,6 +179,7 @@ diff_tbl_a <- unc_spans_with_totals |>
   gtExtras::gt_merge_stack(col1 = diff_30, col2 = score_30,    palette = c("black", "#333333")) |>
   gtExtras::gt_merge_stack(col1 = diff_35, col2 = score_35,    palette = c("black", "#333333")) |>
   gtExtras::gt_merge_stack(col1 = diff_40, col2 = score_40,    palette = c("black", "#333333")) |>
+  gtExtras::gt_merge_stack(col1 = diff_45, col2 = score_45,    palette = c("black", "#333333")) |>
   gtExtras::gt_merge_stack(col1 = diff_t,  col2 = score_total, palette = c("black", "#333333")) |>
   gt::cols_add(diff_gap  = "", .before = diff_25) |>
   gt::cols_add(total_gap = "", .before = diff_t) |>
@@ -181,17 +194,18 @@ diff_tbl_a <- unc_spans_with_totals |>
     diff_30      = "25-30",
     diff_35      = "30-35",
     diff_40      = "35-40",
+    diff_45      = "OT",
     total_gap    = "",
     diff_t       = "TOTAL"
   ) |>
   gt::tab_spanner(label = "1st Half", columns = c(diff_5, diff_10, diff_15, diff_20)) |>
   gt::tab_spanner(label = "2nd Half", columns = c(diff_25, diff_30, diff_35, diff_40)) |>
   gt::fmt(
-    columns = c(diff_5, diff_10, diff_15, diff_20, diff_25, diff_30, diff_35, diff_40, diff_t),
+    columns = c(diff_5, diff_10, diff_15, diff_20, diff_25, diff_30, diff_35, diff_40, diff_45, diff_t),
     fns = function(x) ifelse(x > 0, paste0("+", x), as.character(x))
   ) |>
   gt::data_color(
-    columns = c(diff_5, diff_10, diff_15, diff_20, diff_25, diff_30, diff_35, diff_40, diff_t),
+    columns = c(diff_5, diff_10, diff_15, diff_20, diff_25, diff_30, diff_35, diff_40, diff_45, diff_t),
     colors = scales::col_bin(
       bins    = c(-Inf, 0, Inf),
       palette = c("#ffe7e7", "#d0e4f3")
@@ -211,6 +225,17 @@ diff_tbl_a <- unc_spans_with_totals |>
       gt::cells_column_spanners()
     )
   ) |>
+  gt::sub_missing(
+    columns = c(diff_45, score_45),
+    missing_text = "-"
+  ) |>
+  gt::tab_style(
+    style = gt::cell_fill(color = "#f0f0f0"),
+    locations = gt::cells_body(
+      columns = diff_45,
+      rows = is.na(diff_45)
+    )
+  ) |>
   gt::tab_style(
     style     = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
@@ -220,12 +245,12 @@ diff_tbl_a <- unc_spans_with_totals |>
     locations = gt::cells_body(columns = diff_t)
   ) |>
   gt::tab_header(
-    title    = gt::html("North Carolina: Point differential by 5-minute segment<br> of game time over the last 9 games"),
-    subtitle = "Carolina is 5-4 over its last nine games."
+    title    = gt::html("North Carolina: Point differential by 5-minute segment<br> of game time over the last 10 games or 2025-26 season"),
+    subtitle = "Carolina finished the season 24-9 overall and 5-5 over its last 10 games."
   ) |>
   gtUtils::gt_538_caption(
     "Data via {bigballR} | theme via {gtUtils} and logos from ESPN.",
-    "<b>Table by Chris at Bless your chart | March 13, 2026</b>"
+    "<b>Table by Chris at Bless your chart | March 20, 2026</b>"
   ) |>
   gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
   gt::tab_options(table.width = gt::px(725)) |>

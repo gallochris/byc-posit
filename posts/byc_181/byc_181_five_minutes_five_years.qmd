@@ -1,0 +1,970 @@
+---
+title: "181: Five years, five minutes"
+date: "2026-04-02"
+categories:
+  - gtUtils
+  - geom_line
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT function 
+
+```{r load-data, warning=FALSE, message=FALSE}
+library(rlang)
+library(cbbplotR)
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### Duke table
+
+```{r du-tbl, warning=FALSE, message=FALSE}
+
+du_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+        <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/41.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>UConn 73, Duke 72<br>Possessions over last 5 minutes</span>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 12px; text-align: center;'>UConn outscored Duke 15-5 over the last five minutes.</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'><br>March 29, 2026 |  Capital One Arena Washington D.C.</span>
+     </div>
+     <div>
+        <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/150.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>"
+)
+
+du <- tibble::tibble(
+  team = c("Connecticut", "Duke"),
+  p1   = c(2L,  0L),
+  p2   = c(2L,  0L),
+  p3   = c(3L,  2L),
+  p4   = c(0L,  0L),
+  p5   = c(0L,  1L),
+  p6   = c(1L,  0L),
+  p7   = c(3L,  2L),
+  p8   = c(1L,  0L),
+  p9   = c(3L,  NA_integer_),
+  f  = c(15L, 5L)
+)
+
+du_tbl <- du |> 
+  cbbplotR::gt_cbb_teams(team, team, include_name = FALSE)  |>
+  gt::gt()  |>
+  gt::fmt_markdown(columns = gt::everything()) |> 
+  gtExtras::gt_theme_dot_matrix() |>
+  gt::tab_options (
+    source_notes.font.size = gt::px(10),
+    row.striping.background_color = '#ffffff',
+    column_labels.text_transform = 'none',
+    column_labels.font.weight = 'bold',
+    table_body.border.bottom.color = "black",
+    table_body.hlines.color = "black"
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = c(2, 3, 4, 7, 8, 9, 10, 11),
+    fill =  "#e4002b",
+    alpha = 0.6
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(4, 6, 8),
+    fill = "#00539B",
+    alpha = 0.6
+  ) |> 
+  gt::sub_missing(missing_text = "---") |> 
+  gt::cols_align(columns = -c(team), align = "center") |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = gt::px(0.5)
+    ),
+    locations = gt::cells_body(rows = 1)
+  ) |> 
+  gt::tab_header(title = gt::html(du_header)) |>
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<b>UConn advances to 2026 Final Four</b> | <b>Season records</b>: UConn 33-5 | Duke 35-3<br><br>
+        <hr>
+        <b>UConn Last five minutes</b>:<br>
+        <b>3PTM-3PTA</b>: 2-3 | <b>2PTM-2PTA</b>: 3-5 | <b>FTM-FTA</b>: 3-5<br>
+        <b>Rebounds</b>: 5 DR, 1 OR | <b>Turnovers</b>: 0<br>
+        <b>Blocks</b>: 1 | <b>Steals:</b> 3<br>
+        <hr>
+        <b>Duke Last five minutes</b>:<br>
+        <b>3PTM-3PTA</b>: 0-0 | <b>2PTM-2PTA</b>: 2-4 | <b>FTM-FTA</b>: 1-2<br>
+        <b>Rebounds</b>: 2 DR, 0 OR | <b>Turnovers</b>: 3<br>
+        <b>Blocks</b>: 0 | <b>Steals:</b> 0<br>
+        <hr style='border-color: black;'><b>Data via statbroadcast.com | Table by Chris at Bless your chart</b>"
+      )
+  ) |> 
+  gt::cols_label_with(fn = ~ gsub("^p", "", .x)) |> 
+  gt::cols_label(
+    team = "",
+    f = ""
+  ) |> 
+  gt::cols_width(
+    team ~ gt::px(50),
+    tidyselect::matches("^p[0-9]+$") ~ gt::px(55),
+    f ~ gt::px(65)
+  ) |> 
+  gtExtras::gt_add_divider(columns = c(10), sides = "right",
+                           color = "black", weight = 4.5) |> 
+  gtUtils::gt_border_bars_bottom(c("#000e2f", 
+                                   "white", "#7C878E", "#e4002b"))
+
+gt_save_crop(
+  du_tbl,
+  file = "du_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+
+du_tbl 
+
+```
+
+### 
+
+### Duke-UConn possession plot
+
+```{r duke-poss, warning=FALSE, message=FALSE}
+
+st <- readr::read_csv("st.csv")
+
+home_team <- "Duke"
+away_team <- "UConn"
+home_col  <- "#00539B"
+away_col  <- "#e4002b"
+
+no_fts <- st |>
+  dplyr::filter(
+    Event_Type %in% c(
+      "Two Point Jumper", "Three Point Jumper", "Layup",
+      "Dunk", "Hook", "Tip Shot", "Turnover"
+    )
+  ) |>
+  dplyr::mutate(
+    scoring = dplyr::case_match(
+      Event_Result, "made" ~ TRUE, "missed" ~ FALSE, NA ~ FALSE
+    ),
+    pts_value = dplyr::case_when(
+      Event_Type == "Turnover" ~ -1L,
+      Event_Result == "missed" ~ 0L,
+      Event_Result == "made" & Shot_Value == 2 ~ 2L,
+      Event_Result == "made" & Shot_Value == 3 ~ 3L,
+      .default = 0L
+    ),
+    ft_label = NA_character_
+  )
+
+ft_detail <- st |>
+  dplyr::filter(Event_Type == "Free Throw") |>
+  dplyr::arrange(Game_Seconds) |>
+  dplyr::mutate(
+    ft_symbol = dplyr::if_else(Event_Result == "made", "1", "\u00d7")
+  ) |>
+  dplyr::group_by(Poss_Num) |>
+  dplyr::summarise(
+    ft_made  = sum(Event_Result == "made"),
+    ft_att   = dplyr::n(),
+    ft_label = paste(ft_symbol, collapse = " "),
+    .groups  = "drop"
+  )
+
+and1_fg <- no_fts |>
+  dplyr::filter(scoring == TRUE, Event_Type != "Turnover") |>
+  dplyr::select(Poss_Num, fg_pts = pts_value)
+
+ft_events <- st |>
+  dplyr::filter(Event_Type == "Free Throw") |>
+  dplyr::group_by(Poss_Num) |>
+  dplyr::slice_tail(n = 1) |>
+  dplyr::ungroup() |>
+  dplyr::left_join(ft_detail, by = "Poss_Num") |>
+  dplyr::left_join(and1_fg,   by = "Poss_Num") |>
+  dplyr::mutate(
+    scoring   = ft_made > 0 | !is.na(fg_pts),
+    pts_value = ft_made + dplyr::coalesce(fg_pts, 0L),
+    ft_label  = dplyr::if_else(
+      !is.na(fg_pts),
+      paste0(fg_pts, "+", ft_label),
+      ft_label
+    )
+  ) |>
+  dplyr::select(-fg_pts)
+
+ft_summary_tbl <- st |>
+  dplyr::filter(Event_Type == "Free Throw") |>
+  dplyr::group_by(Poss_Team) |>
+  dplyr::summarise(
+    ft_made = sum(Event_Result == "made"),
+    ft_att  = dplyr::n(),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(ft_str = paste0(ft_made, "/", ft_att))
+
+game_plot <- no_fts |>
+  dplyr::bind_rows(ft_events) |>
+  dplyr::arrange(Game_Seconds) |>
+  dplyr::filter(
+    Event_Type %in% c(
+      "Two Point Jumper", "Three Point Jumper", "Layup",
+      "Dunk", "Hook", "Tip Shot", "Free Throw", "Turnover"
+    )
+  ) |>
+  dplyr::mutate(
+    scoring_type = dplyr::case_when(
+      Event_Type == "Turnover"                        ~ "turnover",
+      Event_Type == "Free Throw" & scoring == TRUE    ~ "free_throw",
+      Event_Type == "Free Throw" & scoring == FALSE   ~ "miss_ft",
+      Shot_Value == 2 & scoring == TRUE               ~ "two_pointer",
+      Shot_Value == 3 & scoring == TRUE               ~ "three_pointer",
+      scoring == FALSE & Shot_Value == 2              ~ "miss_2",
+      scoring == FALSE & Shot_Value == 3              ~ "miss_3",
+      TRUE                                            ~ NA_character_
+    )
+  ) |>
+  dplyr::filter(!is.na(scoring_type))
+
+half_labels <- c("1st Half", "2nd Half")
+
+lollipop_data <- game_plot |>
+  dplyr::mutate(
+    is_home_poss = (Poss_Team == home_team),
+    y_val        = dplyr::if_else(is_home_poss, Poss_Length, -Poss_Length),
+    isTransition = Poss_Length <= 8,
+    dot_label = dplyr::case_when(
+      scoring_type == "turnover"                            ~ "\u00d7",
+      scoring_type %in% c("free_throw", "miss_ft")         ~ ft_label,
+      scoring_type %in% c("two_pointer", "miss_2")         ~ "2",
+      scoring_type %in% c("three_pointer", "miss_3")       ~ "3",
+      TRUE                                                  ~ ""
+    ),
+    dot_fontface = dplyr::if_else(
+      scoring_type %in% c("free_throw", "two_pointer", "three_pointer"),
+      "bold", "plain"
+    ),
+    dot_color = dplyr::if_else(is_home_poss, home_col, away_col),
+    label_color = dplyr::case_when(
+      scoring_type == "turnover"                            ~ "#cc0000",
+      scoring_type %in% c("miss_ft", "miss_2", "miss_3")   ~ "#cc0000",
+      scoring_type == "free_throw"                          ~ "#2E8B57",
+      scoring_type == "two_pointer"                         ~ "#006400",
+      scoring_type == "three_pointer"                       ~ "#004225",
+      TRUE                                                  ~ "#333333"
+    ),
+    half = factor(
+      dplyr::if_else(Game_Seconds <= 1200, "1st Half", "2nd Half"),
+      levels = half_labels
+    )
+  ) |>
+  dplyr::group_by(Poss_Num) |>
+  dplyr::slice_tail(n = 1) |>
+  dplyr::ungroup() |>
+  dplyr::arrange(Game_Seconds)
+
+poss_summary <- lollipop_data |>
+  dplyr::group_by(Poss_Team) |>
+  dplyr::summarise(
+    possessions  = dplyr::n(),
+    total_sec    = sum(Poss_Length, na.rm = TRUE),
+    avg_poss_len = round(mean(Poss_Length, na.rm = TRUE), 1),
+    .groups      = "drop"
+  ) |>
+  dplyr::mutate(
+    time_fmt = sprintf("%d:%02d", total_sec %/% 60L, as.integer(total_sec %% 60L))
+  )
+
+poss_start <- st |>
+  dplyr::group_by(Poss_Num) |>
+  dplyr::summarise(poss_start_sec = min(Game_Seconds), .groups = "drop")
+
+oreb_data <- st |>
+  dplyr::filter(Event_Type == "Offensive Rebound") |>
+  dplyr::select(Poss_Num, Poss_Team, Game_Seconds, Poss_Length) |>
+  dplyr::left_join(poss_start, by = "Poss_Num") |>
+  dplyr::mutate(
+    is_home_poss = (Poss_Team == home_team),
+    elapsed      = Game_Seconds - poss_start_sec,
+    y_oreb       = dplyr::if_else(is_home_poss, elapsed, -elapsed)
+  ) |>
+  dplyr::left_join(
+    lollipop_data |> dplyr::select(Poss_Num, x_game_sec = Game_Seconds, half),
+    by = "Poss_Num"
+  ) |>
+  dplyr::filter(!is.na(x_game_sec))
+
+oreb_summary <- st |>
+  dplyr::filter(Event_Type == "Offensive Rebound") |>
+  dplyr::count(Poss_Team, name = "orebs")
+
+
+team_summary <- poss_summary |>
+  dplyr::left_join(oreb_summary,   by = "Poss_Team") |>
+  dplyr::left_join(ft_summary_tbl, by = "Poss_Team") |>
+  dplyr::mutate(
+    orebs        = tidyr::replace_na(orebs, 0L),
+    ft_str       = tidyr::replace_na(ft_str, "0/0"),
+    time_fmt     = tidyr::replace_na(time_fmt, "0:00"),
+    avg_poss_len = tidyr::replace_na(avg_poss_len, 0)
+  )
+
+home_stats <- team_summary |> dplyr::filter(Poss_Team == home_team)
+away_stats <- team_summary |> dplyr::filter(Poss_Team == away_team)
+
+
+home_logo_data <- tibble::tibble(
+  x    = c(50, 1250),
+  y    = c(30, 30),
+  team = "Duke",
+  half = factor(c("1st Half", "2nd Half"), levels = half_labels)
+)
+
+away_logo_data <- tibble::tibble(
+  x    = c(50, 1250),
+  y    = c(-30, -30),
+  team = "Connecticut",
+  half = factor(c("1st Half", "2nd Half"), levels = half_labels)
+)
+
+
+score_diff_overlay <- st |>
+  dplyr::select(Game_Seconds, Home_Score, Away_Score) |>
+  dplyr::distinct(Game_Seconds, .keep_all = TRUE) |>
+  dplyr::arrange(Game_Seconds) |>
+  dplyr::mutate(score_diff = Home_Score - Away_Score)
+
+lead_change_sec <- score_diff_overlay |>
+  dplyr::arrange(Game_Seconds) |>
+  dplyr::mutate(prev_diff = dplyr::lag(score_diff)) |>
+  dplyr::filter(!is.na(prev_diff), score_diff <= 0, prev_diff > 0, Game_Seconds > 1200) |>
+  dplyr::slice_tail(n = 1) |>
+  dplyr::pull(Game_Seconds)
+
+
+ten_min_lines <- tibble::tibble(
+  Game_Seconds = c(600, 1800),
+  half         = factor(c("1st Half", "2nd Half"), levels = half_labels)
+)
+
+
+run_data <- lollipop_data |>
+  dplyr::mutate(
+    pts_scored = dplyr::case_when(
+      scoring_type == "two_pointer"   ~ 2L,
+      scoring_type == "three_pointer" ~ 3L,
+      scoring_type == "free_throw"    ~ pts_value,
+      TRUE                            ~ 0L
+    ),
+    scoring_team = dplyr::if_else(pts_scored > 0, Poss_Team, NA_character_)
+  )
+
+detect_runs <- function(data, min_pts = 6, min_edge = 6,
+                        home_team = "", away_team = "") {
+  
+  scoring <- data |>
+    dplyr::filter(pts_scored > 0) |>
+    dplyr::arrange(Game_Seconds)
+  
+  if (nrow(scoring) < 2) {
+    return(tibble::tibble(
+      team = character(), start_sec = numeric(), end_sec = numeric(),
+      team_pts = integer(), opp_pts = integer(), edge = integer(),
+      duration_sec = numeric(), half = character(),
+      is_home = logical(), run_label = character()
+    ))
+  }
+  
+  x0_scoring <- scoring |> dplyr::filter(Game_Seconds <= 2100)
+  
+  x0_runs <- purrr::map(c("1st Half", "2nd Half"), \(h) {
+    hd <- x0_scoring |> dplyr::filter(half == h)
+    if (nrow(hd) < 1) return(NULL)
+    
+    runs      <- list()
+    cur_team  <- NA_character_
+    cur_pts   <- 0L
+    cur_start <- NA_real_
+    cur_end   <- NA_real_
+    
+    for (i in seq_len(nrow(hd))) {
+      row  <- hd[i, ]
+      team <- row$Poss_Team
+      if (is.na(cur_team) || team == cur_team) {
+        if (is.na(cur_team)) cur_start <- row$Game_Seconds
+        cur_team <- team
+        cur_pts  <- cur_pts + row$pts_scored
+        cur_end  <- row$Game_Seconds
+      } else {
+        if (cur_pts >= min_pts) {
+          runs <- c(runs, list(tibble::tibble(
+            team         = cur_team,
+            start_sec    = cur_start,
+            end_sec      = cur_end,
+            team_pts     = cur_pts,
+            opp_pts      = 0L,
+            edge         = cur_pts,
+            duration_sec = cur_end - cur_start,
+            half         = h
+          )))
+        }
+        cur_team  <- team
+        cur_pts   <- row$pts_scored
+        cur_start <- row$Game_Seconds
+        cur_end   <- row$Game_Seconds
+      }
+    }
+    if (!is.na(cur_team) && cur_pts >= min_pts) {
+      runs <- c(runs, list(tibble::tibble(
+        team         = cur_team,
+        start_sec    = cur_start,
+        end_sec      = cur_end,
+        team_pts     = cur_pts,
+        opp_pts      = 0L,
+        edge         = cur_pts,
+        duration_sec = cur_end - cur_start,
+        half         = h
+      )))
+    }
+    dplyr::bind_rows(runs)
+  }) |> dplyr::bind_rows()
+  
+
+  late_scoring <- scoring |> dplyr::filter(Game_Seconds > 2100)
+  
+  diff_runs <- if (nrow(late_scoring) >= 2) {
+    hd <- late_scoring
+    n  <- nrow(hd)
+    is_home_vec <- hd$Poss_Team == home_team
+    cum_home    <- cumsum(dplyr::if_else(is_home_vec,  hd$pts_scored, 0L))
+    cum_away    <- cumsum(dplyr::if_else(!is_home_vec, hd$pts_scored, 0L))
+    cum_diff    <- cum_home - cum_away
+    
+    runs <- list()
+    i    <- 1L
+    while (i < n) {
+      ref_home <- if (i > 1L) cum_home[i - 1L] else 0L
+      ref_away <- if (i > 1L) cum_away[i - 1L] else 0L
+      ref_diff <- if (i > 1L) cum_diff[i - 1L] else 0L
+      
+      best_j <- NULL
+      for (j in (i + 1L):n) {
+        local_diff <- cum_diff[j] - ref_diff
+        if (abs(local_diff) >= min_edge) {
+          best_j <- j
+        }
+      }
+      
+      if (!is.null(best_j)) {
+        is_home_run <- (cum_diff[best_j] - ref_diff) > 0
+        h_pts    <- cum_home[best_j] - ref_home
+        a_pts    <- cum_away[best_j] - ref_away
+        duration <- hd$Game_Seconds[best_j] - hd$Game_Seconds[i]
+        
+        runs <- c(runs, list(tibble::tibble(
+          team         = if (is_home_run) home_team else away_team,
+          start_sec    = hd$Game_Seconds[i],
+          end_sec      = hd$Game_Seconds[best_j],
+          team_pts     = if (is_home_run) h_pts else a_pts,
+          opp_pts      = if (is_home_run) a_pts else h_pts,
+          edge         = abs(cum_diff[best_j] - ref_diff),
+          duration_sec = duration,
+          half         = "2nd Half"
+        )))
+        i <- best_j + 1L
+      } else {
+        i <- i + 1L
+      }
+    }
+    dplyr::bind_rows(runs)
+  } else { NULL }
+  
+  result <- dplyr::bind_rows(x0_runs, diff_runs)
+  
+  if (nrow(result) == 0) {
+    return(result |> dplyr::mutate(
+      is_home      = logical(),
+      half         = factor(character(), levels = half_labels),
+      run_label    = character()
+    ))
+  }
+  
+  result |>
+    dplyr::mutate(
+      is_home   = (team == home_team),
+      half      = factor(half, levels = half_labels),
+      run_label = paste0(
+        team_pts, "-", opp_pts, " (",
+        as.integer(duration_sec %/% 60), ":",
+        sprintf("%02d", as.integer(duration_sec %% 60)), ")"
+      )
+    )
+}
+
+runs <- detect_runs(
+  run_data,
+  min_pts   = 6,
+  min_edge  = 6,
+  home_team = home_team,
+  away_team = away_team
+)
+
+
+game_clock_breaks <- c(seq(0, 1200, by = 120), seq(1200, 2400, by = 120)) |> unique()
+game_clock_labels <- game_clock_breaks |>
+  purrr::map_chr(function(sec) {
+    half_sec  <- dplyr::if_else(sec <= 1200, sec, sec - 1200)
+    mins_left <- (1200 - half_sec) / 60
+    sprintf("%d:00", as.integer(mins_left))
+  })
+
+
+full_subtitle <- glue::glue(
+  "<span style='color:{away_col}'>**{away_team}**</span>: ",
+  "{away_stats$possessions[1]} poss \u00b7 {away_stats$time_fmt[1]} \u00b7 ",
+  "{away_stats$avg_poss_len[1]}s avg \u00b7 {away_stats$orebs[1]} OREB \u00b7 ",
+  "FT {away_stats$ft_str[1]} <br><br>",
+  "<span style='color:{home_col}'>**{home_team}**</span>: ",
+  "{home_stats$possessions[1]} poss \u00b7 {home_stats$time_fmt[1]} \u00b7 ",
+  "{home_stats$avg_poss_len[1]}s avg \u00b7 {home_stats$orebs[1]} OREB \u00b7 ",
+  "FT {home_stats$ft_str[1]} &nbsp;&nbsp;&nbsp;",
+)
+
+
+max_diff <- max(score_diff_overlay$score_diff, na.rm = TRUE)
+min_diff <- min(score_diff_overlay$score_diff, na.rm = TRUE)
+
+p_ribbon <- score_diff_overlay |>
+  ggplot2::ggplot(ggplot2::aes(x = Game_Seconds)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = pmax(score_diff, 0)), fill = home_col, alpha = 0.5) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = pmin(score_diff, 0), ymax = 0), fill = away_col, alpha = 0.5) +
+  ggplot2::geom_line(ggplot2::aes(y = score_diff), color = "#333333", linewidth = 0.5) +
+  { if (length(lead_change_sec) > 0)
+    list(
+      ggplot2::geom_vline(xintercept = lead_change_sec, linetype = "dashed", color = away_col, linewidth = 0.5),
+      ggplot2::annotate("text", x = lead_change_sec, y = max(max_diff * 0.85, 1), label = paste0(away_team, " takes lead"), hjust = 1.08, size = 2.3, color = away_col, fontface = "bold", family = "Roboto Condensed")
+    )
+  } +
+  ggplot2::annotate("text", x = 2420, y = max(max_diff * 0.6, 1), label = home_team, hjust = 0, size = 2.5, color = home_col, fontface = "bold", family = "Roboto Condensed") +
+  ggplot2::annotate("text", x = 2420, y = min(min_diff * 0.6, -1), label = away_team, hjust = 0, size = 2.5, color = away_col, fontface = "bold", family = "Roboto Condensed") +
+  ggplot2::scale_x_continuous(limits = c(0, 2400), expand = ggplot2::expansion(mult = c(0.01, 0.01))) +
+  ggplot2::scale_y_continuous(labels = function(x) abs(x)) +
+  hrbrthemes::theme_ipsum(base_family = "Roboto Condensed", grid = FALSE, plot_margin = ggplot2::margin(5, 40, 0, 5)) +
+  ggplot2::theme(legend.position = "none", axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_text(size = 7, color = "#999999"), axis.title = ggplot2::element_blank(), plot.title = ggtext::element_markdown(size = 16, face = "bold"), plot.subtitle = ggtext::element_markdown(size = 9, color = "#555555")) +
+  ggplot2::labs(title = "UConn 73, Duke 72", x = "", y = "", subtitle = full_subtitle)
+
+runs_home <- runs |> dplyr::filter(is_home)
+runs_away <- runs |> dplyr::filter(!is_home)
+
+p_lollipop <- lollipop_data |>
+  ggplot2::ggplot(ggplot2::aes(x = Game_Seconds, y = y_val)) +
+  {
+    layers <- list()
+    if (nrow(runs_home) > 0) {
+      layers <- c(layers, list(
+        ggplot2::geom_rect(data = runs_home, ggplot2::aes(xmin = start_sec - 5, xmax = end_sec + 5, ymin = 0, ymax = Inf, fill = is_home), alpha = 0.08, inherit.aes = FALSE),
+        ggplot2::geom_label(data = runs_home, ggplot2::aes(x = (start_sec + end_sec) / 2, y = 32, label = run_label, color = home_col), size = 3, fontface = "bold", vjust = 0, label.size = 0, fill = "white", alpha = 0.8, family = "Roboto Condensed", inherit.aes = FALSE)
+      ))
+    }
+    if (nrow(runs_away) > 0) {
+      layers <- c(layers, list(
+        ggplot2::geom_rect(data = runs_away, ggplot2::aes(xmin = start_sec - 5, xmax = end_sec + 5, ymin = -Inf, ymax = 0, fill = is_home), alpha = 0.08, inherit.aes = FALSE),
+        ggplot2::geom_label(data = runs_away, ggplot2::aes(x = (start_sec + end_sec) / 2, y = -32, label = run_label, color = away_col), size = 3, fontface = "bold", vjust = 1, label.size = 0, fill = "white", alpha = 0.8, family = "Roboto Condensed", inherit.aes = FALSE)
+      ))
+    }
+    layers
+  } +
+  ggplot2::scale_fill_manual(values = stats::setNames(c(home_col, away_col), c(TRUE, FALSE)), guide = "none") +
+  ggplot2::geom_hline(yintercept = 0, color = "black", linewidth = 1) +
+  cfbplotR::geom_cfb_logos(
+    data = home_logo_data,
+    ggplot2::aes(x = x, y = y, team = team),
+    height = 0.085, alpha = 0.5, inherit.aes = FALSE
+  ) +
+  cfbplotR::geom_cfb_logos(
+    data = away_logo_data,
+    ggplot2::aes(x = x, y = y, team = team),
+    height = 0.085, alpha = 0.5, inherit.aes = FALSE
+  ) +
+  ggplot2::geom_vline(data = ten_min_lines, ggplot2::aes(xintercept = Game_Seconds), linetype = "dashed", color = "#cccccc", linewidth = 0.3) +
+  ggplot2::geom_segment(ggplot2::aes(x = Game_Seconds, xend = Game_Seconds, y = 0, yend = y_val, color = dot_color, linetype = isTransition), linewidth = 0.6, alpha = 0.35) +
+  ggplot2::scale_linetype_manual(values = stats::setNames(c("solid", "dotted"), c(FALSE, TRUE)), guide = "none") +
+  ggplot2::geom_point(data = oreb_data, ggplot2::aes(x = x_game_sec, y = y_oreb), shape = 21, size = 2, fill = NA, color = "gray50", stroke = 0.7, inherit.aes = FALSE) +
+  ggplot2::geom_text(ggplot2::aes(label = dot_label, color = label_color, fontface = dot_fontface, vjust = dplyr::if_else(y_val >= 0, 0, 1)), size = 2.5, family = "Roboto Condensed") +
+  ggplot2::scale_color_identity() +
+  ggplot2::facet_wrap(~ half, ncol = 1, scales = "free_x", strip.position = "left") +
+  ggplot2::scale_x_continuous(breaks = game_clock_breaks, labels = game_clock_labels, expand = ggplot2::expansion(mult = c(0.01, 0.01))) +
+  ggplot2::scale_y_continuous(breaks = seq(-30, 30, by = 10), labels = abs(seq(-30, 30, by = 10))) +
+  ggplot2::coord_cartesian(clip = "off") +
+  hrbrthemes::theme_ipsum(base_family = "Roboto Condensed", grid = FALSE, plot_margin = ggplot2::margin(2, 40, 5, 5)) +
+  ggplot2::theme(legend.position = "none", panel.spacing = ggplot2::unit(6, "pt"), strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1, size = 9, face = "bold", color = "#555555", family = "Roboto Condensed"), strip.background = ggplot2::element_blank(), axis.text.x = ggplot2::element_text(size = 7, color = "#999999"), axis.text.y = ggplot2::element_text(size = 7, color = "#999999"), axis.title.y = ggplot2::element_text(size = 9, color = "#555555"), plot.subtitle = ggtext::element_markdown(size = 7.5, lineheight = 1.3), plot.caption = ggplot2::element_text(size = 7, color = "#999999", face = "plain", family = "Roboto Condensed")) +
+  ggplot2::labs(x = NULL, y = "Possession Length (s)", subtitle = glue::glue("Scoring: <span style='color:#2E8B57'>free throw trips</span>, <span style='color:#006400'>two-pointers</span>, <span style='color:#004225'>three-pointers</span> &nbsp;<br><span> &nbsp;Offensive rebounds (o)</span> &nbsp; <br>Empty possessions: <span style='color:#CC0000'>missed shots or turnovers (\u00d7)</span><br>Dotted line: transition possessions"),  caption = "data via bigballR | March 29, 2026\nViz by Chris at Bless your Chart")
+
+patchwork::wrap_plots(p_ribbon, p_lollipop, ncol = 1, heights = c(1, 5))
+
+
+combined_plot <- patchwork::wrap_plots(p_ribbon, p_lollipop, ncol = 1, heights = c(1, 5))
+
+ggplot2::ggsave(
+  filename = "uconn_duke.png",
+  plot     = combined_plot,
+  width    = 10,
+  height   = 8.5,
+  dpi      = 600,
+  bg       = "white"
+)
+
+```
+
+### FF table
+
+```{r ff-tbl, warning=FALSE, message=FALSE}
+
+ncaa_ff_split <- readr::read_csv("ncaa_ff.csv") |> 
+  dplyr::select(-...1)
+
+f4_2026 <- c("Connecticut", "UConn", "Illinois", "Arizona", "Michigan")
+
+bball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-basketball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 Final Four</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'><br>
+       Highlights every Final Four appearance for the teams in this season's Final Four since the 1985 NCAA Tournament.</span>
+     </div>
+     <div>
+       <img src='https://cdn.ibj.com/wp-content/uploads/2024/12/Final_Four_Logo_2026_D3.jpg'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+
+ff_tbl <- ncaa_ff_split |> 
+  cbbplotR::gt_cbb_teams(champ_a, champ_a, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(champ_b, champ_b, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(team1_a, team1_a, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(team2_a, team2_a, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(team3_a, team3_a, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(team1_b, team1_b, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(team2_b, team2_b, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(team3_b, team3_b, include_name = FALSE) |> 
+  gt::gt() |> 
+  gt::text_transform(
+    locations = gt::cells_body(columns = c(champ_a, team1_a, team2_a, team3_a), rows = year_a == 2020),
+    fn = function(x) "---"
+  ) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#fff3cd"), 
+      gt::cell_borders(sides = "all", color = "#ffc107", weight = gt::px(1.5), style = "solid")
+    ),
+    locations = list(
+      gt::cells_body(columns = champ_a, rows = which(ncaa_ff_split$champ_a %in% f4_2026)),
+      gt::cells_body(columns = team1_a, rows = which(ncaa_ff_split$team1_a %in% f4_2026)),
+      gt::cells_body(columns = team2_a, rows = which(ncaa_ff_split$team2_a %in% f4_2026)),
+      gt::cells_body(columns = team3_a, rows = which(ncaa_ff_split$team3_a %in% f4_2026)),
+      gt::cells_body(columns = champ_b, rows = which(ncaa_ff_split$champ_b %in% f4_2026)),
+      gt::cells_body(columns = team1_b, rows = which(ncaa_ff_split$team1_b %in% f4_2026)),
+      gt::cells_body(columns = team2_b, rows = which(ncaa_ff_split$team2_b %in% f4_2026)),
+      gt::cells_body(columns = team3_b, rows = which(ncaa_ff_split$team3_b %in% f4_2026))
+    )
+  ) |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::tab_header(title = gt::html(bball_header)) |> 
+  gt::cols_align(align = "center") |> 
+  gt::fmt_markdown(columns = everything()) |> 
+  gt::cols_add(diff_gap = "", .before = year_b) |>
+  gt::cols_label(
+    year_a = "Year", champ_a = "", team1_a = "", team2_a = "", team3_a = "",
+    diff_gap = "",
+    year_b = "Year", champ_b = "", team1_b = "", team2_b = "", team3_b = ""
+  ) |> 
+  gt::tab_source_note(gt::html(
+    "<hr>
+     data via wikipedia.com and ncaa.com<br>
+     First team listed is the NCAA Champion, not including 2026<br>
+     <hr>
+     <span style='display:inline-block; background:#fff3cd; border:1px solid #ffc107;
+       border-radius:4px; padding:1px 3px; font-size:12px;'>Yellow indicates team in the 2026 Final Four</span><br><br>
+     <hr>
+     April 1, 2026 | Table by Chris at Bless your Chart"
+  )) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gtUtils::gt_border_bars_bottom(c("#0d1e2d", "#c1d6e2",
+                                   "#f07e1d"))
+
+
+gt_save_crop(
+  ff_tbl,
+  file = "ff_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+
+ff_tbl
+```
+
+### APL Plot
+
+```{r apl-plot, warning=FALSE, message=FALSE}
+
+apl <- readr::read_csv("apl.csv")
+
+national_stats <- apl |>
+  dplyr::mutate(
+    pct_off = 1 - dplyr::percent_rank(APL_Off),
+    pct_def = 1 - dplyr::percent_rank(APL_Def)
+  )
+
+di_avg_total <- mean(c(national_stats$APL_Off, national_stats$APL_Def), na.rm = TRUE)
+
+region_order <- tibble::tibble(
+  TeamName = c("Connecticut", "Illinois", "Arizona", "Michigan"),
+  sort_key = c(4, 3, 2, 1)
+)
+
+plot_data <- national_stats |>
+  dplyr::filter(TeamName %in% region_order$TeamName) |>
+  dplyr::mutate(
+    APL_Off_str = sprintf("%.1f", APL_Off),
+    APL_Def_str = sprintf("%.1f", APL_Def)
+  ) |>
+  dplyr::left_join(region_order, by = "TeamName") |>
+  dplyr::mutate(team_chr = TeamName)
+
+spacers <- tibble::tibble(
+  TeamName = "_spacer_",
+  sort_key = 2.5,
+  APL_Off  = NA_real_,
+  APL_Def  = NA_real_,
+  team_chr = NA_character_
+)
+
+combined <- dplyr::bind_rows(plot_data, spacers) |>
+  dplyr::mutate(
+    axis_label = dplyr::case_when(
+      stringr::str_starts(TeamName, "_spacer_") ~ "",
+      TRUE ~ sprintf(
+        "<b>%s</b><br><span style='font-size:8.5pt; color:grey40'>%s / %ss</span>",
+        TeamName,
+        APL_Off_str,
+        APL_Def_str
+      )
+    ),
+    TeamName = forcats::fct_reorder(TeamName, sort_key),
+    team_chr = as.character(TeamName)
+  )
+
+region_labels <- tibble::tibble(
+  TeamName = factor(
+    c("_spacer_E", "_spacer_S", "_spacer_W", "_spacer_M"),
+    levels = levels(combined$TeamName)
+  ),
+  label = c("EAST", "SOUTH", "WEST", "MIDWEST"),
+  x = 14.1
+)
+
+region_dividers <- tibble::tibble(TeamName = factor(
+  c("_spacer_E", "_spacer_S", "_spacer_W", "_spacer_M"),
+  levels = levels(combined$TeamName)
+))
+
+logo_data <- combined |> dplyr::filter(!stringr::str_starts(TeamName, "_spacer_"))
+
+
+time_plot <- combined |>
+  ggplot2::ggplot(ggplot2::aes(y = TeamName)) +
+  ggplot2::geom_vline(
+    xintercept = di_avg_total,
+    linetype = "dashed",
+    color = "grey70",
+    linewidth = 0.6
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = di_avg_total - 0.15,
+    y = 5.5,
+    label = "D-I AVG",
+    family = "Roboto Condensed",
+    size = 3.2,
+    color = "grey50",
+    fontface = "bold",
+    angle = 90
+  ) +
+  ggplot2::geom_segment(
+    ggplot2::aes(
+      x = APL_Def,
+      xend = APL_Off,
+      yend = TeamName,
+      color = team_chr
+    ),
+    linewidth = 1.2,
+    alpha = 0.8,
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_point(ggplot2::aes(x = APL_Def, color = team_chr),
+                      size = 3.5,
+                      na.rm = TRUE) +
+  ggplot2::geom_point(ggplot2::aes(x = APL_Off, color = team_chr),
+                      size = 3.5,
+                      na.rm = TRUE) +
+  ggplot2::geom_text(
+    ggplot2::aes(x = APL_Off, label = "O", color = team_chr),
+    vjust = -1.1,
+    size = 4.2,
+    fontface = "bold",
+    family = "Roboto Condensed",
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(x = APL_Def, label = "D", color = team_chr),
+    vjust = 1.8,
+    size = 4.2,
+    fontface = "bold",
+    family = "Roboto Condensed",
+    na.rm = TRUE
+  ) + 
+  cbbplotR::geom_cbb_teams(data = logo_data,
+                           ggplot2::aes(x = 13.9, y = TeamName, team = team_chr),
+                           width = 0.0475) +
+  ggplot2::scale_color_manual(
+  values = c(
+    "Michigan"    = "#FFCB05",
+    "Connecticut" = "#000E2F",
+    "Illinois"    = "#E84A27",
+    "Arizona"     = "#003366"
+  )
+) +
+  ggplot2::scale_y_discrete(
+    labels = setNames(combined$axis_label, as.character(combined$TeamName)),
+    expand = ggplot2::expansion(add = c(1.0, 1.2))
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = seq(14, 21, 1),
+    labels = function(x)
+      sprintf("%.1f", x),
+    limits = c(13.8, 21)
+  ) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::annotation_custom(
+    grid::textGrob(
+      "APL (Seconds)\nOffense / Defense",
+      x = grid::unit(-0.06, "npc"),
+      y = grid::unit(1.02, "npc"),
+      hjust = 0.5,
+      vjust = 0,
+      gp = grid::gpar(
+        fontsize = 8,
+        fontface = "bold",
+        col = "#333333",
+        fontfamily = "Roboto Condensed",
+        lineheight = 0.9
+      )
+    )
+  ) +
+  hrbrthemes::theme_ipsum() +
+  ggplot2::labs(
+    title = "How Final Four teams <br>try to <em>control</em> the clock",
+    subtitle = "Average possession length in seconds on offense and defense<br>",
+    x = "Seconds",
+    y = "",
+    caption = "Data via kenpom.com <br>Viz by Chris at Bless your chart"
+  ) +
+  ggplot2::theme(
+    plot.title = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 20,
+      family = "Roboto Condensed"
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      hjust = 0.5,
+      size = 12.5,
+      lineheight = 1.3,
+      family = "Roboto Condensed"
+    ),
+    plot.caption = ggtext::element_markdown(
+      lineheight = 1.3,
+      family = "Roboto Condensed",
+      face = "plain"
+    ),
+    legend.position = "none",
+    plot.margin = ggplot2::margin(10, 30, 10, 40),
+    axis.text.x = ggplot2::element_text(
+      size = 11,
+      family = "Roboto Condensed",
+      face = "bold"
+    ),
+    axis.text.y = ggtext::element_markdown(
+      size = 9.5,
+      family = "Roboto Condensed",
+      lineheight = 1.1
+    )
+  )
+
+ggplot2::ggsave(
+  "final_four_tempo.png",
+  time_plot,
+  height = 8,
+  width = 6,
+  units = "in",
+  bg = "white"
+)
+
+time_plot
+
+
+```
