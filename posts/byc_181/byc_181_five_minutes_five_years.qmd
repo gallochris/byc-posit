@@ -11,7 +11,7 @@ format:
 editor: visual
 ---
 
-### GT function 
+### GT function
 
 ```{r load-data, warning=FALSE, message=FALSE}
 library(rlang)
@@ -667,9 +667,9 @@ bball_header <- glue::glue(
        style='height: 40px; width: auto; vertical-align: middle;'>
      </div>
      <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
-       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 Final Four</span>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>The Final Four Since 1985</span>
        <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'><br>
-       Highlights every Final Four appearance for the teams in this season's Final Four since the 1985 NCAA Tournament.</span>
+       Highlights every Final Four appearance since the 1985 NCAA Tournament for the four teams in the 2026 Final Four.</span>
      </div>
      <div>
        <img src='https://cdn.ibj.com/wp-content/uploads/2024/12/Final_Four_Logo_2026_D3.jpg'
@@ -723,14 +723,28 @@ ff_tbl <- ncaa_ff_split |>
   ) |> 
   gt::tab_source_note(gt::html(
     "<hr>
+         <span style='display:inline-block; background:#fff3cd; border:1px solid #ffc107;
+       border-radius:4px; padding:1px 3px; font-size:12px;'>Yellow indicates team in the 2026 Final Four</span><br><br>
+       <br>
+       <b>Most Final Four appearances in this span</b>: <br>
+       Duke (14)<br>
+       North Carolina (12)<br>
+       Kansas (10)<br>
+       UConn (8), Kentucky (8), Michigan State (8)<br>
+       <br>
+       <b>Most National Titles in this span</b>: <br>
+       UConn (6)<br>
+       Duke (5)<br>
+       North Carolina (4)<br>
+       Florida (3), Kansas (3), Kentucky (3), Villanova (3)<br>
+       <hr>
      data via wikipedia.com and ncaa.com<br>
      First team listed is the NCAA Champion, not including 2026<br>
      <hr>
-     <span style='display:inline-block; background:#fff3cd; border:1px solid #ffc107;
-       border-radius:4px; padding:1px 3px; font-size:12px;'>Yellow indicates team in the 2026 Final Four</span><br><br>
      <hr>
-     April 1, 2026 | Table by Chris at Bless your Chart"
+     April 2, 2026 | Table by Chris at Bless your Chart"
   )) |> 
+  gt::tab_options(table.width = gt::px(550)) |>
   gt::tab_style(
     style = list(gt::cell_borders(
       sides = c("left", "right", "top", "bottom"),
