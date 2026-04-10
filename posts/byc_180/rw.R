@@ -1,8 +1,15 @@
 
 # --- Data pulls ---
 unc_ff <- kp_get_team_history(
-  team_id = 197, years = 2017:2026, endpoint = "four-factors"
+  team_id = 197, years = 2004:2021, endpoint = "four-factors"
 )
+
+unc_misc <- kp_get_team_history(
+  team_id = 197, years = 2004:2021, endpoint = "misc-stats"
+)
+
+unc_pd <- kp_get_team_history(
+  team_id = 197, years = 2004:2026, endpoint = "point-dist")
 
 unc_hist <- kp_get_team_history(team_id = 197, years = 2017:2026) |>
   dplyr::select(Season, TeamName, Seed, Coach, Wins, Losses, AdjEM, RankAdjEM)

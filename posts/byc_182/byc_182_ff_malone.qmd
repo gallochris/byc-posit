@@ -1,5 +1,5 @@
 ---
-title: "181: Five years, five minutes"
+title: "182: Five years, five minutes"
 date: "2026-04-08"
 categories:
   - gtUtils
@@ -85,14 +85,14 @@ f4_outcomes <- dplyr::bind_rows(
 stats_table <- f4_outcomes |>
   dplyr::group_by(team) |>
   dplyr::summarise(
-    total_apps   = dplyr::n(),
-    titles       = sum(mon_win),
-    runners_up   = sum(mon_loss),
-    f4_wins      = sum(sat_win) + sum(mon_win),
-    f4_losses    = sum(sat_loss) + sum(mon_loss),
-    total_games  = f4_wins + f4_losses,
-    all_years    = list(year),
-    title_years  = list(year[mon_win == 1]),
+    total_apps    = dplyr::n(),
+    titles        = sum(mon_win),
+    runners_up    = sum(mon_loss),
+    f4_wins       = sum(sat_win) + sum(mon_win),
+    f4_losses     = sum(sat_loss) + sum(mon_loss),
+    total_games   = f4_wins + f4_losses,
+    all_years     = list(year),
+    title_years   = list(year[mon_win == 1]),
     .groups = "drop"
   ) |>
   dplyr::mutate(
@@ -103,7 +103,14 @@ stats_table <- f4_outcomes |>
     f4_history   = purrr::map2_chr(all_years, title_years, \(yrs, t_yrs) {
       yrs |> 
         sort() |> 
-        purrr::map_chr(\(y) if(y %in% t_yrs) paste0("<b>", y, "</b>") else as.character(y)) |>
+        purrr::map_chr(\(y) {
+          if(y %in% t_yrs) {
+            # Uses inline CSS for color and size (1.2em is ~20% larger than default)
+            paste0("<span style='color: #D4AF37; font-size: 1.2em; font-weight: bold;'>", y, "</span>")
+          } else {
+            as.character(y)
+          }
+        }) |>
         paste(collapse = ", ")
     })
   ) 
