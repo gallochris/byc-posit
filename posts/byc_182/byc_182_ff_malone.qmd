@@ -1,5 +1,5 @@
 ---
-title: "182: Five years, five minutes"
+title: "182: Final Fours and Malone"
 date: "2026-04-08"
 categories:
   - gtUtils
