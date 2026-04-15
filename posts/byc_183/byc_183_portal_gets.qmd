@@ -1,0 +1,126 @@
+---
+title: "183: Portal gets"
+date: "2026-04-15"
+categories:
+  - geom_col
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Portal plot
+
+```{r portal-plot, warning=FALSE, message=FALSE}
+
+# fetch logs for Torvik 
+# qualified <- logs |>
+#  dplyr::summarise(
+#    total_mins = sum(mins, na.rm = TRUE),
+#   .by = c(player, player_id, team, year)
+#  ) |>
+#  dplyr::filter(total_mins >= 500)
+
+# transfers_by_year <- qualified |>
+#  dplyr::left_join(
+#    qualified |>
+#      dplyr::select(player, player_id, prev_team = team, prev_year = year),
+#    by = c("player", "player_id"),
+#    relationship = "many-to-many"
+#  ) |>
+#  dplyr::filter(prev_year == year - 1, team != prev_team) |>
+#  dplyr::summarise(
+#    n_transfers = dplyr::n_distinct(player_id),
+#    .by = year
+#  ) |>
+#  dplyr::arrange(year)
+
+# portal_data <- transfers_by_year |>
+#  dplyr::left_join(
+#    qualified |>
+#      dplyr::summarise(total = dplyr::n_distinct(player_id), .by = year),
+#    by = "year"
+#  ) |>
+#  dplyr::mutate(
+#    pct       = round(n_transfers / total * 100, 1),
+#    bar_right = pct,
+#    bar_left  = -pct,
+#    season_label = paste0(year - 1, "\u2013", substr(year, 3, 4)),
+#    year_f       = factor(year),
+#    full_label = paste0(
+#      season_label, "\n",
+#      pct, "%\n",
+#      scales::comma(n_transfers), " of ", scales::comma(total), " players"
+#    )
+#  )
+
+portal_data <- read.csv("portal_data.csv")
+
+portal_data$year_f <- as.factor(portal_data$year_f)
+
+light_palette <- c(
+  "2023" = "#ecdec3",
+  "2024" = "#e3cda6", 
+  "2025" = "#dabd88",
+  "2026" = "#D1AD6B" 
+)
+
+portal_plot <- ggplot2::ggplot(portal_data, ggplot2::aes(y = year_f)) +
+  
+  ggplot2::geom_col(ggplot2::aes(x = bar_left, fill = year_f), width = 0.85) +
+  ggplot2::geom_col(ggplot2::aes(x = bar_right, fill = year_f), width = 0.85) +
+  
+  ggplot2::geom_text(
+    ggplot2::aes(x = 0, label = full_label),
+    color      = "#222222",          
+    lineheight = 0.85,               
+    family     = "Roboto Condensed",
+    fontface   = "bold",
+    size       = 3.8
+  ) +
+  
+  ggplot2::scale_fill_manual(values = light_palette) +
+  ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = 0.15)) +
+  
+  ggplot2::labs(
+    title    = "The player movement era is here",
+    subtitle = "Share of players that played at least 500 minutes this season <br>that contributed at least 500 minutes for a <em>different</em> team last season.",
+    caption  = "Data via barttorvik.com | Viz by Chris at Bless your chart",
+    x = NULL, y = NULL
+  ) +
+  
+  ggplot2::guides(fill = "none") +
+  
+  hrbrthemes::theme_ipsum_rc(
+    base_family = "Roboto Condensed",
+    grid = FALSE
+  ) +
+  
+  ggplot2::theme(
+    axis.text.x      = ggplot2::element_blank(),
+    axis.text.y      = ggplot2::element_blank(),
+    plot.title       = ggplot2::element_text(size = 22, face = "bold", hjust = 0.5),
+    plot.subtitle    = ggtext::element_markdown(size = 12, hjust = 0.5, lineheight = 1.5, margin = ggplot2::margin(b = 25)),
+    plot.caption     = ggplot2::element_text(color = "gray60", size = 9, hjust = 0.5, margin = ggplot2::margin(t = 20)),
+    plot.margin      = ggplot2::margin(30, 30, 30, 30)
+  )
+
+ggplot2::ggsave("portal_plot.png",
+                portal_plot,
+                w = 8.5,
+                h = 8.5,
+                dpi = 600,
+                bg = "floralwhite",
+                type = "cairo")
+
+portal_plot
+```
+
+### 
+
+### 
+
+### 
+
+### 
