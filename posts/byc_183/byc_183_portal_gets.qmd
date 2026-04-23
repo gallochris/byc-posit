@@ -77,7 +77,7 @@ portal_plot <- ggplot2::ggplot(portal_data, ggplot2::aes(y = year_f)) +
     lineheight = 0.85,               
     family     = "Roboto Condensed",
     fontface   = "bold",
-    size       = 3.8
+    size       = 6.8
   ) +
   
   ggplot2::scale_fill_manual(values = light_palette) +
@@ -85,8 +85,8 @@ portal_plot <- ggplot2::ggplot(portal_data, ggplot2::aes(y = year_f)) +
   
   ggplot2::labs(
     title    = "The player movement era is here",
-    subtitle = "Share of players that played at least 500 minutes this season <br>that contributed at least 500 minutes for a <em>different</em> team last season.",
-    caption  = "Data via barttorvik.com | Viz by Chris at Bless your chart",
+    subtitle = "Share of players that played at least 500 minutes this season <br>that played at least 500 minutes for a <em>different</em> team last season.",
+    caption  = "At least 500 minutes played is used as the qualifier applied to both seasons. <br>Players with no prior D1 minutes (freshmen, JUCO, foreign players, etc.) are excluded. <br><br>Data via barttorvik.com | Viz by Chris at Bless your chart",
     x = NULL, y = NULL
   ) +
   
@@ -100,16 +100,16 @@ portal_plot <- ggplot2::ggplot(portal_data, ggplot2::aes(y = year_f)) +
   ggplot2::theme(
     axis.text.x      = ggplot2::element_blank(),
     axis.text.y      = ggplot2::element_blank(),
-    plot.title       = ggplot2::element_text(size = 22, face = "bold", hjust = 0.5),
-    plot.subtitle    = ggtext::element_markdown(size = 12, hjust = 0.5, lineheight = 1.5, margin = ggplot2::margin(b = 25)),
-    plot.caption     = ggplot2::element_text(color = "gray60", size = 9, hjust = 0.5, margin = ggplot2::margin(t = 20)),
+    plot.title       = ggplot2::element_text(size = 26, face = "bold", hjust = 0.5),
+    plot.subtitle    = ggtext::element_markdown(size = 18, hjust = 0.5, lineheight = 1.5, margin = ggplot2::margin(b = 25)),
+    plot.caption     = ggtext::element_markdown(color = "#333333", size = 12, hjust = 0.5, lineheight = 1.5, margin = ggplot2::margin(t = 20)),
     plot.margin      = ggplot2::margin(30, 30, 30, 30)
   )
 
 ggplot2::ggsave("portal_plot.png",
                 portal_plot,
-                w = 8.5,
-                h = 8.5,
+                w = 10.5,
+                h = 10.5,
                 dpi = 600,
                 bg = "floralwhite",
                 type = "cairo")

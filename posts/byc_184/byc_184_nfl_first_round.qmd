@@ -1,0 +1,234 @@
+---
+title: "184: NFL First Rounders"
+date: "2026-04-23"
+categories:
+  - gtUtils
+  - text_transform
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function and load data
+
+```{r portal-plot, warning=FALSE, message=FALSE}
+
+draft <- readr::read_csv("draft_data.csv")
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### 
+
+### NFL draft table
+
+```{r nfl-draft, warning=FALSE, message=FALSE}
+
+# scrape data from drafthistory.com 
+# use team_info.rda from espn 
+
+
+# fcs_logos <- tibble::tribble(
+#  ~team,                   ~logo,
+#  "Alabama State",         "http://a.espncdn.com/i/teamlogos/ncaa/500/2011.png",
+#  "Northern Iowa",         "http://a.espncdn.com/i/teamlogos/ncaa/500/2460.png",
+#  "Tennessee-Chattanooga", "http://a.espncdn.com/i/teamlogos/ncaa/500/236.png",
+#  "Texas-San Antonio",     "http://a.espncdn.com/i/teamlogos/ncaa/500/2636.png"
+# )
+
+# logo_lookup <- team_info |>
+#  dplyr::distinct(team, logo) |>
+#  dplyr::filter(!is.na(logo)) |>
+#  dplyr::bind_rows(fcs_logos)
+
+
+# draft <- draft_raw |>
+#  dplyr::rename(Pos = any_of(c("Position", "pos", "POS"))) |> 
+#  dplyr::mutate(
+#    school_logo = dplyr::recode(College,
+#                                "Louisiana State"      = "LSU",
+#                                "North Carolina State" = "NC State",
+#                                "Mississippi"          = "Ole Miss",
+#                                "Texas Christian"      = "TCU",
+#                                "Miami (FL)"           = "Miami FL",
+#                                "Brigham Young"        = "BYU",
+#                                "Central Florida"      = "UCF",
+#                                .default = College
+#    )
+#  ) |>
+#  dplyr::left_join(logo_lookup, by = c("school_logo" = "team"))
+
+# write.csv(draft, "draft_data.csv")
+
+draft_prepared <- draft |>
+  dplyr::filter(Pick >= 1, Pick <= 32) |>
+  dplyr::mutate(combined_val = paste0(logo, "|", Pos)) |>
+  dplyr::select(Year, Pick, combined_val) |>
+  tidyr::pivot_wider(names_from = Year, values_from = combined_val)
+
+
+left_half <- draft_prepared |> dplyr::filter(Pick <= 16)
+right_half <- draft_prepared |>
+  dplyr::filter(Pick >= 17) |>
+  dplyr::rename(Pick_b = Pick) |>
+  dplyr::rename_with(~ paste0(.x, "_b"), .cols = -Pick_b)
+
+combined_data <- dplyr::bind_cols(left_half, right_half)
+
+school_leaderboard <- draft |>
+  dplyr::count(school_logo, sort = TRUE) |>
+  dplyr::filter(n >= 10) |>
+  dplyr::rename(School = school_logo, Picks = n)
+
+position_summary <- draft |>
+  dplyr::count(Pos, sort = TRUE) |>
+  dplyr::rename(Position = Pos, Total = n)
+
+school_str <- school_leaderboard |> 
+  dplyr::mutate(label = paste0(School, " (", Picks, ")")) |> 
+  dplyr::pull(label) |> 
+  paste(collapse = ", ")
+
+pos_str <- position_summary |> 
+  dplyr::mutate(label = paste0(Position, ": ", Total)) |> 
+  dplyr::pull(label) |> 
+  paste(collapse = " | ")
+
+
+stack_cell <- function(x) {
+  purrr::map_chr(x, ~ {
+    if (is.na(.x) || .x == "NA|NA") return("")
+    
+    parts <- strsplit(.x, "\\|")[[1]]
+    logo_url <- parts[1]
+    position <- parts[2]
+    
+    paste0(
+      "<div style='display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;'>",
+      "<img src='", logo_url, "' style='height: 25px; margin-bottom: 2px;'>",
+      "<div style='font-size: 10px; color: #666; font-weight: bold;'>", position, "</div>",
+      "</div>"
+    )
+  })
+}
+
+custom_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>First Round Picks Over Past 10 NFL Drafts</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Shows the college and position for every first round pick since 2016. The 2026 NFL Draft starts today: April 23, 2026.</span>
+     </div>
+     <div>
+       <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt2RPk_BBfjsBYliYsCnvxW3Di4tKZq6jP0g&s'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+years <- as.character(2016:2025)
+all_year_cols <- c(years, paste0(years, "_b"))
+
+nfl_tbl <- combined_data |>
+  gt::gt() |>
+  gtUtils::gt_theme_savant() |> 
+  gt::text_transform(
+    locations = gt::cells_body(columns = dplyr::all_of(all_year_cols)),
+    fn = stack_cell
+  ) |>
+  gt::cols_add(diff_gap = "", .before = Pick_b) |>
+  gt::cols_label(
+    Pick     = "Pick",
+    Pick_b   = "Pick",
+    diff_gap = " "
+  ) |>
+  gt::cols_align(align = "center", columns = c(Pick, Pick_b)) |>
+  gt::cols_label(
+    .list = setNames(as.list(years), years) |>
+      c(setNames(as.list(years), paste0(years, "_b")))
+  ) |>
+  gt::tab_header(title = gt::html(custom_header)) |>
+  gt::tab_source_note(source_note = gt::html(paste0("<b>Programs with 10 or more first rounders:</b> ", school_str))) |>
+  gt::tab_source_note(source_note = gt::html(paste0("<b>By position:</b> ", pos_str))) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>Data via drafthistory.com | theme via {gtUtils}<br>
+       <hr><b>Table by Chris at Bless your chart</b>"
+    )
+  ) |> 
+  gt::tab_options(
+    table.font.size = gt::px(14),
+    heading.align = "left",
+    column_labels.font.weight = "bold",
+    row_group.font.size = gt::px(13),
+    row_group.background.color = "#f5f5f5"
+  ) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)  
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gt::tab_style(
+  style = gt::cell_fill(color = "#e0e0e0"),
+  locations = gt::cells_body(columns = diff_gap)
+) |>
+gt::tab_style(
+  style = gt::cell_fill(color = "#e0e0e0"),
+  locations = gt::cells_column_labels(columns = diff_gap)
+) |>
+  gt::tab_style(
+  style = list(
+    gt::cell_text(weight = "bold", size = gt::px(16))
+  ),
+  locations = gt::cells_body(columns = c(Pick, Pick_b))
+) |>
+  gt::tab_options(table.width = gt::px(550))
+
+
+gt_save_crop(
+  nfl_tbl,
+  file = "nfl_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+
+nfl_tbl
+```
+
+### 
+
+### 
