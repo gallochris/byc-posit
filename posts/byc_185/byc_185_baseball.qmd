@@ -1,0 +1,621 @@
+---
+title: "185: ACC Baseball"
+date: "2026-05-05"
+categories:
+  - gtUtils
+  - transmute
+  - rvest
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function 
+
+```{r portal-plot, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+standings <- readr::read_csv("standings.csv")
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### 
+
+### ACC baseball standings
+
+```{r acc-base-standings, warning=FALSE, message=FALSE}
+
+# teams <- tibble::tibble(baseballr:::rds_from_url(
+#  "https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
+# ) |> 
+#  dplyr::filter(year == 2026 & division == 1)
+
+# acc_ids <- teams |> 
+#  dplyr::filter(conference == "ACC") |> 
+#  dplyr::pull(team_id)
+
+# function to fetch results 
+# acc_results <- function(id) {
+#  ncaa_schedule(team_id = id, year = 2026) |>
+#    dplyr::filter(home_team_conference == "ACC" & away_team_conference == "ACC") |>
+#    dplyr::filter(!is.na(home_team_score))
+# }
+
+# acc_scores <- lapply(acc_ids, acc_results)
+
+# grab results and adjust spacing issue with Miami 
+# acc_results_2026 <- as.data.frame(do.call(rbind, acc_scores)) |>
+#  dplyr::distinct(contest_id, .keep_all = TRUE) |> 
+#  dplyr::mutate(
+#    home_team = stringr::str_trim(home_team),
+#    away_team = stringr::str_trim(away_team),
+#    home_team = dplyr::if_else(home_team == "Miami (FL) ", "Miami (FL)", home_team),
+#    away_team = dplyr::if_else(away_team == "Miami (FL) ", "Miami (FL)", away_team)
+#  ) |> 
+#  dplyr::filter(!contest_id %in% c("6526802", "6530154"))
+
+
+# home/away records
+# home_results <- acc_results_2026 |>
+#  dplyr::mutate(h_result = dplyr::if_else(home_team_score > away_team_score, "W", "L")) |>
+#  dplyr::group_by(home_team, h_result) |>
+#  dplyr::count() |>
+#  tidyr::pivot_wider( 
+#    names_from = h_result,
+#    values_from = n) |>
+#  dplyr::rename(team = home_team, h_w = W, h_l = L)
+
+# away_results <- acc_results_2026 |>
+#  dplyr::mutate(a_result = dplyr::if_else(away_team_score > home_team_score, "W", "L")) |>
+#  dplyr::group_by(away_team, a_result) |>
+#  dplyr::count() |>
+#  tidyr::pivot_wider( 
+#    names_from = a_result,
+#    values_from = n) |>
+#  dplyr::rename(team = away_team, a_w = W, a_l = L) |> 
+#  dplyr::mutate(dplyr::across(dplyr::everything(), ~ replace(.x, is.na(.x), 0))) 
+
+# full records
+# full_recs <- merge(home_results, away_results, by = "team") |>
+#  dplyr::mutate(W = (h_w + a_w), L = (h_l + a_l)) |>
+#  dplyr::select(team, W, L, h_w, h_l, a_w, a_l)
+
+
+# long format
+# acc_results_long <- dplyr::bind_rows(
+#  acc_results_2026 |>
+#    dplyr::transmute(
+#      season = year,
+#      date = as.Date(date, format = "%m/%d/%Y"),
+#      team = home_team,
+#      team_id = home_team_id,
+#      team_score = home_team_score,
+#      team_conference = home_team_conference,
+#      opp = away_team,
+#      opp_id = away_team_id,
+#      opp_score = away_team_score,
+#      opp_conference = away_team_conference,
+#      location = dplyr::case_when(
+#        !is.na(neutral_site) ~ "neutral",
+#        TRUE ~ "home"
+#      ),
+#      contest_id
+#    ),
+#  acc_results_2026 |>
+#    dplyr::transmute(
+#      season = year,
+#      date = as.Date(date, format = "%m/%d/%Y"),
+#      team = away_team,
+#      team_id = away_team_id,
+#      team_score = away_team_score,
+#      team_conference = away_team_conference,
+#      opp = home_team,
+#      opp_id = home_team_id,
+#      opp_score = home_team_score,
+#      opp_conference = home_team_conference,
+#      location = dplyr::case_when(
+#        !is.na(neutral_site) ~ "neutral",
+#        TRUE ~ "away"
+#      ),
+#      contest_id
+#    )
+# )
+
+
+# runs scored/allowed by location
+# runs_summary <- acc_results_long |>
+#  dplyr::group_by(team, location) |>
+#  dplyr::summarize(rs = sum(team_score), ra = sum(opp_score), .groups = "drop") |>
+#  tidyr::pivot_wider(
+#    names_from = location,
+#    values_from = c(rs, ra),
+#    names_glue = "{location}_{.value}"
+#  ) |>
+#  dplyr::mutate(
+#    total_rs = rowSums(dplyr::pick(dplyr::ends_with("_rs")), na.rm = TRUE),
+#    total_ra = rowSums(dplyr::pick(dplyr::ends_with("_ra")), na.rm = TRUE),
+#    run_diff = total_rs - total_ra
+#  )
+
+
+# merge records and runs
+# diffs_recs <- merge(full_recs, runs_summary, by = "team")
+
+# find leaders
+# leader_wins <- max(diffs_recs$W)
+# leader_losses <- min(diffs_recs$L[diffs_recs$W == leader_wins])
+
+# standings
+# standings <- diffs_recs |>
+#  dplyr::mutate(
+#    GB = ((leader_wins - W) + (L - leader_losses)) / 2,
+#    GB = ifelse(GB == 0, 0, GB),
+#    Win_Pct = round(W / (W + L), 3)
+#  ) |>
+#  dplyr::arrange(desc(Win_Pct)) |> 
+#  dplyr::mutate(
+#    overall_rec = paste0(W, "-", L),
+#    home_rec = paste0(h_w, "-", h_l),
+#    away_rec = paste0(a_w, "-", a_l),
+#    run_diff = ifelse(run_diff > 0, paste0("+", run_diff), run_diff)
+#  ) |> 
+#  dplyr::select(
+#    team,
+#    Win_Pct,
+#   overall_rec,
+#    GB,
+#    home_rec,
+#    away_rec,
+#    total_rs,
+#    total_ra,
+#    run_diff,
+#    home_rs,
+#    home_ra,
+#    away_rs,
+#    away_ra
+#  )
+
+### make table 
+
+baseball_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 ACC Baseball Standings</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Regular season standings through May 3 games.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa_conf/500/1.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+standings |> 
+  dplyr::select(
+    team, overall_rec, Win_Pct, GB, total_rs, total_ra, run_diff, home_rec, away_rec
+  ) |> 
+  dplyr::mutate(run_diff = as.numeric(run_diff)) |> 
+  dplyr::mutate(
+    GB = dplyr::if_else(GB == 0.0, "-", sprintf("%.1f", GB)),
+    run_diff_display = paste0(run_diff, "||", total_rs, "-", total_ra)
+  ) |>
+  cbbplotR::gt_cbb_teams(team, team) |> 
+  dplyr::arrange(-Win_Pct, -run_diff) |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::fmt_markdown(team) |> 
+  gt::cols_label(
+    team = "",
+    overall_rec = "W-L",
+    Win_Pct = "PCT",
+    GB = "GB",
+    run_diff_display = "+/-",
+    home_rec = "Home",
+    away_rec = "Away"
+  ) |>
+  gt::cols_hide(c(total_rs, total_ra, run_diff)) |>
+  gt::cols_move(columns = run_diff_display, after = GB) |>
+  gt::tab_header(title = gt::html(baseball_header)) |>
+  gt::tab_source_note(source_note = gt::html("<hr><Non-conference games between conference opponents</br>Wake Forest beat Clemson 15-4 in seven innings on April 1<br>North Carolina beat Duke 13-0 in seven innings on May 3<br><hr><b>Table by Chris at Bless your chart | data via ncaa.org through May 3 games</b>")) |>
+  gt::cols_align(align = "left", columns = c(team)) |>
+  gt::cols_align(align = "center", columns = c(run_diff_display)) |>
+  gtExtras::gt_add_divider(columns = c(team, Win_Pct), 
+                           sides = "right", color = "black") |> 
+  gtUtils::gt_border_bars_bottom(c("#636363", "#969696", "#cccccc")) |> 
+  gt::data_color(
+    columns = c(Win_Pct),
+    direction = "column",
+    method = "numeric",
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.25, .85),
+    alpha = 0.6
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = run_diff_display),
+    fn = function(x) {
+      parts <- strsplit(x, "\\|\\|")
+      purrr::map_chr(parts, function(p) {
+        val <- as.numeric(p[1])
+        sub_label <- p[2]
+        txt_color <- ifelse(val > 0, "#2e7d32", ifelse(val < 0, "#c62828", "black"))
+        prefix <- ifelse(val > 0, "+", "")
+        glue::glue(
+          '<div style="text-align:center;">
+             <span style="font-weight:700;color:{txt_color};">{prefix}{val}</span><br>
+             <span style="font-size:0.72em;color:#888;">{sub_label}</span>
+           </div>'
+        )
+      })
+    }
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)  
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(575)) -> acc_base_tbl
+
+gt_save_crop(
+  acc_base_tbl,
+  file = "acc_base_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+acc_base_tbl
+```
+
+### Run differentials plot 
+
+```{r run-diffs, warning=FALSE, message=FALSE}
+
+
+url <- "https://www.warrennolan.com/baseball/2026/schedule/north-carolina"
+page <- rvest::read_html(url)
+
+game_blocks <- page |>
+  rvest::html_elements("li.team-schedule")
+
+parse_game <- function(block, game_id) {
+  month <- block |>
+    rvest::html_element(".team-schedule__game-date--month") |>
+    rvest::html_text(trim = TRUE)
+  day <- block |>
+    rvest::html_element(".team-schedule__game-date--day") |>
+    rvest::html_text(trim = TRUE)
+  date_str <- paste0(month, " ", day, " 2026")
+  date <- as.Date(date_str, format = "%b %d %Y")
+  
+  loc_text <- block |>
+    rvest::html_element(".team-schedule__location") |>
+    rvest::html_text(trim = TRUE)
+  game_location <- dplyr::case_when(
+    stringr::str_detect(loc_text, "AT") ~ "Away",
+    stringr::str_detect(loc_text, "VS") ~ "Neutral",
+    TRUE ~ "Home"
+  )
+  
+  opponent <- block |>
+    rvest::html_element(".team-schedule__opp-line-link") |>
+    rvest::html_text(trim = TRUE)
+  
+  rpi_text <- block |>
+    rvest::html_element(".team-schedule__opp-rank") |>
+    rvest::html_text(trim = TRUE)
+  rpi <- suppressWarnings(as.numeric(stringr::str_extract(rpi_text, "\\d+")))
+  
+  result_text <- block |>
+    rvest::html_element(".team-schedule__result") |>
+    rvest::html_text(trim = TRUE)
+  
+  box_table <- block |>
+    rvest::html_element("table.team-schedule-bottom__box-score")
+  if (is.na(box_table)) return(NULL)
+  
+  box_rows <- box_table |> rvest::html_elements("tr")
+  if (length(box_rows) < 3) return(NULL)
+  
+  parse_row <- function(row) {
+    team <- row |>
+      rvest::html_elements("td") |>
+      rvest::html_text(trim = TRUE) |>
+      dplyr::first()
+    
+    inning_vals <- row |>
+      rvest::html_elements(
+        "td.team-schedule-bottom__box-score:not(.team-schedule-bottom__box-score--totals)"
+      ) |>
+      rvest::html_text(trim = TRUE)
+    inning_vals <- inning_vals[-1]
+    
+    totals <- row |>
+      rvest::html_elements("td.team-schedule-bottom__box-score--totals") |>
+      rvest::html_text(trim = TRUE)
+    
+    list(team = team, innings = inning_vals, totals = totals)
+  }
+  
+  row2 <- parse_row(box_rows[[2]])
+  row3 <- parse_row(box_rows[[3]])
+  
+  if (is.null(row2) || is.null(row3)) return(NULL)
+  
+  is_unc <- function(name) {
+    stringr::str_detect(name, "North Carolina") &
+      !stringr::str_detect(name, "State|A&T|Greensboro|Wilmington|Charlotte")
+  }
+  
+  if (!is_unc(row2$team) && !is_unc(row3$team)) return(NULL)
+  
+  unc_row <- if (is_unc(row2$team)) row2 else row3
+  opp_row <- if (is_unc(row2$team)) row3 else row2
+  
+  n_innings <- max(length(unc_row$innings), length(opp_row$innings))
+  if (n_innings == 0) return(NULL)
+  
+  innings_df <- purrr::map_dfr(seq_len(n_innings), function(i) {
+    unc_val <- if (i <= length(unc_row$innings)) unc_row$innings[i] else NA_character_
+    opp_val <- if (i <= length(opp_row$innings)) opp_row$innings[i] else NA_character_
+    
+    clean <- function(v) {
+      if (is.na(v) || v == "X" || v == "") NA_real_ else suppressWarnings(as.numeric(v))
+    }
+    
+    unc_runs <- clean(unc_val)
+    opp_runs <- clean(opp_val)
+    both_na <- is.na(unc_runs) & is.na(opp_runs)
+    unc_for_diff <- dplyr::if_else(is.na(unc_runs), 0, unc_runs)
+    opp_for_diff <- dplyr::if_else(is.na(opp_runs), 0, opp_runs)
+    
+    tibble::tibble(
+      inning = i,
+      unc_runs = unc_runs,
+      opp_runs = opp_runs,
+      inning_diff = dplyr::if_else(!both_na, unc_for_diff - opp_for_diff, NA_real_),
+      score_inn = dplyr::if_else(
+        !both_na,
+        paste0(dplyr::if_else(is.na(unc_runs), "x", as.character(unc_runs)), "-",
+               dplyr::if_else(is.na(opp_runs), "x", as.character(opp_runs))),
+        NA_character_
+      )
+    )
+  })
+  
+  unc_total <- suppressWarnings(as.numeric(unc_row$totals[1]))
+  opp_total <- suppressWarnings(as.numeric(opp_row$totals[1]))
+  
+  innings_df |>
+    dplyr::mutate(
+      game_id = game_id,
+      date = date,
+      game_location = game_location,
+      opponent = opponent,
+      rpi = rpi,
+      unc_total = unc_total,
+      opp_total = opp_total,
+      diff_total = unc_total - opp_total,
+      score_total = paste0(unc_total, "-", opp_total),
+      result_text = result_text
+    )
+}
+
+innings_by_game_scraped <- purrr::imap(
+  as.list(game_blocks),
+  \(block, idx) purrr::possibly(parse_game, NULL)(block, idx)
+) |>
+  purrr::compact() |>
+  dplyr::bind_rows()
+
+innings_by_game_scraped <- innings_by_game_scraped |>
+  dplyr::group_by(opponent) |>
+  dplyr::mutate(
+    multi_game = dplyr::n_distinct(game_id) > 1,
+    game_num = dplyr::dense_rank(game_id)
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(opponent_label = opponent)
+
+rpi_lookup <- innings_by_game_scraped |>
+  dplyr::distinct(game_id, rpi)
+
+
+innings_wide <- innings_by_game_scraped |>
+  dplyr::select(game_id, date, game_location, opponent_label, inning, 
+                inning_diff, unc_runs, opp_runs, score_inn) |>
+  tidyr::pivot_wider(
+    names_from = inning,
+    values_from = c(inning_diff, unc_runs, opp_runs, score_inn),
+    names_sep = "_"
+  ) |>
+  dplyr::mutate(across(starts_with("score_inn_"), ~ tidyr::replace_na(.x, "")))
+
+max_innings <- innings_by_game_scraped |>
+  dplyr::summarise(max_inn = max(inning)) |>
+  dplyr::pull(max_inn)
+
+
+innings_wide <- innings_wide |>
+  dplyr::mutate(
+    unc_total = rowSums(dplyr::across(dplyr::matches("^unc_runs_\\d+$")), na.rm = TRUE),
+    opp_total = rowSums(dplyr::across(dplyr::matches("^opp_runs_\\d+$")), na.rm = TRUE),
+    diff_total = unc_total - opp_total,
+    score_total = paste0(unc_total, "-", opp_total)
+  )
+
+innings_wide_filtered <- innings_wide |>
+  dplyr::left_join(rpi_lookup, by = "game_id") |>
+  dplyr::filter((unc_total + opp_total) > 0) |>
+  dplyr::filter(is.na(rpi) | rpi < 101) |>
+  dplyr::arrange(dplyr::desc(date), dplyr::desc(game_id)) |>
+  dplyr::mutate(grp = "INDIVIDUAL GAMES") 
+
+
+totals_row <- innings_wide_filtered |>
+  dplyr::summarise(dplyr::across(where(is.numeric), \(x) sum(x, na.rm = TRUE))) |>
+  dplyr::mutate(
+    opponent_label = "North Carolina",
+    date = as.Date(NA),
+    game_location = "",
+    grp = "SEASON TOTALS",
+    diff_total = unc_total - opp_total,
+    score_total = paste0(unc_total, "-", opp_total)
+  )
+
+
+for (i in seq_len(max_innings)) {
+  unc_col <- paste0("unc_runs_", i); opp_col <- paste0("opp_runs_", i); diff_col <- paste0("inning_diff_", i)
+  if (unc_col %in% names(totals_row)) totals_row[[diff_col]] <- totals_row[[unc_col]] - totals_row[[opp_col]]
+}
+
+for (i in seq_len(max_innings)) {
+  unc_col <- paste0("unc_runs_", i); opp_col <- paste0("opp_runs_", i); score_col <- paste0("score_inn_", i)
+  if (unc_col %in% names(totals_row)) totals_row[[score_col]] <- paste0(totals_row[[unc_col]], "-", totals_row[[opp_col]])
+}
+
+innings_wide_final <- dplyr::bind_rows(totals_row, innings_wide_filtered) |>
+  dplyr::mutate(row_order = dplyr::row_number())
+
+
+diff_cols <- paste0("inning_diff_", seq_len(max_innings))
+score_cols <- paste0("score_inn_", seq_len(max_innings))
+diff_cols <- diff_cols[diff_cols %in% names(innings_wide_final)]
+score_cols <- score_cols[score_cols %in% names(innings_wide_final)]
+
+baseball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+     <div><img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png' style='height: 40px;'></div>
+     <div style='flex-grow:1; text-align: center;'>
+       <span style='display: block; font-weight: bold; font-size: 24px;'>Carolina run differentials against RPI Top 100 Opponents</span>
+       <span style='font-size: 14px;'>UNC is 21-8-1 against Top 100 RPI opponents through May 3 games</span>
+     </div>
+     <div><img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png' style='height: 40px;'></div>
+   </div><br>"
+)
+
+innings_tbl <- innings_wide_final |>
+  dplyr::mutate(
+    game_desc = dplyr::case_when(
+      is.na(date) ~ "",
+      TRUE ~ paste0(game_location, " | ", format(as.Date(date), "%b. %d, %Y"))
+    ),
+    opponent_logo = stringr::str_trim(stringr::str_remove(opponent_label, "\\s*\\(\\d+\\)"))
+  ) |>
+  cbbplotR::gt_cbb_teams(opponent_label, opponent_label) |>
+  dplyr::mutate(
+    opponent_logo = dplyr::case_when(
+      stringr::str_detect(opponent_label, "North Carolina") ~ "Overall: 21-8-1",
+      TRUE ~ opponent_label
+    )
+  ) |>
+  dplyr::rename(opponent_label_display = opponent_logo) |>
+  dplyr::relocate(opponent_label_display) |> 
+  gt::gt(groupname_col = "grp") |> # use row groups 
+  gtUtils::gt_theme_savant() |>
+  gt::tab_options(
+    row_group.as_column = FALSE,
+    row_group.background.color = "#f9f9f9",
+    row_group.font.weight = "bold",
+    row_group.padding = gt::px(8)
+  ) |>
+  gt::cols_align(opponent_label_display, align = "left") |> 
+  gt::data_color(
+    columns  = dplyr::all_of(c(diff_cols, "diff_total")),
+    colors   = scales::col_bin(
+      bins    = c(-Inf, -0.5, 0.5, Inf),
+      palette = c("#ffe7e7", "#eeeeee", "#d0e4f3")
+    ),
+    na_color = "#fdfdfd"
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = opponent_label_display, col2 = game_desc,
+    palette = c("black", "#333333"), small_cap = FALSE
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = diff_total, col2 = score_total,
+    palette = c("black", "#333333")
+  )
+
+for (i in seq_along(diff_cols)) {
+  d_col <- diff_cols[i]; s_col <- score_cols[i]
+  if (s_col %in% names(innings_wide_final)) {
+    innings_tbl <- innings_tbl |>
+      gtExtras::gt_merge_stack(col1 = !!rlang::sym(d_col), col2 = !!rlang::sym(s_col), palette = c("black", "#333333"))
+  }
+}
+
+innings_tbl <- innings_tbl |>
+  gt::cols_add(total_gap = "", .before = diff_total) |>
+  gt::cols_label(opponent_label_display = "", diff_total = "TOTAL", total_gap = "") |>
+  gt::cols_label(.list = setNames(as.list(as.character(seq_along(diff_cols))), diff_cols)) |>
+  gt::tab_spanner(label = "Innings", columns = dplyr::all_of(diff_cols)) |>
+  gt::fmt(
+    columns = dplyr::all_of(diff_cols),
+    fns = function(x) ifelse(is.na(x), "\u2014", ifelse(x > 0, paste0("+", x), as.character(x)))
+  ) |>
+  gt::fmt(columns = diff_total, fns = function(x) ifelse(x > 0, paste0("+", x), as.character(x))) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(sides = "all", color = "black", weight = gt::px(2))),
+    locations = list(gt::cells_body(), gt::cells_column_labels(), gt::cells_column_spanners())
+  ) |>
+  gt::tab_header(title = gt::html(baseball_header)) |>
+  gtUtils::gt_538_caption(
+    "Data via warrennolan.com, theme via {gtUtils}, logos from ESPN.",
+    "<b>Table by Chris at Bless your chart through May 3 games</b>"
+  ) |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) |>
+  gt::tab_options(table.width = gt::px(900)) |>
+  gt::fmt_markdown(columns = opponent_label_display) |> 
+  gt::cols_hide(c(
+    dplyr::all_of(score_cols), dplyr::matches("^unc_runs_\\d+$"),
+    dplyr::matches("^opp_runs_\\d+$"), unc_total, opp_total,
+    date, game_location, game_id, opponent_label, rpi, row_order
+  ))
+
+
+gt_save_crop(
+  innings_tbl,
+  file = "unc_inning_diff.png",
+  whitespace = 60,
+  bg = "white"
+)
+
+innings_tbl
+```
+
+### 
