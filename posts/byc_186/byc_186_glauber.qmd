@@ -239,7 +239,7 @@ g <- pitching_pct |>
 
 glauber_data <- tibble::tibble(
   section = c(
-    "Results",            "Results",            "Results",
+    "Results & Efficiency",            "Results & Efficiency",            "Results & Efficiency",
     "Strikeouts & Walks",         "Strikeouts & Walks",         "Strikeouts & Walks",         "Strikeouts & Walks", "Command & Contact",  "Command & Contact",  "Command & Contact",  "Command & Contact"
   ),
   stat = c(
