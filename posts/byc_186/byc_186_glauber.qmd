@@ -1,0 +1,300 @@
+---
+title: "186: Glauber"
+date: "2026-05-18"
+categories:
+  - gtUtils
+  - glue
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function + percentile function 
+
+```{r portal-plot, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+glauber <- readr::read_csv("glauber.csv")
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+# 
+make_percentile_gt <- function(
+    team,
+    player,
+    data,
+    logo_url    = NULL,
+    good_color  = "#C0392B",
+    avg_color   = "#95a5a6",
+    poor_color  = "#2980B9",
+    title       = NULL,
+    source_note = NULL,
+    table_width = 500
+) {
+  
+  required_cols <- c("section", "stat", "percentile", "value")
+  missing_cols  <- setdiff(required_cols, names(data))
+  if (length(missing_cols) > 0) {
+    stop("data is missing required columns: ", paste(missing_cols, collapse = ", "))
+  }
+  
+  if (any(data$percentile < 0 | data$percentile > 100, na.rm = TRUE)) {
+    warning("Some percentile values are outside 0-100. They will render oddly.")
+  }
+  
+  data <- data |>
+    dplyr::mutate(.row_order = dplyr::row_number())
+  
+
+  logo_html <- if (!is.null(logo_url)) {
+    glue::glue(
+      "<img src='{logo_url}' ",
+      "style='height:45px; width:auto; vertical-align:middle; margin-right:14px;'>"
+    )
+  } else {
+    ""
+  }
+  
+  sport_icon_html <- "<img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+    style='height:40px; width:auto; vertical-align:middle; margin-left:14px; opacity:0.75;'>"
+  
+  display_title <- rlang::`%||%`(title, glue::glue("{team}"))
+  
+  tbl_header_html <- glue::glue(
+    "<div style='display:flex; align-items:center; justify-content:space-between;'>",
+    "<div style='display:flex; align-items:center;'>",
+    "{logo_html}",
+    "<div>",
+    "<span style='font-size:20px; font-weight:bold;'>{display_title}</span><br>",
+    "<span style='font-size:12px; color:#555; font-weight:normal;'>{player}</span>",
+    "</div>",
+    "</div>",
+    "{sport_icon_html}",
+    "</div><br>"
+  )
+  
+  # ── Column label: "POOR / AVERAGE / GREAT" ───────────────────────────────
+  pag_label_html <- glue::glue(
+    "<div style='display:flex; justify-content:space-between; ",
+    "font-size:10px; padding:0 2px; font-weight:bold; letter-spacing:0.04em;'>",
+    "<span style='color:{poor_color};'>▲ POOR</span>",
+    "<span style='color:#888;'>AVERAGE</span>",
+    "<span style='color:{good_color};'>GREAT ▲</span>",
+    "</div>"
+  )
+  
+  # ── Bar renderer ──────────────────────────────────────────────────────────
+  render_percentile_bar <- function(x) {
+    purrr::map_chr(as.integer(x), function(pct) {
+      clr <- dplyr::case_when(
+        pct >= 67 ~ good_color,
+        pct >= 34 ~ avg_color,
+        TRUE      ~ poor_color
+      )
+      glue::glue(
+        "<div style='position:relative; width:100%; height:18px; ",
+        "background:#e0e0e0; border-radius:4px; overflow:visible;'>",
+        "<div style='width:{pct}%; height:100%; background:{clr}; ",
+        "border-radius:4px; position:relative; min-width:4px;'>",
+        "<span style='position:absolute; right:-11px; top:-2px; ",
+        "background:{clr}; color:white; border-radius:50%; ",
+        "width:22px; height:22px; line-height:22px; text-align:center; ",
+        "font-size:10px; font-weight:bold; z-index:1; display:inline-block;'>",
+        "{pct}",
+        "</span>",
+        "</div>",
+        "</div>"
+      )
+    })
+  }
+  
+  # ── Build gt table ────────────────────────────────────────────────────────
+  tbl <- data |>
+    dplyr::arrange(.row_order) |>
+    dplyr::select(section, stat, percentile, value) |>
+    gt::gt(groupname_col = "section") |>
+    gtUtils::gt_theme_savant() |>
+    gt::cols_label(
+      stat       = "",
+      percentile = gt::html(pag_label_html),
+      value      = ""
+    ) |>
+    gt::text_transform(
+      locations = gt::cells_body(columns = percentile),
+      fn        = render_percentile_bar
+    ) |>
+    gt::tab_header(title = gt::html(tbl_header_html)) |>
+    gt::cols_width(
+      stat       ~ gt::px(145),
+      percentile ~ gt::px(230),
+      value      ~ gt::px(65)
+    ) |>
+    gt::cols_align(columns = stat,       align = "right") |>
+    gt::cols_align(columns = percentile, align = "left")  |>
+    gt::cols_align(columns = value,      align = "right") |>
+    gt::tab_style(
+      style = gt::cell_text(weight = "bold", size = gt::px(13)),
+      locations = gt::cells_row_groups()
+    ) |>
+    gt::tab_style(
+      style = list(gt::cell_borders(
+        sides  = c("left", "right", "top", "bottom"),
+        color  = "black",
+        weight = gt::px(2)
+      )),
+      locations = list(
+        gt::cells_body(),
+        gt::cells_column_labels(),
+        gt::cells_row_groups()
+      )
+    ) |>
+    gt::tab_options(
+      table.font.size            = gt::px(13),
+      heading.align              = "left",
+      column_labels.font.weight  = "bold",
+      row_group.font.size        = gt::px(13),
+      row_group.background.color = "#f0f0f0",
+      table.width                = gt::px(table_width)
+    )
+  
+  # ── Conditionally attach source note ─────────────────────────────────────
+  if (!is.null(source_note)) {
+    tbl <- tbl |>
+      gt::tab_source_note(source_note = gt::html(source_note))
+  }
+  
+  tbl
+}
+
+```
+
+### 
+
+### Glauber percentile
+
+```{r g-percentile, warning=FALSE, message=FALSE}
+
+pitching_raw <- readr::read_csv(
+  "glauber.csv",
+  show_col_types = FALSE,
+  name_repair    = "minimal"
+) |>
+  dplyr::rename_with(stringr::str_trim) |>
+  dplyr::mutate(
+    dplyr::across(
+      c(`K%`, `BB%`, `K-BB%`, `LOB%`),
+      ~ as.numeric(stringr::str_remove(.x, "%"))
+    )
+  )
+
+
+pct_rank <- function(x, higher_better = TRUE) {
+  pct <- dplyr::percent_rank(x) * 100
+  if (!higher_better) pct <- 100 - pct
+  as.integer(round(pct))
+}
+
+pitching_pct <- pitching_raw |>
+  dplyr::mutate(
+    # Results
+    pct_era    = pct_rank(ERA,      higher_better = FALSE),
+    pct_fip    = pct_rank(FIP,      higher_better = FALSE),
+    pct_whip   = pct_rank(WHIP,     higher_better = FALSE),
+    # Strikeouts
+    pct_kpct   = pct_rank(`K%`,     higher_better = TRUE),
+    pct_k9     = pct_rank(`K/9`,    higher_better = TRUE),
+    pct_kbb    = pct_rank(`K/BB`,   higher_better = TRUE),
+    pct_kbbpct = pct_rank(`K-BB%`,  higher_better = TRUE),
+    # Command & Contact
+    pct_bbpct  = pct_rank(`BB%`,    higher_better = FALSE),
+    pct_hr9    = pct_rank(`HR/9`,   higher_better = FALSE),
+    pct_babip  = pct_rank(BABIP,    higher_better = FALSE),
+    pct_lob    = pct_rank(`LOB%`,   higher_better = TRUE)
+  )
+
+g <- pitching_pct |>
+  dplyr::filter(Name == "Caden Glauber")
+
+
+glauber_data <- tibble::tibble(
+  section = c(
+    "Results",            "Results",            "Results",
+    "Strikeouts & Walks",         "Strikeouts & Walks",         "Strikeouts & Walks",         "Strikeouts & Walks", "Command & Contact",  "Command & Contact",  "Command & Contact",  "Command & Contact"
+  ),
+  stat = c(
+    "ERA",   "FIP",   "WHIP",
+    "K%",    "K/9",   "K/BB",  "K-BB%",
+    "BB%",   "HR/9",  "BABIP", "LOB%"
+  ),
+  percentile = c(
+    g$pct_era,  g$pct_fip,  g$pct_whip,
+    g$pct_kpct, g$pct_k9,   g$pct_kbb,  g$pct_kbbpct,
+    g$pct_bbpct, g$pct_hr9, g$pct_babip, g$pct_lob
+  ),
+  value = c(
+    as.character(g$ERA),
+    as.character(g$FIP),
+    as.character(g$WHIP),
+    glue::glue("{g$`K%`}%"),
+    as.character(g$`K/9`),
+    as.character(g$`K/BB`),
+    glue::glue("{g$`K-BB%`}%"),
+    glue::glue("{g$`BB%`}%"),
+    as.character(g$`HR/9`),
+    stringr::str_remove(sprintf("%.3f", g$BABIP), "^0"),
+    glue::glue("{g$`LOB%`}%")
+  )
+)
+
+# run function 
+tbl <- make_percentile_gt(
+  team        = glue::glue("{g$Name} | North Carolina | RHP <br>NCAA Advanced Percentile Rankings"),
+  player      = glue::glue("2026 Season: 22 appearances | 8-0 | 4 Saves | {g$IP} IP <br> UNC is 22-0 in games Glauber has appeared in this season."),
+  data        = glauber_data,
+  logo_url    = "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png",
+  source_note = "<hr>Percentiles against all qualified NCAA pitchers in dataset<br>
+<b>Lower is better:</b> ERA, FIP, WHIP, BB%, HR/9, BABIP<br>
+<hr>
+    <b>FIP</b>: Fielding Independent Pitching based only on strikeouts, walks, and home runs.<br>
+    <b>WHIP</b>: Walks + Hits per Inning Pitched.<br>
+<b>BABIP</b>: Batting Average on Balls in Play. Average allowed on contacted balls that stay in the park.<br>
+<b>LOB%</b>: Left on Base percentage. Share of baserunners a pitcher strands.<br>
+<hr>
+<b>Data via fangraphs.com | Table by Chris at Bless your Chart | May 18, 2026</b>"
+)
+
+gt_save_crop(
+    tbl,
+    file = "glauber_percentiles.png",
+    whitespace = 40,
+    bg = "white"
+)
+
+tbl
+  
+```
+
+### 
+
+### 
