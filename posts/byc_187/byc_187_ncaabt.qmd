@@ -1,0 +1,367 @@
+---
+title: "187: NCAA Baseball Tournament"
+date: "2026-05-27"
+categories:
+  - gtUtils
+  - glue
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function
+
+```{r portal-plot, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### 
+
+### Arm barn
+
+```{r arm-barn, warning=FALSE, message=FALSE}
+
+uncpitch <- readr::read_csv("unc-pitch.csv", show_col_types = FALSE) |>
+  dplyr::mutate(date = as.Date(date, format = "%m/%d/%y"))
+
+# Convert baseball innings notation directly to whole outs
+# 5 innings = 15 outs, 6.2 = 20 outs, 4.1 = 13 outs
+to_outs <- function(x) {
+  whole <- floor(x)
+  extra <- round((x - whole) * 10)  # .1 = 1 out, .2 = 2 outs
+  as.integer(whole * 3 + extra)
+}
+
+monthly <- uncpitch |>
+  dplyr::mutate(
+    outs_game = to_outs(innings),
+    month     = lubridate::floor_date(date, "month")
+  ) |>
+  dplyr::group_by(player, month) |>
+  dplyr::summarise(
+    outs    = sum(outs_game),
+    pitches = sum(pitches),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    # Convert back to display innings: 20 outs = 6.2, 13 outs = 4.1
+    innings_whole = outs %/% 3L,
+    innings_extra = outs %%  3L,
+    innings = dplyr::if_else(
+      innings_extra == 0L,
+      as.character(innings_whole),
+      paste0(innings_whole, ".", innings_extra)
+    ),
+    p_per_out = round(pitches / outs, 2),
+    month     = format(month, "%B")
+  ) |>
+  dplyr::select(player, month, innings, outs, pitches, p_per_out)
+
+
+unc_header <-glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 55px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Carolina's Arm Barn <br>efficiency by month</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Shows total innings, pitches, and pitches per out by month for Carolina's four primary pitchers.</span>
+     </div>
+       <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 45px; width: auto; vertical-align: middle;'>
+     </div>
+      
+   </div>
+  <br>"
+)
+
+monthly |> 
+dplyr::mutate(
+  month = factor(month, levels = c("May", "April", "March", "February"))
+) |>
+  dplyr::arrange(month, p_per_out) |> 
+dplyr::group_by(month) |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::cols_label(
+    player = "",
+    innings = "Innings",
+    outs = "Outs",
+    pitches = "Pitches",
+    p_per_out = "P/O"
+  ) |> 
+  gt::tab_header(title = gt::html(unc_header)) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)  
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gt::data_color(
+    columns = c(p_per_out),
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(4.5, 7),
+    alpha = 0.6,
+    reverse = TRUE
+  ) |> 
+  gt::tab_source_note(
+    source_note =
+      gt::html(
+        "<hr>P/O means pitches per out. <br>Data through May 24 games  via goheels.com + statbroadcast.com <br>
+        Excludes any other pitching statistics on purpose, the goal is to surface usage and efficiency<br>
+        <hr><b>Table by Chris at Bless your chart</b>"
+      )
+  ) |> 
+  gt::tab_options(table.width = gt::px(455)) |> 
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0",
+                                   "#BBD9ED")) -> nc_tbl 
+
+gt_save_crop(
+  nc_tbl,
+  file = "nc_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+nc_tbl
+```
+
+### 
+
+### NCAA Tournament table 
+
+```{r ncaabt-tbl, warning=FALSE, message=FALSE}
+
+
+# df <- readr::read_csv("cbase_games_today.csv", show_col_types = FALSE)
+
+# conferences <- list(
+#  SEC = c(
+#    "Georgia", "Auburn", "Texas", "Alabama", "Florida", "Texas A&M",
+#    "Mississippi St.", "Arkansas", "Kentucky", "Ole Miss", "Oklahoma", "Tennessee"
+#  ),
+#  ACC = c(
+#    "Boston College", "Florida St.", "Georgia Tech", "Miami (FL)",
+#    "NC State", "North Carolina", "Virginia", "Virginia Tech", "Wake Forest"
+#  ),
+#  `Sun Belt` = c(
+#    "Coastal Carolina", "Louisiana", "Southern Miss.", "Texas St.", "Troy"
+#  ),
+#  `Big 12` = c(
+#    "Arizona St.", "Cincinnati", "Kansas", "Oklahoma St.",
+#    "UCF", "West Virginia"
+#  ),
+#  `Big Ten` = c(
+#    "Nebraska", "Oregon", "Southern California", "UCLA"
+#  ),
+#  `Conference USA` = c(
+#    "Jacksonville St.", "Liberty", "Missouri St."
+#  ),
+#  `Big West` = c(
+#   "Cal Poly", "UC Santa Barbara"
+#  )
+# )
+
+# Build a set of all played matchups as a two-column tibble
+# played <- df |>
+#  dplyr::select(away = `Away Team`, home = `Home Team`) |>
+#  dplyr::bind_rows(
+#    df |> dplyr::select(away = `Home Team`, home = `Away Team`)
+#  ) |>
+#  dplyr::distinct()
+
+# did_play <- function(t1, t2) {
+#  played |>
+#    dplyr::filter(away == t1, home == t2) |>
+#    nrow() > 0
+# }
+
+# For each conference, get all pairwise combos and filter to unplayed
+# find_missing <- function(teams, conf_name) {
+#  tidyr::expand_grid(t1 = teams, t2 = teams) |>
+#    dplyr::filter(t1 < t2) |>  # unique pairs only
+#    dplyr::mutate(
+#      played = purrr::map2_lgl(t1, t2, did_play),
+#      conference = conf_name
+#    ) |>
+#    dplyr::filter(!played) |>
+#    dplyr::select(conference, t1, t2)
+# }
+
+# missing_all <- purrr::imap(conferences, find_missing) |>
+#  purrr::list_rbind()
+
+# Print results by conference
+# cat("=== Conference pairs that did NOT play each other ===\n\n")
+
+# purrr::iwalk(conferences, function(teams, conf_name) {
+#  n_teams <- length(teams)
+#  n_pairs <- choose(n_teams, 2)
+  
+#  missing <- missing_all |>
+#    dplyr::filter(conference == conf_name)
+  
+#  cat(sprintf("--- %s (%d teams, %d possible pairs) ---\n",
+#              conf_name, n_teams, n_pairs))
+  
+#  if (nrow(missing) == 0) {
+#    cat("  All pairs played each other\n")
+#  } else {
+#    missing |>
+#      dplyr::mutate(line = sprintf("  %s vs %s", t1, t2)) |>
+#      dplyr::pull(line) |>
+#      cat(sep = "\n")
+#    cat("\n")
+#  }
+#  cat("\n")
+#})
+
+baseball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+        <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+        style='height: 45px; width: auto; vertical-align: middle;'>
+      </div>
+      <div style='flex-grow:1; margin-left: 20px; margin-right: 20px;'>
+        <span style='display: block; font-weight: 800; text-align: center; font-size: 24px; color: #111111; letter-spacing: -0.5px;'>Unplayed Conference Matchups Amongst 2026 NCAA Tournament Teams</span>
+        <span style='display: block; text-align: center; font-size: 14px; color: #444444; margin-top: 4px; font-weight: normal;'>
+          Matchups between teams from the <em>same</em> conference that <br>have <em>not</em> played each other yet this season. 
+        </span>
+      </div>
+      <div>
+        <img src='https://content.sportslogos.net/logos/85/6370/full/ncaa_mens_college_world_series_logo_alternate_2009_sportslogosnet-8649.png'
+        style='height: 45px; width: auto; vertical-align: middle;'>
+      </div>
+    </div>
+  <br>"
+)
+
+ncaa_b <- readr::read_csv("ncaa_b.csv")
+
+ncaab_tbl <- ncaa_b |>
+  dplyr::mutate(across(where(is.character), ~ tidyr::replace_na(.x, ""))) |>
+  dplyr::mutate(
+    sec_1 = "",
+    sec_col = paste0(sec_t1, " ", sec_t2),
+    sec_blank = "", 
+    acc_col = paste0(acc_t1, " ", acc_t2),
+    acc_blank = "",
+    bigtw_col = paste0(bigtw_t1, " ", bigtw_t2),
+    bigtw_blank = "",
+    sun_col = paste0(sun_t1, " ", sun_t2),
+    sun_blank = "",
+    big_col = paste0(bigten_t1, " ", bigten_t2),
+    big_blank = ""
+  ) |> 
+  dplyr::mutate(across(ends_with("_col"), ~ dplyr::case_when(
+    .x == " " ~ "<span></span>",
+    .x == "NA NA" ~ "<span></span>",
+    .x == "" ~ "<span></span>",
+    TRUE ~ .x
+  ))) |>
+  dplyr::select(
+    sec_1, sec_col, sec_blank,
+    acc_col, acc_blank,
+    bigtw_col, bigtw_blank,
+    sun_col, sun_blank,
+    big_col, big_blank
+  ) |> 
+  gt::gt() |>
+  gtUtils::gt_theme_savant() |> 
+  gt::fmt_markdown(columns = ends_with("_col")) |> 
+  gt::cols_align(
+    align = "center",
+    columns = gt::everything()
+  ) |> 
+  gt::tab_header(title = gt::html(baseball_header)) |>
+  gt::tab_source_note(source_note = gt::html("<hr><b>Multi-bid leagues</b><br>
+    <div style='font-size: 11px; color: #444444; line-height: 1.5; padding-top: 10px;'>
+      <b>SEC (12 bids, 16 teams)</b>: Alabama, Arkansas, Auburn, Florida, Georgia, Kentucky, Mississippi State, Oklahoma, Ole Miss, Tennessee, Texas, Texas A&M | <span style='color: #888888;'><s>LSU, South Carolina, Vandberbilt, Missouri</s></span> <br>
+      <b>ACC (9 bids, 16 teams)</b>: Boston College, Florida State, Georgia Tech, Miami (Florida), NC State, North Carolina, Virginia, Virginia Tech, Wake Forest | <span style='color: #888888;'><s>Pitt, Louisville, Clemson, Notre Dame, Duke, Cal, Stanford</s></span><br>
+      <b>Big 12 (6 bids, 14 teams)</b>: Arizona State, Cincinnati, Kansas, Oklahoma State, UCF, West Virginia | <span style='color: #888888;'><s>TCU, Baylor, BYU, Utah, Kansas St., Texas Tech, Arizona, Houston</s></span><br>
+      <b>Sun Belt (5 bids, 14 teams)</b>: Coastal Carolina, Louisiana, Southern Mississippi, Texas State, Troy | <span style='color: #888888;'><s>South Alabama, App State, ODU, Georgia St., Marshall, Arkansas St., ULM, James Madison, Ga. Southern</s></span><br>
+      <b>Big Ten (4 bids, 17 teams)</b>: Nebraska, Oregon, USC, UCLA | <span style='color: #888888;'><s>Purdue, Ohio St., Michigan, Iowa, Illinois, Rutgers, Washington, Minnesota, Michigan St., Indiana, Maryland, Penn St., Northwestern</s></span><br>
+      <b>CUSA (3 bids) and Big West (2 bids)</b> had all tournament teams play each other.</span>
+      <p style='margin-top: 8px; border-top: 1px solid #dddddd; padding-top: 6px; font-size: 10px; color: #333333;'>
+        <b>Table by Chris at Bless your chart | data via pearatings.com and ncaa.org | May 27, 2026</b>
+      </p>
+    </div>")) |>
+  gt::tab_spanner(
+    columns = starts_with("sec_"),
+    label = gt::html("<span style='font-weight: bold; font-size: 15px;'>SEC: 12 Bids</span><br><span style='color: #888888; font-size: 11px;'>19 missed <br>matchups</span>")
+  ) |> 
+  gt::tab_spanner(
+    columns = starts_with("acc_"),
+    label = gt::html("<span style='font-weight: bold; font-size: 15px;'>ACC: 9 Bids</span><br><span style='color: #888888; font-size: 11px;'>9 missed <br>matchups</span>")
+  ) |> 
+  gt::tab_spanner(
+    columns = starts_with("bigtw_"),
+    label = gt::html("<span style='font-weight: bold; font-size: 15px;'>Big 12: 6 Bids</span><br><span style='color: #888888; font-size: 11px;'>2 missed <br>matchups</span>")
+  ) |> 
+  gt::tab_spanner(
+    columns = starts_with("sun_"),
+    label = gt::html("<span style='font-weight: bold; font-size: 15px;'>Sun Belt: 5 Bids</span><br><span style='color: #888888; font-size: 11px;'>2 missed <br>matchups</span>")
+  ) |> 
+  gt::tab_spanner(
+    columns = starts_with("big_"),
+    label = gt::html("<span style='font-weight: bold; font-size: 15px;'>Big Ten: 4 Bids</span><br><span style='color: #888888; font-size: 11px;'>1 missed <br>matchup</span>")
+  ) |> 
+  gt::cols_label(
+    sec_1 = "", sec_col = "", sec_blank = "",
+    acc_col = "", acc_blank = "",
+    bigtw_col = "", bigtw_blank = "",
+    sun_col = "", sun_blank = "",
+    big_col = "", big_blank = ""
+  ) |>
+  gt::sub_missing(
+    missing_text = ""
+  ) |> 
+  gt::tab_options(
+    table.width = gt::px(575),
+    table.additional_css = "th.gt_column_spanner { border-bottom-style: none !important; }"
+  )
+
+
+gt_save_crop(
+  ncaab_tbl,
+  file = "ncaab_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+ncaab_tbl
+```
