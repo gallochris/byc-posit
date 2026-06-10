@@ -14,6 +14,8 @@ Lynch,5/3/26,Duke,W,3,53
 Lynch,5/9/26,Pitt,W,6,88
 Lynch,5/15/26,at NC State,W,3.1,99
 Lynch,5/23/26,Pitt,W,4,90
+Lynch,5/29/26,VCU,W,7,108
+Lynch,6/5/26,USC,L,5.2,89
 Glauber,2/13/26,Indiana,W,0.2,31
 Glauber,2/14/26,Indiana,W,1.2,31
 Glauber,2/18/26,Longwood,W,2,32
@@ -37,6 +39,8 @@ Glauber,5/10/26,Pitt,W,3.1,54
 Glauber,5/14/26,at NC State,W,2,39
 Glauber,5/15/26,at NC State,W,3.2,57
 Glauber,5/22/26,Virginia Tech,W,5.2,90
+Glauber,5/30/26,East Carolina,W,4.1,67
+Glauber,6/7/26,USC,W,7.1,95
 DeCaro,2/13/26,Indiana,W,5,90
 DeCaro,2/20/26,at East Carolina,W,8,101
 DeCaro,2/27/26,Le Moyne,W,5,78
@@ -52,6 +56,8 @@ DeCaro,5/3/26,Duke,W,3,48
 DeCaro,5/8/26,Pitt,W,5,93
 DeCaro,5/14/26,at NC State,W,5,96
 DeCaro,5/22/26,Virginia Tech,W,3.1,55
+DeCaro,5/30/26,East Carolina,W,3.2,78
+DeCaro,6/6/26,USC,W,9,117
 McDuffie,2/13/26,Indiana,W,0.1,5
 McDuffie,2/14/26,Indiana,W,1,31
 McDuffie,2/18/26,Longwood,W,1.1,22
@@ -83,3 +89,29 @@ McDuffie,5/14/26,at NC State,W,2,44
 McDuffie,5/16/26,at NC State,L,2.2,39
 McDuffie,5/23/26,Pitt,W,2.2,45
 McDuffie,5/24/26,vs Georgia Tech,L,1.1,28
+McDuffie,5/29/26,VCU,W,1,13
+McDuffie,5/30/26,East Carolina,W,1,15
+McDuffie,5/31/26,East Carolina,W,1.2,20
+McDuffie,6/5/26,USC,L,0.1,22
+McDuffie,6/7/26,USC,L,0.2,9
+Rose,2/17/26,Richmond,W,1,16
+Rose,2/21/26,East Carolina,L,1.1,14
+Rose,2/25/26,VCU,W,3,35
+Rose,3/3/26,Elon,W,2,32
+Rose,3/10/26,Bucknell,W,2,42
+Rose,3/18/26,UNCG,W,1,15
+Rose,3/24/26,South Carolina,W,1,13
+Rose,3/31/26,Campbell,W,6,71
+Rose,4/4/26,Boston College,W,2,30
+Rose,4/7/26,Charlotte,W,3,66
+Rose,4/14/26,UNCW,W,5,82
+Rose,4/19/26,Georgia Tech,L,2.2,32
+Rose,4/21/26,High Point,W,2.1,44
+Rose,4/28/26,Coastal Carolina,L,1.2,47
+Rose,5/10/26,Pitt,W,0.1,5
+Rose,5/12/26,at UNCW,W,1.1,47
+Rose,5/16/26,at NC State,L,0.1,9
+Rose,5/24/26,vs Georgia Tech,L,2.1,47
+Rose,5/31/26,East Carolina,W,4,41
+Rose,6/5/26,USC,L,2.2,29
+Rose,6/7/26,USC,W,1,13
