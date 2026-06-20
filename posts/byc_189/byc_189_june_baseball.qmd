@@ -1,0 +1,399 @@
+---
+title: "189: June baseball"
+date: "2026-06-19"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function
+
+```{r portal-plot, warning=FALSE, message=FALSE}
+library(cbbplotR)
+library(rlang)
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### 
+
+### Hull
+
+```{r hull, warning=FALSE, message=FALSE}
+
+monthly_raw <- readr::read_csv("owen-hull.csv") |> 
+  tidyr::separate(col = date, into = c("month_num", "day", "year"), sep = "/", remove = FALSE) |> 
+  dplyr::group_by(month_num) |> 
+  dplyr::summarize(
+    ab = sum(ab),
+    h = sum(h),
+    double = sum(double),
+    triple = sum(triple),
+    hr = sum(hr),
+    rbi = sum(rbi),
+    bb = sum(bb),
+    k = sum(k),
+    hbp = sum(hbp),
+    sf = sum(sf),
+    .groups = "drop"
+  ) |> 
+  dplyr::mutate(
+    month = dplyr::case_when(
+      month_num == "2" ~ "February",
+      month_num == "3" ~ "March",
+      month_num == "4" ~ "April",
+      month_num == "5" ~ "May",
+      month_num == "6" ~ "June"
+    )
+  )
+
+
+season_totals <- monthly_raw |> 
+  dplyr::summarize(
+    month = "Total",
+    ab = sum(ab),
+    h = sum(h),
+    double = sum(double),
+    triple = sum(triple),
+    hr = sum(hr),
+    rbi = sum(rbi),
+    bb = sum(bb),
+    k = sum(k),
+    hbp = sum(hbp),
+    sf = sum(sf)
+  )
+
+unc_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Owen Hull's Offense by Month</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Hull leads Carolina in batting average, slugging percentage, and on-base percentage. <br>UNC plays Oklahoma in the 2026 National Championship series starting Saturday, June 20.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+monthly_stats <- dplyr::bind_rows(monthly_raw, season_totals) |> 
+  dplyr::mutate(
+    month = factor(month, levels = c("June", "May", "April", "March", "February", "Total")),
+    singles = h - (double + triple + hr),
+    tb = singles + (double * 2) + (triple * 3) + (hr * 4),
+    
+    # Calculate percentages
+    avg = h / ab,
+    obp = (h + bb + hbp) / (ab + bb + hbp + sf),
+    slugging = tb / ab,
+    ops = obp + slugging
+  ) |> 
+  dplyr::arrange(month) |> 
+  dplyr::select(month, avg, ab, h, double, triple, hr, rbi, bb, k, obp, slugging, ops)
+
+
+fn_baseball_fmt <- function(x) {
+  stringr::str_replace(sprintf("%.3f", x), "^0", "")
+}
+
+gt_table <- monthly_stats |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_savant() |> 
+  gt::tab_header(
+    title = gt::html(unc_header)
+  ) |> 
+  gt::cols_label(
+    month = "Month", avg = "AVG", ab = "AB", h = "H", double = "2B",
+    triple = "3B", hr = "HR", rbi = "RBI", bb = "BB", k = "K",
+    obp = "OBP", slugging = "SLG", ops = "OPS"
+  ) |> 
+  gt::fmt(
+    columns = c(avg, obp, slugging, ops),
+    fns = fn_baseball_fmt
+  ) |> 
+  gt::cols_align(
+    align = "center",
+    columns = c(avg, ab, h, double, triple, hr, rbi, bb, k, obp, slugging, ops)
+  ) |> 
+  gt::cols_align(
+    align = "left",
+    columns = month
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#f2f2f2"),
+    locations = gt::cells_body(columns = c(obp, slugging, ops))
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_text(font = "RobotoCondensed-Bold", weight = "bold"),
+    locations = gt::cells_body(columns = ops)
+  ) |> 
+
+  gt::tab_style(
+    style = list(
+      gt::cell_text(weight = "bold"),
+      gt::cell_borders(sides = "top", color = "black", weight = gt::px(2))
+    ),
+    locations = gt::cells_body(rows = month == "Total")
+  ) |> 
+  gt::data_color(
+    columns = c(avg),
+    rows = month != "Total", 
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.250, .630),
+    alpha = 0.6,
+  ) |> 
+  gt::data_color(
+    columns = c(obp),
+    rows = month != "Total", 
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.450, .660),
+    alpha = 0.6,
+  ) |> 
+  gt::data_color(
+    columns = c(slugging),
+    rows = month != "Total", 
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.300, 1.050),
+    alpha = 0.6,
+  ) |> 
+  gt::data_color(
+    columns = c(ops),
+    rows = month != "Total", 
+    direction = c("column"),
+    method = c("numeric"),
+    palette = c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641"),
+    domain = c(.800, 1.7),
+    alpha = 0.6,
+  ) |> 
+  gt::tab_options(
+    table.background.color = "floralwhite",
+    heading.title.font.size = 18,
+    heading.subtitle.font.size = 11,
+    column_labels.font.weight = "bold",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black",
+    table.border.bottom.color = "transparent"
+  ) |> 
+  gt::tab_source_note(
+    source_note = gt::md("Table by Chris at Bless your chart | data via goheels.com")
+  ) |> 
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels(),
+      gt::cells_row_groups()
+    )
+  ) |> 
+  gt::tab_options(table.width = gt::px(675)) |> 
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED"))
+
+
+gt_save_crop(
+  gt_table,
+  file = "hull_tbl.png",
+  whitespace = 40,
+  bg = "floralwhite"
+) 
+
+gt_table
+
+```
+
+### UNC pitching log
+
+```{r pitching-log, warning=FALSE, message=FALSE}
+
+nc <- readr::read_csv("ncwide.csv") |> 
+  dplyr::arrange(order) 
+
+
+unc_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a3.espncdn.com/combiner/i?img=%2Fredesign%2Fassets%2Fimg%2Ficons%2FESPN%2Dicon%2Dbaseball.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Carolina's 2026 NCAA Tournament Pitching Log</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Carolina will play Oklahoma in the 2026 National Championship Series starting Saturday, June 20.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
+       style='height: 60px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+nc |> 
+  cbbplotR::gt_cbb_teams(opp, opp, logo_height = 15) |>
+  dplyr::select(
+    pitcher,
+    game_date,
+    opp,
+    metadata,
+    result,
+    inn_1,
+    inn_2,
+    inn_3,
+    inn_4,
+    inn_5,
+    inn_6,
+    inn_7,
+    inn_8,
+    inn_9,
+    bf,
+    innings,
+    pitch_count,
+    hits, 
+    bb,
+    k,
+    er,
+    runs
+  ) |>
+  dplyr::group_by(metadata, opp, game_date) |> 
+  dplyr::mutate(result = tidyr::replace_na(result, "-")) |> 
+  dplyr::mutate(
+    dplyr::across(
+      .cols = starts_with("inn_"), # <-- Changed to starts_with
+      .fns = \(x) ifelse(is.na(x) | stringr::str_trim(x) == "", 0, 1)
+    )
+  ) |> 
+  gt::gt(row_group.sep = " | ") |>
+  gtUtils::gt_theme_savant() |>
+  gt::cols_align(opp, align = "left") |>
+  gt::text_transform(
+    locations = gt::cells_row_groups(),
+    fn = function(x) {
+      lapply(x, gt::md)
+    }
+  ) |> 
+  gt::sub_missing(rows = gt::everything(), missing_text = " ") |> 
+  gtUtils::gt_indicator_boxes(
+    key_columns = c("pitcher", "result", 
+                    "innings", "k", "bb", "pitch_count", "bf", "er", "runs", "hits"),
+    color_yes = "#56a0d3",
+    color_na = "#e1e1e1"
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = "pitcher",
+    col2 = "result",
+    palette = c("black", "#333333"),
+    small_cap = FALSE
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = "k",
+    col2 = "bb",
+    palette = c("black", "#333333")
+  ) |> 
+  gtExtras::gt_merge_stack(
+    col1 = "er",
+    col2 = "runs",
+    palette = c("black", "#333333")
+  ) |> 
+  gtUtils::gt_column_subheaders(
+    opp = list(heading = "Opponent", subtitle = "Score | Game Duration"),
+    # result = list(heading = "Result", subtitle = "W/L/-"),
+    innings = list(heading = "Innings", subtitle = "Pitched"),
+    pitch_count = list(heading = "Pitch", subtitle = "Count"),
+    bf = list(heading = "Batters", subtitle = "Faced"),
+    hits = list(heading = "Hits", subtitle = "Allowed"),
+    k = list(heading = "Strikeouts", subtitle = "Walks"),
+    er = list(heading = "Runs", subtitle = "Earned"),
+    heading_color = "black",
+    subtitle_color = "gray"
+  ) |> 
+  gt::cols_label(
+    pitcher = ""
+  ) |> 
+  gt::cols_label(!!!rlang::set_names(as.character(1:9), paste0("inn_", 1:9))) |> 
+  #gt::data_color(
+  #  columns = gt::starts_with("inn_"),
+  #  palette = c("#BBD9ED", "#89BDE0", "#56a0d3"),
+  #  domain = c(1, 7),
+  #  na_color = "#ffffff"
+  # ) |> 
+  gt::tab_spanner(
+    columns = gt::starts_with("inn_"), 
+    label = gt::html("<span style='font-family: \"Chivo\", sans-serif; font-weight: bold; font-size: 14px; text-decoration: none;'>Innings</span><br>Batters Faced<span style='font-family: \"Chivo\", sans-serif; font-weight: normal; font-size: 11px; color: gray; text-decoation: none;'></span>")
+  ) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_header(title = gt::html(unc_header)) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>UNC is making its 13th trip to the Men's College World Series and the second in the last three seasons.<br>
+      <hr><b>Table by Chris at Bless your chart | data via goheels.com</b>"
+    )
+  ) |>
+  gt::tab_options(table.width = gt::px(775)) |> 
+  gt::tab_style(
+    style = list(
+      gt::cell_text(
+        v_align = "middle"
+      )
+    ),
+    locations = gt::cells_body(columns = gt::starts_with("inn_"))
+  ) |> 
+  gtExtras::gt_highlight_rows(columns = gt::everything(),
+                              rows = c(14), fill = "#fffec8") |>
+  gtExtras::gt_highlight_rows(columns = "k",
+                              rows = c(13), fill = "#fffec8") |>
+  #gtExtras::gt_highlight_rows(columns = c("bf", "innings", "pitch_count"),
+  #                            rows = c(9), fill = "#fffec8") |>
+  gtExtras::gt_highlight_rows(columns = "pitcher",
+                              rows = c(4, 6, 7, 9, 11, 14, 17, 19, 22, 23, 27), fill = "#BBD9ED") |>
+  gtExtras::gt_highlight_rows(columns = "pitcher",
+                              rows = c(17), fill = "lightpink") |>
+  gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) -> ncp
+
+gt_save_crop(
+  ncp,
+  file = "ncp_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+ncp
+```

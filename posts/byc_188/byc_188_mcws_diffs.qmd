@@ -366,7 +366,7 @@ unc_header <- glue::glue(
      </div>
      <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
        <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Carolina's 2026 NCAA Tournament Pitching Log</span>
-       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>UNC is making its 13th trip to the Men's College World Series and the second in the last three seasons.</span>
+       <span style='font-size: 14px; font-weight: normal; display: block; text-align: center;'>Carolina is one win away from the 2026 National Championship Series.</span>
      </div>
      <div>
        <img src='https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/153.png'
@@ -474,7 +474,7 @@ nc |>
   gt::tab_header(title = gt::html(unc_header)) |>
   gt::tab_source_note(
     source_note = gt::html(
-      "<hr>Jason DeCaro's complete game two-hit shutout is the fourth by a Carolina pitcher in an NCAA tournament game in the Super Regional era (since 1999).<br>
+      "<hr>UNC is making its 13th trip to the Men's College World Series and the second in the last three seasons.<br>
       <hr><b>Table by Chris at Bless your chart | data via goheels.com</b>"
     )
   ) |>
@@ -488,15 +488,15 @@ nc |>
     locations = gt::cells_body(columns = gt::starts_with("inn_"))
   ) |> 
   gtExtras::gt_highlight_rows(columns = gt::everything(),
-                              rows = c(4), fill = "#fffec8") |>
-  gtExtras::gt_highlight_rows(columns = "k",
-                              rows = c(3), fill = "#fffec8") |>
-  gtExtras::gt_highlight_rows(columns = c("bf", "innings", "pitch_count"),
                               rows = c(9), fill = "#fffec8") |>
+  gtExtras::gt_highlight_rows(columns = "k",
+                              rows = c(8), fill = "#fffec8") |>
+  #gtExtras::gt_highlight_rows(columns = c("bf", "innings", "pitch_count"),
+  #                            rows = c(9), fill = "#fffec8") |>
   gtExtras::gt_highlight_rows(columns = "pitcher",
-                              rows = c(1, 9, 12, 13, 17), fill = "#BBD9ED") |>
+                              rows = c(1, 2, 4, 6, 9, 14, 17, 18, 22), fill = "#BBD9ED") |>
   gtExtras::gt_highlight_rows(columns = "pitcher",
-                              rows = c(7), fill = "lightpink") |>
+                              rows = c(12), fill = "lightpink") |>
   gtUtils::gt_border_bars_bottom(c("#56a0d3", "#89BDE0", "#BBD9ED")) -> ncp
 
 gt_save_crop(
