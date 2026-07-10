@@ -1,0 +1,30 @@
+week,game_date,away_team,away_conf,home_team,home_conf,neutral_site,completed
+1,8/29/26,North Carolina,ACC,TCU,Big 12,TRUE,FALSE
+1,9/4/26,Colorado,Big 12,Georgia Tech,ACC,FALSE,FALSE
+1,9/5/26,Baylor,Big 12,Auburn,SEC,TRUE,FALSE
+1,9/5/26,Boston College,ACC,Cincinnati,Big 12,FALSE,FALSE
+1,9/5/26,Clemson,ACC,LSU,SEC,FALSE,FALSE
+1,9/6/26,UCLA,Big Ten,California,ACC,FALSE,FALSE
+1,9/6/26,Louisville,ACC,Ole Miss,SEC,TRUE,FALSE
+2,9/12/26,Ohio State,Big Ten,Texas,SEC,FALSE,FALSE
+2,9/12/26,Iowa State,Big 12,Iowa,Big Ten,FALSE,FALSE
+2,9/11/26,Rutgers,Big Ten,Boston College,ACC,FALSE,FALSE
+2,9/12/26,Missouri,SEC,Kansas,Big 12,FALSE,FALSE
+2,9/12/26,Arizona State,Big 12,Texas A&M,SEC,FALSE,FALSE
+2,9/12/26,Oregon,Big Ten,Oklahoma State,Big 12,FALSE,FALSE
+2,9/12/26,Oklahoma,SEC,Michigan,Big Ten,FALSE,FALSE
+2,9/12/26,Wake Forest,ACC,Purdue,Big Ten,FALSE,FALSE
+2,9/12/26,Duke,ACC,Illinois,Big Ten,FALSE,FALSE
+2,9/12/26,UCF,Big 12,Pittsburgh,ACC,FALSE,FALSE
+2,9/12/26,Mississippi State,SEC,Minnesota,Big Ten,FALSE,FALSE
+2,9/12/26,Tennessee,SEC,Georgia Tech,ACC,FALSE,FALSE
+2,9/13/26,Arkansas,SEC,Utah,Big 12,FALSE,FALSE
+3,9/19/26,NC State,ACC,Vanderbilt,SEC,FALSE,FALSE
+3,9/19/26,Florida State,ACC,Alabama,SEC,FALSE,FALSE
+3,9/19/26,West Virginia,Big 12,Virginia,ACC,TRUE,FALSE
+3,9/19/26,Colorado,Big 12,Northwestern,Big Ten,FALSE,FALSE
+3,9/19/26,Virginia Tech,ACC,Maryland,Big Ten,FALSE,FALSE
+13,11/27/26,Florida,SEC,Florida State,ACC,FALSE,FALSE
+13,11/28/26,South Carolina,SEC,Clemson,ACC,FALSE,FALSE
+13,11/28/26,Georgia Tech,ACC,Georgia,SEC,FALSE,FALSE
+13,11/28/26,Louisville,ACC,Kentucky,SEC,FALSE,FALSE

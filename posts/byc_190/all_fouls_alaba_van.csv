@@ -1,0 +1,66 @@
+season,ID,Date,Half_Status,Game_Seconds,Time,Home,Away,Event_Team,Event_Type,Event_Description,foul_category,bonus_half,clock_secs,seconds_into_half,counts_toward_team_foul,team_fouls_after,bonus_state
+2026,6516602,2026-01-07,1,24,19:36,Vanderbilt,Alabama,Alabama,Commits Foul,"Aden Holloway, foul personal shooting;2freethrow;",shooting,1,1176,24,TRUE,1,none
+2026,6516602,2026-01-07,1,145,17:35,Vanderbilt,Alabama,Alabama,Commits Foul,"Latrell Wrightsell Jr., foul personal",personal,1,1055,145,TRUE,2,none
+2026,6516602,2026-01-07,1,251,15:49,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Nickel, foul personal",personal,1,949,251,TRUE,1,none
+2026,6516602,2026-01-07,1,287,15:13,Vanderbilt,Alabama,Alabama,Commits Foul,"Labaron Philon, foul personal",personal,1,913,287,TRUE,3,none
+2026,6516602,2026-01-07,1,297,15:03,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Jalen Washington, foul personal",personal,1,903,297,TRUE,2,none
+2026,6516602,2026-01-07,1,363,13:57,Vanderbilt,Alabama,Alabama,Commits Foul,"Amari Allen, foul personal shooting;2freethrow;",shooting,1,837,363,TRUE,4,none
+2026,6516602,2026-01-07,1,369,13:51,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Tanner, foul personal shooting;2freethrow;",shooting,1,831,369,TRUE,3,none
+2026,6516602,2026-01-07,1,507,11:33,Vanderbilt,Alabama,Alabama,Commits Foul,"Noah Williamson, foul personal",personal,1,693,507,TRUE,5,none
+2026,6516602,2026-01-07,1,572,10:28,Vanderbilt,Alabama,Alabama,Commits Foul,"Keitenn Bristow, foul personal shooting;1freethrow;",shooting,1,628,572,TRUE,6,none
+2026,6516602,2026-01-07,1,629,09:31,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Chandler Bing, foul personal shooting;2freethrow;",shooting,1,571,629,TRUE,4,none
+2026,6516602,2026-01-07,1,639,09:21,Vanderbilt,Alabama,Alabama,Commits Foul,"Noah Williamson, foul personal shooting;2freethrow;",shooting,1,561,639,TRUE,7,single
+2026,6516602,2026-01-07,1,668,08:52,Vanderbilt,Alabama,Alabama,Commits Foul,"Noah Williamson, foul offensive",offensive,1,532,668,TRUE,8,single
+2026,6516602,2026-01-07,1,685,08:35,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Jalen Washington, foul personal",personal,1,515,685,TRUE,5,none
+2026,6516602,2026-01-07,1,701,08:19,Vanderbilt,Alabama,Alabama,Commits Foul,"Aden Holloway, foul personal oneandone;",personal,1,499,701,TRUE,9,single
+2026,6516602,2026-01-07,1,719,08:01,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Duke Miles, foul personal",personal,1,481,719,TRUE,6,none
+2026,6516602,2026-01-07,1,741,07:39,Vanderbilt,Alabama,Alabama,Commits Foul,"Taylor Bol Bowen, foul personal 2freethrow;",personal,1,459,741,TRUE,10,double
+2026,6516602,2026-01-07,1,813,06:27,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Tanner, foul personal oneandone;",personal,1,387,813,TRUE,7,single
+2026,6516602,2026-01-07,1,843,05:57,Vanderbilt,Alabama,Alabama,Commits Foul,"Keitenn Bristow, foul personal 2freethrow;",personal,1,357,843,TRUE,11,double
+2026,6516602,2026-01-07,1,874,05:26,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Devin McGlockton, foul personal shooting;2freethrow;",shooting,1,326,874,TRUE,8,single
+2026,6516602,2026-01-07,1,893,05:07,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Nickel, foul personal shooting;1freethrow;",shooting,1,307,893,TRUE,9,single
+2026,6516602,2026-01-07,1,914,04:46,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Harris, foul personal shooting;2freethrow;",shooting,1,286,914,TRUE,10,double
+2026,6516602,2026-01-07,1,1075,02:05,Vanderbilt,Alabama,Alabama,Commits Foul,"London Jemison, foul personal 2freethrow;",personal,1,125,1075,TRUE,12,double
+2026,6516602,2026-01-07,1,1110,01:30,Vanderbilt,Alabama,Alabama,Commits Foul,"Labaron Philon, foul personal 2freethrow;",personal,1,90,1110,TRUE,13,double
+2026,6516602,2026-01-07,1,1132,01:08,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"AK Okereke, foul personal 2freethrow;",personal,1,68,1132,TRUE,11,double
+2026,6516602,2026-01-07,2,1237,19:23,Vanderbilt,Alabama,Alabama,Commits Foul,"Keitenn Bristow, foul personal",personal,2,1163,37,TRUE,1,none
+2026,6516602,2026-01-07,2,1261,18:59,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Duke Miles, foul personal",personal,2,1139,61,TRUE,1,none
+2026,6516602,2026-01-07,2,1275,18:45,Vanderbilt,Alabama,Alabama,Commits Foul,"Latrell Wrightsell Jr., foul personal",personal,2,1125,75,TRUE,2,none
+2026,6516602,2026-01-07,2,1331,17:49,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"AK Okereke, foul personal",personal,2,1069,131,TRUE,2,none
+2026,6516602,2026-01-07,2,1337,17:43,Vanderbilt,Alabama,Alabama,Commits Foul,"Amari Allen, foul personal",personal,2,1063,137,TRUE,3,none
+2026,6516602,2026-01-07,2,1359,17:21,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Duke Miles, foul personal shooting;1freethrow;",shooting,2,1041,159,TRUE,3,none
+2026,6516602,2026-01-07,2,1376,17:04,Vanderbilt,Alabama,Alabama,Commits Foul,"Taylor Bol Bowen, foul personal",personal,2,1024,176,TRUE,4,none
+2026,6516602,2026-01-07,2,1434,16:06,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Devin McGlockton, foul personal",personal,2,966,234,TRUE,4,none
+2026,6516602,2026-01-07,2,1472,15:28,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"AK Okereke, foul personal",personal,2,928,272,TRUE,5,none
+2026,6516602,2026-01-07,2,1490,15:10,Vanderbilt,Alabama,Alabama,Commits Foul,"Noah Williamson, foul personal",personal,2,910,290,TRUE,5,none
+2026,6516602,2026-01-07,2,1493,15:07,Vanderbilt,Alabama,Alabama,Commits Foul,"London Jemison, foul personal shooting;1freethrow;",shooting,2,907,293,TRUE,6,none
+2026,6516602,2026-01-07,2,1524,14:36,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Nickel, foul personal",personal,2,876,324,TRUE,6,none
+2026,6516602,2026-01-07,2,1531,14:29,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"AK Okereke, foul personal flagrant1;2freethrow;",flagrant,2,869,331,TRUE,7,single
+2026,6516602,2026-01-07,2,1560,14:00,Vanderbilt,Alabama,Alabama,Commits Foul,"Amari Allen, foul personal shooting;2freethrow;",shooting,2,840,360,TRUE,7,single
+2026,6516602,2026-01-07,2,1561,13:59,Vanderbilt,Alabama,Alabama,Commits Foul,"Taylor Bol Bowen, foul personal oneandone;",personal,2,839,361,TRUE,8,single
+2026,6516602,2026-01-07,2,1590,13:30,Vanderbilt,Alabama,Alabama,Commits Foul,"Aden Holloway, foul personal oneandone;",personal,2,810,390,TRUE,9,single
+2026,6516602,2026-01-07,2,1655,12:25,Vanderbilt,Alabama,Alabama,Commits Foul,"London Jemison, foul personal shooting;1freethrow;",shooting,2,745,455,TRUE,10,double
+2026,6516602,2026-01-07,2,1666,12:14,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Devin McGlockton, foul personal shooting;2freethrow;",shooting,2,734,466,TRUE,8,single
+2026,6516602,2026-01-07,2,1675,12:05,Vanderbilt,Alabama,Alabama,Commits Foul,"Keitenn Bristow, foul personal 2freethrow;",personal,2,725,475,TRUE,11,double
+2026,6516602,2026-01-07,2,1695,11:45,Vanderbilt,Alabama,Alabama,Commits Foul,"London Jemison, foul personal 2freethrow;",personal,2,705,495,TRUE,12,double
+2026,6516602,2026-01-07,2,1749,10:51,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Duke Miles, foul personal shooting;2freethrow;",shooting,2,651,549,TRUE,9,single
+2026,6516602,2026-01-07,2,1793,10:07,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Devin McGlockton, foul personal shooting;2freethrow;",shooting,2,607,593,TRUE,10,double
+2026,6516602,2026-01-07,2,1845,09:15,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Nickel, foul personal 2freethrow;",personal,2,555,645,TRUE,11,double
+2026,6516602,2026-01-07,2,1881,08:39,Vanderbilt,Alabama,Alabama,Commits Foul,"Team, foul coachTechnical classa;2freethrow;",technical,2,519,681,TRUE,13,double
+2026,6516602,2026-01-07,2,1934,07:46,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Chandler Bing, foul personal shooting;2freethrow;",shooting,2,466,734,TRUE,12,double
+2026,6516602,2026-01-07,2,1984,06:56,Vanderbilt,Alabama,Alabama,Commits Foul,"Houston Mallette, foul personal 2freethrow;",personal,2,416,784,TRUE,14,double
+2026,6516602,2026-01-07,2,1997,06:43,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Jalen Washington, foul personal 2freethrow;",personal,2,403,797,TRUE,13,double
+2026,6516602,2026-01-07,2,2021,06:19,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Jalen Washington, foul personal shooting;2freethrow;",shooting,2,379,821,TRUE,14,double
+2026,6516602,2026-01-07,2,2035,06:05,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Chandler Bing, foul personal 2freethrow;",personal,2,365,835,TRUE,15,double
+2026,6516602,2026-01-07,2,2089,05:11,Vanderbilt,Alabama,Alabama,Commits Foul,"Keitenn Bristow, foul personal shooting;2freethrow;",shooting,2,311,889,TRUE,15,double
+2026,6516602,2026-01-07,2,2103,04:57,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Tyler Harris, foul personal 2freethrow;",personal,2,297,903,TRUE,16,double
+2026,6516602,2026-01-07,2,2164,03:56,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"Duke Miles, foul personal 2freethrow;",personal,2,236,964,TRUE,17,double
+2026,6516602,2026-01-07,2,2164,03:56,Vanderbilt,Alabama,Alabama,Commits Foul,"Aden Holloway, foul adminTechnical classb;1freethrow;",administrative,2,236,964,FALSE,15,double
+2026,6516602,2026-01-07,2,2235,02:45,Vanderbilt,Alabama,Alabama,Commits Foul,"Jalil Bethea, foul personal shooting;2freethrow;",shooting,2,165,1035,TRUE,16,double
+2026,6516602,2026-01-07,2,2293,01:47,Vanderbilt,Alabama,Vanderbilt,Commits Foul,"AK Okereke, foul personal shooting;2freethrow;",shooting,2,107,1093,TRUE,18,double
+2026,6516602,2026-01-07,2,2299,01:41,Vanderbilt,Alabama,Alabama,Commits Foul,"Latrell Wrightsell Jr., foul personal shooting;2freethrow;",shooting,2,101,1099,TRUE,17,double
+2026,6516602,2026-01-07,2,2324,01:16,Vanderbilt,Alabama,Alabama,Commits Foul,"Amari Allen, foul personal 2freethrow;",personal,2,76,1124,TRUE,18,double
+2026,6516602,2026-01-07,2,2337,01:03,Vanderbilt,Alabama,Alabama,Commits Foul,"Houston Mallette, foul personal 2freethrow;",personal,2,63,1137,TRUE,19,double
+2026,6516602,2026-01-07,2,2356,00:44,Vanderbilt,Alabama,Alabama,Commits Foul,"Latrell Wrightsell Jr., foul personal 2freethrow;",personal,2,44,1156,TRUE,20,double
+2026,6516602,2026-01-07,2,2372,00:28,Vanderbilt,Alabama,Alabama,Commits Foul,"Preston Murphy Jr., foul personal 2freethrow;",personal,2,28,1172,TRUE,21,double
+2026,6516602,2026-01-07,2,2379,00:21,Vanderbilt,Alabama,Alabama,Commits Foul,"Amari Allen, foul personal 2freethrow;",personal,2,21,1179,TRUE,22,double

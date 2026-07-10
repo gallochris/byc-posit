@@ -1,0 +1,231 @@
+conference,pair_1,pair_2
+ACC,Boston College,California
+ACC,Boston College,Clemson
+ACC,Boston College,Louisville
+ACC,Boston College,NC State
+ACC,Boston College,North Carolina
+ACC,Boston College,Stanford
+ACC,Boston College,Virginia
+ACC,Boston College,Wake Forest
+ACC,California,Duke
+ACC,California,Florida State
+ACC,California,Georgia Tech
+ACC,California,Louisville
+ACC,California,Miami
+ACC,California,North Carolina
+ACC,Clemson,Louisville
+ACC,Clemson,NC State
+ACC,Clemson,Pittsburgh
+ACC,Clemson,SMU
+ACC,Clemson,Stanford
+ACC,Clemson,Virginia
+ACC,Clemson,Wake Forest
+ACC,Duke,Florida State
+ACC,Duke,Louisville
+ACC,Duke,Pittsburgh
+ACC,Duke,SMU
+ACC,Duke,Syracuse
+ACC,Duke,Virginia Tech
+ACC,Florida State,Georgia Tech
+ACC,Florida State,North Carolina
+ACC,Florida State,Stanford
+ACC,Florida State,Syracuse
+ACC,Florida State,Virginia Tech
+ACC,Florida State,Wake Forest
+ACC,Georgia Tech,Miami
+ACC,Georgia Tech,NC State
+ACC,Georgia Tech,North Carolina
+ACC,Georgia Tech,SMU
+ACC,Georgia Tech,Syracuse
+ACC,Georgia Tech,Virginia
+ACC,Louisville,Miami
+ACC,Louisville,Virginia
+ACC,Louisville,Virginia Tech
+ACC,Miami,NC State
+ACC,Miami,SMU
+ACC,Miami,Syracuse
+ACC,Miami,Virginia
+ACC,NC State,Pittsburgh
+ACC,NC State,SMU
+ACC,NC State,Virginia Tech
+ACC,North Carolina,SMU
+ACC,North Carolina,Stanford
+ACC,North Carolina,Virginia Tech
+ACC,North Carolina,Wake Forest
+ACC,Pittsburgh,SMU
+ACC,Pittsburgh,Stanford
+ACC,Pittsburgh,Virginia
+ACC,Pittsburgh,Wake Forest
+ACC,Stanford,Syracuse
+ACC,Stanford,Virginia
+ACC,Syracuse,Virginia Tech
+ACC,Syracuse,Wake Forest
+ACC,Virginia Tech,Wake Forest
+Big 12,Arizona,Baylor
+Big 12,Arizona,Colorado
+Big 12,Arizona,Houston
+Big 12,Arizona,Kansas
+Big 12,Arizona,Oklahoma State
+Big 12,Arizona,UCF
+Big 12,Arizona State,Cincinnati
+Big 12,Arizona State,Houston
+Big 12,Arizona State,Iowa State
+Big 12,Arizona State,TCU
+Big 12,Arizona State,Utah
+Big 12,Arizona State,West Virginia
+Big 12,BYU,Colorado
+Big 12,BYU,Houston
+Big 12,BYU,Kansas State
+Big 12,BYU,Oklahoma State
+Big 12,BYU,Texas Tech
+Big 12,BYU,West Virginia
+Big 12,Baylor,Cincinnati
+Big 12,Baylor,Kansas State
+Big 12,Baylor,Oklahoma State
+Big 12,Baylor,Utah
+Big 12,Baylor,West Virginia
+Big 12,Cincinnati,Kansas
+Big 12,Cincinnati,Oklahoma State
+Big 12,Cincinnati,TCU
+Big 12,Cincinnati,UCF
+Big 12,Colorado,Iowa State
+Big 12,Colorado,Kansas
+Big 12,Colorado,TCU
+Big 12,Colorado,West Virginia
+Big 12,Houston,Iowa State
+Big 12,Houston,Kansas
+Big 12,Houston,TCU
+Big 12,Iowa State,Kansas
+Big 12,Iowa State,TCU
+Big 12,Iowa State,Texas Tech
+Big 12,Kansas,Texas Tech
+Big 12,Kansas State,Texas Tech
+Big 12,Kansas State,UCF
+Big 12,Kansas State,Utah
+Big 12,Kansas State,West Virginia
+Big 12,Oklahoma State,TCU
+Big 12,Oklahoma State,Utah
+Big 12,Texas Tech,UCF
+Big 12,Texas Tech,Utah
+Big 12,UCF,Utah
+Big 12,UCF,West Virginia
+Big Ten,Illinois,Indiana
+Big Ten,Illinois,Michigan
+Big Ten,Illinois,Minnesota
+Big Ten,Illinois,Penn State
+Big Ten,Illinois,Rutgers
+Big Ten,Illinois,USC
+Big Ten,Illinois,Washington
+Big Ten,Illinois,Wisconsin
+Big Ten,Indiana,Iowa
+Big Ten,Indiana,Maryland
+Big Ten,Indiana,Michigan State
+Big Ten,Indiana,Oregon
+Big Ten,Indiana,Penn State
+Big Ten,Indiana,UCLA
+Big Ten,Indiana,Wisconsin
+Big Ten,Iowa,Maryland
+Big Ten,Iowa,Michigan State
+Big Ten,Iowa,Oregon
+Big Ten,Iowa,Penn State
+Big Ten,Iowa,Rutgers
+Big Ten,Iowa,UCLA
+Big Ten,Iowa,USC
+Big Ten,Maryland,Michigan
+Big Ten,Maryland,Michigan State
+Big Ten,Maryland,Minnesota
+Big Ten,Maryland,Northwestern
+Big Ten,Maryland,Oregon
+Big Ten,Maryland,Washington
+Big Ten,Michigan,Nebraska
+Big Ten,Michigan,Northwestern
+Big Ten,Michigan,Purdue
+Big Ten,Michigan,USC
+Big Ten,Michigan,Washington
+Big Ten,Michigan,Wisconsin
+Big Ten,Michigan State,Minnesota
+Big Ten,Michigan State,Ohio State
+Big Ten,Michigan State,Penn State
+Big Ten,Michigan State,Purdue
+Big Ten,Michigan State,USC
+Big Ten,Minnesota,Nebraska
+Big Ten,Minnesota,Ohio State
+Big Ten,Minnesota,Oregon
+Big Ten,Minnesota,Rutgers
+Big Ten,Minnesota,USC
+Big Ten,Nebraska,Northwestern
+Big Ten,Nebraska,Penn State
+Big Ten,Nebraska,Purdue
+Big Ten,Nebraska,UCLA
+Big Ten,Nebraska,USC
+Big Ten,Nebraska,Wisconsin
+Big Ten,Northwestern,Purdue
+Big Ten,Northwestern,UCLA
+Big Ten,Northwestern,USC
+Big Ten,Northwestern,Washington
+Big Ten,Northwestern,Wisconsin
+Big Ten,Ohio State,Penn State
+Big Ten,Ohio State,Purdue
+Big Ten,Ohio State,Rutgers
+Big Ten,Ohio State,UCLA
+Big Ten,Ohio State,Washington
+Big Ten,Ohio State,Wisconsin
+Big Ten,Oregon,Penn State
+Big Ten,Oregon,Purdue
+Big Ten,Oregon,Rutgers
+Big Ten,Oregon,Wisconsin
+Big Ten,Penn State,UCLA
+Big Ten,Purdue,Rutgers
+Big Ten,Purdue,USC
+Big Ten,Rutgers,UCLA
+Big Ten,Rutgers,Washington
+Big Ten,UCLA,Washington
+Big Ten,Washington,Wisconsin
+SEC,Alabama,Arkansas
+SEC,Alabama,Florida
+SEC,Alabama,Missouri
+SEC,Alabama,Oklahoma
+SEC,Alabama,Ole Miss
+SEC,Alabama,Texas
+SEC,Arkansas,Florida
+SEC,Arkansas,Kentucky
+SEC,Arkansas,Mississippi State
+SEC,Arkansas,Oklahoma
+SEC,Arkansas,Ole Miss
+SEC,Auburn,Kentucky
+SEC,Auburn,Missouri
+SEC,Auburn,Oklahoma
+SEC,Auburn,South Carolina
+SEC,Auburn,Texas
+SEC,Auburn,Texas A&M
+SEC,Florida,LSU
+SEC,Florida,Mississippi State
+SEC,Florida,Tennessee
+SEC,Florida,Texas A&M
+SEC,Georgia,Kentucky
+SEC,Georgia,LSU
+SEC,Georgia,Mississippi State
+SEC,Georgia,Tennessee
+SEC,Georgia,Texas
+SEC,Georgia,Texas A&M
+SEC,Kentucky,Mississippi State
+SEC,Kentucky,Ole Miss
+SEC,Kentucky,Texas
+SEC,LSU,Missouri
+SEC,LSU,Oklahoma
+SEC,LSU,South Carolina
+SEC,LSU,Vanderbilt
+SEC,Mississippi State,Tennessee
+SEC,Mississippi State,Texas A&M
+SEC,Missouri,South Carolina
+SEC,Missouri,Tennessee
+SEC,Missouri,Vanderbilt
+SEC,Oklahoma,Tennessee
+SEC,Oklahoma,Vanderbilt
+SEC,Ole Miss,South Carolina
+SEC,Ole Miss,Tennessee
+SEC,Ole Miss,Texas A&M
+SEC,South Carolina,Texas
+SEC,South Carolina,Vanderbilt
+SEC,Texas,Vanderbilt
+SEC,Texas A&M,Vanderbilt

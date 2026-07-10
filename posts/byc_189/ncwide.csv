@@ -26,3 +26,9 @@ order,game_date,pitcher,result,opp,innings,pitch_count,bf,hits,runs,er,bb,k,meta
 -11,June 17th,Matthew Matthijs,,West Virginia,1.1,30,7,3,4,4,1,1,"W, 12-7",,,,,,1,6,,
 -12,June 17th,Cameron Padgett,,West Virginia,0,6,2,2,1,0,0,0,"W, 12-7",,,,,,,2,,
 -13,June 17th,Caden Glauber,,West Virginia,2.1,45,11,3,1,1,1,3,"W, 12-7",,,,,,,2,4,5
+-14,June 20th,Jason DeCaro,L (11-3),Oklahoma,3.2,83,19,7,7,7,1,6,"L, 3-9",5,4,4,6,,,,,
+-15,June 20th,Walker McDuffie,,Oklahoma,2.1,34,11,4,1,1,0,2,"L, 3-9",,,,2,4,5,,,
+-16,June 20th,Tom Chmielewski,,Oklahoma,2,39,8,2,1,1,1,2,"L, 3-9",,,,,,,4,4,1
+-17,June 20th,Cameron Padgett,,Oklahoma,1,16,3,1,0,0,0,0,"L, 3-9",,,,,,,,,3
+-18,June 21st,Ryan Lynch,,Oklahoma,4,58,17,3,2,2,1,5,"W, 6-2",6,3,4,4,1,,,,
+-19,June 21st,Caden Glauber,W (12-0),Oklahoma,5,65,17,1,0,0,2,8,"W, 6-2",,,,,3,4,3,3,4

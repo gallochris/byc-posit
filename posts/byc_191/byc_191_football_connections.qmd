@@ -1,0 +1,385 @@
+---
+title: "191: CFB missed connections"
+date: "2026-07-10"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function
+
+```{r save-func, warning=FALSE, message=FALSE}
+
+# save function 
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+```
+
+### 
+
+### Cross conference games
+
+```{r cross-conf-tbl, warning=FALSE, message=FALSE}
+
+library(cbbplotR)
+library(rlang)
+
+cross_conf_p4_2026 <- readr::read_csv("cross_conf_p4_2026.csv")
+
+
+cc_p4 <- cross_conf_p4_2026 |> 
+  dplyr::mutate(game_date = as.Date(game_date, format = "%m/%d/%y")) |> 
+  dplyr::mutate(week = dplyr::if_else(game_date < "2026-09-03", 0, week)) |> 
+  cbbplotR::gt_cbb_teams(away_team, away_team, include_name = FALSE) |> 
+  cbbplotR::gt_cbb_teams(home_team, home_team, include_name = FALSE) |> 
+  dplyr::mutate(matchup = paste0(away_team, " ", home_team)) |> 
+  dplyr::select(week, matchup) |> 
+  
+  dplyr::group_by(week) |> 
+  dplyr::mutate(game_id = paste0("g", dplyr::row_number())) |> 
+  dplyr::ungroup() |> 
+  tidyr::pivot_wider(
+    names_from = game_id, 
+    values_from = matchup
+  ) |> 
+  tidyr::complete(week = 0:13)
+
+
+fball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 Regular Season Games <br>Between <em>Power</em> Conference Teams</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>There are 29 games scheduled between teams of the ACC, Big Ten, Big 12, and SEC. <br>No cross-conference games are scheduled between September 20th and November 27th.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+
+
+cc_p4 |> 
+  gt::gt() |> 
+  gtUtils::gt_theme_savant() |>
+  gt::fmt_markdown(columns = gt::everything()) |> 
+  gt::sub_missing(missing_text = "") |> 
+  gt::cols_align(align = "center", columns = gt::everything()) |> 
+  gt::cols_width(
+    week ~ gt::px(60),
+    dplyr::starts_with("g") ~ gt::px(70)
+  ) |> 
+  gt::cols_label_with(
+    columns = dplyr::starts_with("g"),
+    fn = \(x) ""
+  ) |> 
+  gt::cols_label(
+    week = "Week"
+  ) |> 
+  gt::tab_header(title = gt::html(fball_header)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 1,
+                          include_labels = FALSE) |> 
+  gt::tab_source_note(gt::html(
+    "
+     data via collegefootballdata.com | cfbtxt.com<br>
+     <hr>
+     Four of these 29 games are at <b>neutral sites</b>: UNC-TCU in Ireland, Baylor-Auburn in Atlanta, Louisville-Ole Miss in Nashville, and Virginia-West Virginia in Charlotte.<br>
+     This chart <b>excludes independents like Notre Dame.</b> The Irish are scheduled to play 10 games against power conference teams: ACC (6), Big Ten (3), Big 12 (1), and SEC (0).</br>
+     <hr>
+     Table by Chris at Bless your Chart"
+  )) |>
+  gt::tab_options(
+    table.font.size            = gt::px(14),
+    heading.align              = "left",
+    column_labels.font.weight  = "bold"
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides  = c("left", "right", "top", "bottom"),
+      color  = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels()
+    )
+  ) |>
+  gtExtras::gt_highlight_rows(
+    rows = c(5:13),
+    fill = "#FEF2F2",
+    font_weight = "normal",
+    bold_target_only = FALSE
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(1),
+    columns = 2,
+    fill = "#fffee0",
+    font_weight = "normal",
+    bold_target_only = FALSE
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(2),
+    columns = c(3, 7),
+    fill = "#fffee0",
+    font_weight = "normal",
+    bold_target_only = FALSE
+  ) |> 
+  gtExtras::gt_highlight_rows(
+    rows = c(4),
+    columns = c(4),
+    fill = "#fffee0",
+    font_weight = "normal",
+    bold_target_only = FALSE
+  ) |> 
+  gt::tab_options(table.width = gt::px(675)) -> cc_tbl
+
+gt_save_crop(
+  cc_tbl,
+  file = "cc_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+cc_tbl
+```
+
+### Missed connections by conference
+
+```{r missed-connection, warning=FALSE, message=FALSE}
+
+missing_matchups <- readr::read_csv("missing_conf_matchups_2026.csv")
+
+CONF_LEVELS <- c("ACC", "B12", "B10", "SEC")
+CONF_LABELS <- c(ACC = "ACC", B12 = "Big 12", B10 = "Big Ten", SEC = "SEC")
+
+
+clean_conference_code <- function(conference) {
+  dplyr::case_when(
+    conference %in% c("Big 12", "B12") ~ "B12",
+    conference %in% c("Big Ten", "B10") ~ "B10",
+    TRUE ~ conference
+  )
+}
+
+build_unplayed_long <- function(path) {
+  readr::read_csv(path) |>
+    (\(df) dplyr::bind_rows(
+      df |> dplyr::select(conference, team = pair_1, opponent = pair_2),
+      df |> dplyr::select(conference, team = pair_2, opponent = pair_1)
+    ))() |>
+    dplyr::mutate(
+      conference = clean_conference_code(conference),
+      conference = factor(conference, levels = CONF_LEVELS)
+    ) |>
+    dplyr::arrange(conference, team, opponent)
+}
+
+
+build_unplayed_wide <- function(path) {
+  long_logos <- build_unplayed_long(path) |>
+    cbbplotR::gt_cbb_teams(opponent, opponent, include_name = FALSE) |>
+    dplyr::group_by(conference, team) |>
+    dplyr::mutate(opp_idx = paste0("unplayed_", dplyr::row_number())) |>
+    dplyr::ungroup()
+  
+  long_logos |>
+    tidyr::pivot_wider(
+      id_cols = c(conference, team),
+      names_from = opp_idx,
+      values_from = opponent
+    ) |>
+    dplyr::arrange(conference, team) |>
+    cbbplotR::gt_cbb_teams(team, team, include_name = FALSE)
+}
+
+
+fade_missed_opponents <- function(gt_tbl, opp_cols, opacity = 0.35) {
+  gt_tbl |>
+    gt::text_transform(
+      locations = gt::cells_body(columns = dplyr::all_of(opp_cols)),
+      fn = function(x) {
+        dplyr::if_else(
+          x == "—",
+          x,
+          paste0('<span style="opacity:', opacity, ';">', x, '</span>')
+        )
+      }
+    )
+}
+
+format_conf_table <- function(df, conf_code, opacity = 0.35) {
+  opp_cols <- names(df) |> stringr::str_subset("^unplayed_")
+  conf_label <- CONF_LABELS[[conf_code]]
+  
+  df |>
+    dplyr::select(-conference) |>
+    gt::gt() |>
+    gtExtras::gt_theme_nytimes() |> 
+    gt::sub_missing(missing_text = " ") |>
+    fade_missed_opponents(opp_cols, opacity) |>
+    gt::fmt_markdown(columns = gt::everything()) |>
+    gt::cols_align(align = "center", columns = gt::everything()) |>
+    gt::cols_align(align = "left", columns = team) |>
+    gt::cols_label(team = "") |>
+    gt::cols_label(.list = setNames(rep("", length(opp_cols)), opp_cols)) |>
+    gt::tab_header(
+      title = gt::md(paste0("**", conf_label, " Missed Connections**")),
+      subtitle = gt::md(paste0("Unscheduled ", conf_label, " opponents during the 2026 regular season"))
+    ) |>
+    gt::cols_width(
+      team ~ gt::px(60),
+      dplyr::starts_with("unplayed_") ~ gt::px(50)
+    ) |>
+    gt::tab_options(
+      heading.align = "left",
+      table.border.top.style = "none",
+      column_labels.border.bottom.style = "none"
+    )
+}
+
+
+build_all_conf_tables <- function(path, opacity = 0.35) {
+  wide <- build_unplayed_wide(path)
+  
+  wide |>
+    dplyr::group_by(conference, .drop = FALSE) |>
+    dplyr::group_split() |>
+    purrr::map(\(df) format_conf_table(df, as.character(df$conference[1]), opacity)) |>
+    purrr::set_names(CONF_LEVELS)
+}
+
+conf_unplayed_charts <- build_all_conf_tables(
+  "missing_conf_matchups_2026.csv"
+)
+
+conf_unplayed_charts$ACC |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_options(table.width = gt::px(450)) |> 
+  gt::tab_source_note(gt::html(
+    "<hr>data via collegefootballdata.com | cfbtxt.com<br>
+     <hr>
+     Five of the 17 ACC teams play only <b>eight</b> league games, while the rest play <b>nine</b> league games.
+     <br>
+     <hr>
+     Table by Chris at Bless your Chart"
+  )) -> acc_tbl
+
+
+gt_save_crop(
+  acc_tbl,
+  file = "acc_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+acc_tbl
+#------ 
+
+
+conf_unplayed_charts$B12 |> 
+  gt::cols_hide(columns = c(8,9)) |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_options(table.width = gt::px(450)) |> 
+  gt::tab_source_note(gt::html(
+    "<hr>data via collegefootballdata.com | cfbtxt.com<br>
+     <hr>
+     The 16 teams in the Big 12 all play <b>nine</b> league games. <br><b>Arizona, Houston, Kansas State, and Texas Tech</b> are the only teams to not play a non-conference game against a <em>power</em> conference opponent or Notre Dame.
+     <br>
+     <hr>
+     Table by Chris at Bless your Chart"
+  )) -> b12_tbl
+
+gt_save_crop(
+  b12_tbl,
+  file = "b12_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+b12_tbl
+
+#----
+
+conf_unplayed_charts$B10 |> 
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_options(table.width = gt::px(450)) |> 
+  gt::tab_source_note(gt::html(
+    "<hr>data via collegefootballdata.com | cfbtxt.com<br>
+     <hr>
+     The 18 teams in the Big Ten all play <b>nine</b> league games. <br><b>Indiana, Nebraska, Penn State, USC, and Washington</b> are the only teams to not play a non-conference game against a <em>power</em> conference opponent or Notre Dame.
+     <br>
+     <hr>
+     Table by Chris at Bless your Chart"
+  )) -> b10_tbl
+
+
+gt_save_crop(
+  b10_tbl,
+  file = "b10_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+b10_tbl 
+
+#----
+
+conf_unplayed_charts$SEC |> 
+  gt::cols_hide(columns = c(8,9)) |>
+  gtUtils::gt_border_grid(color = "black",
+                          weight = 0.5,
+                          include_labels = FALSE) |> 
+  gt::tab_options(table.width = gt::px(450)) |> 
+  gt::tab_source_note(gt::html(
+    "<hr>data via collegefootballdata.com | cfbtxt.com<br>
+     <hr>
+     The 16 teams in the SEC all play <b>nine</b> league games.
+     <br>
+     <hr>
+     Table by Chris at Bless your Chart"
+  )) -> sec_tbl
+
+
+gt_save_crop(
+  sec_tbl,
+  file = "sec_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+sec_tbl
+```
