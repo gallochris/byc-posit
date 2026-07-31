@@ -50,7 +50,6 @@ library(rlang)
 library(gtUtils)
 ```
 
-
 ### Schedule gird
 
 ```{r sched-grid, warning=FALSE, message=FALSE}
