@@ -1,0 +1,450 @@
+---
+title: "192: Shape of college football season"
+date: "2026-07-31"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function
+
+```{r save-func, warning=FALSE, message=FALSE}
+
+# save function
+gt_save_crop <- function(
+  data,
+  file = NULL,
+  bg = "white",
+  whitespace = 50,
+  zoom = 2,
+  expand = 5
+) {
+  tmp <- tempfile(fileext = ".png")
+
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch(
+    {
+      gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+    },
+    error = function(e) {
+      # If there's an error, try using regular gt::gtsave instead
+      message("gtsave_extra failed, trying gt::gtsave...")
+      gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+    }
+  )
+
+  magick::image_read(tmp) |>
+    magick::image_trim() |>
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |>
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+library(cbbplotR)
+library(rlang)
+library(gtUtils)
+```
+
+
+### Schedule gird
+
+```{r sched-grid, warning=FALSE, message=FALSE}
+
+sched <- readr::read_csv("schedule_2026.csv", show_col_types = FALSE)
+
+p4 <- c("ACC", "B10", "B12", "SEC")
+fbs <- c(p4, "AAC", "CUSA", "MAC", "MWC", "P12", "SUN", "IND")
+
+conf_names <- c(
+  B10 = "Big Ten",
+  ACC = "ACC",
+  SEC = "SEC",
+  B12 = "Big 12",
+  AAC = "American",
+  SUN = "Sun Belt",
+  MAC = "MAC",
+  MWC = "Mountain West",
+  CUSA = "CUSA",
+  P12 = "Pac-12"
+)
+
+classify <- function(hc, ht, ac, at) {
+  # Notre Dame is IND but counts as P4 for matchup typing
+  hp4 <- hc %in% p4 | ht == "Notre Dame"
+  ap4 <- ac %in% p4 | at == "Notre Dame"
+  hfb <- hc %in% fbs
+  afb <- ac %in% fbs
+  dplyr::case_when(
+    !hfb | !afb ~ "FBS vs FCS",
+    hp4 & ap4 ~ "P4 vs P4",
+    xor(hp4, ap4) ~ "P4 vs G5",
+    .default = "G5 vs G5"
+  )
+}
+
+# --- non-conference rows, typed --------------------------------------------
+nonconf <- sched |>
+  dplyr::filter(!conference_game) |>
+  dplyr::mutate(
+    row = classify(home_conference, home_team, away_conference, away_team)
+  ) |>
+  dplyr::count(row, week) |>
+  tidyr::complete(row, week = 0:15, fill = list(n = 0)) |>
+  dplyr::mutate(group = "Non-conference matchups", projected = FALSE)
+
+# --- conference rows, by league ---------------------------------------------
+conf <- sched |>
+  dplyr::filter(conference_game) |>
+  dplyr::count(row = home_conference, week) |>
+  tidyr::complete(row = names(conf_names), week = 0:15, fill = list(n = 0)) |>
+  dplyr::mutate(
+    projected = week == 14 | (row == "P12" & week == 13),
+    n = dplyr::case_when(
+      week == 14 ~ 1L, # title game, every league
+      row == "P12" & week == 13 ~ 4L, # Pac-12 flex games
+      .default = n
+    ),
+    row = conf_names[row],
+    group = "Conference games"
+  )
+
+# aggregate Conference games row (10 title games projected in wk 14;
+# the Pac-12 flex games are NOT in this row - designated non-conference)
+conf_total_row <- sched |>
+  dplyr::filter(conference_game) |>
+  dplyr::count(week) |>
+  tidyr::complete(week = 0:15, fill = list(n = 0)) |>
+  dplyr::mutate(
+    projected = week == 14,
+    n = dplyr::if_else(week == 14, 10L, n),
+    row = "Conference games",
+    group = "Conference games"
+  )
+
+# row order: matchup types, aggregate in the middle, then
+# Big Ten / SEC / ACC / Big 12, then the rest alphabetical
+row_order <- c(
+  "P4 vs P4",
+  "P4 vs G5",
+  "G5 vs G5",
+  "FBS vs FCS",
+  "Conference games",
+  "Big Ten",
+  "SEC",
+  "ACC",
+  "Big 12",
+  "American",
+  "CUSA",
+  "MAC",
+  "Mountain West",
+  "Pac-12",
+  "Sun Belt"
+)
+
+counts <- dplyr::bind_rows(nonconf, conf_total_row, conf) |>
+  dplyr::mutate(row = factor(row, levels = rev(row_order)))
+
+totals <- counts |>
+  dplyr::summarise(n = sum(n), .by = row)
+
+months <- sched |>
+  dplyr::mutate(month = format(date, "%b")) |>
+  dplyr::count(week, month) |>
+  dplyr::slice_max(n, n = 1, by = week) |>
+  dplyr::summarise(wk_min = min(week), wk_max = max(week), .by = month) |>
+  dplyr::mutate(wk_min = dplyr::if_else(month == "Dec", 14, wk_min))
+
+bg <- "#F0F0F0"
+
+p <- ggplot2::ggplot(counts, ggplot2::aes(x = week, y = row, fill = n)) +
+  ggplot2::geom_tile(color = bg, linewidth = 1.4, width = 0.96, height = 0.88) +
+  ggplot2::geom_tile(
+    data = \(d) dplyr::filter(d, projected),
+    fill = NA,
+    color = "#a05a2c",
+    linetype = "22",
+    linewidth = 0.55,
+    width = 0.96,
+    height = 0.88
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(label = ifelse(n == 0, "", n), color = n >= 18),
+    size = 3.2,
+    family = "sans",
+    fontface = "bold"
+  ) +
+  ggplot2::geom_text(
+    data = totals,
+    ggplot2::aes(x = 16.1, y = row, label = n),
+    inherit.aes = FALSE,
+    size = 3.1,
+    family = "sans",
+    fontface = "bold",
+    color = "grey40",
+    hjust = 0
+  ) +
+  # one fill scale spanning all rows: breakpoints weighted to the low end
+  # so 0-9 (league rows) stays differentiated while 50-65 (the aggregate
+  # row's peak weeks) still reads dark
+  ggplot2::scale_fill_gradientn(
+    colours = c(
+      "#fff1e0",
+      "#ffd9a8",
+      "#fdae61",
+      "#f46d43",
+      "#d73027",
+      "#7f0d16"
+    ),
+    values = scales::rescale(c(0, 2, 5, 9, 25, 65)),
+    limits = c(0, 65),
+    guide = "none"
+  ) +
+  ggplot2::scale_color_manual(
+    values = c(`TRUE` = "white", `FALSE` = "#571605"),
+    guide = "none"
+  ) +
+  ggplot2::geom_segment(
+    data = months,
+    ggplot2::aes(
+      x = wk_min - 0.32,
+      xend = wk_max + 0.32,
+      y = 15.78,
+      yend = 15.78
+    ),
+    inherit.aes = FALSE,
+    color = "grey55",
+    linewidth = 0.5
+  ) +
+  ggplot2::geom_text(
+    data = months,
+    ggplot2::aes(x = (wk_min + wk_max) / 2, y = 16.02, label = month),
+    inherit.aes = FALSE,
+    size = 3.1,
+    family = "sans",
+    fontface = "bold",
+    color = "grey35"
+  ) +
+  ggplot2::annotate(
+    "segment",
+    x = 16.02,
+    xend = 16.72,
+    y = 15.78,
+    yend = 15.78,
+    color = "grey55",
+    linewidth = 0.5
+  ) +
+  ggplot2::annotate(
+    "text",
+    x = 16.37,
+    y = 16.02,
+    label = "Total",
+    size = 3.1,
+    family = "sans",
+    fontface = "bold",
+    color = "grey35"
+  ) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::scale_x_continuous(
+    breaks = 0:15,
+    expand = ggplot2::expansion(add = c(0.3, 1.3))
+  ) +
+  ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = c(0.35, 0.35))) +
+  ggplot2::labs(
+    title = "The shape of the college football season",
+    subtitle = paste0(
+      "Every 2026 game featuring at least one FBS team, counted by week and type.",
+      "<br>P4 vs P4 / G5 vs G5 only show non-conference matchups.<br>Dashed cells are scheduled, but matchups are not yet determined."
+    ),
+    x = "Week",
+    y = NULL,
+    caption = "data via collegefootballdata.com | Viz by Chris at Bless your Chart <br><br>P4 is ACC, Big Ten, Big 12, SEC (+ Notre Dame) <br> Week 15 is Army-Navy (designated non-conference game) <br> Pac-12 has 4 flex games in week 13 (designated non-conference matchups)."
+  ) +
+  ggthemes::theme_fivethirtyeight(base_size = 12, base_family = "sans") +
+  ggplot2::theme(
+    panel.grid.major = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    plot.title = ggplot2::element_text(face = "bold", size = 17),
+    plot.subtitle = ggtext::element_markdown(
+      size = 8.8,
+      color = "grey25",
+      lineheight = 1.15,
+      margin = ggplot2::margin(b = 24)
+    ),
+    plot.caption = ggtext::element_markdown(
+      size = 7.5,
+      color = "grey45",
+      hjust = 1,
+      lineheight = 1.15
+    ),
+    axis.text.y = ggplot2::element_text(
+      size = 9,
+      face = "bold",
+      color = "grey15"
+    ),
+    axis.text.x = ggplot2::element_text(size = 9),
+    axis.title.x = ggplot2::element_text(size = 9)
+  )
+
+ggplot2::ggsave(
+  "season_shape_combined.png",
+  p,
+  width = 12,
+  height = 9.0,
+  dpi = 200,
+  bg = bg
+)
+message("done")
+
+p
+```
+
+### GT table for preseason ratings
+
+```{r gt-tbl-preseason, warning=FALSE, message=FALSE}
+
+ratings <- readr::read_csv(
+  "ratings_preseason_2026.csv",
+  show_col_types = FALSE
+)
+
+pairwise <- ratings |>
+  dplyr::mutate(
+    min_pair_gap = pmin(
+      abs(fpi_pctile - sp_pctile),
+      abs(fpi_pctile - fei_pctile),
+      abs(sp_pctile - fei_pctile)
+    )
+  ) |>
+  dplyr::arrange(dplyr::desc(min_pair_gap)) |>
+  dplyr::slice_head(n = 10) |>
+  dplyr::select(
+    team,
+    conference,
+    fei_pctile,
+    fei_rank,
+    sp_pctile,
+    sp_rank,
+    fpi_pctile,
+    fpi_rank,
+    min_pair_gap
+  )
+
+fball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>Nobody knows what to make of these teams ¯\\_(ツ)_/¯</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>10 teams that diverge the most across three preseason rating systems: FEI, SP+, and FPI.</span>
+     </div>
+     <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+# quality ramp: low percentile = red, mid = pale yellow, high = green
+quality_ramp <- c(
+  "#67001f",
+  "#d73027",
+  "#fc8d59",
+  "#fdbe6f",
+  "#fee08b",
+  "#d9ef8b",
+  "#91cf60",
+  "#1a9850"
+)
+tbl <- pairwise |>
+  cbbplotR::gt_cbb_teams(team, team) |>
+  gt::gt() |>
+  gt_theme_almanac(accent = "#acacac") |>
+  gt::fmt_markdown(team) |>
+  gt::cols_align(team, align = "left") |>
+  gtExtras::gt_merge_stack(
+    col1 = team,
+    col2 = conference,
+    small_cap = FALSE,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = fei_pctile,
+    col2 = fei_rank,
+    small_cap = FALSE,
+    palette = c("black", "#333333"),
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = sp_pctile,
+    col2 = sp_rank,
+    small_cap = FALSE,
+    palette = c("black", "#333333")
+  ) |>
+  gtExtras::gt_merge_stack(
+    col1 = fpi_pctile,
+    col2 = fpi_rank,
+    small_cap = FALSE,
+    palette = c("black", "#333333")
+  ) |>
+  gt::cols_label(
+    team = "Team",
+    fei_pctile = "FEI",
+    sp_pctile = "SP+",
+    fpi_pctile = "FPI",
+    min_pair_gap = "Minimum Gap"
+  ) |>
+  gt::tab_spanner(
+    label = gt::html("Preseason percentile (0-100) <br>preseason ranking"),
+    columns = c(fei_pctile, sp_pctile, fpi_pctile)
+  ) |>
+  gt::fmt_number(
+    columns = c(fei_pctile, sp_pctile, fpi_pctile, min_pair_gap),
+    decimals = 1
+  ) |>
+  gt::fmt_number(
+    columns = c(fei_pctile, sp_pctile, fpi_pctile),
+    rows = 1,
+    decimals = 1,
+    pattern = "{x}%"
+  ) |>
+  gt::data_color(
+    columns = c(fei_pctile, sp_pctile, fpi_pctile),
+    fn = scales::col_numeric(palette = quality_ramp, domain = c(0, 100)),
+    alpha = 0.6
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(weight = "bold")
+    ),
+    locations = gt::cells_body(columns = min_pair_gap)
+  ) |>
+  gt::tab_header(title = gt::html(fball_header)) |>
+  gtUtils::gt_border_grid(
+    color = "black",
+    weight = 1,
+    include_labels = FALSE
+  ) |>
+  gt::tab_options(table.width = gt::px(450)) |>
+  gt::tab_source_note(gt::html(
+    "<hr>data via cfbtxt.com and rating sources below:<br>
+     <hr>
+     FEI ratings at bcftoys.com by Brian Fremeau
+     <br>
+     SP+ ratings at espn.com by Bill Connelly
+     <br>
+     FPI ratings by ESPN at espn.com/college-football/fpi
+     <hr>
+     Table by Chris at Bless your Chart"
+  ))
+
+gt::gtsave(tbl, "pairwise_divergence_table.png", vwidth = 1100)
+
+tbl
+```
