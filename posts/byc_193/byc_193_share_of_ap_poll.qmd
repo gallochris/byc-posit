@@ -1,0 +1,208 @@
+---
+title: "193: Share of preseason AP poll"
+date: "2026-08-19"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT save function
+
+```{r save-func, warning=FALSE, message=FALSE}
+
+# save function
+gt_save_crop <- function(
+  data,
+  file = NULL,
+  bg = "white",
+  whitespace = 50,
+  zoom = 2,
+  expand = 5
+) {
+  tmp <- tempfile(fileext = ".png")
+
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch(
+    {
+      gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+    },
+    error = function(e) {
+      # If there's an error, try using regular gt::gtsave instead
+      message("gtsave_extra failed, trying gt::gtsave...")
+      gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+    }
+  )
+
+  magick::image_read(tmp) |>
+    magick::image_trim() |>
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |>
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+library(cbbplotR)
+library(rlang)
+library(gtUtils)
+```
+
+### GT Table with poll
+
+```{r gt-poll, warning=FALSE, message=FALSE}
+
+poll_path <- "ap_preseason_poll_2026.csv"
+png_output_path <- "ap_preseason_points_grid_2026.png"
+
+logo_lookup <- cbbdata::cbd_teams() |>
+  dplyr::transmute(
+    team = dplyr::recode(espn_location, "Appalachian State" = "App State"),
+    logo = espn_logo
+  ) |>
+  dplyr::filter(!is.na(team), !is.na(logo)) |>
+  dplyr::distinct(team, .keep_all = TRUE)
+
+ap_points <- readr::read_csv(poll_path, show_col_types = FALSE)
+
+ballots <- sum(ap_points$first_place_votes, na.rm = TRUE)
+possible_points <- ballots * 25
+
+ap_points <- ap_points |>
+  dplyr::left_join(logo_lookup, by = "team") |>
+  dplyr::mutate(
+    percent_possible = votes / possible_points,
+    grid_row = ceiling(vote_order / 5),
+    grid_column = paste0("column_", rep(1:5, length.out = dplyr::n())),
+    rank_label = dplyr::if_else(
+      status == "Top 25",
+      paste0("#", rank),
+      "RV"
+    ),
+    logo_style = dplyr::if_else(
+      status == "Top 25",
+      "",
+      "filter: grayscale(100%); opacity: 0.42;"
+    ),
+    tile = paste0(
+      "<div style='min-height:112px; text-align:center; padding:8px 4px;'>",
+      "<div style='font-size:12px; font-weight:700; color:#555;'>",
+      rank_label,
+      "</div>",
+      "<img src='",
+      logo,
+      "' alt='",
+      team,
+      " logo' style='height:46px; max-width:70px; object-fit:contain; ",
+      logo_style,
+      "'>",
+      "<div style='font-size:13px; font-weight:700; line-height:1.15;'>",
+      team,
+      "</div>",
+      "<div style='font-size:20px; font-weight:800; line-height:1.2;'>",
+      scales::percent(percent_possible, accuracy = 0.1),
+      "</div>",
+      "<div style='font-size:10px; color:#777;'>",
+      scales::comma(votes),
+      dplyr::if_else(votes == 1, " point</div>", " points</div>"),
+      "</div>"
+    )
+  )
+
+missing_logos <- ap_points |>
+  dplyr::filter(is.na(logo)) |>
+  dplyr::pull(team)
+
+if (length(missing_logos) > 0) {
+  stop("Missing logos for: ", paste(missing_logos, collapse = ", "))
+}
+
+fball_header <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+       <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+     <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+       <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 AP Preseason Poll: Share of Possible Points</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Each percentage is the team's points divided by <b>1,725 possible points (69 ballots x 25)</b>.<br> Teams receiving-votes are shown in gray.</span>
+     </div>
+     <div>
+       <img src='https://assets.apnews.com/19/66/bc546486408c8595f01753a9fbeb/ap-logo-176-by-208.svg '
+       style='height: 40px; width: auto; vertical-align: middle;'>
+     </div>
+   </div>
+  <br>"
+)
+
+points_grid <- ap_points |>
+  dplyr::select(grid_row, grid_column, tile) |>
+  tidyr::pivot_wider(
+    names_from = grid_column,
+    values_from = tile
+  ) |>
+  dplyr::arrange(grid_row) |>
+  dplyr::select(-grid_row) |>
+  gt::gt() |>
+  gtUtils::gt_theme_almanac(
+    accent = "#FF322E",
+  density = "social",
+  stripe = NA,
+  ) |>
+  gt::fmt_markdown(columns = dplyr::everything()) |>
+  gt::cols_label(
+    column_1 = "",
+    column_2 = "",
+    column_3 = "",
+    column_4 = "",
+    column_5 = ""
+  ) |>
+  gt::cols_align(
+    align = "center",
+    columns = dplyr::everything()
+  ) |>
+  gt::cols_width(dplyr::everything() ~ gt::px(150)) |>
+  gt::tab_header(title = gt::html(fball_header)
+  ) |>
+  gt::tab_source_note(gt::html(
+    "<hr>data via apnews.com and bakonyalgo.com/ap
+     <br><hr>
+     Table by Chris at Bless your Chart"
+  )) |> 
+  gt::tab_options(
+    column_labels.hidden = TRUE,
+    table.width = gt::px(750),
+    table.background.color = "white",
+    heading.align = "center",
+    heading.title.font.size = gt::px(24),
+    heading.subtitle.font.size = gt::px(13),
+    data_row.padding = gt::px(0),
+    table_body.hlines.color = "#dddddd",
+    table_body.vlines.color = "#dddddd",
+    source_notes.font.size = gt::px(11)
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#f3f3f3"),
+      gt::cell_text(color = "#555555")
+    ),
+    locations = gt::cells_body(rows = 6:10)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_borders(
+      sides = "top",
+      color = "#555555",
+      weight = gt::px(3)
+    ),
+    locations = gt::cells_body(rows = 6)
+  )
+
+gt::gtsave(points_grid, png_output_path, zoom = 2)
+
+points_grid
+
+```
+
+###
