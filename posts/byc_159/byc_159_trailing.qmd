@@ -130,7 +130,7 @@ ggplot2::ggsave(
 
 ```
 
-### Road wins 
+### Road wins
 
 ```{r road-tbl, warning=FALSE, message=FALSE}
 

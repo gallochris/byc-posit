@@ -1,0 +1,333 @@
+---
+title: "194: Belichick game days"
+date: "2026-08-27"
+categories:
+  - geom_tile
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Gameday calendar
+
+```{r game-day-cal, warning=FALSE, message=FALSE}
+
+ # Requires the project's get_games() helper, ggplot2, flexoki, ggtext, tibble,
+# tidyr, systemfonts, ragg. Render with the ragg/AGG backend so fonts resolve.
+
+# Fail fast if Roboto Condensed isn't visible to R (restart R after installing).
+if (!any(grepl("Roboto Condensed", systemfonts::system_fonts()$family, fixed = TRUE))) {
+  stop("Roboto Condensed not found. Restart R after installing, then re-run.")
+}
+
+calendar_start <- as.Date("2025-01-01")
+calendar_end <- as.Date("2026-12-31")
+hire_date <- as.Date("2024-12-11")
+season_opener_2026 <- as.Date("2026-08-29")
+
+unc_off_field_events <- tibble::tribble(
+  ~date, ~event,
+  as.Date("2025-02-28"), "Hard Knocks announced",
+  as.Date("2025-03-03"), "Hard Knocks falls through; staff finalized",
+  as.Date("2025-04-15"), "Hudson [needs label]",
+  as.Date("2025-04-27"), "CBS Sunday Morning interview",
+  as.Date("2025-05-09"), "Hudson barred from facility",
+  as.Date("2025-07-18"), "Hulu docuseries announced",
+  as.Date("2025-10-07"), "Suspension; Hulu docuseries cancelled",
+  as.Date("2025-10-16"), "Report: Lombardi in Saudi Arabia",
+  as.Date("2026-01-09"), "Petrino hired",
+  as.Date("2026-07-27"), "Lombardi placed on leave",
+  as.Date("2026-08-06"), "Steve Belichick placed on leave"
+) |>
+  dplyr::filter(date >= calendar_start, date <= calendar_end) |>
+  dplyr::arrange(date)
+
+# raw_games <- dplyr::bind_rows(get_games(2025), get_games(2026)) |>
+#  dplyr::filter(homeTeam == "North Carolina" | awayTeam == "North Carolina")
+
+# Conference flag is optional; without it the header reports overall record only.
+# if (!"conferenceGame" %in% names(raw_games)) {
+#  raw_games$conferenceGame <- NA
+# }
+
+# unc_game_days <- raw_games |>
+#  dplyr::transmute(
+#    date = as.Date(startDate, tz = "America/New_York"),
+#    opponent = dplyr::if_else(homeTeam == "North Carolina", awayTeam, homeTeam),
+#    is_conference_game = conferenceGame,
+#    north_carolina_points = dplyr::if_else(
+#      homeTeam == "North Carolina", homePoints, awayPoints
+#    ),
+#    opponent_points = dplyr::if_else(
+#      homeTeam == "North Carolina", awayPoints, homePoints
+#    ),
+#    game_status = dplyr::case_when(
+#      is.na(north_carolina_points) ~ "Upcoming game",
+#      north_carolina_points > opponent_points ~ "Win",
+#      TRUE ~ "Loss"
+#    )
+#  ) |>
+#  dplyr::filter(date >= calendar_start, date <= calendar_end)
+
+unc_game_days <- readr::read_csv("unc_game_days.csv")
+
+days_since_hire <- as.numeric(season_opener_2026 - hire_date)
+games_before_opener <- sum(unc_game_days$date < season_opener_2026)
+
+season_summary <- unc_game_days |>
+  dplyr::mutate(season = as.integer(format(date, "%Y"))) |>
+  dplyr::summarise(
+    wins = sum(game_status == "Win"),
+    losses = sum(game_status == "Loss"),
+    upcoming = sum(game_status == "Upcoming game"),
+    conf_wins = sum(game_status == "Win" & is_conference_game %in% TRUE),
+    conf_losses = sum(game_status == "Loss" & is_conference_game %in% TRUE),
+    has_conf_flag = any(!is.na(is_conference_game)),
+    opener = min(date),
+    games_first_35 = sum(date <= min(date) + 35),
+    .by = season
+  ) |>
+  dplyr::mutate(
+    record_text = dplyr::case_when(
+      upcoming > 0 & wins + losses == 0 ~ paste0(
+        "??&ndash;??  <span style='color:#AD8301;'>(only ",
+        games_first_35, " games in the first 35 days)</span>"
+      ),
+      upcoming > 0 ~ paste0(
+        wins, "&ndash;", losses, " so far  <span style='color:#AD8301;'>(only ",
+        games_first_35, " games in the first 35 days)</span>"
+      ),
+      has_conf_flag ~ paste0(
+        wins, "&ndash;", losses, " overall (",
+        conf_wins, "&ndash;", conf_losses, " ACC)"
+      ),
+      TRUE ~ paste0(wins, "&ndash;", losses, " overall")
+    )
+  )
+
+block_width <- 8.8    # 7 day columns + gutter
+block_height <- 8.6   # 6 week rows + gutter
+year_gap <- 3.0
+
+calendar_grid <- tibble::tibble(
+  date = seq(calendar_start, calendar_end, by = "day")
+) |>
+  dplyr::mutate(
+    year = as.integer(format(date, "%Y")),
+    month_index = as.integer(format(date, "%m")),
+    month_label = format(date, "%B"),
+    mday = as.integer(format(date, "%d")),
+    weekday_index = (as.POSIXlt(date)$wday + 6L) %% 7L + 1L  # Mon = 1
+  ) |>
+  dplyr::mutate(
+    first_weekday = weekday_index[mday == 1L],
+    .by = c(year, month_index)
+  ) |>
+  dplyr::mutate(
+    week_of_month = (mday + first_weekday - 2L) %/% 7L + 1L,
+    block_row = (month_index - 1L) %/% 3L + 1L,
+    block_col = (month_index - 1L) %% 3L + 1L,
+    year_offset = year - min(year),
+    x_left = (year_offset * 3L + block_col - 1L) * block_width + year_offset * year_gap,
+    x = x_left + weekday_index,
+    y = (block_row - 1L) * block_height + week_of_month
+  ) |>
+  dplyr::left_join(unc_game_days, by = dplyr::join_by(date)) |>
+  dplyr::left_join(unc_off_field_events, by = dplyr::join_by(date)) |>
+  dplyr::mutate(
+    game_status = dplyr::coalesce(game_status, "No game"),
+    day_text_color = dplyr::if_else(game_status == "Loss", "light", "dark"),
+    is_opener = date == season_opener_2026
+  )
+
+month_blocks <- calendar_grid |>
+  dplyr::distinct(year, month_index, month_label, block_row, x_left) |>
+  dplyr::mutate(
+    y_title = (block_row - 1L) * block_height - 1.7,
+    y_header = (block_row - 1L) * block_height - 0.6
+  )
+
+weekday_headers <- tidyr::expand_grid(
+  month_blocks |> dplyr::select(x_left, y_header),
+  tibble::tibble(
+    weekday_index = 1:7,
+    weekday_label = c("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su")
+  )
+) |>
+  dplyr::mutate(x = x_left + weekday_index)
+
+  year_headers <- calendar_grid |>
+  dplyr::summarise(x = min(x_left) + 1, .by = year) |>
+  dplyr::left_join(season_summary, by = dplyr::join_by(year == season)) |>
+  dplyr::mutate(
+    y = -4.4,
+    label = paste0(
+      "<span style='font-size:15pt;color:#100F0F;'><b>", year, "</b></span>",
+      "<span style='font-size:15pt;color:#CECDC3;'><b> | </b></span>",
+      "<span style='font-size:15pt;color:#6F6E69;'><b>", record_text, "</b></span>"
+    )
+  )
+
+y_top <- -6.2
+y_bottom <- max(calendar_grid$y) + 1.2
+
+unc_calendar_plot <- ggplot2::ggplot(calendar_grid, ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_tile(
+    ggplot2::aes(fill = game_status),
+    width = 0.92,
+    height = 0.92,
+    color = "#FFFCF0",
+    linewidth = 0.3
+  ) +
+  ggplot2::geom_tile(
+    data = ~ dplyr::filter(.x, !is.na(event)),
+    ggplot2::aes(color = "Off-field event"),
+    width = 0.92,
+    height = 0.92,
+    fill = NA,
+    linewidth = 0.9
+  ) +
+  ggplot2::geom_tile(
+    data = ~ dplyr::filter(.x, is_opener),
+    ggplot2::aes(color = "2026 season opener"),
+    width = 1.06,
+    height = 1.06,
+    fill = NA,
+    linewidth = 1.4
+  ) +
+  ggplot2::geom_text(
+    data = ~ dplyr::filter(.x, day_text_color == "dark"),
+    ggplot2::aes(label = mday),
+    family = "Roboto Condensed",
+    size = 2.1,
+    color = "#100F0F"
+  ) +
+  ggplot2::geom_text(
+    data = ~ dplyr::filter(.x, day_text_color == "light"),
+    ggplot2::aes(label = mday),
+    family = "Roboto Condensed",
+    size = 2.1,
+    color = "#FFFCF0"
+  ) +
+  ggplot2::geom_text(
+    data = month_blocks,
+    ggplot2::aes(x = x_left + 1, y = y_title, label = month_label),
+    inherit.aes = FALSE,
+    hjust = 0,
+    family = "Roboto Condensed",
+    fontface = "bold",
+    size = 3.2,
+    color = "#100F0F"
+  ) +
+  ggplot2::geom_text(
+    data = weekday_headers,
+    ggplot2::aes(x = x, y = y_header, label = weekday_label),
+    inherit.aes = FALSE,
+    family = "Roboto Condensed",
+    size = 2.1,
+    color = "#878580"
+  ) +
+  ggtext::geom_richtext(
+    data = year_headers,
+    ggplot2::aes(x = x, y = y, label = label),
+    inherit.aes = FALSE,
+    hjust = 0,
+    vjust = 0.5,
+    family = "Roboto Condensed",
+    fill = NA,
+    label.color = NA,
+    label.padding = grid::unit(0, "lines")
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "No game" = "#E6E4D9",
+      "Win" = "#56A0D3",
+      "Loss" = "#1F5A7A",
+      "Upcoming game" = "#C6DEEE"
+    ),
+    breaks = c("Win", "Loss", "Upcoming game"),
+    name = NULL
+  ) +
+  ggplot2::scale_color_manual(
+    values = c(
+      "Off-field event" = "#AF3029",
+      "2026 season opener" = "#D0A215"
+    ),
+    breaks = c("Off-field event", "2026 season opener"),
+    name = NULL
+  ) +
+  ggplot2::guides(
+    fill = ggplot2::guide_legend(order = 1),
+    color = ggplot2::guide_legend(
+      order = 2,
+      override.aes = list(fill = NA, linewidth = 1.1)
+    )
+  ) +
+  ggplot2::scale_y_reverse(limits = c(y_bottom, y_top)) +
+  ggplot2::scale_x_continuous(expand = ggplot2::expansion(add = 1)) +
+  ggplot2::coord_fixed(ratio = 1, clip = "off") +
+  ggplot2::labs(
+    title = "The Belichick Era, So Far",
+    subtitle = paste0(
+      "Belichick was officially hired on December 11, 2024. By the ",
+      "<span style='color:#AD8301;'>**2026 opener**</span> on ",
+      format(season_opener_2026, "%B %d"), ", he will have been on the job ",
+      days_since_hire, " days. <br> 13 of those are **game days**, and the rest spent working through a steady run of ",
+      "<span style='color:#AF3029;'>**off-field events**</span>."
+    ),
+    x = NULL,
+    y = NULL,
+    caption = paste0(
+      "Days in red mark off-field headlines: staff placed on administrative or medical leave, ",
+      "a canceled HBO Hard Knocks series and Hulu docuseries, a book release and awkward CBS Sunday Morning interview, <br> and staff changes.<br>",
+      "<br>",
+      "Data via collegefootballdata.com and chapelboro.com | ",
+      "cfbtxt.com  | Viz by Chris at Bless your Chart"
+    )
+  ) +
+  flexoki::theme_flexoki_light() +
+  ggplot2::theme(
+    text = ggplot2::element_text(family = "Roboto Condensed"),
+    plot.title = ggtext::element_markdown(face = "bold", size = 19),
+    plot.subtitle = ggtext::element_markdown(
+      color = "#6F6E69",
+      size = 11,
+      lineheight = 1.3
+    ),
+    plot.caption = ggtext::element_markdown(
+      color = "#878580",
+      size = 8,
+      hjust = 0,
+      lineheight = 1.4,
+      margin = ggplot2::margin(t = 10)
+    ),
+    axis.text = ggplot2::element_blank(),
+    axis.ticks = ggplot2::element_blank(),
+    panel.grid = ggplot2::element_blank(),
+    panel.grid.major = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major.x = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.minor.x = ggplot2::element_blank(),
+    panel.grid.minor.y = ggplot2::element_blank(),
+    legend.position = "top",
+    legend.justification = "left",
+    legend.box = "horizontal",
+    legend.box.just = "left",
+    plot.margin = ggplot2::margin(12, 14, 12, 14)
+  )
+
+unc_calendar_plot
+
+ggplot2::ggsave(
+  "unc_belichick_calendar.png",
+  plot = unc_calendar_plot,
+  width = 9.5, 
+  height = 9.5, 
+  dpi = 150
+)
+```
+
+###
