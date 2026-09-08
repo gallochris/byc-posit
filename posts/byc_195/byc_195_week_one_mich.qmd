@@ -1,0 +1,182 @@
+---
+title: "195: Week one and Hail Mary"
+date: "2026-09-07"
+categories:
+  - geom_tile
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT table
+
+```{r gt-table, warning=FALSE, message=FALSE}
+
+
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+  
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+  
+  magick::image_read(tmp) |> 
+    magick::image_trim() |> 
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |> 
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+
+weekly_margins <- readr::read_csv("weekly_margins.csv")
+
+weekly_margin_gt <- weekly_margins |>
+  dplyr::filter(average_margin > 20.9) |> 
+  gt::gt() |>
+  gt::fmt_number(columns = average_margin, decimals = 1) |>
+  gt::cols_label(
+    season = "Season",
+    week = "Week",
+    games = "FBS Games",
+    average_margin = "Avg Margin"
+  ) |>
+  gt::cols_align(
+    align = "center",
+    columns = c(season, week, games, average_margin)
+  ) |>
+  gt::tab_header(
+    title = "Widest Average Margin of Victory by Week",
+    subtitle = "Completed regular-season weeks with at least 10 FBS-vs-FBS games since 2014."
+  ) |>
+  gt::tab_source_note(
+    source_note = "Data from collegefootballdata.com | Table by Chris at Bless your Chart"
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_body(columns = average_margin, rows = 1)
+  ) |> 
+  gt::tab_options(
+    table.width = gt::px(650)
+  ) 
+
+
+
+gt_save_crop(
+  weekly_margin_gt,
+  file = "week_tbl.png",
+  whitespace = 40,
+  bg = "white"
+) 
+
+
+weekly_margin_gt
+```
+
+### Geom tile time possession
+
+```{r geom-tile, warning=FALSE, message = FALSE}
+
+game_date <- "2026-09-05"
+home_team <- "Michigan"
+away_team <- "Western Michigan"
+home_score <- 13L
+away_score <- 12L
+
+# Per-minute possession table, pre-computed from collegefootballdata.com drive
+# and play-by-play data (columns: minute, quarter, minute_in_quarter,
+# possessing_team). Loaded here instead of hitting the CFBD API.
+
+
+team_colors <- c(
+  Michigan = "#FFCB05",
+  `Western Michigan` = "#532E1F",
+  `No possession` = "#DAD8CE" # flexoki base150
+)
+
+
+minute_possession <- readr::read_csv("michigan_western_michigan_top_tile_2026-09-05.csv")
+
+# One chart, one row per quarter. Each tile is a game minute, filled with the
+# color of whichever team held the ball longest that minute.
+quarter_tiles <- minute_possession |>
+  dplyr::mutate(
+    possessing_team = dplyr::coalesce(possessing_team, "No possession"),
+    quarter_label = factor(
+      paste0("Q", quarter),
+      levels = c("Q4", "Q3", "Q2", "Q1")
+    ),
+    possessing_team = factor(
+      possessing_team,
+      levels = c(home_team, away_team, "No possession")
+    )
+  )
+
+plot_title <- sprintf(
+  "%s %d, %s %d",
+  home_team, home_score, away_team, away_score
+)
+
+
+top_tile_plot <- ggplot2::ggplot(
+  quarter_tiles,
+  ggplot2::aes(x = minute_in_quarter, y = quarter_label, fill = possessing_team)
+) +
+  ggplot2::geom_tile(color = "#FFFCF0", linewidth = 0.6, height = 0.74) +
+  ggplot2::scale_fill_manual(
+    values = team_colors,
+    breaks = c(home_team, away_team), # "No possession" kept in palette, hidden from legend
+    name = NULL,
+    drop = FALSE
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = c(1, 5, 10, 15),
+    labels = c("1", "5", "10", "15"),
+    expand = c(0, 0)
+  ) +
+  ggplot2::scale_y_discrete(expand = ggplot2::expansion(add = 0.55)) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::labs(
+    title = plot_title,
+    subtitle = "Each tile is one game minute, split by quarter and colored by the team.<br>Western Michigan controlled possession **40:08 to 19:52** (if only is was 40:09 to 19:51).", 
+    x = "Minute of quarter",
+    y = NULL,
+    caption = 
+      "Possession windows derived from collegefootballdata.com drive and play-by-play data | Viz by Chris at Bless your Chart"
+  ) +
+  flexoki::theme_flexoki_light(base_size = 12) +
+  ggplot2::theme(
+    legend.position = "top",
+    legend.justification = "left",
+    legend.margin = ggplot2::margin(0, 0, 2, 0),
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    panel.grid = ggplot2::element_blank(),
+    axis.title.x = ggtext::element_markdown(size = 10),
+    axis.text.y = ggplot2::element_text(face = "bold"),
+    plot.title = ggtext::element_markdown(size = 15, face = "bold"),
+    plot.subtitle = ggtext::element_markdown(size = 9.5, lineheight = 1.4),
+    plot.caption = ggtext::element_markdown(size = 8, hjust = 0),
+    plot.margin = ggplot2::margin(16, 22, 16, 16)
+  )
+
+
+ggplot2::ggsave(
+  filename = "mich-plot.png",
+  plot = top_tile_plot,
+  width = 8.5,
+  height = 4.6,
+  dpi = 400,
+  bg = "#FFFCF0"
+)
+
+
+top_tile_plot
+```
