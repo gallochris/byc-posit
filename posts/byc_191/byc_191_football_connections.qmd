@@ -42,28 +42,91 @@ gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom 
 
 ```{r cross-conf-tbl, warning=FALSE, message=FALSE}
 
-library(cbbplotR)
-library(rlang)
+cross_conf_p4_2026 <- readr::read_csv("cross_conf_p4_2026.csv", show_col_types = FALSE)
 
-cross_conf_p4_2026 <- readr::read_csv("cross_conf_p4_2026.csv")
+# Pull live 2026 results from the CFBD API so completed games can be scored
+# and upcoming weeks (week 2 prep, etc.) stay in sync with the schedule.
+cfbd_api_key <- Sys.getenv("CFBD_API_KEY")
 
+cfbd_games_2026 <- httr2::request("https://api.collegefootballdata.com") |>
+  httr2::req_url_path_append("games") |>
+  httr2::req_url_query(year = 2026, seasonType = "regular") |>
+  httr2::req_headers(
+    accept = "application/json",
+    Authorization = paste("Bearer", cfbd_api_key)
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_json(simplifyVector = TRUE) |>
+  dplyr::transmute(
+    home_team = homeTeam,
+    away_team = awayTeam,
+    home_points = homePoints,
+    away_points = awayPoints,
+    completed = !is.na(homePoints) & !is.na(awayPoints)
+  )
 
-cc_p4 <- cross_conf_p4_2026 |> 
-  dplyr::mutate(game_date = as.Date(game_date, format = "%m/%d/%y")) |> 
-  dplyr::mutate(week = dplyr::if_else(game_date < "2026-09-03", 0, week)) |> 
-  cbbplotR::gt_cbb_teams(away_team, away_team, include_name = FALSE) |> 
-  cbbplotR::gt_cbb_teams(home_team, home_team, include_name = FALSE) |> 
-  dplyr::mutate(matchup = paste0(away_team, " ", home_team)) |> 
-  dplyr::select(week, matchup) |> 
-  
-  dplyr::group_by(week) |> 
-  dplyr::mutate(game_id = paste0("g", dplyr::row_number())) |> 
-  dplyr::ungroup() |> 
+# Look up a team's ESPN logo URL via cfbplotR's reference table.
+team_logo_url <- function(team) {
+  cfbplotR::logo_ref$logo[
+    match(cfbplotR::clean_school_names(team), cfbplotR::logo_ref$school)
+  ]
+}
+
+# Build a logo <img> tag; losers get desaturated + faded via `grey`.
+logo_img <- function(team, grey = FALSE) {
+  url <- team_logo_url(team)
+  style <- ifelse(
+    grey,
+    "height: 26px; width: auto; vertical-align: -30%; filter: grayscale(100%) opacity(0.45);",
+    "height: 26px; width: auto; vertical-align: -30%;"
+  )
+  glue::glue("<img src='{url}' style='{style}'>")
+}
+
+cc_p4 <- cross_conf_p4_2026 |>
+  dplyr::select(-completed) |> # stale placeholder from the source csv
+  dplyr::mutate(game_date = as.Date(game_date, format = "%m/%d/%y")) |>
+  dplyr::mutate(week = dplyr::if_else(game_date < "2026-09-03", 0, week)) |>
+  dplyr::left_join(cfbd_games_2026, by = dplyr::join_by(home_team, away_team)) |>
+  dplyr::mutate(completed = dplyr::coalesce(completed, FALSE)) |>
+  dplyr::mutate(
+    home_win = completed & home_points > away_points,
+    winner_team = dplyr::if_else(home_win, home_team, away_team),
+    loser_team = dplyr::if_else(home_win, away_team, home_team),
+    winner_pts = pmax(home_points, away_points),
+    loser_pts = pmin(home_points, away_points),
+    sep_symbol = dplyr::if_else(neutral_site, "vs", "@"),
+    matchup = dplyr::case_when(
+      # Winner (in color) + score + loser (greyed out)
+      completed ~ paste0(
+        logo_img(winner_team), " ", winner_pts, " - ", loser_pts, " ",
+        logo_img(loser_team, grey = TRUE)
+      ),
+      # Not yet played: away @ home, both in color
+      .default = paste0(
+        logo_img(away_team),
+        " <span style='font-size:9px;color:#9a9a9a;'>", sep_symbol, "</span> ",
+        logo_img(home_team)
+      )
+    )
+  ) |>
+  dplyr::mutate(slot = dplyr::row_number(), .by = week) |>
+  dplyr::select(slot, week, matchup) |>
   tidyr::pivot_wider(
-    names_from = game_id, 
-    values_from = matchup
-  ) |> 
-  tidyr::complete(week = 0:13)
+    names_from = week,
+    values_from = matchup,
+    names_prefix = "week_"
+  )
+
+# Flip the table: weeks become columns, game slots become rows, ordered by
+# week number (only weeks with a scheduled game get a column).
+week_cols <- names(cc_p4)[stringr::str_starts(names(cc_p4), "week_")]
+week_cols <- week_cols[order(as.integer(stringr::str_remove(week_cols, "week_")))]
+
+cc_p4 <- cc_p4 |>
+  dplyr::select(slot, dplyr::all_of(week_cols)) |>
+  dplyr::arrange(slot) |>
+  dplyr::mutate(gap = "", .after = week_3) # visual break for the Sep 20-Nov 27 gap
 
 
 fball_header <- glue::glue(
@@ -74,7 +137,7 @@ fball_header <- glue::glue(
      </div>
      <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
        <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>2026 Regular Season Games <br>Between <em>Power</em> Conference Teams</span>
-       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>There are 29 games scheduled between teams of the ACC, Big Ten, Big 12, and SEC. <br>No cross-conference games are scheduled between September 20th and November 27th.</span>
+       <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>There are 29 games scheduled between teams of the ACC, Big Ten, Big 12, and SEC. <br>Winners are shown in color with the final score; losers are greyed out. No cross-conference games are scheduled between September 20th and November 27th.</span>
      </div>
      <div>
        <img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-football-college.png'
@@ -86,27 +149,26 @@ fball_header <- glue::glue(
 
 
 
-cc_p4 |> 
-  gt::gt() |> 
+cc_p4 |>
+  gt::gt() |>
   gtUtils::gt_theme_savant() |>
-  gt::fmt_markdown(columns = gt::everything()) |> 
-  gt::sub_missing(missing_text = "") |> 
-  gt::cols_align(align = "center", columns = gt::everything()) |> 
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::sub_missing(missing_text = "") |>
+  gt::cols_align(align = "center", columns = gt::everything()) |>
+  gt::cols_hide(columns = slot) |>
   gt::cols_width(
-    week ~ gt::px(60),
-    dplyr::starts_with("g") ~ gt::px(70)
-  ) |> 
+    gap ~ gt::px(24),
+    dplyr::starts_with("week_") ~ gt::px(150)
+  ) |>
   gt::cols_label_with(
-    columns = dplyr::starts_with("g"),
-    fn = \(x) ""
-  ) |> 
-  gt::cols_label(
-    week = "Week"
-  ) |> 
+    columns = dplyr::starts_with("week_"),
+    fn = \(x) stringr::str_replace(x, "^week_", "Week ")
+  ) |>
+  gt::cols_label(gap = "") |>
   gt::tab_header(title = gt::html(fball_header)) |>
   gtUtils::gt_border_grid(color = "black",
                           weight = 1,
-                          include_labels = FALSE) |> 
+                          include_labels = FALSE) |>
   gt::tab_source_note(gt::html(
     "
      data via collegefootballdata.com | cfbtxt.com<br>
@@ -128,45 +190,26 @@ cc_p4 |>
       weight = gt::px(2)
     )),
     locations = list(
-      gt::cells_body(),
-      gt::cells_column_labels()
+      gt::cells_body(columns = dplyr::starts_with("week_")),
+      gt::cells_column_labels(columns = dplyr::starts_with("week_"))
     )
   ) |>
-  gtExtras::gt_highlight_rows(
-    rows = c(5:13),
-    fill = "#FEF2F2",
-    font_weight = "normal",
-    bold_target_only = FALSE
-  ) |> 
-  gtExtras::gt_highlight_rows(
-    rows = c(1),
-    columns = 2,
-    fill = "#fffee0",
-    font_weight = "normal",
-    bold_target_only = FALSE
-  ) |> 
-  gtExtras::gt_highlight_rows(
-    rows = c(2),
-    columns = c(3, 7),
-    fill = "#fffee0",
-    font_weight = "normal",
-    bold_target_only = FALSE
-  ) |> 
-  gtExtras::gt_highlight_rows(
-    rows = c(4),
-    columns = c(4),
-    fill = "#fffee0",
-    font_weight = "normal",
-    bold_target_only = FALSE
-  ) |> 
-  gt::tab_options(table.width = gt::px(675)) -> cc_tbl
+  gt::tab_style(
+    style = gt::cell_fill(color = "#F0FDF4"), # played + final
+    locations = gt::cells_body(columns = dplyr::any_of(c("week_0", "week_1")))
+  ) |>
+  gt::tab_style(
+    style = gt::cell_fill(color = "#FFFBEA"), # on deck
+    locations = gt::cells_body(columns = dplyr::any_of("week_2"))
+  ) |>
+  gt::tab_options(table.width = gt::px(780)) -> cc_tbl
 
 gt_save_crop(
   cc_tbl,
   file = "cc_tbl.png",
   whitespace = 40,
   bg = "white"
-) 
+)
 
 cc_tbl
 ```

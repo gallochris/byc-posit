@@ -1,0 +1,286 @@
+---
+title: "196: Week two had everything"
+date: "2026-09-14"
+categories:
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT table: FBS vs. FCS margins
+
+```{r gt-table-margins, warning=FALSE, message=FALSE}
+
+gt_save_crop <- function(data, file = NULL, bg = "white", whitespace = 50, zoom = 2, expand = 5) {
+  tmp <- tempfile(fileext = ".png")
+
+  # Wrap the gtsave_extra call in a tryCatch to handle errors
+  tryCatch({
+    gtExtras::gtsave_extra(data, tmp, zoom = zoom, expand = expand)
+  }, error = function(e) {
+    # If there's an error, try using regular gt::gtsave instead
+    message("gtsave_extra failed, trying gt::gtsave...")
+    gt::gtsave(data, tmp, zoom = zoom, expand = expand)
+  })
+
+  magick::image_read(tmp) |>
+    magick::image_trim() |>
+    magick::image_border(bg, glue::glue('{whitespace}x{whitespace}')) |>
+    magick::image_write(file)
+  unlink(tmp)
+}
+
+as_of_date <- "September 13, 2026"
+
+# Long-format margin data (Season-to-date / Margin of Victory rows, one
+# column per matchup type), pre-computed from collegefootballdata.com game
+# data. Loaded here instead of hitting the CFBD API.
+margin_data <- readr::read_csv("fbs_fcs_margin_2026-09-13.csv") |>
+  dplyr::mutate(
+    section = factor(section, levels = c("Season-to-date", "Margin of Victory")),
+    metric = factor(metric, levels = unique(metric))
+  )
+
+# FCS teams that beat an FBS opponent this season, "Winner score, Loser
+# score" (extra detail like overtime length noted by hand where it applies).
+fcs_upsets <- c(
+  "Tarleton State 20, Bowling Green 13",
+  "The Citadel 43, Charlotte 41 (3OT)",
+  "Idaho State 29, Utah State 17",
+  "Illinois State 28, Northern Illinois 24",
+  "Montana State 20, Nevada 7"
+)
+
+is_avg_margin_row <- as.character(margin_data$metric) == "Avg Margin"
+
+upset_note <- gt::html(paste0(
+  "<b>FCS wins over FBS</b>:<br>",
+  paste(fcs_upsets, collapse = "<br>")
+))
+
+margin_gt <- margin_data |>
+  gt::gt(groupname_col = "section", rowname_col = "metric") |>
+  gt::tab_header(
+    title = gt::html("2026 Season<br>Games by Division"),
+    subtitle = paste0("Games through ", as_of_date)
+  ) |>
+  gt::fmt_number(
+    columns = c(`FBS vs FBS`, `FBS vs FCS`),
+    rows = is_avg_margin_row,
+    decimals = 1
+  ) |>
+  gt::cols_align(
+    columns = metric,
+    align = "left"
+  ) |>
+  gt::fmt_number(
+    columns = c(`FBS vs FBS`, `FBS vs FCS`),
+    rows = !is_avg_margin_row,
+    decimals = 0
+  ) |>
+  gt::cols_align(align = "center", columns = c(`FBS vs FBS`, `FBS vs FCS`)) |>
+  gtUtils::gt_theme_brutalist(
+    accent = "#00008B",
+    density = "compact"
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_row_groups()
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(paste0(
+      "<hr>\"Games Remaining\" reflects the rest of the season's schedule as ",
+      "of ", as_of_date, ". <br>Margin thresholds are independent counts ",
+      "(e.g. a 75-point game counts toward both “30 or more” and ",
+      "“50 or more”).<hr>"
+    ))
+  ) |>
+  gt::tab_source_note(source_note = upset_note) |>
+  gt::tab_source_note(
+    source_note = gt::html(
+      "<hr>Data from collegefootballdata.com | Table by Chris at Bless your Chart"
+    )
+  ) |>
+  gt::tab_options(
+    table.width = gt::px(475)
+  )
+
+gt_save_crop(
+  margin_gt,
+  file = "margin_by_division_tbl.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+margin_gt
+```
+
+### GT table: Texas' comeback drive chart
+
+```{r gt-table-drives, warning=FALSE, message=FALSE}
+
+bin_labels <- c(
+  "Own 0-9", "Own 10-19", "Own 20-29", "Own 30-39", "Own 40-49",
+  "Opp 40-49", "Opp 30-39", "Opp 20-29", "Opp 10-19", "Opp 0-10"
+)
+
+game_label <- "Texas 24, Ohio State 23"
+
+# Row-group label: just the team logo, as markdown gt can render (the image
+# attribute syntax sets the height). Unknown teams fall back to a plain name.
+offense_group_label <- function(teams) {
+  lapply(teams, function(team) {
+    clean <- cfbplotR::clean_school_names(
+      as.character(team), keep_non_matches = TRUE
+    )
+    url <- cfbplotR:::logo_list[[clean]]
+    if (is.null(url)) {
+      return(gt::md(as.character(team)))
+    }
+    gt::md(sprintf("![](%s){height=22px}", url))
+  })
+}
+
+# Per-drive field-position summary (drive, clock, offense, play counts by
+# 10-yard bin, points), pre-computed from collegefootballdata.com play-by-play
+# and drive data. Loaded here instead of hitting the CFBD API.
+drive_table <- readr::read_csv(
+  "texas_ohio_state_drive_position_2026-09-12.csv",
+  col_types = readr::cols(clock = readr::col_character())
+)
+
+max_bin_count <- max(as.matrix(drive_table[, bin_labels]))
+
+bin_fill <- function(x) {
+  nonzero_fill <- scales::col_numeric(
+    palette = c("#FDE68A", "#B91C1C"),
+    domain = c(1, max_bin_count)
+  )(pmax(x, 1))
+
+  ifelse(x == 0, "#F2F2F2", nonzero_fill)
+}
+
+# Drive points: 0 = light pink, 3 = light green, 6-8 = darker greens.
+points_pal <- scales::gradient_n_pal(
+  colours = c("#FFB6C1", "#90EE90", "#1B5E20"),
+  values = c(0, 3 / 8, 1)
+)
+points_fill <- function(x) {
+  points_pal(scales::rescale(pmin(pmax(x, 0), 8), from = c(0, 8)))
+}
+
+drive_gt <- drive_table |>
+  dplyr::group_by(offense) |>
+  dplyr::arrange(drive) |>
+  gt::gt() |>
+  gt::tab_header(
+    title = game_label,
+    subtitle = "Shows number of offensive scrimmage plays by starting field-position."
+  ) |>
+  gt::cols_label(
+    drive = "Drive",
+    clock = "Clock",
+    total_plays = "Plays",
+    points = "Points",
+    `Own 0-9` = "0–9",
+    `Own 10-19` = "10–19",
+    `Own 20-29` = "20–29",
+    `Own 30-39` = "30–39",
+    `Own 40-49` = "40–49",
+    `Opp 40-49` = "40–49",
+    `Opp 30-39` = "30–39",
+    `Opp 20-29` = "20–29",
+    `Opp 10-19` = "10–19",
+    `Opp 0-10` = "0–10"
+  ) |>
+  gt::tab_spanner(
+    columns = gt::starts_with("Own"),
+    label = "OWN"
+  ) |>
+  gt::tab_spanner(
+    columns = gt::starts_with("Opp"),
+    label = "OPP"
+  ) |>
+  # Narrow spacer column between the OWN and OPP halves; drive is kept for
+  # ordering but hidden from the rendered table.
+  gt::cols_add(gap = "", .before = `Opp 40-49`) |>
+  gt::cols_label(gap = "") |>
+  gt::cols_width(gap ~ gt::px(14)) |>
+  gt::cols_hide(columns = drive) |>
+  gt::tab_spanner(
+    label = "Plays from scrimmage (count)",
+    columns = c(bin_labels, "gap"),
+    level = 2
+  ) |>
+  gt::fmt(
+    columns = bin_labels,
+    fns = function(x) ifelse(x == 0, "", as.character(x))
+  ) |>
+  gt::data_color(
+    columns = bin_labels,
+    fn = bin_fill,
+    apply_to = "fill"
+  ) |>
+  gt::data_color(
+    columns = points,
+    fn = points_fill,
+    apply_to = "fill"
+  ) |>
+  gtUtils::gt_theme_brutalist(accent = "#FF3B00", density = "compact") |>
+  gt::text_transform(
+    locations = gt::cells_row_groups(),
+    fn = offense_group_label
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "#E6E6E6"),
+      gt::cell_text(color = "#1A1A1A")
+    ),
+    locations = gt::cells_row_groups()
+  ) |>
+  # Brutalist theme paints the spanner band black; keep its labels readable.
+  gt::tab_style(
+    style = gt::cell_text(color = "#FFFFFF", weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"),
+      color = "black",
+      weight = gt::px(2)
+    )),
+    locations = list(
+      gt::cells_body(),
+      gt::cells_column_labels()
+    )
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(paste0(
+      "Blank cells indicate zero plays from scrimmage in that ",
+      "field-position bin.<hr>"
+    ))
+  ) |>
+  gt::tab_source_note(
+    source_note = gt::html(paste0(
+      "Offensive plays from scrimmage only (runs, pass attempts, sacks, ",
+      "turnovers). <br> Excludes special teams, penalties, kneels, spikes, and ",
+      "timeouts. <br>Points is the offense's own scoring, so defensive and ",
+      "special teams scores are not shown.<hr>"
+    ))
+  ) |>
+  gt::tab_source_note(
+    source_note = "Data via collegefootballdata.com | Table by Chris at Bless your Chart"
+  )
+
+gt_save_crop(
+  drive_gt,
+  file = "texas_ohio_state_drive_tbl.png",
+  whitespace = 30,
+  bg = "white"
+)
+
+drive_gt
+```
