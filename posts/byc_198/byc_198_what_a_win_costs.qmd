@@ -1,0 +1,490 @@
+---
+title: "198: What a win costs"
+date: "2026-09-29"
+categories:
+  - gtUtils
+  - flexoki
+  - cfbplotR
+  - ggthemes
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+Three charts on the same spine: how many points it takes to win an FBS game,
+what one real week of that looked like, and one team that hasn't been able to
+get there.
+
+All three read from local snapshots of collegefootballdata.com taken on
+September 28, 2026, so the post rebuilds without hitting the API.
+
+```{r setup, warning=FALSE, message=FALSE}
+
+# One family across every chart here. Installed at ~/Library/Fonts; swap to
+# "sans" if this is ever rebuilt somewhere it isn't available.
+chart_font <- "Roboto Condensed"
+
+if (!any(grepl(chart_font, systemfonts::system_fonts()$family, fixed = TRUE))) {
+  stop(chart_font, " not found. Restart R after installing, then re-run.")
+}
+
+panel_bg <- "#F0F0F0"
+bar_outline <- "#5a5a5a"
+reference_line <- "#2b2b2b"
+carolina_blue <- "#56a0d3"
+loss_pink <- "lightpink"
+
+# Five-point bands, shared by the chart below and the analysis behind it.
+bin_levels <- c(
+  "0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40+"
+)
+```
+
+### Chart: what a win costs
+
+```{r win-cost-chart, warning=FALSE, message=FALSE, fig.width=10, fig.height=6}
+
+# Every team-game from 2024 onward, bucketed by that team's own final score,
+# with the bar being the share of those team-games that were wins. So the
+# chart reads as a price list: score this much, win this often.
+#
+# Note the denominator. Each game contributes two rows -- the winner's score
+# and the loser's. That's what makes a win *rate* possible; a chart of
+# winning scores alone has no denominator to divide by, and every bar would
+# sit at 100%.
+
+by_bin <- readr::read_csv("win_cost_by_bin_2024_2026.csv", show_col_types = FALSE) |>
+  dplyr::mutate(bin = factor(bin, levels = bin_levels)) |>
+  dplyr::arrange(bin) |>
+  dplyr::mutate(
+    favoured = win_pct >= 50,
+    # Sample size rides in the axis label rather than inside the bar: the
+    # 0-4 and 5-9 bars are too short to hold text without colliding with
+    # their own percentage.
+    bin_label = paste0(bin, "\n", format(team_games, big.mark = ","))
+  ) |>
+  # As a bare character the axis would sort alphabetically and put 10-14
+  # ahead of 5-9, so pin the order to the bins themselves.
+  dplyr::mutate(bin_label = factor(bin_label, levels = bin_label))
+
+# The first band that wins more often than it loses.
+crossover <- by_bin |> dplyr::filter(favoured) |> dplyr::slice_head(n = 1)
+
+# The rate chart gets its own ramp rather than the blue/pink used on the
+# North Carolina chart further down. Blue and pink mean "win" and "loss" for
+# a specific team there; reusing them here, where every bar is a rate rather
+# than an outcome, would read as the same encoding when it isn't. The ramp is
+# keyed to the rate itself, so colour and bar height reinforce each other.
+#
+# Palette is flexoki's green, a single-hue ramp running pale olive to
+# near-black. Only the fill comes from flexoki -- the theme stays
+# theme_fivethirtyeight() so this matches the rest of the set.
+cost_accent <- unname(flexoki::flexoki$green[["green700"]])
+
+# "Team-game" is the honest unit but it's jargon, so the subtitle spells the
+# counting out instead: every game is read twice, once from each sideline,
+# and each side is filed under whatever that team scored.
+subtitle <- sprintf(
+  paste0(
+    "Every FBS game from 2024-2026, once from each team's sideline, counted ",
+    "under what that team scored. For example, a 31-24 game counts once at 31 ",
+    "and once at 24, %s entries in all. Each bar is how often teams scoring ",
+    "that much went on to win. Above the line, a win is more likely than a ",
+    "loss; that starts at <b style='color:%s;'>%s points</b>. FBS vs FBS ",
+    "games only, FCS opponents excluded."
+  ),
+  format(sum(by_bin$team_games), big.mark = ","), cost_accent, crossover$bin[1]
+)
+
+cost_chart <- ggplot2::ggplot(
+  by_bin, ggplot2::aes(x = bin_label, y = win_pct, fill = win_pct)
+) +
+  ggplot2::geom_col(width = 0.76, color = bar_outline, linewidth = 0.2) +
+  ggplot2::geom_hline(
+    yintercept = 50, color = reference_line, linetype = "dashed", linewidth = 0.5
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(label = sprintf("%.0f%%", win_pct), y = win_pct + 3.4),
+    family = chart_font, fontface = "bold", size = 4.6, color = "#2b2b2b"
+  ) +
+  ggplot2::annotate(
+    "text", x = 0.62, y = 54, hjust = 0,
+    label = "Wins more often than it loses",
+    family = chart_font, fontface = "bold", size = 3.6, color = reference_line
+  ) +
+  flexoki::scale_fill_flexoki_c(palette = "green", guide = "none") +
+  ggplot2::scale_y_continuous(
+    limits = c(0, 104), breaks = seq(0, 100, 25),
+    labels = function(x) paste0(x, "%"),
+    expand = ggplot2::expansion(mult = c(0, 0.02))
+  ) +
+  ggplot2::labs(
+    title = "What a Win Costs",
+    subtitle = subtitle,
+    x = "Points a team scored (how many times that happened)",
+    y = "Share of those games won",
+    caption = paste0(
+      "Viz by Chris at Bless your Chart<br>data via collegefootballdata.com, ",
+      "regular season, FBS vs. FBS"
+    )
+  ) +
+  ggthemes::theme_fivethirtyeight(base_family = chart_font) +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggplot2::element_text(
+      face = "bold", size = 22, margin = ggplot2::margin(b = 10)
+    ),
+    plot.subtitle = ggtext::element_textbox_simple(
+      size = 11.5, color = "#4a4a4a", margin = ggplot2::margin(b = 16), lineheight = 1.3
+    ),
+    # element_markdown, not element_text: the caption carries a <br>, which a
+    # plain text element prints literally instead of breaking the line.
+    plot.caption = ggtext::element_markdown(
+      size = 9, color = "#5a5a5a", margin = ggplot2::margin(t = 12), lineheight = 1.3
+    ),
+    axis.title = ggplot2::element_text(size = 10.5, color = "#4a4a4a"),
+    axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 6)),
+    axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 6)),
+    axis.text = ggplot2::element_text(size = 11, color = "#3c3c3c"),
+    axis.text.x = ggplot2::element_text(lineheight = 1.25),
+    panel.grid.major.x = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank()
+  )
+
+ggplot2::ggsave(
+  "win_cost_distribution.png", cost_chart,
+  width = 10, height = 6, dpi = 300, bg = panel_bg
+)
+
+cost_chart
+```
+
+### GT table: what a win cost in week four
+
+```{r week-four-table, warning=FALSE, message=FALSE}
+
+# One real week next to the distribution above, so the spread of winning
+# scores can be seen rather than taken on faith.
+#
+# Scope is P4 vs. P4 (ACC, Big 12, Big Ten, SEC) plus any Notre Dame game --
+# Notre Dame is independent but plays a P4-caliber schedule, so its games
+# count. The winning score carries the same green ramp as the chart above, so
+# a high-scoring win looks the same in both places. The losing side is
+# deliberately inert: grey score, desaturated logo.
+
+# Light-to-dark green, taken from flexoki. Stops short of the near-black end
+# of that ramp: these are table cells with text sitting on them, not bars.
+green_ramp <- c("#DDE2B2", "#BEC97E", "#A0AF54", "#768D21", "#536907")
+
+team_logo_url <- function(team) {
+  cfbplotR::logo_ref$logo[
+    match(cfbplotR::clean_school_names(team), cfbplotR::logo_ref$school)
+  ]
+}
+
+logo_img <- function(team, grey = FALSE, height = 28) {
+  style <- paste0(
+    "height: ", height, "px; width: auto; vertical-align: -30%;",
+    if (isTRUE(grey)) " filter: grayscale(100%) opacity(0.45);" else ""
+  )
+  glue::glue("<img src='{team_logo_url(team)}' style='{style}'>")
+}
+
+wk4_raw <- readr::read_csv("week_scores_2026_wk4.csv", show_col_types = FALSE)
+
+week_num <- 4
+
+date_span <- range(wk4_raw$game_date)
+span_label <- if (date_span[1] == date_span[2]) {
+  format(date_span[1], "%B %e, %Y")
+} else {
+  paste0(format(date_span[1], "%B %e"), "–", format(date_span[2], "%e, %Y"))
+}
+
+wk4 <- wk4_raw |>
+  dplyr::arrange(dplyr::desc(win_score), dplyr::desc(win_score - lose_score)) |>
+  dplyr::transmute(
+    winner = paste0(
+      "<span style='font-weight:700;'>", win_team, "</span>&nbsp;&nbsp;",
+      logo_img(win_team)
+    ),
+    win_score,
+    sep = "–",
+    lose_score,
+    loser = paste0(
+      logo_img(lose_team, grey = TRUE),
+      "&nbsp;&nbsp;<span style='color:#8a8a8a;'>", lose_team, "</span>"
+    )
+  )
+
+wk4_gt <- wk4 |>
+  gt::gt() |>
+  gtUtils::gt_theme_savant() |>
+  gt::fmt_markdown(columns = c(winner, loser)) |>
+  gt::data_color(
+    columns = win_score,
+    palette = green_ramp,
+    # Flips the number to light type once the cell goes dark.
+    autocolor_text = TRUE
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold", size = gt::px(22)),
+    locations = gt::cells_body(columns = win_score)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(color = "#9a9a9a", size = gt::px(20)),
+    locations = gt::cells_body(columns = lose_score)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(color = "#bdbdbd", size = gt::px(16)),
+    locations = gt::cells_body(columns = sep)
+  ) |>
+  gt::cols_align(align = "right", columns = winner) |>
+  gt::cols_align(align = "center", columns = c(win_score, sep, lose_score)) |>
+  gt::cols_align(align = "left", columns = loser) |>
+  gt::cols_label(
+    winner = "Winner", win_score = "", sep = "", lose_score = "", loser = "Loser"
+  ) |>
+  # Kept tight so the two scores read as one scoreline rather than two
+  # separate columns; the winning cell still needs enough width to carry its
+  # green fill as a block.
+  gt::cols_width(
+    winner ~ gt::px(215),
+    win_score ~ gt::px(46),
+    sep ~ gt::px(14),
+    lose_score ~ gt::px(34),
+    loser ~ gt::px(215)
+  ) |>
+  gt::tab_header(
+    title = gt::html(paste0("<b>What a Win Cost in Week ", week_num, "</b>")),
+    subtitle = paste0(
+      "Every P4-vs-P4 result plus Notre Dame, ", span_label,
+      ", sorted by winning score"
+    )
+  ) |>
+  gt::tab_source_note(gt::html(paste0(
+    "<hr>Winning score is shaded on a green gradient: darker is a higher total. ",
+    "P4 is the ACC, Big 12, Big Ten and SEC; Notre Dame is independent, but included.<br>",
+    "<hr>Table by Chris at Bless your Chart | data via collegefootballdata.com | cfbtxt.com"
+  ))) |>
+  gt::tab_options(
+    table.font.size = gt::px(15),
+    data_row.padding = gt::px(5),
+    heading.align = "left"
+  )
+
+gtUtils::gt_save_crop(
+  wk4_gt,
+  file = "week_scores_2026_wk4.png",
+  zoom = 2,
+  whitespace = 40
+)
+
+wk4_gt
+```
+
+### Chart: North Carolina against the threshold
+
+```{r unc-streak-chart, warning=FALSE, message=FALSE, fig.width=14, fig.height=12}
+
+# North Carolina's points scored in every FBS game since 2024, against the two
+# numbers that matter: 30 points (the streak threshold) and the national
+# average winning score.
+#
+# Postseason is included, which is load-bearing here -- the streak's first
+# game is the 2024 Fenway Bowl. Drop bowls and it reads 13 instead of 14.
+
+streak_color <- "#c0392b"
+
+# Kickoff timestamps are stored in UTC, so five of North Carolina's night
+# games land on the following calendar day unless converted -- the 2024
+# Minnesota opener is stored as 2024-08-30T00:00Z but was a Thursday 8pm ET
+# kickoff on 8/29. Leading zeros are stripped by hand because the "%-m" glibc
+# extension isn't available on macOS.
+format_game_date <- function(ts) {
+  paste0(
+    as.integer(format(ts, "%m", tz = "America/New_York")), "/",
+    as.integer(format(ts, "%d", tz = "America/New_York")), "/",
+    format(ts, "%Y", tz = "America/New_York")
+  )
+}
+
+# 2025-26 only, and reconciles across sources: bcftoys' game logs give 34.83
+# for this window, collegefootballdata.com gives 34.70.
+national_avg_win <- readr::read_csv(
+  "national_avg_winning_score.csv", show_col_types = FALSE
+)$avg_winning_score[1]
+
+unc_all <- readr::read_csv(
+  "unc_fbs_games_2024_2026.csv",
+  col_types = readr::cols(kickoff_utc = readr::col_character())
+) |>
+  dplyr::mutate(
+    kickoff = as.POSIXct(kickoff_utc, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+  ) |>
+  dplyr::arrange(kickoff) |>
+  dplyr::mutate(
+    game_idx = dplyr::row_number(),
+    won = unc_pts > opp_pts,
+    hit30 = unc_pts >= 30,
+    logo_team = cfbplotR::clean_school_names(opponent),
+    result_label = paste0(
+      dplyr::if_else(won, "W", "L"), ", ", unc_pts, "-", opp_pts
+    ),
+    # Date and location carry the left axis; the result rides out past the
+    # opponent logo, so each row reads date -> bar -> logo -> outcome.
+    x_label = paste0(format_game_date(kickoff), "\n", location)
+  )
+
+# The streak: every game since the last 30-point game, which is the 2024
+# regular-season finale vs. NC State (exactly 30 in a 35-30 loss).
+last30_idx <- max(unc_all$game_idx[unc_all$hit30])
+streak <- unc_all |> dplyr::filter(game_idx > last30_idx)
+streak_len <- nrow(streak)
+
+# The 4-9 record and 17.3 scoring average belong to the Belichick era (2025
+# onward), which is NOT the same set of games as the streak. The streak
+# reaches one game further back, to the 2024 Fenway Bowl, so its own record is
+# 4-10 and its own average 17.1. The annotation says "under Belichick"
+# explicitly so the two windows don't get conflated.
+belichick <- unc_all |> dplyr::filter(season >= 2025)
+bb_record <- sprintf("%d-%d", sum(belichick$won), sum(!belichick$won))
+bb_ppg <- mean(belichick$unc_pts)
+# Happens to equal the streak high too, since the only pre-2025 game in the
+# streak is the 14-point Fenway Bowl.
+bb_max <- max(belichick$unc_pts)
+
+unc_chart <- ggplot2::ggplot(unc_all, ggplot2::aes(x = game_idx, y = unc_pts)) +
+  ggplot2::annotate(
+    "rect", xmin = last30_idx + 0.5, xmax = max(unc_all$game_idx) + 0.5,
+    ymin = 0, ymax = Inf, fill = streak_color, alpha = 0.08
+  ) +
+  ggplot2::geom_hline(
+    yintercept = national_avg_win, color = reference_line,
+    linetype = "dashed", linewidth = 0.5
+  ) +
+  ggplot2::geom_hline(
+    yintercept = 30, color = "#7a7a7a", linetype = "dotted", linewidth = 0.5
+  ) +
+  # A thin outline keeps the pale bars legible against the light panel.
+  ggplot2::geom_col(
+    ggplot2::aes(fill = won), width = 0.72, color = bar_outline, linewidth = 0.2
+  ) +
+  cfbplotR::geom_cfb_logos(
+    ggplot2::aes(x = game_idx, y = unc_pts + 2.9, team = logo_team),
+    width = 0.032, inherit.aes = FALSE
+  ) +
+  ggplot2::geom_text(
+    ggplot2::aes(label = unc_pts), hjust = 1.4, color = "#1a1a1a",
+    fontface = "bold", size = 3.7, family = chart_font
+  ) +
+  # Two passes. The tinted label is 30% opaque, so on rows whose score sits
+  # near a reference line the dashed rule shows straight through the box and
+  # looks like the text is clipped (the Syracuse 27-10 row is the bad one).
+  # This opaque underlay in the panel colour masks the line first; the tinted
+  # label then draws on top and keeps its win/loss wash.
+  ggplot2::geom_label(
+    ggplot2::aes(y = unc_pts + 5.2, label = result_label),
+    hjust = 0, color = NA, fill = panel_bg, size = 3.2,
+    family = chart_font, linewidth = 0
+  ) +
+  ggplot2::geom_label(
+    ggplot2::aes(y = unc_pts + 5.2, label = result_label, fill = won),
+    hjust = 0, color = "#333333", size = 3.2, fontface = "bold",
+    family = chart_font, alpha = 0.3, linewidth = 0.25
+  ) +
+  # Sits at the foot of the streak band rather than the bottom of the chart:
+  # high enough to be seen, and on a row whose bar and result label both stop
+  # well short of the dashed line, so nothing collides with it.
+  ggplot2::annotate(
+    "text", x = last30_idx + 1.6, y = national_avg_win + 1.2, hjust = 0,
+    label = sprintf("National average winning score (%.1f)", national_avg_win),
+    color = reference_line, size = 3.9, fontface = "bold", family = chart_font
+  ) +
+  ggplot2::annotate(
+    "text", x = max(unc_all$game_idx) - 0.5, y = 66, hjust = 1,
+    label = sprintf(
+      "%d: most points scored against\nan FBS opponent under Belichick", bb_max
+    ),
+    color = streak_color, size = 5.0, fontface = "bold",
+    family = chart_font, lineheight = 1.1
+  ) +
+  ggplot2::annotate(
+    "text", x = max(unc_all$game_idx) - 3.4, y = 66, hjust = 1,
+    label = sprintf(
+      "Under Belichick: %s vs FBS\n%.1f points per game", bb_record, bb_ppg
+    ),
+    color = "#4a4a4a", size = 4.75, fontface = "bold",
+    family = chart_font, lineheight = 1.2
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c("TRUE" = carolina_blue, "FALSE" = loss_pink)
+  ) +
+  # Headroom past 50 so the result labels clear the widest bar and its logo.
+  ggplot2::scale_y_continuous(
+    limits = c(0, 67), breaks = seq(0, 50, 10),
+    expand = ggplot2::expansion(mult = c(0, 0.02))
+  ) +
+  # Not reversed: under coord_flip the highest game index lands at the top,
+  # putting the most recent game first and running backwards in time.
+  ggplot2::scale_x_continuous(
+    breaks = unc_all$game_idx,
+    labels = unc_all$x_label,
+    expand = ggplot2::expansion(add = 0.8)
+  ) +
+  ggplot2::coord_flip(clip = "off") +
+  ggplot2::labs(
+    title = sprintf(
+      paste0(
+        "North Carolina hasn't scored 30 or more points against an FBS ",
+        "opponent in %d consecutive games"
+      ),
+      streak_len
+    ),
+    # The subtitle colours the words "win" and "loss" to match the bars, so
+    # the legend doesn't have to be spelled out.
+    subtitle = sprintf(
+      paste0(
+        "Carolina's points scored in every FBS game since 2024: a ",
+        "<b style='color:%s;'>win</b> or a <b style='color:%s;'>loss</b>; ",
+        "dotted line is 30 points, dashed line the national average winning score."
+      ),
+      carolina_blue, loss_pink
+    ),
+    caption = paste0(
+      "Viz by Chris at Bless your Chart<br>data via collegefootballdata.com | ",
+      "FBS opponents only; includes the 2024 Fenway Bowl."
+    )
+  ) +
+  ggthemes::theme_fivethirtyeight(base_family = chart_font) +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggplot2::element_text(
+      face = "bold", size = 17, margin = ggplot2::margin(b = 4)
+    ),
+    plot.subtitle = ggtext::element_markdown(
+      size = 12, color = "#4a4a4a", margin = ggplot2::margin(b = 14)
+    ),
+    plot.caption = ggtext::element_markdown(
+      size = 9, color = "#5a5a5a", margin = ggplot2::margin(t = 12), lineheight = 1.3
+    ),
+    # The date/location stack is supporting detail, so it sits smaller than
+    # the annotations it's read alongside.
+    axis.text.y = ggplot2::element_text(
+      size = 7.2, color = "#4a4a4a", hjust = 1, lineheight = 1.15
+    ),
+    axis.text.x = ggplot2::element_text(size = 10.5, color = "#3c3c3c"),
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.major.x = ggplot2::element_line(color = "#cccccc", linewidth = 0.3),
+    panel.grid.minor = ggplot2::element_blank()
+  )
+
+ggplot2::ggsave(
+  "unc_points_vs_threshold.png", unc_chart,
+  width = 14, height = 12, dpi = 300, bg = panel_bg
+)
+
+unc_chart
+```

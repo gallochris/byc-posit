@@ -1,0 +1,26 @@
+"season","week","seasonType","kickoff_utc","opponent","location","unc_pts","opp_pts"
+2024,1,"regular","2024-08-30T00:00:00Z","Minnesota","Away",19,17
+2024,2,"regular","2024-09-07T19:30:00Z","Charlotte","Home",38,20
+2024,4,"regular","2024-09-21T16:00:00Z","James Madison","Home",50,70
+2024,5,"regular","2024-09-28T20:00:00Z","Duke","Away",20,21
+2024,6,"regular","2024-10-05T16:00:00Z","Pittsburgh","Home",24,34
+2024,7,"regular","2024-10-12T16:00:00Z","Georgia Tech","Home",34,41
+2024,9,"regular","2024-10-26T16:00:00Z","Virginia","Away",41,14
+2024,10,"regular","2024-11-02T19:30:00Z","Florida State","Away",35,11
+2024,12,"regular","2024-11-17T01:00:00Z","Wake Forest","Home",31,24
+2024,13,"regular","2024-11-23T17:00:00Z","Boston College","Away",21,41
+2024,14,"regular","2024-11-30T20:30:00Z","NC State","Home",30,35
+2024,1,"postseason","2024-12-28T16:00:00Z","UConn","Neutral",14,27
+2025,1,"regular","2025-09-02T00:00:00Z","TCU","Home",14,48
+2025,2,"regular","2025-09-06T23:00:00Z","Charlotte","Away",20,3
+2025,4,"regular","2025-09-20T19:30:00Z","UCF","Away",9,34
+2025,6,"regular","2025-10-04T16:00:00Z","Clemson","Home",10,38
+2025,8,"regular","2025-10-18T02:30:00Z","California","Away",18,21
+2025,9,"regular","2025-10-25T16:00:00Z","Virginia","Home",16,17
+2025,10,"regular","2025-10-31T23:30:00Z","Syracuse","Away",27,10
+2025,11,"regular","2025-11-08T21:30:00Z","Stanford","Home",20,15
+2025,12,"regular","2025-11-15T21:30:00Z","Wake Forest","Away",12,28
+2025,13,"regular","2025-11-22T20:30:00Z","Duke","Home",25,32
+2025,14,"regular","2025-11-30T00:30:00Z","NC State","Away",19,42
+2026,1,"regular","2026-08-29T16:00:00Z","TCU","Neutral",15,10
+2026,3,"regular","2026-09-19T16:00:00Z","Clemson","Away",20,28

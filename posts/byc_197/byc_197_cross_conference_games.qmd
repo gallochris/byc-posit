@@ -1,0 +1,133 @@
+---
+title: "197: Cross-conference games by power league"
+date: "2026-09-20"
+categories:
+  - gtUtils
+  - gt_table
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT table: cross-conference results by power league
+
+```{r gt-cross-conf, warning=FALSE, message=FALSE}
+
+# Every ACC, Big Ten, Big 12, and SEC game against another power league,
+# broken out by conference: wins, losses, games still to play, and the teams
+# with no such game scheduled at all.
+#
+# Notre Dame is independent but plays a P4-caliber schedule, so its games
+# count toward the P4 opponent's own column -- one-sided, since Notre Dame
+# has no conference row of its own. UConn, also independent, is not included.
+#
+# The CSV below is a snapshot taken from collegefootballdata.com on
+# September 20, 2026. Each cell already holds the rendered HTML (logos,
+# scores, the grey treatment on losers), so this post rebuilds the table
+# without hitting the API.
+
+conf_table <- readr::read_csv("cross_conf_league_2026.csv", show_col_types = FALSE)
+
+year <- 2026
+
+# ESPN's college football glyph, bookending the title block.
+espn_icon <- paste0(
+  "https://a.espncdn.com/combiner/i?img=",
+  "/redesign/assets/img/icons/ESPN-icon-football-college.png"
+)
+
+header_html <- glue::glue(
+  "<div style='display: flex; justify-content: space-between; align-items: center;'>
+      <div>
+        <img src='{espn_icon}' style='height: 40px; width: auto; vertical-align: middle;'>
+      </div>
+      <div style='flex-grow:1; margin-left: 30px; margin-right: 30px'>
+        <span style='display: block; font-weight: bold; text-align: center; font-size: 24px;'>{year} Cross-Conference Games <br>by <em>Power</em> League</span>
+        <span style='font-size: 12px; font-weight: normal; display: block; text-align: center;'>Every ACC, Big Ten, Big 12, and SEC game against another power league (<b>plus Notre Dame</b>), broken out by conference. <br>Idle teams have no non-conference regular-season game scheduled against another P4 team or Notre Dame.</span>
+      </div>
+      <div>
+        <img src='{espn_icon}' style='height: 40px; width: auto; vertical-align: middle;'>
+      </div>
+    </div>
+  <br>"
+)
+
+conf_gt <- conf_table |>
+  gt::gt() |>
+  gtUtils::gt_theme_savant() |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::sub_missing(missing_text = "") |>
+  gt::cols_align(align = "center", columns = gt::everything()) |>
+  gt::cols_width(
+    conf_label ~ gt::px(110),
+    win ~ gt::px(180),
+    loss ~ gt::px(180),
+    remaining ~ gt::px(180),
+    idle ~ gt::px(150)
+  ) |>
+  gt::cols_label(
+    conf_label = "Conference",
+    win = "Wins",
+    loss = "Losses",
+    remaining = "Remaining",
+    idle = "Idle Teams"
+  ) |>
+  gt::tab_header(title = gt::html(header_html)) |>
+  gtUtils::gt_border_grid(color = "black", weight = 1, include_labels = FALSE) |>
+  gt::tab_style(
+    style = list(gt::cell_borders(
+      sides = c("left", "right", "top", "bottom"), color = "black", weight = gt::px(2)
+    )),
+    locations = list(gt::cells_body(), gt::cells_column_labels())
+  ) |>
+  # One wash per column so the four categories read apart at a glance:
+  # green for wins, red for losses, yellow for unplayed, grey for idle.
+  gt::tab_style(
+    style = gt::cell_fill(color = "#F0FDF4"),
+    locations = gt::cells_body(columns = win)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_fill(color = "#FEF2F2"),
+    locations = gt::cells_body(columns = loss)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_fill(color = "#FFFBEA"),
+    locations = gt::cells_body(columns = remaining)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_fill(color = "#F3F4F6"),
+    locations = gt::cells_body(columns = idle)
+  ) |>
+  # Conferences have wildly different numbers of games, so cells are top-
+  # aligned and the rows stay ragged rather than centering short lists.
+  gt::tab_style(
+    style = gt::cell_text(v_align = "top"),
+    locations = gt::cells_body(columns = c(win, loss, remaining, idle))
+  ) |>
+  gt::tab_source_note(gt::html(
+    "
+      data via collegefootballdata.com | cfbtxt.com<br>
+      <hr>
+      <b>Remaining</b> games are listed under both conferences, so these repeat across rows.
+      <br><b>Idle Teams</b> have no regular-season game scheduled against another P4 team or Notre Dame.<br>
+      <b>Independents:</b> <b>Notre Dame is included</b> as a power-league opponent, so its games count toward the P4 team's own column. <b>UConn</b> is not included.<hr>
+      Table by Chris at Bless your Chart"
+  )) |>
+  gt::tab_options(
+    table.font.size = gt::px(14),
+    heading.align = "left",
+    column_labels.font.weight = "bold",
+    table.width = gt::px(810)
+  )
+
+gtUtils::gt_save_crop(
+  conf_gt,
+  file = "cross_conf_league_2026.png",
+  zoom = 2,
+  whitespace = 40
+)
+
+conf_gt
+```
