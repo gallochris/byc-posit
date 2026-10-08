@@ -1,0 +1,255 @@
+---
+title: "199: Two Carolinas"
+date: "2026-10-07"
+categories:
+  - gt
+  - gtUtils
+  - cfbplotR
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT table: Two Carolinas
+
+```{r two-carolinas-table, warning=FALSE, message=FALSE}
+
+# Every FBS vs. FBS game for North Carolina and South Carolina since the start
+# of 2025, side by side and newest first, grouped by season. Each game shows
+# the opponent's logo, the point differential with the score underneath (OT
+# marks overtime), and the opponent with the date. A team's three cells are
+# shaded light green for a win and light pink for a loss.
+#
+# Reads a local snapshot of collegefootballdata.com games through October 3,
+# 2026, so the post rebuilds without hitting the API.
+
+teams <- c(unc = "North Carolina", sc = "South Carolina")
+conference <- c("North Carolina" = "ACC", "South Carolina" = "SEC")
+win_fill <- "#c8e6c9"
+loss_fill <- "#ffd1dc"
+
+team_games <- readr::read_csv(
+  "two_carolinas_fbs_games_2025_2026.csv", show_col_types = FALSE
+) |>
+  dplyr::mutate(diff = pf - pa, win = diff > 0)
+
+signed <- function(x) {
+  dplyr::case_when(
+    x > 0 ~ paste0("+", x),
+    x < 0 ~ paste0("−", abs(x)),
+    .default = "0"
+  )
+}
+record <- function(d) sprintf("%d-%d", sum(d$win), sum(!d$win))
+
+team_logo_url <- function(team) {
+  cfbplotR::logo_ref$logo[
+    match(cfbplotR::clean_school_names(team), cfbplotR::logo_ref$school)
+  ]
+}
+logo_img <- function(team, px) {
+  sprintf(
+    "<img src='%s' style='height:%dpx;vertical-align:middle;'>",
+    team_logo_url(team), px
+  )
+}
+
+# One row per (season, k-th most recent game), both teams side by side. UNC
+# played one fewer 2026 game, so its last 2026 cell is blank.
+game_cells <- team_games |>
+  dplyr::arrange(dplyr::desc(game_date)) |>
+  dplyr::mutate(
+    k = dplyr::row_number(),
+    ot = dplyr::case_when(
+      !overtime ~ "",
+      total_ots > 1 ~ paste0(" (", total_ots, "OT)"),
+      .default = " (OT)"
+    ),
+    venue = dplyr::if_else(home | neutral_site, "vs", "at"),
+    logo = logo_img(opponent, 30),
+    # Differential on top, the score (and any OT) underneath it.
+    diff_txt = paste0(
+      "<div style='font-size:18px;font-weight:bold;line-height:1.1;'>", signed(diff), "</div>",
+      "<div style='font-size:11px;font-weight:normal;color:#555;'>",
+      dplyr::if_else(win, "W ", "L "), pf, "-", pa, ot, "</div>"
+    ),
+    result = paste0(
+      venue, " ", opponent,
+      dplyr::if_else(neutral_site, " (N)", ""),
+      "<br><span style='color:#777;font-size:11px;'>",
+      format(game_date, "%m/%d/%Y"),
+      dplyr::if_else(conference_game, paste0(" · ", conference[team]), ""),
+      "</span>"
+    ),
+    .by = c(team, season)
+  ) |>
+  dplyr::mutate(side = names(teams)[match(team, teams)]) |>
+  dplyr::select(season, k, side, logo, diff_txt, result, win)
+
+rows <- game_cells |>
+  tidyr::pivot_wider(
+    names_from = side,
+    values_from = c(logo, diff_txt, result, win),
+    names_glue = "{side}_{.value}"
+  ) |>
+  dplyr::arrange(dplyr::desc(season), k) |>
+  dplyr::mutate(season = as.character(season)) |>
+  dplyr::mutate(dplyr::across(
+    dplyr::matches("_(logo|diff_txt|result)$"), \(x) dplyr::coalesce(x, "")
+  ))
+
+# Under each team's logo:
+#   4-11 overall (1-10 SEC)
+#   -3 point differential (-103 in SEC play)
+#   3-6 at home | 0-5 away | 1-0 neutral
+site_record <- function(g, where) {
+  site <- dplyr::case_when(g$neutral_site ~ "neutral", g$home ~ "home", .default = "away")
+  record(g[site == where, ])
+}
+
+summary_html <- function(tm) {
+  g <- dplyr::filter(team_games, team == tm)
+  conf <- dplyr::filter(g, conference_game)
+  cf <- conference[[tm]]
+  paste0(
+    "<div style='font-size:22px;font-weight:bold;margin-bottom:6px;'>",
+    logo_img(tm, 40), " ", tm, "</div>",
+    "<div style='font-weight:normal;font-size:14px;line-height:1.6;text-align:center;'>",
+    "<b>", record(g), "</b> overall (", record(conf), " ", cf, ")<br>",
+    "<b>", signed(sum(g$diff)), "</b> point differential (",
+    signed(sum(conf$diff)), " in ", cf, " play)<br>",
+    site_record(g, "home"), " at home | ", site_record(g, "away"), " away | ",
+    site_record(g, "neutral"), " neutral",
+    "</div>"
+  )
+}
+
+through <- max(team_games$game_date)
+through_label <- paste0(
+  format(through, "%B "), as.integer(format(through, "%d")), format(through, ", %Y")
+)
+
+football_icon <- paste0(
+  "<img src='https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/",
+  "ESPN-icon-football-college.png' style='height:40px;width:auto;vertical-align:middle;'>"
+)
+
+subtitle_sentence <- paste(
+  "Similar records, different math, and lofty expectations.",
+  "Every FBS vs. FBS game for North Carolina and South Carolina since the start of the 2025 season."
+)
+
+football_header <- glue::glue(
+  "<div style='display:flex;justify-content:space-between;align-items:center;'>
+     <div>{football_icon}</div>
+     <div style='flex-grow:1;margin-left:30px;margin-right:30px;'>
+       <span style='display:block;font-weight:bold;text-align:center;font-size:36px;'>Two Carolinas</span>
+       <span style='display:block;font-weight:normal;text-align:left;font-size:16px;margin-top:6px;'>{subtitle_sentence}</span>
+       <span style='display:block;font-weight:normal;text-align:left;font-size:12px;color:#666;margin-top:6px;'>
+         <span style='background:{win_fill};padding:0 4px;'>win</span> |
+         <span style='background:{loss_fill};padding:0 4px;'>loss</span> |
+         Games through {through_label}
+       </span>
+     </div>
+     <div>{football_icon}</div>
+   </div>"
+)
+
+carolinas_gt <- rows |>
+  gt::gt(groupname_col = "season", id = "two_carolinas") |>
+  gtUtils::gt_theme_savant() |>
+  gt::cols_hide(c(k, unc_win, sc_win)) |>
+  gt::fmt_markdown(
+    columns = c(unc_logo, unc_diff_txt, unc_result, sc_logo, sc_diff_txt, sc_result)
+  ) |>
+  gt::cols_label(
+    unc_logo = "", unc_diff_txt = "+/−", unc_result = "Opponent",
+    sc_logo = "", sc_diff_txt = "+/−", sc_result = "Opponent"
+  ) |>
+  gt::tab_spanner(
+    label = gt::html(summary_html(teams[["unc"]])),
+    columns = c(unc_logo, unc_diff_txt, unc_result), id = "unc"
+  ) |>
+  gt::tab_spanner(
+    label = gt::html(summary_html(teams[["sc"]])),
+    columns = c(sc_logo, sc_diff_txt, sc_result), id = "sc"
+  ) |>
+  gt::cols_align(align = "center", columns = c(unc_logo, unc_diff_txt, sc_logo, sc_diff_txt)) |>
+  gt::cols_align(align = "left", columns = c(unc_result, sc_result)) |>
+  # Opponent width is set so the subtitle's last sentence fits on one line.
+  gt::cols_width(
+    c(unc_logo, sc_logo) ~ gt::px(50),
+    c(unc_diff_txt, sc_diff_txt) ~ gt::px(70),
+    c(unc_result, sc_result) ~ gt::px(212)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold", size = gt::px(18)),
+    locations = gt::cells_body(columns = c(unc_diff_txt, sc_diff_txt))
+  ) |>
+  gt::tab_style(
+    style = gt::cell_borders(sides = "left", color = "#444", weight = gt::px(3)),
+    locations = list(
+      gt::cells_body(columns = sc_logo),
+      gt::cells_column_labels(columns = sc_logo)
+    )
+  ) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_text(weight = "bold", size = gt::px(14), color = "#2b2b2b"),
+      gt::cell_fill(color = "#f2f2f2")
+    ),
+    locations = gt::cells_row_groups()
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(v_align = "top", color = "#2b2b2b"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_header(title = gt::html(football_header)) |>
+  gt::tab_source_note(gt::html(paste0(
+    "<hr style='border:none;border-top:1px solid #ccc;margin:4px 0 8px;'>",
+    "data via collegefootballdata.com, FBS vs. FBS games only<br>",
+    "Table by Chris at Bless your Chart"
+  ))) |>
+  # The savant theme underlines spanners, and gt::cell_text() can't remove
+  # that, so clear it with CSS.
+  gt::opt_css(css = "
+    #two_carolinas .gt_column_spanner,
+    #two_carolinas .gt_column_spanner * {
+      text-decoration: none !important;
+      font-family: 'Roboto Condensed', sans-serif !important;
+    }
+    #two_carolinas .gt_column_spanner { border-bottom: none !important; }
+  ") |>
+  gt::tab_options(
+    heading.align = "left",
+    table.font.size = gt::px(14),
+    source_notes.font.size = gt::px(11),
+    data_row.padding = gt::px(4)
+  )
+
+# Shade each team's three cells by result.
+for (side in names(teams)) {
+  cols <- paste0(side, c("_logo", "_diff_txt", "_result"))
+  win_col <- rows[[paste0(side, "_win")]]
+  carolinas_gt <- carolinas_gt |>
+    gt::tab_style(
+      style = gt::cell_fill(color = win_fill),
+      locations = gt::cells_body(columns = dplyr::all_of(cols), rows = which(win_col %in% TRUE))
+    ) |>
+    gt::tab_style(
+      style = gt::cell_fill(color = loss_fill),
+      locations = gt::cells_body(columns = dplyr::all_of(cols), rows = which(win_col %in% FALSE))
+    )
+}
+
+gtUtils::gt_save_crop(
+  carolinas_gt,
+  file = "two_carolinas.png",
+  whitespace = 40,
+  bg = "white"
+)
+
+carolinas_gt
+```

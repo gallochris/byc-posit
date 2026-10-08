@@ -13,13 +13,6 @@ format:
 editor: visual
 ---
 
-Three charts on the same spine: how many points it takes to win an FBS game,
-what one real week of that looked like, and one team that hasn't been able to
-get there.
-
-All three read from local snapshots of collegefootballdata.com taken on
-September 28, 2026, so the post rebuilds without hitting the API.
-
 ```{r setup, warning=FALSE, message=FALSE}
 
 # One family across every chart here. Installed at ~/Library/Fonts; swap to
