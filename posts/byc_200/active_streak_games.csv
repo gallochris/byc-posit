@@ -1,0 +1,38 @@
+team,win,game_no,season,game_date,site,opponent,opp_class,fcs,pf,pa
+Indiana,TRUE,1,2025,2025-08-30,vs,Old Dominion,fbs,FALSE,27,14
+Indiana,TRUE,2,2025,2025-09-06,vs,Kennesaw State,fbs,FALSE,56,9
+Indiana,TRUE,3,2025,2025-09-12,vs,Indiana State,fcs,TRUE,73,0
+Indiana,TRUE,4,2025,2025-09-20,vs,Illinois,fbs,FALSE,63,10
+Indiana,TRUE,5,2025,2025-09-27,@,Iowa,fbs,FALSE,20,15
+Indiana,TRUE,6,2025,2025-10-11,@,Oregon,fbs,FALSE,30,20
+Indiana,TRUE,7,2025,2025-10-18,vs,Michigan State,fbs,FALSE,38,13
+Indiana,TRUE,8,2025,2025-10-25,vs,UCLA,fbs,FALSE,56,6
+Indiana,TRUE,9,2025,2025-11-01,@,Maryland,fbs,FALSE,55,10
+Indiana,TRUE,10,2025,2025-11-08,@,Penn State,fbs,FALSE,27,24
+Indiana,TRUE,11,2025,2025-11-15,vs,Wisconsin,fbs,FALSE,31,7
+Indiana,TRUE,12,2025,2025-11-28,@,Purdue,fbs,FALSE,56,3
+Indiana,TRUE,13,2025,2025-12-06,N,Ohio State,fbs,FALSE,13,10
+Indiana,TRUE,14,2025,2026-01-01,N,Alabama,fbs,FALSE,38,3
+Indiana,TRUE,15,2025,2026-01-09,N,Oregon,fbs,FALSE,56,22
+Indiana,TRUE,16,2025,2026-01-19,N,Miami,fbs,FALSE,27,21
+Indiana,TRUE,17,2026,2026-09-05,vs,North Texas,fbs,FALSE,52,16
+Indiana,TRUE,18,2026,2026-09-12,vs,Howard,fcs,TRUE,55,0
+Indiana,TRUE,19,2026,2026-09-19,vs,Western Kentucky,fbs,FALSE,38,0
+Indiana,TRUE,20,2026,2026-09-25,vs,Northwestern,fbs,FALSE,29,23
+Indiana,TRUE,21,2026,2026-10-03,@,Rutgers,fbs,FALSE,47,15
+Indiana,TRUE,22,2026,2026-10-10,@,Nebraska,fbs,FALSE,20,17
+Charlotte,FALSE,1,2025,2025-09-18,vs,Rice,fbs,FALSE,17,28
+Charlotte,FALSE,2,2025,2025-10-03,@,South Florida,fbs,FALSE,26,54
+Charlotte,FALSE,3,2025,2025-10-11,@,Army,fbs,FALSE,7,24
+Charlotte,FALSE,4,2025,2025-10-18,vs,Temple,fbs,FALSE,14,49
+Charlotte,FALSE,5,2025,2025-10-24,vs,North Texas,fbs,FALSE,20,54
+Charlotte,FALSE,6,2025,2025-11-08,@,East Carolina,fbs,FALSE,22,48
+Charlotte,FALSE,7,2025,2025-11-15,vs,UTSA,fbs,FALSE,7,28
+Charlotte,FALSE,8,2025,2025-11-22,@,Georgia,fbs,FALSE,3,35
+Charlotte,FALSE,9,2025,2025-11-29,@,Tulane,fbs,FALSE,0,27
+Charlotte,FALSE,10,2026,2026-09-05,vs,The Citadel,fcs,TRUE,41,43
+Charlotte,FALSE,11,2026,2026-09-12,@,Ole Miss,fbs,FALSE,9,41
+Charlotte,FALSE,12,2026,2026-09-19,@,App State,fbs,FALSE,21,26
+Charlotte,FALSE,13,2026,2026-09-26,vs,Louisiana,fbs,FALSE,7,34
+Charlotte,FALSE,14,2026,2026-10-03,vs,Memphis,fbs,FALSE,8,59
+Charlotte,FALSE,15,2026,2026-10-10,@,North Texas,fbs,FALSE,10,50

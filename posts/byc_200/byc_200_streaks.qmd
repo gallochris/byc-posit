@@ -1,0 +1,443 @@
+---
+title: "200: The Streak Report"
+date: "2026-10-12"
+categories:
+  - gt
+  - gtUtils
+  - cfbplotR
+  - ggplot2
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### GT table: Longest active FBS streaks
+
+```{r active-streaks-table, warning=FALSE, message=FALSE}
+
+# The longest active win and losing streaks in FBS, drawn as Scrabble racks:
+# Indiana's wins on top, Charlotte's losses below. One tile per game, in order,
+# with each team's next opponent as a dashed tile. Every game counts, FCS
+# opponents included, and those tiles get their own muted colors.
+#
+# Reads local snapshots of collegefootballdata.com games through October 11,
+# 2026, so the post rebuilds without hitting the API:
+#   active_streak_games.csv       every game in both streaks
+#   active_streak_next_games.csv  each team's next game
+#   fbs_streaks_since_2014.csv    every FBS win or losing streak of 10+ games
+#                                 since 2014, for the rankings and leaderboards
+
+team_colors <- c(Indiana = "#990000", Charlotte = "#005035")
+
+# Tile fill and border by result, with muted versions for FCS opponents.
+win_fill <- "#D4EDD0"
+win_edge <- "#8CBF84"
+loss_fill <- "#F8D7DD"
+loss_edge <- "#D99AA6"
+fcs_win_fill <- "#E3E8DC"
+fcs_win_edge <- "#A9B5A0"
+fcs_loss_fill <- "#EBAFBB"
+fcs_loss_edge <- "#C77789"
+blank_edge <- "#C9A465"
+
+# Neutral charcoal for the table frame and the racks under each row of tiles.
+frame_color <- "#4A4A4A"
+
+streak_games <- readr::read_csv("active_streak_games.csv", show_col_types = FALSE)
+next_games <- readr::read_csv("active_streak_next_games.csv", show_col_types = FALSE)
+streaks <- readr::read_csv("fbs_streaks_since_2014.csv", show_col_types = FALSE) |>
+  dplyr::mutate(rank = dplyr::min_rank(dplyr::desc(games)), .by = result) |>
+  dplyr::arrange(result, rank, dplyr::desc(active), first_season)
+
+# cfbplotR's gt logo helper is broken against the installed gt, so use its
+# logo lookup directly.
+team_logo_url <- function(team) {
+  lookup_name <- dplyr::recode(
+    team,
+    "App State" = "Appalachian State",
+    "Massachusetts" = "UMass",
+    .default = team
+  )
+  unname(cfbplotR:::logo_list[cfbplotR::clean_school_names(lookup_name, keep_non_matches = TRUE)])
+}
+
+ordinal <- function(x) {
+  suffix <- if (x %% 100 %in% 11:13) "th" else c("th", "st", "nd", "rd", rep("th", 6))[x %% 10 + 1]
+  paste0(x, suffix)
+}
+
+season_span <- function(first, last) {
+  paste0(first, dplyr::if_else(first == last, "", paste0("–", last %% 100)))
+}
+
+tile_html <- function(logo, score, corner, site, opponent, fill, edge) {
+  paste0(
+    "<div title='", opponent, "' style='position:relative;width:92px;height:96px;margin:0 auto;",
+    "background:", fill, ";border:1px solid ", edge, ";border-radius:7px;",
+    "box-shadow:inset 0 -4px 0 rgba(0,0,0,0.12),0 2px 3px rgba(0,0,0,0.25);'>",
+    "<span style='position:absolute;top:4px;left:7px;font-size:10px;color:#7a6440;font-weight:600;'>",
+    site, "</span>",
+    "<img src='", logo, "' style='height:46px;width:46px;object-fit:contain;margin-top:13px;'>",
+    "<div style='font-size:13px;font-weight:700;color:#2b2112;margin-top:3px;",
+    "font-variant-numeric:tabular-nums;'>", score, "</div>",
+    "<span style='position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:9.5px;",
+    "font-weight:700;color:#7a6440;font-variant-numeric:tabular-nums;'>",
+    corner, "</span>",
+    "</div>"
+  )
+}
+
+blank_tile_html <- function(logo, label) {
+  paste0(
+    "<div style='position:relative;width:92px;height:96px;margin:0 auto;",
+    "background:transparent;border:2px dashed ", blank_edge, ";border-radius:7px;box-sizing:border-box;'>",
+    "<img src='", logo, "' style='height:46px;width:46px;object-fit:contain;margin-top:13px;",
+    "opacity:0.35;filter:grayscale(100%);'>",
+    "<div style='font-size:11px;font-weight:700;color:#7a6440;margin-top:3px;'>", label, "</div>",
+    "</div>"
+  )
+}
+
+# One rack section per team: five tiles to a row, one row group per season.
+build_team_rack <- function(streak, upcoming) {
+  singular <- if (streak$win[1]) "win" else "loss"
+  plural <- if (streak$win[1]) "wins" else "losses"
+  per_season <- dplyr::count(streak, season)
+  label_for <- \(team, season) {
+    n <- per_season$n[match(season, per_season$season)]
+    paste0(team, " · ", season, " · ", n, " ", dplyr::if_else(n == 1, singular, plural))
+  }
+
+  if (streak$win[1]) {
+    fill <- dplyr::if_else(streak$fcs, fcs_win_fill, win_fill)
+    edge <- dplyr::if_else(streak$fcs, fcs_win_edge, win_edge)
+  } else {
+    fill <- dplyr::if_else(streak$fcs, fcs_loss_fill, loss_fill)
+    edge <- dplyr::if_else(streak$fcs, fcs_loss_edge, loss_edge)
+  }
+
+  tiles <- streak |>
+    dplyr::mutate(
+      season = label_for(team, season),
+      site = dplyr::if_else(site == "@", "at", site),
+      site = dplyr::if_else(fcs, paste0(site, " · FCS"), site),
+      # Winner's points first either way, the way a score is usually quoted.
+      score = paste0(dplyr::if_else(win, "W ", "L "), pmax(pf, pa), "–", pmin(pf, pa)),
+      # Bottom edge of the tile: date played, then place in the streak.
+      corner = paste0(
+        as.integer(format(game_date, "%m")), "/", as.integer(format(game_date, "%d")),
+        "/", format(game_date, "%Y"), " | ", game_no
+      ),
+      html = tile_html(team_logo_url(opponent), score, corner, site, opponent, fill, edge)
+    ) |>
+    dplyr::select(season, html)
+
+  if (nrow(upcoming) == 1) {
+    label <- paste0(
+      if (upcoming$site == "@") "at " else "vs ",
+      format(upcoming$game_date, "%b "), as.integer(format(upcoming$game_date, "%d"))
+    )
+    # A next game in a season the streak hasn't reached yet gets its own group.
+    group <- if (upcoming$season %in% per_season$season) {
+      label_for(streak$team[1], upcoming$season)
+    } else {
+      paste0(streak$team[1], " · ", upcoming$season)
+    }
+    tiles <- dplyr::bind_rows(
+      tiles,
+      tibble::tibble(season = group, html = blank_tile_html(team_logo_url(upcoming$opponent), label))
+    )
+  }
+
+  tiles |>
+    dplyr::mutate(
+      slot = (dplyr::row_number() - 1) %% 5 + 1,
+      rack = (dplyr::row_number() - 1) %/% 5 + 1,
+      .by = season
+    ) |>
+    tidyr::pivot_wider(names_from = slot, values_from = html, names_prefix = "t") |>
+    dplyr::select(-rack)
+}
+
+# Header block for one team: logo, the streak, and how it ranks since 2014.
+streak_card_html <- function(streak) {
+  team <- streak$team[1]
+  result <- if (streak$win[1]) "win" else "loss"
+  ranked <- dplyr::filter(streaks, .data$result == .env$result)
+
+  this_rank <- ranked |>
+    dplyr::filter(.data$team == .env$team, active) |>
+    dplyr::pull(rank)
+  record <- dplyr::filter(ranked, rank == 1)
+  record_text <- paste0(
+    record$team, " (", season_span(record$first_season, record$last_season), ")",
+    collapse = "<br>"
+  )
+  tied <- sum(ranked$rank == this_rank) > 1
+  rank_text <- if (this_rank == 1) {
+    "Longest since 2014"
+  } else {
+    paste0(
+      if (tied) "Tied for " else "", ordinal(this_rank), "-longest since 2014",
+      "<br>Record: ", record$games[1], "<br>", record_text
+    )
+  }
+
+  paste0(
+    "<div style='display:flex;align-items:center;gap:12px;flex:1;'>",
+    "<img src='", team_logo_url(team), "' style='height:64px;width:64px;object-fit:contain;'>",
+    "<div style='line-height:1.15;'>",
+    "<div style='font-size:34px;font-weight:800;color:", team_colors[[team]], ";'>", nrow(streak), "</div>",
+    "<div style='font-size:13px;font-weight:700;color:#1a1a1a;'>straight ",
+    if (streak$win[1]) "wins" else "losses", "</div>",
+    "<div style='font-size:11px;color:#6a6a6a;margin-top:2px;'>", rank_text, "</div>",
+    "</div></div>"
+  )
+}
+
+leaders_text <- function(result, top = 5) {
+  streaks |>
+    dplyr::filter(.data$result == .env$result, rank <= top) |>
+    dplyr::mutate(
+      line = paste0(
+        team, " ", games, " (", season_span(first_season, last_season),
+        dplyr::if_else(active, ", active", ""), ")"
+      )
+    ) |>
+    dplyr::pull(line) |>
+    paste(collapse = " · ")
+}
+
+win_streak <- dplyr::filter(streak_games, team == "Indiana")
+loss_streak <- dplyr::filter(streak_games, team == "Charlotte")
+
+rack <- dplyr::bind_rows(
+  build_team_rack(win_streak, dplyr::filter(next_games, team == "Indiana")),
+  build_team_rack(loss_streak, dplyr::filter(next_games, team == "Charlotte"))
+)
+tile_cols <- grep("^t[0-9]+$", names(rack), value = TRUE)
+
+group_labels <- unique(rack$season)
+team_of_group <- stringr::str_trim(stringr::str_extract(group_labels, "^[^·]+"))
+first_loss_group <- group_labels[team_of_group == "Charlotte"][1]
+
+streaks_gt <- rack |>
+  dplyr::mutate(dplyr::across(dplyr::all_of(tile_cols), \(x) dplyr::coalesce(x, ""))) |>
+  gt::gt(groupname_col = "season") |>
+  gtUtils::gt_theme_broadsheet(accent = frame_color) |>
+  gt::fmt_passthrough(columns = dplyr::all_of(tile_cols), escape = FALSE) |>
+  gt::cols_align(align = "center", columns = dplyr::everything()) |>
+  gt::cols_width(dplyr::everything() ~ gt::px(108)) |>
+  gt::tab_options(column_labels.hidden = TRUE) |>
+  gt::tab_style(
+    style = list(
+      gt::cell_borders(sides = "bottom", color = frame_color, weight = gt::px(7)),
+      gt::cell_borders(sides = "top", color = "transparent", weight = gt::px(0))
+    ),
+    locations = gt::cells_body()
+  ) |>
+  # Extra air above Charlotte's racks so the two sections read apart.
+  gt::tab_style(
+    style = list(
+      gt::cell_borders(sides = "top", color = "#1a1a1a", weight = gt::px(2)),
+      "padding-top: 22px;"
+    ),
+    locations = gt::cells_row_groups(groups = first_loss_group)
+  )
+
+for (tm in names(team_colors)) {
+  streaks_gt <- streaks_gt |>
+    gt::tab_style(
+      style = gt::cell_text(weight = "bold", color = team_colors[[tm]], size = gt::px(13)),
+      locations = gt::cells_row_groups(groups = group_labels[team_of_group == tm])
+    )
+}
+
+streaks_gt <- streaks_gt |>
+  gt::tab_header(
+    title = gt::html("<div style='text-align:center;'><b>Longest Active FBS Streaks</b></div>"),
+    subtitle = gt::html(paste0(
+      "<div style='display:flex;gap:24px;margin-top:10px;font-style:normal;'>",
+      streak_card_html(win_streak),
+      streak_card_html(loss_streak),
+      "</div>"
+    ))
+  ) |>
+  gt::tab_source_note(gt::html(paste0(
+    "<hr>Each tile is one game, in order: green for a win and pink for a loss, ",
+    "with muted green for a win over an FCS team and dark pink for a loss to one. ",
+    "Scores list the winner first, and the bottom of each tile shows the date ",
+    "the game was played and its place in the streak. ",
+    "In the top corner, vs marks a home game, at an away game and N a neutral site.<hr>",
+    "<b>Longest win streaks since 2014:</b> ", leaders_text("win"), "<br><hr>",
+    "<b>Longest losing streaks since 2014:</b> ", leaders_text("loss"),
+    "<hr>Table by Chris at Bless your Chart | Data from collegefootballdata.com | cfbtxt.com"
+  ))) |>
+  gt::tab_options(
+    table.width = gt::px(600),
+    table.font.size = gt::px(13),
+    data_row.padding = gt::px(8),
+    heading.align = "left"
+  )
+
+# Pad the PNG in the theme's own background rather than white.
+streaks_options <- streaks_gt[["_options"]]
+gtUtils::gt_save_crop(
+  streaks_gt,
+  file = "active_streaks.png",
+  bg = streaks_options$value[[which(streaks_options$parameter == "table_background_color")]],
+  zoom = 2,
+  whitespace = 40
+)
+
+streaks_gt
+```
+
+### GT table: States with the most FBS teams
+
+```{r fbs-states-table, warning=FALSE, message=FALSE}
+
+# Which states have the most FBS teams? The top five, each row carrying an
+# outline of the state with a dot for every team's stadium, plus the logos.
+#
+# Reads local snapshots so the post rebuilds without hitting the API:
+#   fbs_schools_2026.csv     the 138 FBS teams in 2026, with each home
+#                            stadium's state and coordinates (collegefootballdata.com)
+#   us_state_outlines.csv    state outlines, one row per polygon vertex, from the
+#                            PublicaMundi US states GeoJSON
+
+accent_color <- "#1F5FA6"
+outline_fill <- "#F2F2F2"
+outline_color <- "#1a1a1a"
+top_n <- 5
+
+schools <- readr::read_csv("fbs_schools_2026.csv", show_col_types = FALSE)
+outlines <- readr::read_csv("us_state_outlines.csv", show_col_types = FALSE)
+
+counts <- schools |>
+  dplyr::summarise(n_schools = dplyr::n(), schools = list(sort(school)), .by = state) |>
+  dplyr::mutate(
+    state_name = state.name[match(state, state.abb)],
+    rank = dplyr::min_rank(dplyr::desc(n_schools))
+  ) |>
+  dplyr::arrange(rank, state_name)
+
+plot_state_outline <- function(state_abb) {
+  shape <- dplyr::filter(outlines, state_name == state.name[match(state_abb, state.abb)])
+  points <- dplyr::filter(schools, state == state_abb)
+
+  ggplot2::ggplot() +
+    ggplot2::geom_polygon(
+      data = shape,
+      ggplot2::aes(x = lon, y = lat, group = ring),
+      fill = outline_fill,
+      color = outline_color,
+      linewidth = 0.9
+    ) +
+    ggplot2::geom_point(
+      data = points,
+      ggplot2::aes(x = longitude, y = latitude),
+      color = "white",
+      fill = accent_color,
+      shape = 21,
+      size = 9,
+      stroke = 1.4
+    ) +
+    ggplot2::coord_quickmap() +
+    ggplot2::theme_void()
+}
+
+# Each team is a fixed-width tile, logo over name, so the grid lines up and
+# long names ("Florida International") wrap inside their own tile.
+logo_strip_html <- function(teams) {
+  tiles <- paste0(
+    '<div style="width:62px;display:flex;flex-direction:column;align-items:center;">',
+    '<img src="', sub("^http:", "https:", team_logo_url(teams)),
+    '" style="height:26px;width:26px;object-fit:contain;">',
+    '<span style="font-size:9px;line-height:1.15;text-align:center;color:#4a4a4a;margin-top:2px;">',
+    teams, "</span></div>",
+    collapse = ""
+  )
+  paste0('<div style="display:flex;flex-wrap:wrap;gap:8px 6px;">', tiles, "</div>")
+}
+
+top <- dplyr::filter(counts, rank <= top_n)
+rest <- dplyr::filter(counts, rank > top_n)
+rest_note <- paste0(rest$state_name, " (", rest$n_schools, ")", collapse = ", ")
+zero_note <- paste(sort(setdiff(state.name, counts$state_name)), collapse = ", ")
+top_share <- sum(top$n_schools) / nrow(schools)
+
+states_gt <- top |>
+  dplyr::mutate(outline = state, logos = purrr::map_chr(schools, logo_strip_html)) |>
+  dplyr::select(outline, state_name, n_schools, logos) |>
+  gt::gt() |>
+  gtUtils::gt_theme_broadsheet(accent = accent_color) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = outline),
+    fn = \(x) purrr::map_chr(x, \(state_abb) {
+      plot_state_outline(state_abb) |>
+        gt::ggplot_image(height = gt::px(90), aspect_ratio = 1)
+    })
+  ) |>
+  gt::fmt_markdown(columns = logos) |>
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold", size = gt::px(16)),
+    locations = gt::cells_body(columns = state_name)
+  ) |>
+  gt::cols_label(
+    outline = "",
+    state_name = "State",
+    n_schools = gt::html("FBS<br>teams"),
+    logos = "Teams"
+  ) |>
+  gt::cols_align(align = "center", columns = c(outline, n_schools)) |>
+  gt::cols_align(align = "left", columns = c(state_name, logos)) |>
+  gt::cols_width(
+    outline ~ gt::px(110),
+    state_name ~ gt::px(150),
+    n_schools ~ gt::px(80),
+    logos ~ gt::px(365)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(color = accent_color, weight = "bold", size = gt::px(22)),
+    locations = gt::cells_body(columns = n_schools)
+  ) |>
+  gt::tab_style(
+    style = gt::cell_text(v_align = "middle"),
+    locations = gt::cells_body()
+  ) |>
+  gt::tab_header(
+    title = gt::html("<b>States with the Most FBS Teams</b>"),
+    subtitle = paste0(
+      "These five states are home to ", sum(top$n_schools), " of the ",
+      nrow(schools), " FBS teams in 2026 (",
+      formatC(100 * top_share, format = "f", digits = 0), "%). ",
+      nrow(counts), " states have at least one."
+    )
+  ) |>
+  gt::tab_source_note(gt::html(paste0(
+    "<hr>Each dot is a team's home stadium.<br>",
+    "The rest: ", rest_note, ".<br>",
+    "<hr>No FBS team: ", zero_note, ".<br>",
+    "<hr>Table by Chris at Bless your Chart | Data from collegefootballdata.com | cfbtxt.com"
+  ))) |>
+  gt::tab_options(
+    table.font.size = gt::px(13),
+    data_row.padding = gt::px(6),
+    heading.align = "left",
+    table.width = gt::px(740)
+  )
+
+states_options <- states_gt[["_options"]]
+gtUtils::gt_save_crop(
+  states_gt,
+  file = "fbs_schools_by_state_2026.png",
+  bg = states_options$value[[which(states_options$parameter == "table_background_color")]],
+  zoom = 2,
+  whitespace = 40
+)
+
+states_gt
+```

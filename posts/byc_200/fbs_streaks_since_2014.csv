@@ -1,0 +1,145 @@
+result,team,games,first_season,last_season,active
+win,Clemson,29,2018,2019,FALSE
+win,Georgia,29,2021,2023,FALSE
+win,Alabama,26,2015,2016,FALSE
+win,UCF,25,2017,2018,FALSE
+win,Ohio State,23,2014,2015,FALSE
+win,Indiana,22,2025,2026,TRUE
+win,Washington,21,2022,2023,FALSE
+win,Ohio State,19,2018,2019,FALSE
+win,Alabama,19,2019,2021,FALSE
+win,Florida State,19,2022,2023,FALSE
+win,Clemson,17,2014,2015,FALSE
+win,Oklahoma,17,2020,2021,FALSE
+win,Notre Dame,16,2025,2026,TRUE
+win,TCU,16,2014,2015,FALSE
+win,Alabama,16,2017,2018,FALSE
+win,LSU,16,2018,2019,FALSE
+win,Notre Dame,16,2019,2020,FALSE
+win,Georgia,16,2020,2021,FALSE
+win,Michigan,16,2023,2024,FALSE
+win,Ohio State,16,2024,2025,FALSE
+win,Memphis,15,2014,2015,FALSE
+win,Western Michigan,15,2015,2016,FALSE
+win,Miami,15,2016,2017,FALSE
+win,Louisiana,15,2021,2022,FALSE
+win,Oklahoma,14,2016,2017,FALSE
+win,Clemson,14,2021,2022,FALSE
+win,Fresno State,14,2022,2023,FALSE
+win,Oregon,14,2023,2024,FALSE
+win,Florida State,13,2014,2014,FALSE
+win,San Diego State,13,2015,2016,FALSE
+win,USC,13,2016,2017,FALSE
+win,Wisconsin,13,2016,2017,FALSE
+win,Notre Dame,13,2017,2018,FALSE
+win,App State,13,2018,2019,FALSE
+win,Cincinnati,13,2021,2021,FALSE
+win,Air Force,13,2022,2023,FALSE
+win,James Madison,13,2022,2023,FALSE
+win,Michigan,13,2022,2022,FALSE
+win,Army,13,2023,2024,FALSE
+win,Liberty,13,2023,2023,FALSE
+win,Notre Dame,13,2024,2024,FALSE
+win,Michigan State,12,2014,2015,FALSE
+win,Oklahoma State,12,2014,2015,FALSE
+win,Iowa,12,2015,2015,FALSE
+win,Washington,12,2015,2016,FALSE
+win,South Florida,12,2016,2017,FALSE
+win,Ohio State,12,2017,2018,FALSE
+win,Coastal Carolina,12,2019,2020,FALSE
+win,Iowa,12,2020,2021,FALSE
+win,Ohio State,12,2021,2022,FALSE
+win,TCU,12,2022,2022,FALSE
+win,Troy,12,2022,2023,FALSE
+win,Utah,11,2025,2026,TRUE
+win,Houston,11,2014,2015,FALSE
+win,Marshall,11,2014,2014,FALSE
+win,North Carolina,11,2015,2015,FALSE
+win,Tennessee,11,2015,2016,FALSE
+win,Clemson,11,2016,2017,FALSE
+win,Alabama,11,2017,2017,FALSE
+win,Baylor,11,2018,2019,FALSE
+win,Minnesota,11,2018,2019,FALSE
+win,Texas A&M,11,2020,2021,FALSE
+win,Houston,11,2021,2021,FALSE
+win,UTSA,11,2021,2021,FALSE
+win,Penn State,11,2022,2023,FALSE
+win,Alabama,11,2023,2023,FALSE
+win,Ohio State,11,2023,2023,FALSE
+win,Toledo,11,2023,2023,FALSE
+win,Boise State,11,2024,2024,FALSE
+win,James Madison,11,2025,2025,FALSE
+win,Texas A&M,11,2025,2025,FALSE
+win,Boise State,10,2014,2015,FALSE
+win,Toledo,10,2014,2015,FALSE
+win,Michigan,10,2015,2016,FALSE
+win,Georgia,10,2016,2017,FALSE
+win,Florida Atlantic,10,2017,2017,FALSE
+win,Army,10,2018,2019,FALSE
+win,Florida,10,2018,2019,FALSE
+win,Michigan,10,2018,2018,FALSE
+win,Utah State,10,2018,2018,FALSE
+win,Cincinnati,10,2019,2020,FALSE
+win,Liberty,10,2019,2020,FALSE
+win,UTSA,10,2022,2022,FALSE
+win,Troy,10,2023,2023,FALSE
+win,Tulane,10,2023,2023,FALSE
+win,BYU,10,2024,2025,FALSE
+win,Indiana,10,2024,2024,FALSE
+win,Memphis,10,2024,2025,FALSE
+win,Navy,10,2024,2025,FALSE
+loss,Akron,21,2018,2020,FALSE
+loss,Kent State,21,2023,2024,FALSE
+loss,UTEP,20,2017,2018,FALSE
+loss,Arizona,20,2019,2021,FALSE
+loss,New Mexico State,17,2014,2015,FALSE
+loss,Massachusetts,16,2019,2021,FALSE
+loss,Nevada,16,2022,2023,FALSE
+loss,Massachusetts,16,2024,2025,FALSE
+loss,Charlotte,15,2025,2026,TRUE
+loss,Kansas,15,2014,2015,FALSE
+loss,New Mexico,14,2019,2020,FALSE
+loss,UNLV,14,2020,2021,FALSE
+loss,UL Monroe,13,2025,2026,TRUE
+loss,UCF,13,2014,2015,FALSE
+loss,Kansas,13,2019,2020,FALSE
+loss,Georgia State,12,2014,2015,FALSE
+loss,Kansas,12,2017,2018,FALSE
+loss,Old Dominion,12,2019,2021,FALSE
+loss,UL Monroe,12,2019,2021,FALSE
+loss,Northwestern,12,2022,2023,FALSE
+loss,Oklahoma State,12,2025,2026,FALSE
+loss,SMU,11,2014,2014,FALSE
+loss,Charlotte,11,2015,2016,FALSE
+loss,Rutgers,11,2016,2017,FALSE
+loss,Oregon State,11,2017,2018,FALSE
+loss,New Mexico State,11,2018,2019,FALSE
+loss,Rice,11,2018,2018,FALSE
+loss,Rutgers,11,2018,2018,FALSE
+loss,UConn,11,2019,2021,FALSE
+loss,UTEP,11,2019,2019,FALSE
+loss,Vanderbilt,11,2019,2021,FALSE
+loss,Florida International,11,2021,2021,FALSE
+loss,South Florida,11,2022,2023,FALSE
+loss,Purdue,11,2024,2024,FALSE
+loss,Southern Miss,11,2024,2025,FALSE
+loss,Eastern Michigan,10,2015,2015,FALSE
+loss,Oregon State,10,2015,2016,FALSE
+loss,UL Monroe,10,2015,2015,FALSE
+loss,Charlotte,10,2016,2017,FALSE
+loss,Fresno State,10,2016,2016,FALSE
+loss,Illinois,10,2017,2017,FALSE
+loss,Nebraska,10,2017,2018,FALSE
+loss,Rice,10,2017,2017,FALSE
+loss,San José State,10,2017,2017,FALSE
+loss,Louisville,10,2018,2019,FALSE
+loss,Arkansas,10,2019,2020,FALSE
+loss,Bowling Green,10,2019,2021,FALSE
+loss,South Florida,10,2020,2021,FALSE
+loss,Colorado State,10,2021,2022,FALSE
+loss,New Mexico,10,2022,2023,FALSE
+loss,UL Monroe,10,2023,2023,FALSE
+loss,Vanderbilt,10,2023,2023,FALSE
+loss,Arkansas,10,2025,2025,FALSE
+loss,Boston College,10,2025,2025,FALSE
+loss,Purdue,10,2025,2025,FALSE
