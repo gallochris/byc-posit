@@ -1,0 +1,442 @@
+game,possession_no,team,component,yards,play_type
+unc_duke,1,North Carolina,gain,26,Pass Reception
+unc_duke,1,North Carolina,gain,14,Pass Reception
+unc_duke,1,North Carolina,gain,4,Rush
+unc_duke,1,North Carolina,gain,6,Rush
+unc_duke,1,North Carolina,gain,12,Rush
+unc_duke,1,North Carolina,gain,1,Rush
+unc_duke,1,North Carolina,gain,9,Pass Reception
+unc_duke,1,North Carolina,gain,2,Rush
+unc_duke,1,North Carolina,gain,0,Pass Incompletion
+unc_duke,1,North Carolina,gain,0,Pass Incompletion
+unc_duke,2,Duke,gain,2,Pass Reception
+unc_duke,2,Duke,gain,2,Rush
+unc_duke,2,Duke,gain,0,Pass Incompletion
+unc_duke,3,North Carolina,gain,5,Rush
+unc_duke,3,North Carolina,gain,1,Rush
+unc_duke,3,North Carolina,gain,5,Passing Touchdown
+unc_duke,4,Duke,gain,8,Rush
+unc_duke,4,Duke,gain,0,Pass Incompletion
+unc_duke,4,Duke,gain,0,Pass Incompletion
+unc_duke,5,North Carolina,gain,6,Rush
+unc_duke,5,North Carolina,gain,6,Rush
+unc_duke,5,North Carolina,gain,0,Pass Incompletion
+unc_duke,5,North Carolina,loss,-3,Rush
+unc_duke,5,North Carolina,gain,16,Pass Reception
+unc_duke,5,North Carolina,gain,3,Rush
+unc_duke,5,North Carolina,gain,5,Rush
+unc_duke,5,North Carolina,gain,6,Rush
+unc_duke,5,North Carolina,gain,1,Rush
+unc_duke,5,North Carolina,gain,11,Pass Reception
+unc_duke,5,North Carolina,gain,1,Rush
+unc_duke,5,North Carolina,loss,-10,Penalty
+unc_duke,5,North Carolina,gain,14,Pass Reception
+unc_duke,5,North Carolina,gain,3,Rush
+unc_duke,5,North Carolina,gain,4,Rushing Touchdown
+unc_duke,6,Duke,gain,3,Rush
+unc_duke,6,Duke,loss,-5,Penalty
+unc_duke,6,Duke,gain,5,Rush
+unc_duke,6,Duke,gain,28,Pass Reception
+unc_duke,6,Duke,gain,33,Rush
+unc_duke,6,Duke,loss,-1,Rush
+unc_duke,6,Duke,gain,0,Pass Incompletion
+unc_duke,6,Duke,gain,5,Penalty
+unc_duke,6,Duke,gain,5,Pass Reception
+unc_duke,6,Duke,gain,0,Rush
+unc_duke,7,North Carolina,gain,0,Pass Incompletion
+unc_duke,7,North Carolina,gain,3,Rush
+unc_duke,7,North Carolina,gain,0,Fumble Return Touchdown
+unc_duke,8,Duke,return,9,Fumble Return Touchdown
+unc_duke,9,North Carolina,gain,7,Pass Reception
+unc_duke,9,North Carolina,gain,5,Rush
+unc_duke,9,North Carolina,gain,0,Pass Incompletion
+unc_duke,9,North Carolina,gain,4,Rush
+unc_duke,9,North Carolina,loss,-6,Sack
+unc_duke,10,Duke,gain,23,Pass Reception
+unc_duke,10,Duke,gain,3,Pass Reception
+unc_duke,10,Duke,gain,2,Rush
+unc_duke,10,Duke,gain,0,Pass Incompletion
+unc_duke,11,North Carolina,gain,3,Rush
+unc_duke,11,North Carolina,gain,6,Rush
+unc_duke,11,North Carolina,gain,2,Rush
+unc_duke,11,North Carolina,loss,-10,Penalty
+unc_duke,11,North Carolina,loss,-2,Rush
+unc_duke,11,North Carolina,gain,7,Rush
+unc_duke,11,North Carolina,gain,6,Rush
+unc_duke,12,Duke,gain,6,Pass Reception
+unc_duke,12,Duke,gain,3,Pass Reception
+unc_duke,12,Duke,gain,6,Rush
+unc_duke,12,Duke,gain,0,Pass Incompletion
+unc_duke,12,Duke,gain,9,Pass Reception
+unc_duke,12,Duke,gain,0,Pass Incompletion
+unc_duke,12,Duke,gain,15,Pass Reception
+unc_duke,13,Duke,gain,0,Pass Incompletion
+unc_duke,13,Duke,gain,3,Rush
+unc_duke,13,Duke,gain,9,Pass Reception
+unc_duke,13,Duke,gain,3,Pass Reception
+unc_duke,13,Duke,gain,3,Rush
+unc_duke,13,Duke,gain,8,Pass Reception
+unc_duke,13,Duke,gain,0,Pass Incompletion
+unc_duke,13,Duke,gain,11,Pass Reception
+unc_duke,13,Duke,gain,9,Rush
+unc_duke,13,Duke,gain,2,Rush
+unc_duke,13,Duke,gain,0,Pass Incompletion
+unc_duke,13,Duke,loss,-10,Rush
+unc_duke,13,Duke,gain,6,Rush
+unc_duke,13,Duke,gain,13,Pass Reception
+unc_duke,13,Duke,gain,13,Rush
+unc_duke,13,Duke,gain,0,Rush
+unc_duke,13,Duke,gain,0,Pass Incompletion
+unc_duke,13,Duke,gain,0,Pass Incompletion
+unc_duke,14,North Carolina,gain,5,Rush
+unc_duke,14,North Carolina,gain,16,Pass Reception
+unc_duke,14,North Carolina,loss,-10,Penalty
+unc_duke,14,North Carolina,gain,14,Pass Reception
+unc_duke,14,North Carolina,gain,15,Pass Reception
+unc_duke,14,North Carolina,gain,24,Pass Reception
+unc_duke,14,North Carolina,gain,2,Fumble Recovery (Opponent)
+unc_duke,15,Duke,gain,0,Pass Incompletion
+unc_duke,15,Duke,gain,0,Pass Incompletion
+unc_duke,15,Duke,gain,24,Pass Reception
+unc_duke,15,Duke,gain,7,Rush
+unc_duke,15,Duke,loss,-10,Penalty
+unc_duke,15,Duke,gain,7,Pass Reception
+unc_duke,15,Duke,gain,4,Rush
+unc_duke,16,North Carolina,gain,0,Rush
+unc_duke,16,North Carolina,loss,-6,Sack
+unc_duke,16,North Carolina,gain,0,Pass Incompletion
+unc_duke,17,Duke,loss,-10,Penalty
+unc_duke,17,Duke,gain,1,Pass Reception
+unc_duke,17,Duke,gain,23,Pass Reception
+unc_duke,17,Duke,gain,5,Rush
+unc_duke,17,Duke,gain,4,Rush
+unc_duke,17,Duke,gain,5,Rush
+unc_duke,17,Duke,gain,2,Rush
+unc_duke,17,Duke,gain,0,Pass Incompletion
+unc_duke,17,Duke,gain,2,Rush
+unc_duke,18,North Carolina,gain,20,Rush
+unc_duke,18,North Carolina,gain,0,Pass Incompletion
+unc_duke,18,North Carolina,gain,0,Pass Incompletion
+unc_duke,18,North Carolina,gain,5,Rush
+unc_duke,18,North Carolina,loss,-16,Rush
+unc_duke,19,Duke,gain,13,Pass Reception
+unc_duke,19,Duke,gain,2,Rush
+unc_duke,19,Duke,gain,11,Pass Reception
+unc_duke,19,Duke,loss,-5,Penalty
+unc_duke,19,Duke,gain,6,Pass Reception
+unc_duke,19,Duke,gain,7,Passing Touchdown
+unc_duke,20,North Carolina,gain,6,Rush
+unc_duke,20,North Carolina,gain,0,Pass Incompletion
+unc_duke,20,North Carolina,gain,0,Pass Incompletion
+unc_duke,20,North Carolina,gain,12,Pass Reception
+unc_duke,20,North Carolina,gain,16,Rush
+unc_duke,20,North Carolina,gain,4,Rush
+unc_duke,20,North Carolina,gain,16,Pass Reception
+unc_duke,20,North Carolina,gain,24,Rushing Touchdown
+unc_duke,21,Duke,gain,8,Rush
+unc_duke,21,Duke,gain,1,Rush
+unc_duke,21,Duke,gain,4,Rush
+unc_duke,21,Duke,gain,15,Penalty
+unc_duke,21,Duke,gain,9,Pass Reception
+unc_duke,21,Duke,gain,0,Pass Incompletion
+unc_duke,21,Duke,gain,8,Rush
+unc_duke,21,Duke,loss,-14,Sack
+unc_duke,21,Duke,gain,10,Pass Reception
+unc_duke,21,Duke,gain,0,Interception
+unc_duke,22,North Carolina,loss,-1,Rush
+osu_indiana,1,Ohio State,gain,17,Pass Reception
+osu_indiana,1,Ohio State,gain,28,Pass Reception
+osu_indiana,1,Ohio State,gain,16,Pass Reception
+osu_indiana,1,Ohio State,gain,6,Pass Reception
+osu_indiana,1,Ohio State,gain,0,Rush
+osu_indiana,1,Ohio State,gain,0,Pass Incompletion
+osu_indiana,2,Indiana,gain,4,Rush
+osu_indiana,2,Indiana,gain,0,Pass Incompletion
+osu_indiana,2,Indiana,gain,0,Pass Incompletion
+osu_indiana,3,Ohio State,loss,-10,Penalty
+osu_indiana,3,Ohio State,gain,0,Pass Incompletion
+osu_indiana,3,Ohio State,gain,12,Rush
+osu_indiana,3,Ohio State,gain,0,Pass Incompletion
+osu_indiana,4,Indiana,gain,2,Rush
+osu_indiana,4,Indiana,gain,17,Pass Reception
+osu_indiana,4,Indiana,gain,1,Rush
+osu_indiana,4,Indiana,gain,5,Rush
+osu_indiana,4,Indiana,gain,8,Pass Reception
+osu_indiana,4,Indiana,gain,0,Pass Incompletion
+osu_indiana,4,Indiana,gain,0,Rush
+osu_indiana,4,Indiana,gain,0,Pass Incompletion
+osu_indiana,5,Ohio State,gain,6,Rush
+osu_indiana,5,Ohio State,gain,10,Rush
+osu_indiana,5,Ohio State,gain,0,Pass Incompletion
+osu_indiana,5,Ohio State,gain,0,Pass Incompletion
+osu_indiana,5,Ohio State,gain,0,Pass Incompletion
+osu_indiana,5,Ohio State,loss,-5,Penalty
+osu_indiana,6,Indiana,gain,5,Rush
+osu_indiana,6,Indiana,gain,1,Rush
+osu_indiana,6,Indiana,gain,6,Rush
+osu_indiana,6,Indiana,gain,7,Rush
+osu_indiana,6,Indiana,gain,0,Pass Incompletion
+osu_indiana,6,Indiana,gain,4,Pass Reception
+osu_indiana,6,Indiana,loss,-1,Rush
+osu_indiana,6,Indiana,gain,0,Rush
+osu_indiana,6,Indiana,gain,0,Pass Incompletion
+osu_indiana,7,Ohio State,loss,-6,Sack
+osu_indiana,7,Ohio State,gain,0,Pass Interception Return
+osu_indiana,8,Indiana,gain,0,Pass Incompletion
+osu_indiana,8,Indiana,gain,7,Rushing Touchdown
+osu_indiana,9,Ohio State,gain,3,Rush
+osu_indiana,9,Ohio State,loss,-3,Rush
+osu_indiana,9,Ohio State,gain,13,Pass Reception
+osu_indiana,9,Ohio State,gain,0,Pass Incompletion
+osu_indiana,9,Ohio State,gain,6,Rush
+osu_indiana,9,Ohio State,gain,0,Pass Incompletion
+osu_indiana,10,Indiana,gain,6,Rush
+osu_indiana,10,Indiana,gain,2,Rush
+osu_indiana,10,Indiana,gain,13,Pass Reception
+osu_indiana,10,Indiana,gain,0,Pass Incompletion
+osu_indiana,10,Indiana,gain,16,Pass Reception
+osu_indiana,10,Indiana,gain,6,Rush
+osu_indiana,10,Indiana,gain,0,Rush
+osu_indiana,10,Indiana,gain,19,Pass Reception
+osu_indiana,10,Indiana,gain,3,Rush
+osu_indiana,10,Indiana,gain,1,Rush
+osu_indiana,10,Indiana,gain,0,Pass Incompletion
+osu_indiana,11,Ohio State,gain,2,Rush
+osu_indiana,11,Ohio State,gain,2,Rush
+osu_indiana,11,Ohio State,gain,21,Pass Reception
+osu_indiana,11,Ohio State,gain,0,Pass Incompletion
+osu_indiana,11,Ohio State,gain,7,Pass Reception
+osu_indiana,11,Ohio State,gain,5,Rush
+osu_indiana,11,Ohio State,loss,-10,Sack
+osu_indiana,11,Ohio State,gain,42,Pass Reception
+osu_indiana,11,Ohio State,gain,7,Pass Reception
+osu_indiana,11,Ohio State,gain,2,Rush
+osu_indiana,11,Ohio State,gain,1,Rush
+osu_indiana,11,Ohio State,loss,-1,Rush
+osu_indiana,11,Ohio State,gain,0,Pass Incompletion
+osu_indiana,11,Ohio State,gain,0,Rush
+osu_indiana,11,Ohio State,gain,2,Passing Touchdown
+osu_indiana,12,Indiana,gain,6,Rush
+osu_indiana,13,Indiana,gain,1,Rush
+osu_indiana,13,Indiana,gain,19,Fumble Recovery (Opponent)
+osu_indiana,14,Ohio State,gain,18,Pass Reception
+osu_indiana,14,Ohio State,gain,10,Pass Reception
+osu_indiana,14,Ohio State,gain,5,Rush
+osu_indiana,14,Ohio State,gain,1,Rush
+osu_indiana,14,Ohio State,gain,0,Pass Incompletion
+osu_indiana,15,Indiana,gain,0,Pass Incompletion
+osu_indiana,15,Indiana,gain,6,Rush
+osu_indiana,15,Indiana,gain,36,Pass Reception
+osu_indiana,15,Indiana,gain,0,Pass Reception
+osu_indiana,15,Indiana,gain,0,Pass Incompletion
+osu_indiana,15,Indiana,gain,6,Pass Reception
+osu_indiana,15,Indiana,loss,-11,Fumble Recovery (Own)
+osu_indiana,16,Ohio State,gain,12,Rush
+osu_indiana,16,Ohio State,gain,3,Rush
+osu_indiana,16,Ohio State,gain,6,Rush
+osu_indiana,16,Ohio State,gain,3,Rush
+osu_indiana,16,Ohio State,gain,0,Pass Incompletion
+osu_indiana,16,Ohio State,loss,-5,Penalty
+osu_indiana,16,Ohio State,gain,0,Pass Interception Return
+osu_indiana,17,Indiana,gain,2,Rush
+osu_indiana,17,Indiana,gain,16,Pass Reception
+osu_indiana,17,Indiana,gain,8,Rush
+osu_indiana,17,Indiana,gain,0,Rush
+osu_indiana,17,Indiana,gain,16,Pass Reception
+osu_indiana,17,Indiana,gain,3,Rush
+osu_indiana,17,Indiana,gain,1,Rush
+osu_indiana,17,Indiana,gain,0,Pass Incompletion
+osu_indiana,18,Ohio State,gain,1,Rush
+osu_indiana,18,Ohio State,gain,2,Rush
+osu_indiana,18,Ohio State,gain,12,Pass Reception
+osu_indiana,18,Ohio State,gain,4,Rush
+osu_indiana,18,Ohio State,gain,2,Rush
+osu_indiana,18,Ohio State,gain,3,Rush
+osu_indiana,18,Ohio State,gain,38,Passing Touchdown
+osu_indiana,19,Indiana,gain,0,Pass Incompletion
+osu_indiana,19,Indiana,gain,19,Pass Reception
+osu_indiana,19,Indiana,gain,14,Pass Reception
+osu_indiana,19,Indiana,gain,21,Pass Reception
+osu_indiana,19,Indiana,gain,0,Pass Incompletion
+osu_indiana,19,Indiana,gain,2,Rush
+osu_indiana,19,Indiana,gain,19,Passing Touchdown
+osu_indiana,20,Ohio State,gain,10,Pass Reception
+osu_indiana,20,Ohio State,gain,5,Rush
+osu_indiana,20,Ohio State,gain,22,Rush
+osu_indiana,20,Ohio State,loss,-18,Fumble Recovery (Own)
+osu_indiana,20,Ohio State,gain,23,Rush
+osu_indiana,20,Ohio State,gain,2,Rush
+osu_indiana,20,Ohio State,gain,0,Rush
+osu_indiana,20,Ohio State,loss,-10,Penalty
+osu_indiana,20,Ohio State,gain,0,Pass Incompletion
+osu_indiana,21,Indiana,gain,10,Pass Reception
+osu_indiana,21,Indiana,gain,0,Pass Incompletion
+osu_indiana,21,Indiana,gain,0,Pass Incompletion
+osu_indiana,21,Indiana,gain,0,Pass Incompletion
+osu_indiana,22,Ohio State,gain,1,Rush
+osu_indiana,22,Ohio State,loss,-5,Penalty
+osu_indiana,22,Ohio State,loss,-10,Sack
+osu_indiana,22,Ohio State,gain,0,Pass Incompletion
+osu_indiana,23,Indiana,gain,2,Pass Reception
+osu_indiana,23,Indiana,gain,25,Pass Reception
+osu_indiana,23,Indiana,gain,0,Pass Incompletion
+osu_indiana,23,Indiana,loss,-5,Penalty
+osu_indiana,23,Indiana,gain,15,Penalty
+osu_indiana,23,Indiana,gain,0,Pass Incompletion
+osu_indiana,23,Indiana,loss,-10,Penalty
+osu_indiana,23,Indiana,gain,16,Pass Reception
+osu_indiana,23,Indiana,gain,0,Rush
+osu_indiana,23,Indiana,gain,0,Pass Incompletion
+nd_byu,1,BYU,gain,0,Rush
+nd_byu,1,BYU,gain,12,Pass Reception
+nd_byu,1,BYU,gain,11,Pass Reception
+nd_byu,1,BYU,gain,3,Rush
+nd_byu,1,BYU,gain,17,Pass Reception
+nd_byu,1,BYU,gain,18,Pass Reception
+nd_byu,1,BYU,gain,0,Pass Incompletion
+nd_byu,1,BYU,gain,5,Rush
+nd_byu,1,BYU,gain,6,Pass Reception
+nd_byu,1,BYU,loss,-2,Rush
+nd_byu,1,BYU,gain,5,Rushing Touchdown
+nd_byu,2,Notre Dame,gain,18,Pass Reception
+nd_byu,2,Notre Dame,gain,3,Rush
+nd_byu,2,Notre Dame,gain,7,Rush
+nd_byu,2,Notre Dame,gain,9,Pass Reception
+nd_byu,2,Notre Dame,gain,5,Rush
+nd_byu,2,Notre Dame,gain,4,Pass Reception
+nd_byu,2,Notre Dame,gain,0,Rush
+nd_byu,2,Notre Dame,gain,0,Pass Incompletion
+nd_byu,3,BYU,gain,5,Pass Reception
+nd_byu,3,BYU,gain,0,Rush
+nd_byu,3,BYU,gain,7,Pass Reception
+nd_byu,3,BYU,gain,4,Rush
+nd_byu,3,BYU,gain,10,Pass Reception
+nd_byu,3,BYU,gain,2,Rush
+nd_byu,3,BYU,gain,0,Pass Incompletion
+nd_byu,3,BYU,gain,0,Pass Incompletion
+nd_byu,4,Notre Dame,gain,7,Pass Reception
+nd_byu,4,Notre Dame,gain,0,Pass Incompletion
+nd_byu,4,Notre Dame,gain,26,Rush
+nd_byu,4,Notre Dame,gain,4,Rush
+nd_byu,4,Notre Dame,loss,-3,Rush
+nd_byu,4,Notre Dame,gain,13,Pass Reception
+nd_byu,4,Notre Dame,loss,-5,Penalty
+nd_byu,4,Notre Dame,gain,16,Rush
+nd_byu,4,Notre Dame,gain,2,Rush
+nd_byu,4,Notre Dame,gain,12,Pass Reception
+nd_byu,4,Notre Dame,gain,0,Pass Reception
+nd_byu,4,Notre Dame,gain,4,Rush
+nd_byu,4,Notre Dame,gain,8,Rushing Touchdown
+nd_byu,5,BYU,gain,0,Pass Incompletion
+nd_byu,5,BYU,gain,8,Rush
+nd_byu,5,BYU,gain,5,Rush
+nd_byu,5,BYU,gain,5,Rush
+nd_byu,5,BYU,gain,10,Pass Reception
+nd_byu,5,BYU,gain,19,Pass Reception
+nd_byu,5,BYU,gain,0,Pass Incompletion
+nd_byu,5,BYU,gain,4,Rush
+nd_byu,5,BYU,gain,9,Rush
+nd_byu,5,BYU,gain,15,Passing Touchdown
+nd_byu,6,Notre Dame,gain,3,Rush
+nd_byu,6,Notre Dame,loss,-6,Pass Reception
+nd_byu,6,Notre Dame,gain,1,Pass Incompletion
+nd_byu,7,BYU,gain,8,Pass Reception
+nd_byu,7,BYU,gain,23,Rush
+nd_byu,7,BYU,gain,1,Rush
+nd_byu,7,BYU,gain,8,Pass Reception
+nd_byu,7,BYU,gain,5,Penalty
+nd_byu,7,BYU,gain,12,Pass Reception
+nd_byu,7,BYU,gain,3,Rush
+nd_byu,7,BYU,gain,11,Rush
+nd_byu,7,BYU,gain,1,Rushing Touchdown
+nd_byu,8,Notre Dame,gain,24,Pass Reception
+nd_byu,8,Notre Dame,gain,0,Pass Incompletion
+nd_byu,8,Notre Dame,gain,7,Pass Reception
+nd_byu,8,Notre Dame,gain,7,Pass Reception
+nd_byu,8,Notre Dame,gain,0,Pass Incompletion
+nd_byu,8,Notre Dame,gain,5,Pass Reception
+nd_byu,8,Notre Dame,gain,15,Penalty
+nd_byu,8,Notre Dame,gain,0,Pass Incompletion
+nd_byu,8,Notre Dame,gain,0,Pass Incompletion
+nd_byu,8,Notre Dame,gain,12,Pass Reception
+nd_byu,8,Notre Dame,loss,-1,Fumble Recovery (Opponent)
+nd_byu,9,BYU,loss,-1,Rush
+nd_byu,10,Notre Dame,gain,10,Pass Reception
+nd_byu,10,Notre Dame,gain,1,Rush
+nd_byu,10,Notre Dame,gain,0,Pass Incompletion
+nd_byu,10,Notre Dame,gain,0,Pass Incompletion
+nd_byu,11,BYU,gain,3,Pass Reception
+nd_byu,11,BYU,gain,27,Rush
+nd_byu,11,BYU,gain,0,Pass Incompletion
+nd_byu,11,BYU,gain,7,Pass Reception
+nd_byu,11,BYU,gain,5,Pass Reception
+nd_byu,11,BYU,gain,0,Pass Incompletion
+nd_byu,11,BYU,gain,3,Rush
+nd_byu,11,BYU,loss,-10,Penalty
+nd_byu,11,BYU,gain,3,Rush
+nd_byu,12,Notre Dame,gain,2,Rush
+nd_byu,12,Notre Dame,gain,2,Rush
+nd_byu,12,Notre Dame,gain,5,Pass Reception
+nd_byu,13,BYU,return,1,Punt Return Fumble
+nd_byu,14,Notre Dame,gain,8,Pass Reception
+nd_byu,14,Notre Dame,gain,3,Rush
+nd_byu,14,Notre Dame,gain,0,Pass Incompletion
+nd_byu,14,Notre Dame,gain,6,Rush
+nd_byu,14,Notre Dame,gain,0,Pass Incompletion
+nd_byu,14,Notre Dame,gain,6,Pass Reception
+nd_byu,14,Notre Dame,gain,4,Rush
+nd_byu,14,Notre Dame,gain,0,Pass Incompletion
+nd_byu,14,Notre Dame,gain,1,Rush
+nd_byu,15,BYU,gain,2,Rush
+nd_byu,15,BYU,gain,3,Rush
+nd_byu,15,BYU,gain,0,Pass Incompletion
+nd_byu,15,BYU,loss,-4,Rush
+nd_byu,16,Notre Dame,gain,2,Rush
+nd_byu,16,Notre Dame,gain,0,Pass Incompletion
+nd_byu,16,Notre Dame,gain,1,Rush
+nd_byu,17,BYU,gain,2,Rush
+nd_byu,17,BYU,gain,1,Pass Reception
+nd_byu,17,BYU,gain,0,Pass Incompletion
+nd_byu,17,BYU,loss,-5,Penalty
+nd_byu,18,Notre Dame,gain,6,Rush
+nd_byu,18,Notre Dame,gain,0,Pass Incompletion
+nd_byu,18,Notre Dame,gain,38,Pass Reception
+nd_byu,18,Notre Dame,gain,7,Pass Reception
+nd_byu,18,Notre Dame,gain,2,Rush
+nd_byu,18,Notre Dame,gain,0,Rush
+nd_byu,18,Notre Dame,gain,5,Rush
+nd_byu,18,Notre Dame,gain,7,Rush
+nd_byu,18,Notre Dame,gain,3,Rushing Touchdown
+nd_byu,19,BYU,gain,0,Pass Incompletion
+nd_byu,19,BYU,gain,6,Pass Reception
+nd_byu,19,BYU,gain,28,Pass Reception
+nd_byu,19,BYU,gain,0,Interception
+nd_byu,20,Notre Dame,loss,-4,Rush
+nd_byu,20,Notre Dame,gain,0,Rush
+nd_byu,20,Notre Dame,gain,7,Pass Reception
+nd_byu,21,BYU,gain,5,Pass Reception
+nd_byu,21,BYU,gain,0,Pass Incompletion
+nd_byu,21,BYU,gain,9,Pass Reception
+nd_byu,21,BYU,gain,0,Pass Incompletion
+nd_byu,21,BYU,gain,26,Pass Reception
+nd_byu,21,BYU,gain,6,Rush
+nd_byu,21,BYU,gain,4,Rush
+nd_byu,21,BYU,gain,3,Rush
+nd_byu,21,BYU,gain,1,Rush
+nd_byu,21,BYU,loss,-5,Penalty
+nd_byu,21,BYU,gain,6,Passing Touchdown
+nd_byu,22,Notre Dame,gain,7,Pass Reception
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,7,Pass Reception
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,24,Pass Reception
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,7,Pass Reception
+nd_byu,22,Notre Dame,gain,11,Pass Reception
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,5,Pass Reception
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion
+nd_byu,22,Notre Dame,gain,6,Pass Reception
+nd_byu,22,Notre Dame,gain,0,Pass Incompletion

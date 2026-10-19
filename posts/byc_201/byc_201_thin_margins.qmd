@@ -1,0 +1,392 @@
+---
+title: "201: Thin Margins"
+date: "2026-10-19"
+categories:
+  - gt
+  - gtUtils
+format:
+  html:
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+---
+
+### Drive chart functions
+
+```{r drive-chart-setup, warning=FALSE, message=FALSE}
+
+# Drive charts for Week 7 of 2026: one row per possession, every snap's yards
+# printed as its own number. Gains run right from the line of scrimmage in
+# play order, losses run left, and the end of each row says how the drive
+# ended. A mini field strip shows where each drive started and finished.
+#
+# Reads local snapshots built from collegefootballdata.com play-by-play, so
+# the post rebuilds without hitting the API. Snap yards are the change in
+# line of scrimmage to the next snap (so penalties count); a snap for no gain
+# is 0. Drive results are checked against each drive's last snap, which
+# corrects a few CFBD results (a spike ruled a fumble, a botched punt snap, a
+# lost fumble filed as a turnover on downs). The plays | yards line under a
+# score follows the official drive summary.
+
+snaps <- readr::read_csv("week7_snaps.csv", show_col_types = FALSE)
+possessions <- readr::read_csv(
+  "week7_possessions.csv",
+  col_types = readr::cols(start_clock = readr::col_character()),
+  show_col_types = FALSE
+)
+games <- readr::read_csv("week7_games.csv", show_col_types = FALSE)
+
+chart_bg <- "#FFFDF5"
+loss_ink <- "#374151"
+stop_red <- "#C0392B"
+miss_fg_red <- "#E4572E"
+punt_gold <- "#C98B00"
+big_gain <- 15
+
+football_icon <- paste0(
+  "https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/",
+  "ESPN-icon-football-college.png"
+)
+
+chart_header <- function(title, subtitle) {
+  glue::glue(
+    "<div style='display:flex;justify-content:space-between;align-items:center;'>
+       <div><img src='{football_icon}' style='height:40px;width:auto;vertical-align:middle;'></div>
+       <div style='flex-grow:1;margin-left:12px;margin-right:12px;'>
+         <span style='display:block;font-weight:bold;text-align:center;font-size:24px;'>{title}</span>
+         <span style='font-size:12px;font-weight:normal;display:block;text-align:center;line-height:1.6;text-transform:none;'>{subtitle}</span>
+       </div>
+       <div><img src='{football_icon}' style='height:40px;width:auto;vertical-align:middle;'></div>
+     </div><br>"
+  )
+}
+
+# Final score, winner first
+score_title <- function(g) {
+  away <- paste(g$away, g$away_points)
+  home <- paste(g$home, g$home_points)
+  if (g$away_points > g$home_points) paste0(away, ", ", home) else paste0(home, ", ", away)
+}
+
+# Mix a color toward black; sets off big gains
+darken <- function(color, amount = 0.3) {
+  rgb <- grDevices::col2rgb(color)[, 1] * (1 - amount)
+  grDevices::rgb(rgb[1], rgb[2], rgb[3], maxColorValue = 255)
+}
+
+# Yard line named from the offense's side: OWN 25, 50, DUKE 11
+spot_label <- function(ytg, opp_abbr) {
+  dplyr::case_when(
+    is.na(ytg) ~ "",
+    ytg <= 0 ~ "END ZONE",
+    ytg == 50 ~ "50",
+    ytg > 50 ~ paste("OWN", 100 - ytg),
+    .default = paste(opp_abbr, ytg)
+  )
+}
+
+# One snap: penalties in italic, a hidden-possession return underlined,
+# gains of 15 or more larger and darker, losses in dark ink
+snap_number <- function(yards, play_type, color, is_return) {
+  style <- dplyr::case_when(
+    is_return ~ glue::glue("border-bottom:1.5px dashed {color};"),
+    play_type == "Penalty" ~ "font-style:italic; opacity:0.75;",
+    .default = ""
+  )
+  ink <- if (yards < 0) loss_ink else color
+  if (yards >= big_gain) {
+    ink <- darken(color)
+    style <- paste(style, "font-size:15px;")
+  }
+  glue::glue("<span style='color:{ink}; {style}'>{abs(yards)}</span>")
+}
+
+drive_caps <- c(
+  "Touchdown" = "TD", "Field goal" = "FG", "Missed FG" = "MISS FG",
+  "Interception" = "INT", "Fumble" = "FUM", "Downs" = "DOWNS", "Safety" = "SAF",
+  "End of half" = "HALF", "End of regulation" = "END", "End of game" = "END",
+  "Bad punt snap" = "BAD SNAP", "Spike fumble" = "SPIKE FUMBLE",
+  "Blocked punt" = "PUNT BLOCKED"
+)
+
+# Defensive and special teams possessions are named on both rows: the
+# scoring team's dashed pill, and a red result on the drive that gave it up
+hidden_pills <- c(
+  "Pick-six" = "PICK-SIX TD", "Fumble return TD" = "FUMBLE RETURN TD",
+  "Blocked punt TD" = "BLOCKED PUNT TD", "Punt return TD" = "PUNT RETURN TD",
+  "Kick return TD" = "KICK RETURN TD", "Blocked FG TD" = "BLOCKED FG TD",
+  "Punt return fumble" = "PUNT RETURN FUMBLED"
+)
+giveaway_caps <- c(
+  "Pick-six" = "INT", "Fumble return TD" = "FUMBLE TD",
+  "Blocked punt TD" = "PUNT BLOCKED", "Punt return TD" = "PUNT RET TD",
+  "Blocked FG TD" = "FG BLOCKED"
+)
+
+# How the drive ended: a touchdown is a solid badge, a field goal an
+# outlined one, stops in bold red, punts in gold
+drive_cap <- function(p, color) {
+  span <- \(txt, ink, extra = "", size = 11) glue::glue(
+    "<span style='font-family:\"Roboto Condensed\", sans-serif; font-size:{size}px; font-weight:bold; ",
+    "line-height:13px; display:inline-block; white-space:nowrap; color:{ink}; {extra}'>{txt}</span>"
+  )
+  badge <- "padding:1px 5px; border-radius:3px;"
+  if (p$hidden) {
+    pill <- dplyr::coalesce(unname(hidden_pills[p$label]), "TD")
+    return(span(pill, color, glue::glue("border:1.5px dashed {color}; padding:1px 4px; border-radius:3px;")))
+  }
+  if (!is.na(p$gave_up) && !is.na(giveaway_caps[p$gave_up])) {
+    return(span(unname(giveaway_caps[p$gave_up]), stop_red))
+  }
+  if (identical(p$label, "Blocked punt")) return(span("PUNT BLOCKED", stop_red))
+  if (identical(p$st_component, "punt")) return(span("PUNT", punt_gold))
+  token <- unname(drive_caps[p$label])
+  if (is.na(token)) return("")
+  if (token == "TD") return(span("TD", "#FFFFFF", glue::glue("background:{color}; {badge}"), size = 12))
+  if (token == "FG") return(span("FG", color, glue::glue("border:1.5px solid {color}; {badge}"), size = 12))
+  if (token %in% c("HALF", "END")) return(span(token, "#9CA3AF", size = 10))
+  span(token, if (token == "MISS FG") miss_fg_red else stop_red)
+}
+
+# Mini field: 100 yards plus end zones, attacking left to right. A bar from
+# start to finish, a dot at the start, the end zone filled on a touchdown.
+field_strip <- function(start_ytg, end_ytg, color, hidden, td) {
+  x <- \(ytg) 5 + (100 - pmin(pmax(ytg, 0), 100))
+  x0 <- x(start_ytg)
+  x1 <- x(end_ytg)
+  bar <- if (hidden) {
+    glue::glue("outline:1px dashed {color}; background:transparent;")
+  } else {
+    glue::glue("background:{if (x1 >= x0) color else loss_ink};")
+  }
+  end_zone <- if (td) {
+    glue::glue("<div style='position:absolute; left:105px; top:2px; width:5px; height:12px; background:{color};'></div>")
+  } else {
+    ""
+  }
+  glue::glue(
+    "<div style='position:relative; width:110px; height:16px; display:inline-block; vertical-align:middle;'>",
+    "<div style='position:absolute; left:0; top:2px; width:110px; height:12px; background:#F1ECE0;'></div>",
+    "<div style='position:absolute; left:0; top:2px; width:5px; height:12px; background:#E3DCCB;'></div>",
+    "<div style='position:absolute; left:105px; top:2px; width:5px; height:12px; background:#E3DCCB;'></div>",
+    "<div style='position:absolute; left:55px; top:2px; width:1px; height:12px; background:#C4C9D0;'></div>",
+    "{end_zone}",
+    "<div style='position:absolute; left:{min(x0, x1)}px; top:5px; height:6px; width:{max(abs(x1 - x0), 1)}px; {bar}'></div>",
+    "<div style='position:absolute; left:{x0 - 3}px; top:4px; width:5px; height:5px; border-radius:50%; ",
+    "background:#FFFFFF; border:1.5px solid {color};'></div>",
+    "</div>"
+  )
+}
+
+drive_chart <- function(key) {
+  g <- dplyr::filter(games, game == key)
+  teams <- c(g$away, g$home)
+  color_of <- stats::setNames(c(g$away_color, g$home_color), teams)
+  logo_of <- stats::setNames(c(g$away_logo, g$home_logo), teams)
+  abbr_of <- stats::setNames(c(g$away_abbr, g$home_abbr), teams)
+  other <- \(team) dplyr::if_else(team == teams[1], teams[2], teams[1])
+  tbl_id <- paste0("drives_", key)
+
+  poss <- dplyr::filter(possessions, game == key) |> dplyr::arrange(possession_no)
+  plays <- dplyr::filter(snaps, game == key)
+
+  # Each drive's numbers past the line (ending with its result and end spot)
+  # and behind it, in play order
+  rows <- purrr::map(seq_len(nrow(poss)), \(i) {
+    p <- poss[i, ]
+    s <- dplyr::filter(plays, possession_no == p$possession_no)
+    color <- color_of[[p$team]]
+    gained <- s$yards >= 0
+    up <- purrr::pmap_chr(
+      list(s$yards[gained], s$play_type[gained], s$component[gained] == "return"),
+      \(y, t, r) snap_number(y, t, color, r)
+    )
+    down <- purrr::map2_chr(
+      s$yards[!gained], s$play_type[!gained],
+      \(y, t) snap_number(y, t, color, FALSE)
+    )
+    cap <- drive_cap(p, color)
+    if (!p$hidden && p$pts < 6) {
+      end_spot <- spot_label(p$start_ytg - p$gains - p$losses, abbr_of[[other(p$team)]])
+      cap <- glue::glue(
+        "{cap}<span style='font-family:\"Roboto Condensed\", sans-serif; font-size:9px; ",
+        "color:#6B7280; white-space:nowrap;'>&nbsp;· {end_spot}</span>"
+      )
+    }
+    list(up = c(up, cap), down = down)
+  })
+
+  # Spare columns give the longest drive's result and end spot room
+  n_up <- max(purrr::map_int(rows, \(r) length(r$up))) + 3L
+  n_down <- max(1L, max(purrr::map_int(rows, \(r) length(r$down))))
+  gain_ids <- paste0("g", seq_len(n_up))
+  loss_ids <- paste0("l", rev(seq_len(n_down)))
+
+  cells <- purrr::map(rows, \(r) {
+    up <- c(r$up, rep("", n_up - length(r$up)))
+    down <- c(r$down, rep("", n_down - length(r$down)))
+    stats::setNames(as.list(c(rev(down), up)), c(loss_ids, gain_ids))
+  }) |>
+    dplyr::bind_rows()
+
+  side_cells <- poss |>
+    dplyr::mutate(
+      drive_line = dplyr::case_when(
+        pts <= 0 ~ "",
+        hidden ~ glue::glue("{gains} yd return"),
+        .default = glue::glue(
+          "{drive_plays} play{dplyr::if_else(drive_plays == 1, '', 's')} | ",
+          "{drive_yards} yard{dplyr::if_else(abs(drive_yards) == 1, '', 's')}"
+        )
+      )
+    ) |>
+    dplyr::transmute(
+      qtr = dplyr::case_when(
+        period == 5 ~ "OT",
+        period > 5 ~ paste0(period - 4, "OT"),
+        .default = paste0("Q", period)
+      ),
+      num = glue::glue("<span style='color:#9CA3AF; font-size:10px;'>{possession_no}</span>"),
+      start = glue::glue(
+        "<div style='line-height:11px;'>",
+        "<span style='color:#6B7280; font-size:10px;'>{dplyr::if_else(period >= 5 | is.na(start_clock), '', start_clock)}</span>",
+        "<div style='font-family:\"Roboto Condensed\", sans-serif; font-size:9px; font-weight:bold; color:#333333;'>",
+        "{spot_label(start_ytg, abbr_of[other(team)])}</div></div>"
+      ),
+      logo = glue::glue("<img src='{logo_of[team]}' style='height:16px; vertical-align:middle;'>"),
+      strip = purrr::pmap_chr(
+        list(start_ytg, start_ytg - gains - losses, color_of[team], hidden, pts >= 6),
+        field_strip
+      ),
+      # The scoring team's logo, only on rows where someone scored
+      logo_end = dplyr::case_when(
+        pts > 0 ~ logo,
+        opp_pts > 0 ~ glue::glue("<img src='{logo_of[other(team)]}' style='height:16px; vertical-align:middle;'>"),
+        .default = ""
+      ),
+      score = dplyr::case_when(
+        pts > 0 ~ glue::glue("<b style='color:{color_of[team]}; font-size:15px;'>+{pts}</b>"),
+        opp_pts == 2 ~ glue::glue("<span style='color:{stop_red}; font-size:9px;'>SAF</span>"),
+        opp_pts > 0 ~ glue::glue("<b style='color:{color_of[other(team)]}; font-size:15px;'>+{opp_pts}</b>"),
+        .default = ""
+      ),
+      score = glue::glue(
+        "<div style='line-height:13px;'>{score}",
+        "<div style='font-family:\"Roboto Condensed\", sans-serif; font-size:10px; font-weight:normal; color:#6B7280;'>{drive_line}</div></div>"
+      )
+    )
+
+  tbl <- side_cells |>
+    dplyr::bind_cols(cells) |>
+    dplyr::mutate(
+      new_qtr = qtr != dplyr::lag(qtr, default = ""),
+      qtr_rule = new_qtr & dplyr::row_number() > 1,
+      qtr_lab = dplyr::if_else(new_qtr, qtr, ""),
+      .before = 1
+    ) |>
+    dplyr::relocate(score, logo_end, .after = dplyr::last_col())
+
+  subtitle <- paste0(
+    g$dateline, "<br>",
+    "Each row is a drive, each number one snap: gains run right from the line in order, losses run left"
+  )
+
+  source_note <- gt::html(
+    "<hr style='border: none; border-top: 1px solid #ccc; margin: 4px 0 8px 0;'>",
+    "Each number shows yards gained or lost, including penalties, measured by the line of scrimmage<br>",
+    glue::glue("Gains of {big_gain} yards or more are shown in bigger font size<br>"),
+    "A play for no gain, including an incompletion, is shown as 0<br>",
+    "Penalties are shown in italic",
+    "<hr style='border: none; border-top: 1px solid #ccc; margin: 8px 0 6px 0;'>",
+    "data via collegefootballdata.com | Table by Chris at Bless your Chart"
+  )
+
+  # One solid background on every surface, no row striping
+  bg_css <- glue::glue(
+    "#{tbl_id} .gt_table, #{tbl_id} .gt_heading, #{tbl_id} .gt_title, #{tbl_id} .gt_subtitle,
+     #{tbl_id} .gt_col_headings, #{tbl_id} .gt_col_heading, #{tbl_id} .gt_row, #{tbl_id} .gt_striped,
+     #{tbl_id} .gt_sourcenotes, #{tbl_id} .gt_sourcenote {{ background-color: {chart_bg} !important; }}
+     #{tbl_id} .gt_row {{ padding: 2px 1px; line-height: 16px; border-top: none; overflow: visible; white-space: nowrap; }}
+     #{tbl_id} tbody td.gt_row {{ font-family: 'Courier Prime', 'Courier New', monospace !important; }}
+     #{tbl_id} .gt_col_heading {{ padding: 0 1px 2px 1px; overflow: visible; white-space: nowrap; }}"
+  )
+
+  tbl |>
+    gt::gt(id = tbl_id) |>
+    gtUtils::gt_theme_savant() |>
+    gt::tab_header(title = gt::html(chart_header(score_title(g), subtitle))) |>
+    gt::cols_hide(c(qtr, new_qtr, qtr_rule)) |>
+    gt::fmt(
+      columns = c(num, start, logo, strip, score, logo_end, dplyr::all_of(c(loss_ids, gain_ids))),
+      fns = \(x) purrr::map(x, gt::html)
+    ) |>
+    gt::cols_label(
+      .list = c(
+        list(qtr_lab = "Qtr", num = "#", start = "Start", logo = "", strip = "Field", score = "Score", logo_end = ""),
+        stats::setNames(as.list(rep("", n_down + n_up)), c(loss_ids, gain_ids)),
+        list(
+          l1 = gt::html("<span style='font-size:10px; font-style:italic; color:#9CA3AF; position:relative; left:-8px;'>←&nbsp;lost</span>"),
+          g1 = gt::html("<span style='font-size:10px; font-style:italic; color:#9CA3AF;'>gained&nbsp;→</span>")
+        )
+      )
+    ) |>
+    gt::cols_align(align = "center", columns = dplyr::everything()) |>
+    gt::cols_width(
+      qtr_lab ~ gt::px(30), num ~ gt::px(24), start ~ gt::px(48), logo ~ gt::px(26),
+      strip ~ gt::px(118), score ~ gt::px(92), logo_end ~ gt::px(26),
+      # Snap columns are l1, l2... and g1, g2...; cols_width() formulas can't
+      # see local variables, so select them by name pattern
+      dplyr::matches("^[lg][0-9]+$") ~ gt::px(26)
+    ) |>
+    gt::tab_options(
+      table_body.hlines.color = "transparent",
+      data_row.padding = gt::px(0),
+      row.striping.include_table_body = FALSE
+    ) |>
+    gt::tab_style(
+      style = list(gt::cell_text(size = gt::px(13), weight = "bold"), gt::cell_fill(color = chart_bg)),
+      locations = gt::cells_body()
+    ) |>
+    gt::tab_style(
+      style = gt::cell_text(size = gt::px(10), color = "#9CA3AF", weight = "normal", style = "italic"),
+      locations = gt::cells_body(columns = qtr_lab)
+    ) |>
+    # The line of scrimmage: a heavy rule down the left edge of the first gain column
+    gt::tab_style(
+      style = list(
+        gt::cell_borders(sides = "left", color = "#333333", weight = gt::px(2)),
+        gt::css(`padding-left` = "5px")
+      ),
+      locations = list(gt::cells_body(columns = g1), gt::cells_column_labels(columns = g1))
+    ) |>
+    gt::tab_style(
+      style = gt::cell_borders(sides = "top", color = "#9CA3AF", weight = gt::px(1)),
+      locations = gt::cells_body(rows = qtr_rule)
+    ) |>
+    gt::tab_style(
+      style = gt::cell_borders(sides = "left", color = "#D1D5DB", weight = gt::px(1)),
+      locations = list(gt::cells_body(columns = score), gt::cells_column_labels(columns = score))
+    ) |>
+    gt::tab_source_note(source_note) |>
+    gt::opt_css(bg_css) |>
+    gtUtils::gt_border_bars_bottom(c(g$away_color, "#D1D5DB", g$home_color))
+}
+```
+
+### BYU 28, Notre Dame 24
+
+```{r drive-chart-nd-byu, warning=FALSE, message=FALSE}
+drive_chart("nd_byu")
+```
+
+### Ohio State 19, Indiana 15
+
+```{r drive-chart-osu-indiana, warning=FALSE, message=FALSE}
+drive_chart("osu_indiana")
+```
+
+### North Carolina 24, Duke 20
+
+```{r drive-chart-unc-duke, warning=FALSE, message=FALSE}
+drive_chart("unc_duke")
+```

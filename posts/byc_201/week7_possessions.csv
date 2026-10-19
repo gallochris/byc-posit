@@ -1,0 +1,68 @@
+game,possession_no,team,period,start_clock,start_ytg,gains,losses,label,gave_up,hidden,st_component,pts,opp_pts,drive_plays,drive_yards
+unc_duke,1,North Carolina,1,14:54,84,74,0,Field goal,NA,FALSE,fg_good,3,0,11,74
+unc_duke,2,Duke,1,9:59,82,4,0,Blocked punt,NA,FALSE,punt,0,0,3,4
+unc_duke,3,North Carolina,1,8:42,11,11,0,Touchdown,NA,FALSE,NA,7,0,3,11
+unc_duke,4,Duke,1,7:17,83,8,0,Punt,NA,FALSE,punt,0,0,3,8
+unc_duke,5,North Carolina,1,6:23,63,76,-13,Touchdown,NA,FALSE,NA,7,0,14,63
+unc_duke,6,Duke,2,13:43,75,79,-6,Downs,NA,FALSE,NA,0,0,8,73
+unc_duke,7,North Carolina,2,9:36,98,3,0,Fumble,Fumble return TD,FALSE,NA,0,0,3,3
+unc_duke,8,Duke,2,8:45,9,9,0,Fumble return TD,NA,TRUE,NA,7,0,0,0
+unc_duke,9,North Carolina,2,8:37,75,16,-6,Punt,NA,FALSE,punt,0,0,5,10
+unc_duke,10,Duke,2,6:09,75,28,0,Punt,NA,FALSE,punt,0,0,4,28
+unc_duke,11,North Carolina,2,3:57,90,24,-12,Punt,NA,FALSE,punt,0,0,6,12
+unc_duke,12,Duke,2,0:56,65,39,0,End of half,NA,FALSE,NA,0,0,7,39
+unc_duke,13,Duke,3,15:00,75,80,-10,Field goal,NA,FALSE,fg_good,3,0,19,62
+unc_duke,14,North Carolina,3,6:52,75,76,-10,Fumble,NA,FALSE,NA,0,0,6,66
+unc_duke,15,Duke,3,3:45,91,42,-10,Punt,NA,FALSE,punt,0,0,6,32
+unc_duke,16,North Carolina,3,0:12,85,0,-6,Punt,NA,FALSE,punt,0,0,3,-6
+unc_duke,17,Duke,4,14:10,36,42,-10,Field goal,NA,FALSE,fg_good,3,0,9,32
+unc_duke,18,North Carolina,4,8:47,75,25,-16,Bad punt snap,NA,FALSE,NA,0,0,5,9
+unc_duke,19,Duke,4,7:43,34,39,-5,Touchdown,NA,FALSE,NA,7,0,5,34
+unc_duke,20,North Carolina,4,4:34,78,78,0,Touchdown,NA,FALSE,NA,7,0,8,78
+unc_duke,21,Duke,4,1:52,75,55,-14,Interception,NA,FALSE,NA,0,0,9,41
+unc_duke,22,North Carolina,4,0:13,85,0,-1,End of game,NA,FALSE,NA,0,0,1,-1
+osu_indiana,1,Ohio State,1,14:58,75,67,0,Field goal,NA,FALSE,fg_good,3,0,7,67
+osu_indiana,2,Indiana,1,11:52,75,4,0,Punt,NA,FALSE,punt,0,0,3,4
+osu_indiana,3,Ohio State,1,11:01,73,12,-10,Punt,NA,FALSE,punt,0,0,3,2
+osu_indiana,4,Indiana,1,9:37,78,33,0,Punt,NA,FALSE,punt,0,0,8,33
+osu_indiana,5,Ohio State,1,5:57,80,16,-5,Punt,NA,FALSE,punt,0,0,5,11
+osu_indiana,6,Indiana,1,3:57,81,23,-1,Punt,NA,FALSE,punt,0,0,9,22
+osu_indiana,7,Ohio State,2,14:47,78,0,-6,Interception,NA,FALSE,NA,0,0,2,-6
+osu_indiana,8,Indiana,2,14:02,7,7,0,Touchdown,NA,FALSE,NA,7,0,2,7
+osu_indiana,9,Ohio State,2,13:51,75,22,-3,Punt,NA,FALSE,punt,0,0,6,19
+osu_indiana,10,Indiana,2,10:49,80,66,0,Missed FG,NA,FALSE,fg_miss,0,0,12,66
+osu_indiana,11,Ohio State,2,5:09,80,91,-11,Touchdown,NA,FALSE,NA,7,0,15,80
+osu_indiana,12,Indiana,2,0:00,88,6,0,End of half,NA,FALSE,NA,0,0,1,6
+osu_indiana,13,Indiana,3,15:00,75,20,0,Fumble,NA,FALSE,NA,0,0,2,20
+osu_indiana,14,Ohio State,3,14:21,45,34,0,Field goal,NA,FALSE,fg_good,3,0,6,34
+osu_indiana,15,Indiana,3,11:49,75,48,-11,Fumble,NA,FALSE,NA,0,0,7,37
+osu_indiana,16,Ohio State,3,9:05,62,24,-5,Interception,NA,FALSE,NA,0,0,6,19
+osu_indiana,17,Indiana,3,6:21,83,46,0,Missed FG,NA,FALSE,fg_miss,0,0,9,46
+osu_indiana,18,Ohio State,3,1:54,62,62,0,Touchdown,NA,FALSE,NA,6,0,7,62
+osu_indiana,19,Indiana,4,12:44,75,75,0,Touchdown,NA,FALSE,NA,8,0,7,75
+osu_indiana,20,Ohio State,4,10:30,75,62,-28,Punt,NA,FALSE,punt,0,0,8,34
+osu_indiana,21,Indiana,4,5:21,94,10,0,Punt,NA,FALSE,punt,0,0,4,10
+osu_indiana,22,Ohio State,4,4:21,60,1,-15,Punt,NA,FALSE,punt,0,0,3,-14
+osu_indiana,23,Indiana,4,3:05,70,58,-15,Downs,NA,FALSE,NA,0,0,7,43
+nd_byu,1,BYU,1,14:59,75,77,-2,Touchdown,NA,FALSE,NA,7,0,11,75
+nd_byu,2,Notre Dame,1,9:21,75,46,0,Field goal,NA,FALSE,fg_good,3,0,9,46
+nd_byu,3,BYU,1,5:05,75,28,0,Punt,NA,FALSE,punt,0,0,8,28
+nd_byu,4,Notre Dame,1,1:23,84,92,-8,Touchdown,NA,FALSE,NA,7,0,12,84
+nd_byu,5,BYU,2,10:36,75,75,0,Touchdown,NA,FALSE,NA,7,0,10,75
+nd_byu,6,Notre Dame,2,5:52,75,4,-6,Punt,NA,FALSE,punt,0,0,3,-2
+nd_byu,7,BYU,2,4:19,72,72,0,Touchdown,NA,FALSE,NA,7,0,8,72
+nd_byu,8,Notre Dame,2,1:29,75,70,-1,Spike fumble,NA,FALSE,NA,0,0,10,69
+nd_byu,9,BYU,2,0:06,94,0,-1,End of half,NA,FALSE,NA,0,0,1,-1
+nd_byu,10,Notre Dame,3,15:00,75,11,0,Punt,NA,FALSE,punt,0,0,4,11
+nd_byu,11,BYU,3,13:36,84,48,-10,Punt,NA,FALSE,punt,0,0,8,38
+nd_byu,12,Notre Dame,3,9:36,94,9,0,Punt,Punt return fumble,FALSE,punt,0,0,3,9
+nd_byu,13,BYU,3,7:31,1,1,0,Punt return fumble,NA,TRUE,NA,0,0,0,0
+nd_byu,14,Notre Dame,3,7:20,41,28,0,Field goal,NA,FALSE,fg_good,3,0,10,28
+nd_byu,15,BYU,3,3:10,77,5,-4,Downs,NA,FALSE,NA,0,0,4,1
+nd_byu,16,Notre Dame,3,1:40,24,3,0,Field goal,NA,FALSE,fg_good,3,0,4,3
+nd_byu,17,BYU,3,0:09,75,3,-5,Punt,NA,FALSE,punt,0,0,3,-2
+nd_byu,18,Notre Dame,4,14:11,68,68,0,Touchdown,NA,FALSE,NA,8,0,9,68
+nd_byu,19,BYU,4,9:31,75,34,0,Interception,NA,FALSE,NA,0,0,4,34
+nd_byu,20,Notre Dame,4,8:05,85,7,-4,Punt,NA,FALSE,punt,0,0,3,3
+nd_byu,21,BYU,4,5:43,55,60,-5,Touchdown,NA,FALSE,NA,7,0,10,55
+nd_byu,22,Notre Dame,4,1:47,75,67,0,End of game,NA,FALSE,NA,0,0,15,67
