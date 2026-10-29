@@ -1,0 +1,1079 @@
+season,conf,week,home,away,home_id,away_id,completed,home_points,away_points
+2014,SEC,1,South Carolina,Texas A&M,2579,245,TRUE,28,52
+2014,American Athletic,1,Tulsa,Tulane,202,2655,TRUE,38,31
+2014,SEC,1,Auburn,Arkansas,2,8,TRUE,45,21
+2014,Mid-American,1,Kent State,Ohio,2309,195,TRUE,14,17
+2014,ACC,1,Louisville,Miami,97,2390,TRUE,31,13
+2014,ACC,2,Boston College,Pittsburgh,103,221,TRUE,20,30
+2014,Big 12,2,Iowa State,Kansas State,66,2306,TRUE,28,32
+2014,Sun Belt,2,Georgia State,New Mexico State,2247,166,TRUE,31,34
+2014,Pac-12,2,Stanford,USC,24,30,TRUE,10,13
+2014,SEC,2,Vanderbilt,Ole Miss,238,145,TRUE,3,41
+2014,Sun Belt,2,UL Monroe,Idaho,2433,70,TRUE,38,31
+2014,Mountain West,2,Wyoming,Air Force,2751,2005,TRUE,17,13
+2014,Mountain West,2,Boise State,Colorado State,68,36,TRUE,37,24
+2014,Conference USA,3,North Texas,Louisiana Tech,249,2348,TRUE,21,42
+2014,ACC,3,Virginia,Louisville,258,97,TRUE,23,21
+2014,SEC,3,South Carolina,Georgia,2579,61,TRUE,38,35
+2014,Conference USA,3,Middle Tennessee,Western Kentucky,2393,98,TRUE,50,47
+2014,SEC,3,Florida,Kentucky,57,96,TRUE,36,30
+2014,Big Ten,3,Rutgers,Penn State,164,213,TRUE,10,13
+2014,Pac-12,3,Colorado,Arizona State,38,9,TRUE,24,38
+2014,American Athletic,4,South Florida,UConn,58,41,TRUE,17,14
+2014,ACC,4,Virginia Tech,Georgia Tech,259,59,TRUE,24,27
+2014,Conference USA,4,Rice,Old Dominion,242,295,TRUE,42,45
+2014,SEC,4,Alabama,Florida,333,57,TRUE,42,21
+2014,SEC,4,LSU,Mississippi State,99,344,TRUE,29,34
+2014,Mid-American,4,Toledo,Ball State,2649,2050,TRUE,34,23
+2014,Sun Belt,4,South Alabama,Georgia Southern,6,290,TRUE,6,28
+2014,SEC,4,Vanderbilt,South Carolina,238,2579,TRUE,34,48
+2014,Big 12,4,West Virginia,Oklahoma,277,201,TRUE,33,45
+2014,ACC,4,Florida State,Clemson,52,228,TRUE,23,17
+2014,Pac-12,4,Arizona,California,12,25,TRUE,49,45
+2014,Pac-12,4,Washington State,Oregon,265,2483,TRUE,31,38
+2014,Big 12,5,Oklahoma State,Texas Tech,197,2641,TRUE,45,35
+2014,Sun Belt,5,Georgia Southern,App State,290,2026,TRUE,34,14
+2014,Pac-12,5,Arizona State,UCLA,9,26,TRUE,27,62
+2014,Conference USA,5,Old Dominion,Middle Tennessee,295,2393,TRUE,28,41
+2014,Mountain West,5,New Mexico,Fresno State,167,278,TRUE,24,35
+2014,SEC,5,Georgia,Tennessee,61,2633,TRUE,35,32
+2014,SEC,5,Kentucky,Vanderbilt,96,238,TRUE,17,7
+2014,Big Ten,5,Purdue,Iowa,2509,2294,TRUE,10,24
+2014,Big Ten,5,Penn State,Northwestern,213,77,TRUE,6,29
+2014,Big Ten,5,Indiana,Maryland,84,120,TRUE,15,37
+2014,Mid-American,5,Massachusetts,Bowling Green,113,189,TRUE,42,47
+2014,Big Ten,5,Michigan,Minnesota,130,135,TRUE,14,30
+2014,SEC,5,Texas A&M,Arkansas,245,8,TRUE,35,28
+2014,ACC,5,Louisville,Wake Forest,97,154,TRUE,20,10
+2014,Mid-American,5,Buffalo,Miami (OH),2084,193,TRUE,35,27
+2014,Conference USA,5,UAB,Florida International,5,2229,TRUE,20,34
+2014,ACC,5,NC State,Florida State,152,52,TRUE,41,56
+2014,Pac-12,5,California,Colorado,25,38,TRUE,59,56
+2014,American Athletic,5,UConn,Temple,41,218,TRUE,10,36
+2014,Big 12,5,Kansas,Texas,2305,251,TRUE,0,23
+2014,Pac-12,5,Washington,Stanford,264,24,TRUE,13,20
+2014,Sun Belt,5,Idaho,South Alabama,70,6,TRUE,10,34
+2014,Conference USA,5,Florida Atlantic,UTSA,2226,2636,TRUE,41,37
+2014,Conference USA,5,Southern Miss,Rice,2572,242,TRUE,23,41
+2014,SEC,5,South Carolina,Missouri,2579,142,TRUE,20,21
+2014,Sun Belt,5,UL Monroe,Troy,2433,2653,TRUE,22,20
+2014,ACC,5,Clemson,North Carolina,228,153,TRUE,50,35
+2014,Mountain West,5,Air Force,Boise State,2005,68,TRUE,28,14
+2014,Mid-American,5,Toledo,Central Michigan,2649,2117,TRUE,42,28
+2014,ACC,5,Miami,Duke,2390,150,TRUE,22,10
+2014,Mountain West,5,San Diego State,UNLV,21,2439,TRUE,34,17
+2014,Pac-12,5,Utah,Washington State,254,265,TRUE,27,28
+2014,Big 12,5,Iowa State,Baylor,66,239,TRUE,28,49
+2014,Big Ten,5,Nebraska,Illinois,158,356,TRUE,45,14
+2014,Mountain West,5,San José State,Nevada,23,2440,TRUE,10,21
+2014,Pac-12,5,USC,Oregon State,30,204,TRUE,35,10
+2014,Conference USA,6,Florida International,Florida Atlantic,2229,2226,TRUE,38,10
+2014,American Athletic,6,Houston,UCF,248,2116,TRUE,12,17
+2014,Pac-12,6,Oregon,Arizona,2483,12,TRUE,24,31
+2014,ACC,6,Syracuse,Louisville,183,97,TRUE,6,28
+2014,Mountain West,6,Fresno State,San Diego State,278,21,TRUE,24,13
+2014,Big 12,6,Oklahoma State,Iowa State,197,66,TRUE,37,20
+2014,Conference USA,6,Old Dominion,Marshall,295,276,TRUE,14,56
+2014,American Athletic,6,East Carolina,SMU,151,2567,TRUE,45,24
+2014,Big Ten,6,Maryland,Ohio State,120,194,TRUE,24,52
+2014,Big Ten,6,Illinois,Purdue,356,2509,TRUE,27,38
+2014,SEC,6,Mississippi State,Texas A&M,344,245,TRUE,48,31
+2014,Conference USA,6,Middle Tennessee,Southern Miss,2393,2572,TRUE,37,31
+2014,SEC,6,Tennessee,Florida,2633,57,TRUE,9,10
+2014,ACC,6,North Carolina,Virginia Tech,153,259,TRUE,17,34
+2014,Mid-American,6,Akron,Eastern Michigan,2006,2199,TRUE,31,6
+2014,Mid-American,6,Miami (OH),Massachusetts,193,113,TRUE,42,41
+2014,SEC,6,Ole Miss,Alabama,145,333,TRUE,23,17
+2014,Mid-American,6,Central Michigan,Ohio,2117,195,TRUE,28,10
+2014,Big 12,6,TCU,Oklahoma,2628,201,TRUE,37,33
+2014,ACC,6,Florida State,Wake Forest,52,154,TRUE,43,3
+2014,Big Ten,6,Northwestern,Wisconsin,77,275,TRUE,20,14
+2014,Mid-American,6,Bowling Green,Buffalo,189,2084,TRUE,36,35
+2014,ACC,6,Clemson,NC State,228,152,TRUE,41,0
+2014,Big 12,6,Texas,Baylor,251,239,TRUE,7,28
+2014,Big 12,6,West Virginia,Kansas,277,2305,TRUE,33,14
+2014,SEC,6,Georgia,Vanderbilt,61,238,TRUE,44,17
+2014,Pac-12,6,Colorado,Oregon State,38,204,TRUE,31,36
+2014,Mid-American,6,Northern Illinois,Kent State,2459,2309,TRUE,17,14
+2014,Sun Belt,6,App State,South Alabama,2026,6,TRUE,21,47
+2014,Sun Belt,6,Louisiana,Georgia State,309,2247,TRUE,34,31
+2014,SEC,6,Auburn,LSU,2,99,TRUE,41,7
+2014,Conference USA,6,Western Kentucky,UAB,98,5,TRUE,39,42
+2014,Big Ten,6,Rutgers,Michigan,164,130,TRUE,26,24
+2014,Conference USA,6,Louisiana Tech,UTEP,2348,2638,TRUE,55,3
+2014,American Athletic,6,Cincinnati,Memphis,2132,235,TRUE,14,41
+2014,Sun Belt,6,Arkansas State,UL Monroe,2032,2433,TRUE,28,14
+2014,Sun Belt,6,Texas State,Idaho,326,70,TRUE,35,30
+2014,Mid-American,6,Western Michigan,Toledo,2711,2649,TRUE,19,20
+2014,Big 12,6,Kansas State,Texas Tech,2306,2641,TRUE,45,13
+2014,Pac-12,6,USC,Arizona State,30,9,TRUE,34,38
+2014,ACC,6,Georgia Tech,Miami,59,2390,TRUE,28,17
+2014,SEC,6,Kentucky,South Carolina,96,2579,TRUE,45,38
+2014,ACC,6,Virginia,Pittsburgh,258,221,TRUE,24,19
+2014,Big Ten,6,Michigan State,Nebraska,127,158,TRUE,27,22
+2014,Mountain West,6,San José State,UNLV,23,2439,TRUE,33,10
+2014,Sun Belt,6,New Mexico State,Georgia Southern,166,290,TRUE,28,36
+2014,Pac-12,6,Washington State,California,265,25,TRUE,59,60
+2014,Mountain West,6,Nevada,Boise State,2440,68,TRUE,46,51
+2014,Pac-12,6,UCLA,Utah,26,254,TRUE,28,30
+2014,Pac-12,7,Stanford,Washington State,24,265,TRUE,34,17
+2014,Mountain West,7,New Mexico,San Diego State,167,21,TRUE,14,24
+2014,Mountain West,7,UNLV,Fresno State,2439,278,TRUE,30,27
+2014,Big Ten,7,Wisconsin,Illinois,275,356,TRUE,38,28
+2014,Big Ten,7,Minnesota,Northwestern,135,77,TRUE,24,17
+2014,Big Ten,7,Iowa,Indiana,2294,84,TRUE,45,29
+2014,American Athletic,7,Temple,Tulsa,218,202,TRUE,35,24
+2014,SEC,7,Missouri,Georgia,142,61,TRUE,0,34
+2014,Big 12,7,Texas Tech,West Virginia,2641,277,TRUE,34,37
+2014,Conference USA,7,Marshall,Middle Tennessee,276,2393,TRUE,49,24
+2014,ACC,7,Syracuse,Florida State,183,52,TRUE,20,38
+2014,Big 12,7,Oklahoma,Texas,201,251,TRUE,31,26
+2014,ACC,7,Georgia Tech,Duke,59,150,TRUE,25,31
+2014,Mid-American,7,Eastern Michigan,Buffalo,2199,2084,TRUE,37,27
+2014,Mid-American,7,Ohio,Bowling Green,195,189,TRUE,13,31
+2014,Mid-American,7,Akron,Miami (OH),2006,193,TRUE,29,19
+2014,Mid-American,7,Kent State,Massachusetts,2309,113,TRUE,17,40
+2014,Sun Belt,7,Georgia State,Arkansas State,2247,2032,TRUE,10,52
+2014,Mid-American,7,Ball State,Western Michigan,2050,2711,TRUE,38,42
+2014,Sun Belt,7,Troy,New Mexico State,2653,166,TRUE,41,24
+2014,Big 12,7,Baylor,TCU,239,2628,TRUE,61,58
+2014,Pac-12,7,UCLA,Oregon,26,2483,TRUE,30,42
+2014,Conference USA,7,UAB,North Texas,5,249,TRUE,56,21
+2014,ACC,7,NC State,Boston College,152,103,TRUE,14,30
+2014,SEC,7,Mississippi State,Auburn,344,2,TRUE,38,23
+2014,Big Ten,7,Purdue,Michigan State,2509,127,TRUE,31,45
+2014,ACC,7,Clemson,Louisville,228,97,TRUE,23,17
+2014,Big 12,7,Kansas,Oklahoma State,2305,197,TRUE,20,27
+2014,Mid-American,7,Northern Illinois,Central Michigan,2459,2117,TRUE,17,34
+2014,Sun Belt,7,Georgia Southern,Idaho,290,70,TRUE,47,24
+2014,SEC,7,Arkansas,Alabama,8,333,TRUE,13,14
+2014,Pac-12,7,California,Washington,25,264,TRUE,7,31
+2014,Conference USA,7,UTSA,Florida International,2636,2229,TRUE,16,13
+2014,Big Ten,7,Michigan,Penn State,130,213,TRUE,18,13
+2014,American Athletic,7,Memphis,Houston,235,248,TRUE,24,28
+2014,American Athletic,7,South Florida,East Carolina,58,151,TRUE,17,28
+2014,SEC,7,Florida,LSU,57,99,TRUE,27,30
+2014,Conference USA,7,UTEP,Old Dominion,2638,295,TRUE,42,35
+2014,American Athletic,7,Tulane,UConn,2655,41,TRUE,12,3
+2014,SEC,7,Texas A&M,Ole Miss,245,145,TRUE,20,35
+2014,Mountain West,7,Utah State,Air Force,328,2005,TRUE,34,16
+2014,Mountain West,7,Nevada,Colorado State,2440,36,TRUE,24,31
+2014,Pac-12,7,Arizona,USC,12,30,TRUE,26,28
+2014,Mountain West,7,Hawai'i,Wyoming,62,2751,TRUE,38,28
+2014,Sun Belt,8,Texas State,Louisiana,326,309,TRUE,10,34
+2014,ACC,8,Pittsburgh,Virginia Tech,221,259,TRUE,21,16
+2014,Pac-12,8,Oregon State,Utah,204,254,TRUE,23,29
+2014,Mountain West,8,Boise State,Fresno State,68,278,TRUE,37,27
+2014,American Athletic,8,Houston,Temple,248,218,TRUE,31,10
+2014,Big Ten,8,Maryland,Iowa,120,2294,TRUE,38,31
+2014,Big 12,8,Oklahoma,Kansas State,201,2306,TRUE,30,31
+2014,Big Ten,8,Minnesota,Purdue,135,2509,TRUE,39,38
+2014,American Athletic,8,UCF,Tulane,2116,2655,TRUE,20,13
+2014,Big 12,8,West Virginia,Baylor,277,239,TRUE,41,27
+2014,Conference USA,8,Florida Atlantic,Western Kentucky,2226,98,TRUE,45,38
+2014,ACC,8,Wake Forest,Syracuse,154,183,TRUE,7,30
+2014,Conference USA,8,Louisiana Tech,UTSA,2348,2636,TRUE,27,20
+2014,American Athletic,8,Tulsa,South Florida,202,58,TRUE,30,38
+2014,ACC,8,Duke,Virginia,150,258,TRUE,20,13
+2014,Mid-American,8,Bowling Green,Western Michigan,189,2711,TRUE,14,26
+2014,Mid-American,8,Ohio,Akron,195,2006,TRUE,23,20
+2014,Mid-American,8,Massachusetts,Eastern Michigan,113,2199,TRUE,36,14
+2014,Sun Belt,8,Troy,App State,2653,2026,TRUE,14,53
+2014,ACC,8,Boston College,Clemson,103,228,TRUE,13,17
+2014,ACC,8,Louisville,NC State,97,152,TRUE,30,18
+2014,SEC,8,Alabama,Texas A&M,333,245,TRUE,59,0
+2014,Conference USA,8,Middle Tennessee,UAB,2393,5,TRUE,34,22
+2014,Big Ten,8,Ohio State,Rutgers,194,164,TRUE,56,17
+2014,Big 12,8,Texas Tech,Kansas,2641,2305,TRUE,34,21
+2014,Big Ten,8,Indiana,Michigan State,84,127,TRUE,17,56
+2014,Mid-American,8,Central Michigan,Ball State,2117,2050,TRUE,29,32
+2014,Mountain West,8,Air Force,New Mexico,2005,167,TRUE,35,31
+2014,American Athletic,8,SMU,Cincinnati,2567,2132,TRUE,3,41
+2014,Pac-12,8,California,UCLA,25,26,TRUE,34,36
+2014,Big 12,8,TCU,Oklahoma State,2628,197,TRUE,42,9
+2014,Mountain West,8,Wyoming,San José State,2751,23,TRUE,20,27
+2014,SEC,8,Arkansas,Georgia,8,61,TRUE,32,45
+2014,Mid-American,8,Northern Illinois,Miami (OH),2459,193,TRUE,51,41
+2014,Sun Belt,8,Idaho,New Mexico State,70,166,TRUE,29,17
+2014,Pac-12,8,USC,Colorado,30,38,TRUE,56,28
+2014,Conference USA,8,Florida International,Marshall,2229,276,TRUE,13,45
+2014,ACC,8,North Carolina,Georgia Tech,153,59,TRUE,48,43
+2014,Mountain West,8,Colorado State,Utah State,36,328,TRUE,16,13
+2014,SEC,8,Florida,Missouri,57,142,TRUE,13,42
+2014,Conference USA,8,North Texas,Southern Miss,249,2572,TRUE,20,30
+2014,SEC,8,Ole Miss,Tennessee,145,2633,TRUE,34,3
+2014,Big Ten,8,Northwestern,Nebraska,77,158,TRUE,17,38
+2014,Sun Belt,8,South Alabama,Georgia State,6,2247,TRUE,30,27
+2014,SEC,8,LSU,Kentucky,99,96,TRUE,41,3
+2014,Pac-12,8,Oregon,Washington,2483,264,TRUE,45,20
+2014,Big 12,8,Texas,Iowa State,251,66,TRUE,48,45
+2014,Pac-12,8,Arizona State,Stanford,9,24,TRUE,26,10
+2014,Mountain West,8,San Diego State,Hawai'i,21,62,TRUE,20,10
+2014,Sun Belt,9,Louisiana,Arkansas State,309,2032,TRUE,55,40
+2014,American Athletic,9,East Carolina,UConn,151,41,TRUE,31,21
+2014,ACC,9,Virginia Tech,Miami,259,2390,TRUE,6,30
+2014,American Athletic,9,Cincinnati,South Florida,2132,58,TRUE,34,17
+2014,Sun Belt,9,South Alabama,Troy,6,2653,TRUE,27,13
+2014,Pac-12,9,California,Oregon,25,2483,TRUE,41,59
+2014,Big Ten,9,Illinois,Minnesota,356,135,TRUE,28,24
+2014,Big Ten,9,Wisconsin,Maryland,275,120,TRUE,52,7
+2014,American Athletic,9,SMU,Memphis,2567,235,TRUE,10,48
+2014,Conference USA,9,Rice,North Texas,242,249,TRUE,41,21
+2014,Big Ten,9,Nebraska,Rutgers,158,164,TRUE,42,24
+2014,Big 12,9,Kansas State,Texas,2306,251,TRUE,23,0
+2014,ACC,9,Virginia,North Carolina,258,153,TRUE,27,28
+2014,Mid-American,9,Eastern Michigan,Northern Illinois,2199,2459,TRUE,17,28
+2014,Mid-American,9,Toledo,Massachusetts,2649,113,TRUE,42,35
+2014,Sun Belt,9,Georgia State,Georgia Southern,2247,290,TRUE,31,69
+2014,Pac-12,9,Colorado,UCLA,38,26,TRUE,37,40
+2014,Mid-American,9,Western Michigan,Ohio,2711,195,TRUE,42,21
+2014,Mid-American,9,Ball State,Akron,2050,2006,TRUE,35,21
+2014,Mid-American,9,Miami (OH),Kent State,193,2309,TRUE,10,3
+2014,Mid-American,9,Buffalo,Central Michigan,2084,2117,TRUE,14,20
+2014,Big Ten,9,Michigan State,Michigan,127,130,TRUE,35,11
+2014,Big 12,9,Oklahoma State,West Virginia,197,277,TRUE,10,34
+2014,Big 12,9,TCU,Texas Tech,2628,2641,TRUE,82,27
+2014,Pac-12,9,Stanford,Oregon State,24,204,TRUE,38,14
+2014,ACC,9,Wake Forest,Boston College,154,103,TRUE,17,23
+2014,Conference USA,9,Southern Miss,Louisiana Tech,2572,2348,TRUE,20,31
+2014,SEC,9,Kentucky,Mississippi State,96,344,TRUE,31,45
+2014,ACC,9,Pittsburgh,Georgia Tech,221,59,TRUE,28,56
+2014,Conference USA,9,Marshall,Florida Atlantic,276,2226,TRUE,35,16
+2014,SEC,9,Missouri,Vanderbilt,142,238,TRUE,24,14
+2014,Conference USA,9,Western Kentucky,Old Dominion,98,295,TRUE,66,51
+2014,Mountain West,9,Utah State,UNLV,328,2439,TRUE,34,20
+2014,American Athletic,9,UCF,Temple,2116,218,TRUE,34,14
+2014,Pac-12,9,Washington State,Arizona,265,12,TRUE,37,59
+2014,ACC,9,Clemson,Syracuse,228,183,TRUE,16,6
+2014,Mountain West,9,Colorado State,Wyoming,36,2751,TRUE,45,31
+2014,Conference USA,9,UTSA,UTEP,2636,2638,TRUE,0,34
+2014,Sun Belt,9,UL Monroe,Texas State,2433,326,TRUE,18,22
+2014,SEC,9,LSU,Ole Miss,99,145,TRUE,10,7
+2014,SEC,9,Auburn,South Carolina,2,2579,TRUE,42,35
+2014,SEC,9,Tennessee,Alabama,2633,333,TRUE,20,34
+2014,Big Ten,9,Penn State,Ohio State,213,194,TRUE,24,31
+2014,Pac-12,9,Utah,USC,254,30,TRUE,24,21
+2014,Pac-12,9,Washington,Arizona State,264,9,TRUE,10,24
+2014,Mountain West,9,Hawai'i,Nevada,62,2440,TRUE,18,26
+2014,ACC,10,Louisville,Florida State,97,52,TRUE,31,42
+2014,Sun Belt,10,Georgia Southern,Troy,290,2653,TRUE,42,10
+2014,American Athletic,10,Tulane,Cincinnati,2655,2132,TRUE,14,38
+2014,American Athletic,10,Memphis,Tulsa,235,202,TRUE,40,20
+2014,Big Ten,10,Rutgers,Wisconsin,164,275,TRUE,0,37
+2014,Conference USA,10,Florida International,Rice,2229,242,TRUE,17,31
+2014,ACC,10,Pittsburgh,Duke,221,150,TRUE,48,51
+2014,American Athletic,10,Temple,East Carolina,218,151,TRUE,20,10
+2014,Big Ten,10,Iowa,Northwestern,2294,77,TRUE,48,7
+2014,Big Ten,10,Penn State,Maryland,213,120,TRUE,19,20
+2014,Big 12,10,Iowa State,Oklahoma,66,201,TRUE,14,59
+2014,American Athletic,10,UConn,UCF,41,2116,TRUE,37,29
+2014,ACC,10,Virginia Tech,Boston College,259,103,TRUE,31,33
+2014,ACC,10,Miami,North Carolina,2390,153,TRUE,47,20
+2014,Mid-American,10,Eastern Michigan,Central Michigan,2199,2117,TRUE,7,38
+2014,Pac-12,10,Colorado,Washington,38,264,TRUE,23,38
+2014,Mid-American,10,Miami (OH),Western Michigan,193,2711,TRUE,10,41
+2014,Conference USA,10,Louisiana Tech,Western Kentucky,2348,98,TRUE,59,10
+2014,ACC,10,Syracuse,NC State,183,152,TRUE,17,24
+2014,Sun Belt,10,App State,Georgia State,2026,2247,TRUE,44,0
+2014,Big Ten,10,Michigan,Indiana,130,84,TRUE,34,10
+2014,Big 12,10,West Virginia,TCU,277,2628,TRUE,30,31
+2014,Big Ten,10,Nebraska,Purdue,158,2509,TRUE,35,14
+2014,ACC,10,Georgia Tech,Virginia,59,258,TRUE,35,10
+2014,SEC,10,Georgia,Florida,61,57,TRUE,20,38
+2014,American Athletic,10,South Florida,Houston,58,248,TRUE,3,27
+2014,Sun Belt,10,New Mexico State,Texas State,166,326,TRUE,29,37
+2014,Big 12,10,Baylor,Kansas,239,2305,TRUE,60,14
+2014,SEC,10,Missouri,Kentucky,142,96,TRUE,20,10
+2014,Pac-12,10,Washington State,USC,265,30,TRUE,17,44
+2014,Sun Belt,10,Louisiana,South Alabama,309,6,TRUE,19,9
+2014,Sun Belt,10,Idaho,Arkansas State,70,2032,TRUE,28,44
+2014,Mountain West,10,UNLV,New Mexico,2439,167,TRUE,28,31
+2014,Conference USA,10,Florida Atlantic,UAB,2226,5,TRUE,28,31
+2014,Mountain West,10,San José State,Colorado State,23,36,TRUE,31,38
+2014,SEC,10,Ole Miss,Auburn,145,2,TRUE,31,35
+2014,SEC,10,Mississippi State,Arkansas,344,8,TRUE,17,10
+2014,Pac-12,10,Oregon,Stanford,2483,24,TRUE,45,16
+2014,Big 12,10,Texas Tech,Texas,2641,251,TRUE,13,34
+2014,SEC,10,South Carolina,Tennessee,2579,2633,TRUE,42,45
+2014,Big Ten,10,Ohio State,Illinois,194,356,TRUE,55,14
+2014,Big 12,10,Kansas State,Oklahoma State,2306,197,TRUE,48,14
+2014,Conference USA,10,UTEP,Southern Miss,2638,2572,TRUE,35,14
+2014,Pac-12,10,UCLA,Arizona,26,12,TRUE,17,7
+2014,Mountain West,10,Nevada,San Diego State,2440,21,TRUE,30,14
+2014,Pac-12,10,Oregon State,California,204,25,TRUE,31,45
+2014,Mountain West,10,Fresno State,Wyoming,278,2751,TRUE,17,45
+2014,Pac-12,10,Arizona State,Utah,9,254,TRUE,19,16
+2014,Mountain West,10,Hawai'i,Utah State,62,328,TRUE,14,35
+2014,Mid-American,11,Akron,Bowling Green,2006,189,TRUE,10,27
+2014,Mid-American,11,Kent State,Toledo,2309,2649,TRUE,20,30
+2014,Mid-American,11,Ball State,Northern Illinois,2050,2459,TRUE,21,35
+2014,Mid-American,11,Ohio,Buffalo,195,2084,TRUE,37,14
+2014,ACC,11,Wake Forest,Clemson,154,228,TRUE,20,34
+2014,American Athletic,11,Temple,Memphis,218,235,TRUE,13,16
+2014,Mountain West,11,Wyoming,Utah State,2751,328,TRUE,3,20
+2014,Big Ten,11,Indiana,Penn State,84,213,TRUE,7,13
+2014,Conference USA,11,Rice,UTSA,242,2636,TRUE,17,7
+2014,American Athletic,11,Tulsa,SMU,202,2567,TRUE,38,28
+2014,Big 12,11,Oklahoma,Baylor,201,239,TRUE,14,48
+2014,Big Ten,11,Minnesota,Iowa,135,2294,TRUE,51,14
+2014,SEC,11,Kentucky,Georgia,96,61,TRUE,31,63
+2014,Big Ten,11,Purdue,Wisconsin,2509,275,TRUE,16,34
+2014,Conference USA,11,UAB,Louisiana Tech,5,2348,TRUE,24,40
+2014,ACC,11,Syracuse,Duke,183,150,TRUE,10,27
+2014,ACC,11,NC State,Georgia Tech,152,59,TRUE,23,56
+2014,Sun Belt,11,Arkansas State,South Alabama,2032,6,TRUE,45,10
+2014,Sun Belt,11,Troy,Georgia State,2653,2247,TRUE,45,21
+2014,Big 12,11,Texas,West Virginia,251,277,TRUE,33,16
+2014,Sun Belt,11,App State,UL Monroe,2026,2433,TRUE,31,29
+2014,American Athletic,11,Houston,Tulane,248,2655,TRUE,24,31
+2014,SEC,11,Auburn,Texas A&M,2,245,TRUE,38,41
+2014,Big 12,11,Kansas,Iowa State,2305,66,TRUE,34,14
+2014,Conference USA,11,Old Dominion,Florida International,295,2229,TRUE,38,35
+2014,Big Ten,11,Northwestern,Michigan,77,130,TRUE,9,10
+2014,Mountain West,11,UNLV,Air Force,2439,2005,TRUE,21,48
+2014,Sun Belt,11,Texas State,Georgia Southern,326,290,TRUE,25,28
+2014,Pac-12,11,Oregon State,Washington State,204,265,TRUE,32,39
+2014,Conference USA,11,Western Kentucky,UTEP,98,2638,TRUE,35,27
+2014,ACC,11,Florida State,Virginia,52,258,TRUE,34,20
+2014,Pac-12,11,Washington,UCLA,264,26,TRUE,30,44
+2014,Mountain West,11,Colorado State,Hawai'i,36,62,TRUE,49,22
+2014,Conference USA,11,North Texas,Florida Atlantic,249,2226,TRUE,31,10
+2014,Conference USA,11,Southern Miss,Marshall,2572,276,TRUE,17,63
+2014,Mountain West,11,New Mexico,Boise State,167,68,TRUE,49,60
+2014,ACC,11,Boston College,Louisville,103,97,TRUE,19,38
+2014,Big 12,11,TCU,Kansas State,2628,2306,TRUE,41,20
+2014,SEC,11,Vanderbilt,Florida,238,57,TRUE,10,34
+2014,SEC,11,LSU,Alabama,99,333,TRUE,13,20
+2014,Pac-12,11,Arizona,Colorado,12,38,TRUE,38,20
+2014,Big Ten,11,Michigan State,Ohio State,127,194,TRUE,37,49
+2014,Sun Belt,11,New Mexico State,Louisiana,166,309,TRUE,16,44
+2014,Pac-12,11,Utah,Oregon,254,2483,TRUE,27,51
+2014,Mountain West,11,Fresno State,San José State,278,23,TRUE,38,24
+2014,Mid-American,12,Buffalo,Akron,2084,2006,TRUE,55,24
+2014,Mid-American,12,Northern Illinois,Toledo,2459,2649,TRUE,27,24
+2014,Mid-American,12,Bowling Green,Kent State,189,2309,TRUE,30,20
+2014,Mid-American,12,Massachusetts,Ball State,113,2050,TRUE,24,10
+2014,American Athletic,12,Cincinnati,East Carolina,2132,151,TRUE,54,46
+2014,Conference USA,12,UTSA,Southern Miss,2636,2572,TRUE,12,10
+2014,Pac-12,12,USC,California,30,25,TRUE,38,30
+2014,American Athletic,12,UCF,Tulsa,2116,202,TRUE,31,7
+2014,SEC,12,Florida,South Carolina,57,2579,TRUE,20,23
+2014,Big Ten,12,Minnesota,Ohio State,135,194,TRUE,24,31
+2014,ACC,12,Duke,Virginia Tech,150,259,TRUE,16,17
+2014,ACC,12,Georgia Tech,Clemson,59,228,TRUE,28,6
+2014,Big Ten,12,Illinois,Iowa,356,2294,TRUE,14,30
+2014,ACC,12,North Carolina,Pittsburgh,153,221,TRUE,40,35
+2014,Mid-American,12,Central Michigan,Miami (OH),2117,193,TRUE,34,27
+2014,Mountain West,12,Air Force,Nevada,2005,2440,TRUE,45,38
+2014,Mid-American,12,Western Michigan,Eastern Michigan,2711,2199,TRUE,51,7
+2014,Conference USA,12,Marshall,Rice,276,242,TRUE,41,14
+2014,Sun Belt,12,Arkansas State,App State,2032,2026,TRUE,32,37
+2014,ACC,12,NC State,Wake Forest,152,154,TRUE,42,13
+2014,Big 12,12,Kansas,TCU,2305,2628,TRUE,30,34
+2014,Big Ten,12,Rutgers,Indiana,164,84,TRUE,45,23
+2014,Big Ten,12,Wisconsin,Nebraska,275,158,TRUE,59,24
+2014,Big 12,12,Texas Tech,Oklahoma,2641,201,TRUE,30,42
+2014,Pac-12,12,Arizona,Washington,12,264,TRUE,27,26
+2014,American Athletic,12,Tulane,Memphis,2655,235,TRUE,7,38
+2014,SEC,12,Alabama,Mississippi State,333,344,TRUE,25,20
+2014,Conference USA,12,Florida International,Middle Tennessee,2229,2393,TRUE,38,28
+2014,Mountain West,12,Utah State,New Mexico,328,167,TRUE,28,21
+2014,SEC,12,Tennessee,Kentucky,2633,96,TRUE,50,16
+2014,Mountain West,12,San José State,Hawai'i,23,62,TRUE,0,13
+2014,Sun Belt,12,Idaho,Troy,70,2653,TRUE,17,34
+2014,Pac-12,12,Stanford,Utah,24,254,TRUE,17,20
+2014,Sun Belt,12,UL Monroe,Louisiana,2433,309,TRUE,27,34
+2014,SEC,12,Georgia,Auburn,61,2,TRUE,34,7
+2014,Sun Belt,12,South Alabama,Texas State,6,326,TRUE,24,20
+2014,SEC,12,Texas A&M,Missouri,245,142,TRUE,27,34
+2014,Big 12,12,Oklahoma State,Texas,197,251,TRUE,7,28
+2014,Big Ten,12,Maryland,Michigan State,120,127,TRUE,15,37
+2014,ACC,12,Miami,Florida State,2390,52,TRUE,26,30
+2014,American Athletic,12,SMU,South Florida,2567,58,TRUE,13,14
+2014,SEC,12,Arkansas,LSU,8,99,TRUE,17,0
+2014,Conference USA,12,UTEP,North Texas,2638,249,TRUE,35,17
+2014,Mountain West,12,Boise State,San Diego State,68,21,TRUE,38,29
+2014,Pac-12,12,Oregon State,Arizona State,204,9,TRUE,35,27
+2014,Mid-American,13,Akron,Massachusetts,2006,113,TRUE,30,6
+2014,Mid-American,13,Ohio,Northern Illinois,195,2459,TRUE,14,21
+2014,Mid-American,13,Toledo,Bowling Green,2649,189,TRUE,27,20
+2014,Big 12,13,West Virginia,Kansas State,277,2306,TRUE,20,26
+2014,ACC,13,Duke,North Carolina,150,153,TRUE,20,45
+2014,Sun Belt,13,Texas State,Arkansas State,326,2032,TRUE,45,27
+2014,Conference USA,13,Rice,UTEP,242,2638,TRUE,31,13
+2014,Mountain West,13,Utah State,San José State,328,23,TRUE,41,7
+2014,Mountain West,13,San Diego State,Air Force,21,2005,TRUE,30,14
+2014,Big Ten,13,Purdue,Northwestern,2509,77,TRUE,14,38
+2014,Big Ten,13,Nebraska,Minnesota,158,135,TRUE,24,28
+2014,American Athletic,13,UCF,SMU,2116,2567,TRUE,53,7
+2014,Big Ten,13,Ohio State,Indiana,194,84,TRUE,42,27
+2014,Big Ten,13,Illinois,Penn State,356,213,TRUE,16,14
+2014,Big Ten,13,Michigan State,Rutgers,127,164,TRUE,45,3
+2014,Conference USA,13,UAB,Marshall,5,276,TRUE,18,23
+2014,Conference USA,13,Western Kentucky,UTSA,98,2636,TRUE,45,7
+2014,American Athletic,13,Houston,Tulsa,248,202,TRUE,38,28
+2014,ACC,13,Wake Forest,Virginia Tech,154,259,TRUE,6,3
+2014,Mid-American,13,Central Michigan,Western Michigan,2117,2711,TRUE,20,32
+2014,Conference USA,13,Old Dominion,Louisiana Tech,295,2348,TRUE,30,27
+2014,Pac-12,13,Arizona State,Washington State,9,265,TRUE,52,31
+2014,Mountain West,13,Colorado State,New Mexico,36,167,TRUE,58,20
+2014,Big 12,13,Oklahoma,Kansas,201,2305,TRUE,44,7
+2014,Sun Belt,13,Louisiana,App State,309,2026,TRUE,16,35
+2014,Mid-American,13,Ball State,Eastern Michigan,2050,2199,TRUE,45,30
+2014,Big Ten,13,Iowa,Wisconsin,2294,275,TRUE,24,26
+2014,ACC,13,Florida State,Boston College,52,103,TRUE,20,17
+2014,Big 12,13,Iowa State,Texas Tech,66,2641,TRUE,31,34
+2014,Big Ten,13,Michigan,Maryland,130,120,TRUE,16,23
+2014,Conference USA,13,North Texas,Florida International,249,2229,TRUE,17,14
+2014,American Athletic,13,East Carolina,Tulane,151,2655,TRUE,34,6
+2014,SEC,13,Arkansas,Ole Miss,8,145,TRUE,30,0
+2014,Pac-12,13,Utah,Arizona,254,12,TRUE,10,42
+2014,ACC,13,Pittsburgh,Syracuse,221,183,TRUE,30,7
+2014,Pac-12,13,California,Stanford,25,24,TRUE,17,38
+2014,Sun Belt,13,New Mexico State,UL Monroe,166,2433,TRUE,17,30
+2014,American Athletic,13,Memphis,South Florida,235,58,TRUE,31,20
+2014,Pac-12,13,Oregon,Colorado,2483,38,TRUE,44,10
+2014,ACC,13,Virginia,Miami,258,2390,TRUE,30,13
+2014,Conference USA,13,Middle Tennessee,Florida Atlantic,2393,2226,TRUE,35,34
+2014,SEC,13,Mississippi State,Vanderbilt,344,238,TRUE,51,0
+2014,SEC,13,Tennessee,Missouri,2633,142,TRUE,21,29
+2014,Big 12,13,Baylor,Oklahoma State,239,197,TRUE,49,28
+2014,American Athletic,13,UConn,Cincinnati,41,2132,TRUE,0,41
+2014,Pac-12,13,UCLA,USC,26,30,TRUE,38,20
+2014,Mountain West,13,Wyoming,Boise State,2751,68,TRUE,14,63
+2014,Mountain West,13,Nevada,Fresno State,2440,278,TRUE,20,40
+2014,Pac-12,13,Washington,Oregon State,264,204,TRUE,37,13
+2014,Mountain West,13,Hawai'i,UNLV,62,2439,TRUE,37,35
+2014,Mid-American,14,Miami (OH),Ohio,193,195,TRUE,21,24
+2014,SEC,14,Texas A&M,LSU,245,99,TRUE,17,23
+2014,Big 12,14,Texas,TCU,251,2628,TRUE,10,48
+2014,Mid-American,14,Western Michigan,Northern Illinois,2711,2459,TRUE,21,31
+2014,American Athletic,14,SMU,Houston,2567,248,TRUE,9,35
+2014,American Athletic,14,South Florida,UCF,58,2116,TRUE,0,16
+2014,Big Ten,14,Iowa,Nebraska,2294,158,TRUE,34,37
+2014,Conference USA,14,Marshall,Western Kentucky,276,98,TRUE,66,67
+2014,Mid-American,14,Kent State,Akron,2309,2006,TRUE,27,24
+2014,Mid-American,14,Massachusetts,Buffalo,113,2084,TRUE,21,41
+2014,Mid-American,14,Eastern Michigan,Toledo,2199,2649,TRUE,16,52
+2014,Mid-American,14,Bowling Green,Ball State,189,2050,TRUE,24,41
+2014,SEC,14,Missouri,Arkansas,142,8,TRUE,21,14
+2014,Mountain West,14,Air Force,Colorado State,2005,36,TRUE,27,24
+2014,Pac-12,14,UCLA,Stanford,26,24,TRUE,10,31
+2014,Pac-12,14,Arizona,Arizona State,12,9,TRUE,42,35
+2014,ACC,14,Virginia Tech,Virginia,259,258,TRUE,24,20
+2014,American Athletic,14,Tulsa,East Carolina,202,151,TRUE,32,49
+2014,American Athletic,14,Temple,Cincinnati,218,2132,TRUE,6,14
+2014,Big Ten,14,Ohio State,Michigan,194,130,TRUE,42,28
+2014,Conference USA,14,Louisiana Tech,Rice,2348,242,TRUE,76,31
+2014,Conference USA,14,Florida Atlantic,Old Dominion,2226,295,TRUE,28,31
+2014,Conference USA,14,UTSA,North Texas,2636,249,TRUE,34,27
+2014,Big Ten,14,Northwestern,Illinois,77,356,TRUE,33,47
+2014,Big Ten,14,Indiana,Purdue,84,2509,TRUE,23,16
+2014,Big 12,14,Iowa State,West Virginia,66,277,TRUE,24,37
+2014,Sun Belt,14,Troy,Louisiana,2653,309,TRUE,23,42
+2014,ACC,14,North Carolina,NC State,153,152,TRUE,7,35
+2014,ACC,14,Boston College,Syracuse,103,183,TRUE,28,7
+2014,Pac-12,14,Colorado,Utah,38,254,TRUE,34,38
+2014,Sun Belt,14,Georgia State,Texas State,2247,326,TRUE,31,54
+2014,Sun Belt,14,App State,Idaho,2026,70,TRUE,45,28
+2014,Mountain West,14,New Mexico,Wyoming,167,2751,TRUE,36,30
+2014,Sun Belt,14,Arkansas State,New Mexico State,2032,166,TRUE,68,35
+2014,Big Ten,14,Wisconsin,Minnesota,275,135,TRUE,34,24
+2014,Mountain West,14,San Diego State,San José State,21,23,TRUE,38,7
+2014,Big 12,14,Texas Tech,Baylor,2641,239,TRUE,46,48
+2014,SEC,14,Ole Miss,Mississippi State,145,344,TRUE,31,17
+2014,Conference USA,14,Southern Miss,UAB,2572,5,TRUE,24,45
+2014,Big Ten,14,Maryland,Rutgers,120,164,TRUE,38,41
+2014,Big Ten,14,Penn State,Michigan State,213,127,TRUE,10,34
+2014,SEC,14,Vanderbilt,Tennessee,238,2633,TRUE,17,24
+2014,American Athletic,14,Memphis,UConn,235,41,TRUE,41,10
+2014,Big 12,14,Kansas State,Kansas,2306,2305,TRUE,51,13
+2014,Sun Belt,14,Georgia Southern,UL Monroe,290,2433,TRUE,22,16
+2014,Conference USA,14,UTEP,Middle Tennessee,2638,2393,TRUE,24,21
+2014,ACC,14,Miami,Pittsburgh,2390,221,TRUE,23,35
+2014,ACC,14,Duke,Wake Forest,150,154,TRUE,41,21
+2014,Mountain West,14,Fresno State,Hawai'i,278,62,TRUE,28,21
+2014,SEC,14,Alabama,Auburn,333,2,TRUE,55,44
+2014,Pac-12,14,Oregon State,Oregon,204,2483,TRUE,19,47
+2014,Mountain West,14,Boise State,Utah State,68,328,TRUE,50,19
+2014,Pac-12,14,Washington State,Washington,265,264,TRUE,13,31
+2014,Mountain West,14,UNLV,Nevada,2439,2440,TRUE,27,49
+2014,American Athletic,15,East Carolina,UCF,151,2116,TRUE,30,32
+2014,Big 12,15,TCU,Iowa State,2628,66,TRUE,55,3
+2014,American Athletic,15,UConn,SMU,41,2567,TRUE,20,27
+2014,American Athletic,15,Cincinnati,Houston,2132,248,TRUE,38,31
+2014,Big 12,15,Oklahoma,Oklahoma State,201,197,TRUE,35,38
+2014,American Athletic,15,Tulane,Temple,2655,218,TRUE,3,10
+2014,Big 12,15,Baylor,Kansas State,239,2306,TRUE,38,27
+2026,ACC,1,Virginia,NC State,258,152,TRUE,34,8
+2026,Mid-American,1,Eastern Michigan,Sacramento State,2199,16,TRUE,28,17
+2026,ACC,1,Stanford,Miami,24,2390,TRUE,6,45
+2026,Mountain West,1,Hawai'i,UNLV,62,2439,TRUE,6,21
+2026,ACC,1,Florida State,SMU,52,2567,TRUE,24,27
+2026,American Athletic,2,Army,South Florida,349,58,TRUE,24,28
+2026,Big 12,2,BYU,Arizona,252,12,TRUE,28,17
+2026,ACC,2,Syracuse,California,183,25,TRUE,18,21
+2026,SEC,2,Kentucky,Alabama,96,333,TRUE,17,45
+2026,American Athletic,2,Florida Atlantic,Navy,2226,2426,TRUE,38,30
+2026,Mountain West,2,Air Force,North Dakota State,2005,2449,TRUE,32,38
+2026,ACC,3,Pittsburgh,Syracuse,221,183,TRUE,27,13
+2026,ACC,3,Wake Forest,Miami,154,2390,TRUE,20,33
+2026,Big 12,3,Texas Tech,Houston,2641,248,TRUE,28,26
+2026,ACC,3,Clemson,North Carolina,228,153,TRUE,28,20
+2026,SEC,3,Arkansas,Georgia,8,61,TRUE,17,45
+2026,Big 12,3,Kansas,Arizona State,2305,9,TRUE,17,24
+2026,ACC,3,Louisville,SMU,97,2567,TRUE,41,31
+2026,SEC,3,Texas A&M,Kentucky,245,96,TRUE,21,31
+2026,Big Ten,3,Rutgers,USC,164,30,TRUE,35,42
+2026,ACC,3,Duke,Stanford,150,24,TRUE,35,7
+2026,SEC,3,South Carolina,Mississippi State,2579,344,TRUE,34,41
+2026,SEC,3,Auburn,Florida,2,57,TRUE,39,44
+2026,SEC,3,Ole Miss,LSU,145,99,TRUE,32,24
+2026,Big Ten,3,UCLA,Purdue,26,2509,TRUE,52,38
+2026,American Athletic,4,Temple,Army,218,349,TRUE,17,21
+2026,American Athletic,4,UAB,Navy,5,2426,TRUE,24,20
+2026,Big Ten,4,Indiana,Northwestern,84,77,TRUE,29,23
+2026,ACC,4,California,Clemson,25,228,TRUE,10,24
+2026,Big Ten,4,Ohio State,Illinois,194,356,TRUE,42,19
+2026,SEC,4,Tennessee,Texas,2633,251,TRUE,17,20
+2026,Mid-American,4,Kent State,Ball State,2309,2050,TRUE,26,13
+2026,ACC,4,Boston College,Virginia Tech,103,259,TRUE,14,21
+2026,ACC,4,Louisville,Wake Forest,97,154,TRUE,27,30
+2026,Big 12,4,Baylor,Colorado,239,38,TRUE,23,13
+2026,Big Ten,4,Maryland,UCLA,120,26,TRUE,3,54
+2026,Mountain West,4,Wyoming,Hawai'i,2751,62,TRUE,27,10
+2026,SEC,4,Florida,Ole Miss,57,145,TRUE,52,28
+2026,Big Ten,4,Michigan,Iowa,130,2294,TRUE,19,20
+2026,Big 12,4,Iowa State,Utah,66,254,TRUE,17,31
+2026,Big 12,4,UCF,TCU,2116,2628,TRUE,21,13
+2026,SEC,4,Georgia,Oklahoma,61,201,TRUE,41,13
+2026,SEC,4,Auburn,Vanderbilt,2,238,TRUE,21,15
+2026,Big Ten,4,Penn State,Wisconsin,213,275,TRUE,20,24
+2026,Big Ten,4,Michigan State,Nebraska,127,158,TRUE,13,31
+2026,Sun Belt,4,Old Dominion,James Madison,295,256,TRUE,20,46
+2026,SEC,4,Alabama,South Carolina,333,2579,TRUE,49,18
+2026,Conference USA,4,Jacksonville State,Middle Tennessee,55,2393,TRUE,23,13
+2026,Big 12,4,West Virginia,Oklahoma State,277,197,TRUE,24,41
+2026,Big 12,4,Cincinnati,Kansas State,2132,2306,TRUE,31,26
+2026,Big Ten,4,USC,Oregon,30,2483,TRUE,27,41
+2026,SEC,4,LSU,Texas A&M,99,245,TRUE,35,6
+2026,SEC,4,Mississippi State,Missouri,344,142,TRUE,31,24
+2026,Mid-American,4,Sacramento State,Massachusetts,16,113,TRUE,6,35
+2026,ACC,4,Stanford,Georgia Tech,24,59,TRUE,34,27
+2026,Mountain West,4,Nevada,Air Force,2440,2005,TRUE,33,36
+2026,Big Ten,4,Washington,Minnesota,264,135,TRUE,24,27
+2026,Conference USA,5,New Mexico State,Western Kentucky,166,98,TRUE,34,13
+2026,American Athletic,5,Tulsa,North Texas,202,249,TRUE,44,45
+2026,Conference USA,5,Delaware,Liberty,48,2335,TRUE,14,30
+2026,ACC,5,Virginia Tech,Pittsburgh,259,221,TRUE,33,35
+2026,Big Ten,5,Northwestern,Penn State,77,213,TRUE,34,13
+2026,American Athletic,5,Charlotte,Memphis,2429,235,TRUE,8,59
+2026,Big Ten,5,Minnesota,Michigan,135,130,TRUE,20,14
+2026,Big 12,5,Houston,UCF,248,2116,TRUE,27,17
+2026,Big 12,5,Iowa State,West Virginia,66,277,TRUE,45,42
+2026,ACC,5,Wake Forest,Stanford,154,24,TRUE,57,3
+2026,ACC,5,SMU,Boston College,2567,103,TRUE,25,16
+2026,SEC,5,Mississippi State,Alabama,344,333,TRUE,23,56
+2026,Big Ten,5,Wisconsin,Michigan State,275,127,TRUE,31,3
+2026,SEC,5,Georgia,Vanderbilt,61,238,TRUE,38,14
+2026,Mid-American,5,Buffalo,Western Michigan,2084,2711,TRUE,17,20
+2026,Mid-American,5,Ball State,Toledo,2050,2649,TRUE,24,39
+2026,Mid-American,5,Central Michigan,Akron,2117,2006,TRUE,41,17
+2026,Sun Belt,5,Georgia State,Old Dominion,2247,295,TRUE,42,10
+2026,Mid-American,5,Miami (OH),Bowling Green,193,189,TRUE,20,24
+2026,ACC,5,Florida State,Virginia,52,258,TRUE,38,7
+2026,Mountain West,5,North Dakota State,Wyoming,2449,2751,TRUE,28,0
+2026,SEC,5,Missouri,Florida,142,57,TRUE,45,17
+2026,Mid-American,5,Massachusetts,Eastern Michigan,113,2199,TRUE,14,38
+2026,Big Ten,5,Iowa,Ohio State,2294,194,TRUE,14,31
+2026,Mid-American,5,Kent State,Ohio,2309,195,TRUE,10,13
+2026,ACC,5,NC State,Louisville,152,97,TRUE,31,28
+2026,SEC,5,Tennessee,Auburn,2633,2,TRUE,24,14
+2026,Sun Belt,5,James Madison,Marshall,256,276,TRUE,45,17
+2026,Mountain West,5,New Mexico,UTEP,167,2638,TRUE,61,7
+2026,Big Ten,5,Nebraska,Maryland,158,120,TRUE,48,23
+2026,Big Ten,5,Illinois,Purdue,356,2509,TRUE,17,24
+2026,SEC,5,South Carolina,Kentucky,2579,96,TRUE,34,35
+2026,Pac-12,5,Colorado State,Oregon State,36,204,TRUE,26,56
+2026,Sun Belt,5,Coastal Carolina,Georgia Southern,324,290,TRUE,24,31
+2026,SEC,5,Texas A&M,Arkansas,245,8,TRUE,34,7
+2026,American Athletic,5,Rice,UTSA,242,2636,TRUE,14,16
+2026,Big 12,5,TCU,BYU,2628,252,TRUE,10,17
+2026,Sun Belt,5,South Alabama,UL Monroe,6,2433,TRUE,52,35
+2026,Big Ten,5,USC,Washington,30,264,TRUE,25,21
+2026,ACC,5,Clemson,Miami,228,2390,TRUE,13,41
+2026,Big 12,5,Colorado,Texas Tech,38,2641,TRUE,7,29
+2026,Pac-12,5,Boise State,Utah State,68,328,TRUE,37,18
+2026,American Athletic,5,South Florida,Temple,58,218,TRUE,13,17
+2026,Sun Belt,5,Louisiana,Arkansas State,309,2032,TRUE,23,20
+2026,Big Ten,5,Rutgers,Indiana,164,84,TRUE,15,47
+2026,Pac-12,5,Washington State,Fresno State,265,278,TRUE,6,26
+2026,Big 12,5,Arizona State,Baylor,9,239,TRUE,19,55
+2026,Pac-12,5,San Diego State,Texas State,21,326,TRUE,31,29
+2026,Big 12,5,Arizona,Cincinnati,12,2132,TRUE,34,7
+2026,Mountain West,5,Hawai'i,San José State,62,23,TRUE,16,20
+2026,Sun Belt,6,Troy,Southern Miss,2653,2572,TRUE,55,34
+2026,Conference USA,6,Kennesaw State,Jacksonville State,338,55,TRUE,26,27
+2026,Conference USA,6,Florida International,New Mexico State,2229,166,TRUE,22,3
+2026,Conference USA,6,Western Kentucky,Missouri State,98,2623,TRUE,34,13
+2026,Conference USA,6,Liberty,Sam Houston,2335,2534,TRUE,35,3
+2026,American Athletic,6,UTSA,South Florida,2636,58,TRUE,31,24
+2026,Sun Belt,6,Arkansas State,South Alabama,2032,6,TRUE,49,56
+2026,ACC,6,Louisville,Florida State,97,52,TRUE,44,20
+2026,Pac-12,6,Utah State,Washington State,328,265,TRUE,17,16
+2026,Mountain West,6,San José State,Wyoming,23,2751,TRUE,13,16
+2026,Big Ten,6,Washington,Iowa,264,2294,TRUE,24,41
+2026,Big 12,6,BYU,Iowa State,252,66,TRUE,24,10
+2026,Big 12,6,Oklahoma State,UCF,197,2116,TRUE,42,28
+2026,ACC,6,Pittsburgh,North Carolina,221,153,TRUE,17,21
+2026,Mid-American,6,Bowling Green,Sacramento State,189,16,TRUE,38,10
+2026,American Athletic,6,Army,Tulane,349,2655,TRUE,20,17
+2026,Big 12,6,West Virginia,Arizona,277,12,TRUE,31,52
+2026,SEC,6,Missouri,Texas A&M,142,245,TRUE,27,6
+2026,Big Ten,6,Nebraska,Indiana,158,84,TRUE,17,20
+2026,ACC,6,NC State,Wake Forest,152,154,TRUE,14,38
+2026,SEC,6,Florida,South Carolina,57,2579,TRUE,19,38
+2026,Sun Belt,6,App State,Old Dominion,2026,295,TRUE,3,10
+2026,American Athletic,6,East Carolina,Rice,151,242,TRUE,28,12
+2026,Mid-American,6,Massachusetts,Miami (OH),113,193,TRUE,19,20
+2026,Mid-American,6,Toledo,Buffalo,2649,2084,TRUE,8,23
+2026,Mid-American,6,Western Michigan,Kent State,2711,2309,TRUE,38,7
+2026,Mid-American,6,Akron,Eastern Michigan,2006,2199,TRUE,23,25
+2026,SEC,6,Vanderbilt,Ole Miss,238,145,TRUE,17,52
+2026,SEC,6,Oklahoma,Texas,201,251,TRUE,27,24
+2026,ACC,6,California,Virginia Tech,25,259,TRUE,25,20
+2026,Big 12,6,Kansas State,Houston,2306,248,TRUE,16,35
+2026,American Athletic,6,Navy,Tulsa,2426,202,TRUE,34,26
+2026,Mid-American,6,Ohio,Central Michigan,195,2117,TRUE,31,14
+2026,ACC,6,Georgia Tech,Duke,59,150,TRUE,28,25
+2026,American Athletic,6,North Texas,Charlotte,249,2429,TRUE,50,10
+2026,Big Ten,6,Oregon,UCLA,2483,26,TRUE,15,17
+2026,Big Ten,6,Michigan State,Illinois,127,356,TRUE,37,38
+2026,Big Ten,6,Ohio State,Maryland,194,120,TRUE,45,16
+2026,SEC,6,Arkansas,Tennessee,8,2633,TRUE,17,24
+2026,Pac-12,6,Oregon State,San Diego State,204,21,TRUE,66,14
+2026,Mountain West,6,UTEP,Nevada,2638,2440,TRUE,13,30
+2026,Sun Belt,6,Marshall,Coastal Carolina,276,324,TRUE,21,27
+2026,American Athletic,6,Memphis,UAB,235,5,TRUE,38,13
+2026,SEC,6,Kentucky,LSU,96,99,TRUE,35,34
+2026,Mountain West,6,UNLV,North Dakota State,2439,2449,TRUE,13,7
+2026,SEC,6,Alabama,Georgia,333,61,TRUE,17,20
+2026,ACC,6,Virginia,Syracuse,258,183,TRUE,28,25
+2026,Big Ten,6,Penn State,USC,213,30,TRUE,23,31
+2026,Mountain West,6,Northern Illinois,Air Force,2459,2005,TRUE,7,28
+2026,Sun Belt,6,Louisiana Tech,Louisiana,2348,309,TRUE,32,31
+2026,Sun Belt,6,Georgia Southern,James Madison,290,256,TRUE,24,27
+2026,Big Ten,6,Purdue,Minnesota,2509,135,TRUE,41,13
+2026,Big 12,6,Utah,Kansas,254,2305,TRUE,41,24
+2026,Pac-12,6,Fresno State,Boise State,278,68,TRUE,31,38
+2026,Conference USA,7,Middle Tennessee,Delaware,2393,48,TRUE,33,30
+2026,Conference USA,7,Jacksonville State,Florida International,55,2229,TRUE,27,24
+2026,Conference USA,7,Missouri State,Kennesaw State,2623,338,TRUE,24,21
+2026,Conference USA,7,Sam Houston,Western Kentucky,2534,98,TRUE,3,16
+2026,American Athletic,7,UAB,East Carolina,5,151,TRUE,30,17
+2026,Sun Belt,7,Old Dominion,Georgia Southern,295,290,TRUE,15,23
+2026,Pac-12,7,Texas State,Colorado State,326,36,TRUE,66,27
+2026,American Athletic,7,Tulane,Memphis,2655,235,TRUE,31,17
+2026,Big Ten,7,Purdue,Washington,2509,264,TRUE,26,38
+2026,Sun Belt,7,Coastal Carolina,App State,324,2026,TRUE,32,35
+2026,SEC,7,LSU,Mississippi State,99,344,TRUE,31,0
+2026,Sun Belt,7,James Madison,Georgia State,256,2247,TRUE,49,22
+2026,Big 12,7,West Virginia,Cincinnati,277,2132,TRUE,45,42
+2026,SEC,7,Texas,Florida,251,57,TRUE,24,27
+2026,American Athletic,7,Army,Florida Atlantic,349,2226,TRUE,56,24
+2026,Big Ten,7,Michigan State,Northwestern,127,77,TRUE,21,24
+2026,Mid-American,7,Bowling Green,Ball State,189,2050,TRUE,31,32
+2026,Big 12,7,Kansas State,Kansas,2306,2305,TRUE,35,24
+2026,Big Ten,7,Indiana,Ohio State,84,194,TRUE,15,19
+2026,ACC,7,SMU,Virginia,2567,258,TRUE,23,13
+2026,ACC,7,Boston College,Pittsburgh,103,221,TRUE,27,21
+2026,Big Ten,7,Maryland,Rutgers,120,164,TRUE,30,37
+2026,Mid-American,7,Buffalo,Massachusetts,2084,113,TRUE,25,18
+2026,American Athletic,7,Temple,Charlotte,218,2429,TRUE,31,38
+2026,Mid-American,7,Central Michigan,Western Michigan,2117,2711,TRUE,14,21
+2026,ACC,7,Duke,North Carolina,150,153,TRUE,20,24
+2026,ACC,7,Virginia Tech,Georgia Tech,259,59,TRUE,34,24
+2026,SEC,7,Georgia,Auburn,61,2,TRUE,24,27
+2026,Big Ten,7,Michigan,Penn State,130,213,TRUE,21,18
+2026,Big 12,7,Texas Tech,Arizona State,2641,9,TRUE,53,25
+2026,Mountain West,7,Air Force,UNLV,2005,2439,TRUE,41,31
+2026,SEC,7,Tennessee,Alabama,2633,333,TRUE,26,10
+2026,SEC,7,Ole Miss,Missouri,145,142,TRUE,31,3
+2026,Mid-American,7,Miami (OH),Akron,193,2006,TRUE,34,14
+2026,Mountain West,7,Wyoming,Northern Illinois,2751,2459,TRUE,41,23
+2026,Mid-American,7,Eastern Michigan,Toledo,2199,2649,TRUE,14,34
+2026,American Athletic,7,Rice,Tulsa,242,202,TRUE,17,38
+2026,Sun Belt,7,Louisiana,Troy,309,2653,TRUE,33,6
+2026,Pac-12,7,Oregon State,Washington State,204,265,TRUE,48,30
+2026,ACC,7,Miami,Florida State,2390,52,TRUE,43,35
+2026,Mountain West,7,North Dakota State,Nevada,2449,2440,TRUE,31,17
+2026,Big 12,7,Baylor,TCU,239,2628,TRUE,6,17
+2026,Sun Belt,7,Southern Miss,Arkansas State,2572,2032,TRUE,13,23
+2026,SEC,7,Vanderbilt,Arkansas,238,8,TRUE,21,31
+2026,Big Ten,7,UCLA,Wisconsin,26,275,TRUE,17,7
+2026,SEC,7,Oklahoma,Kentucky,201,96,TRUE,13,21
+2026,Big 12,7,Houston,Oklahoma State,248,197,TRUE,35,32
+2026,ACC,7,Syracuse,Louisville,183,97,TRUE,26,34
+2026,American Athletic,7,UTSA,Navy,2636,2426,TRUE,38,34
+2026,Sun Belt,7,UL Monroe,Louisiana Tech,2433,2348,TRUE,0,24
+2026,Mountain West,7,UTEP,San José State,2638,23,TRUE,11,24
+2026,Mid-American,7,Sacramento State,Ohio,16,195,TRUE,7,48
+2026,Big 12,7,Colorado,Utah,38,254,TRUE,24,27
+2026,Pac-12,7,San Diego State,Fresno State,21,278,TRUE,26,23
+2026,Mountain West,7,Hawai'i,New Mexico,62,167,TRUE,10,21
+2026,ACC,7,California,Wake Forest,25,154,TRUE,7,41
+2026,Big Ten,7,Oregon,Nebraska,2483,158,TRUE,17,14
+2026,Conference USA,8,Delaware,Missouri State,48,2623,TRUE,61,38
+2026,Conference USA,8,Florida International,Middle Tennessee,2229,2393,TRUE,23,26
+2026,Sun Belt,8,Marshall,South Alabama,276,6,TRUE,20,13
+2026,Conference USA,8,Sam Houston,New Mexico State,2534,166,TRUE,24,30
+2026,Conference USA,8,Kennesaw State,Liberty,338,2335,TRUE,6,34
+2026,Sun Belt,8,App State,James Madison,2026,256,TRUE,34,31
+2026,American Athletic,8,Memphis,East Carolina,235,151,TRUE,41,34
+2026,ACC,8,Virginia,Duke,258,150,TRUE,16,19
+2026,American Athletic,8,Tulsa,Army,202,349,TRUE,35,38
+2026,Mountain West,8,Wyoming,Air Force,2751,2005,TRUE,28,14
+2026,ACC,8,Stanford,NC State,24,152,TRUE,31,28
+2026,Big Ten,8,Northwestern,Rutgers,77,164,TRUE,42,14
+2026,Mid-American,8,Toledo,Western Michigan,2649,2711,TRUE,45,38
+2026,American Athletic,8,Florida Atlantic,Rice,2226,242,TRUE,51,49
+2026,Big 12,8,TCU,West Virginia,2628,277,TRUE,20,24
+2026,Big 12,8,Cincinnati,Texas Tech,2132,2641,TRUE,37,24
+2026,ACC,8,Miami,Pittsburgh,2390,221,TRUE,52,23
+2026,SEC,8,Auburn,LSU,2,99,TRUE,17,38
+2026,Big Ten,8,Michigan,Indiana,130,84,TRUE,6,13
+2026,ACC,8,SMU,California,2567,25,TRUE,59,20
+2026,Mid-American,8,Kent State,Akron,2309,2006,TRUE,35,20
+2026,Big 12,8,Kansas,Baylor,2305,239,TRUE,25,24
+2026,Mid-American,8,Central Michigan,Miami (OH),2117,193,TRUE,27,28
+2026,Big Ten,8,Illinois,Oregon,356,2483,TRUE,21,10
+2026,Mid-American,8,Buffalo,Bowling Green,2084,189,TRUE,31,24
+2026,Big Ten,8,Minnesota,Iowa,135,2294,TRUE,13,10
+2026,SEC,8,Alabama,Texas A&M,333,245,TRUE,31,20
+2026,Big 12,8,UCF,BYU,2116,252,TRUE,39,31
+2026,Mid-American,8,Ball State,Sacramento State,2050,16,TRUE,34,17
+2026,American Athletic,8,Navy,North Texas,2426,249,TRUE,39,49
+2026,SEC,8,Mississippi State,Oklahoma,344,201,TRUE,15,23
+2026,SEC,8,South Carolina,Tennessee,2579,2633,TRUE,27,24
+2026,Mountain West,8,Northern Illinois,Hawai'i,2459,62,TRUE,21,56
+2026,ACC,8,Georgia Tech,Boston College,59,103,TRUE,27,49
+2026,Big Ten,8,UCLA,Michigan State,26,127,TRUE,28,10
+2026,Big 12,8,Arizona State,Kansas State,9,2306,TRUE,28,17
+2026,Sun Belt,8,Troy,UL Monroe,2653,2433,TRUE,14,21
+2026,Mid-American,8,Ohio,Eastern Michigan,195,2199,TRUE,24,20
+2026,Sun Belt,8,Southern Miss,Louisiana,2572,309,TRUE,35,31
+2026,Mountain West,8,Nevada,San José State,2440,23,TRUE,28,13
+2026,Sun Belt,8,Louisiana Tech,Old Dominion,2348,295,TRUE,26,0
+2026,Pac-12,8,Washington State,Boise State,265,68,TRUE,10,31
+2026,Pac-12,8,Colorado State,San Diego State,36,21,TRUE,56,49
+2026,Big 12,8,Oklahoma State,Colorado,197,38,TRUE,57,24
+2026,ACC,8,Clemson,Virginia Tech,228,259,TRUE,16,20
+2026,Sun Belt,8,Arkansas State,Georgia State,2032,2247,TRUE,38,32
+2026,Big 12,8,Arizona,Iowa State,12,66,TRUE,39,3
+2026,ACC,8,North Carolina,Syracuse,153,183,TRUE,30,31
+2026,Pac-12,8,Texas State,Utah State,326,328,TRUE,20,17
+2026,Big Ten,8,Wisconsin,USC,275,30,TRUE,24,7
+2026,SEC,8,Kentucky,Vanderbilt,96,238,TRUE,34,17
+2026,SEC,8,Texas,Ole Miss,251,145,TRUE,34,27
+2026,American Athletic,8,Tulane,UTSA,2655,2636,TRUE,19,42
+2026,Mountain West,8,New Mexico,North Dakota State,167,2449,TRUE,21,16
+2026,Big 12,8,Utah,Houston,254,248,TRUE,21,13
+2026,Conference USA,9,Western Kentucky,Delaware,98,48,TRUE,21,35
+2026,Conference USA,9,Missouri State,Sam Houston,2623,2534,TRUE,24,3
+2026,Conference USA,9,Middle Tennessee,Kennesaw State,2393,338,TRUE,28,44
+2026,Conference USA,9,New Mexico State,Jacksonville State,166,55,TRUE,0,24
+2026,Sun Belt,9,James Madison,Troy,256,2653,FALSE,NA,NA
+2026,American Athletic,9,North Texas,Florida Atlantic,249,2226,FALSE,NA,NA
+2026,American Athletic,9,Charlotte,Tulane,2429,2655,FALSE,NA,NA
+2026,Big 12,9,UCF,Baylor,2116,239,FALSE,NA,NA
+2026,Mid-American,9,Sacramento State,Kent State,16,2309,FALSE,NA,NA
+2026,Big Ten,9,Maryland,Illinois,120,356,FALSE,NA,NA
+2026,Big 12,9,Texas Tech,Arizona,2641,12,FALSE,NA,NA
+2026,American Athletic,9,South Florida,UAB,58,5,FALSE,NA,NA
+2026,ACC,9,NC State,California,152,25,FALSE,NA,NA
+2026,Big Ten,9,Iowa,Wisconsin,2294,275,FALSE,NA,NA
+2026,ACC,9,Duke,Boston College,150,103,FALSE,NA,NA
+2026,ACC,9,Syracuse,SMU,183,2567,FALSE,NA,NA
+2026,Mid-American,9,Western Michigan,Bowling Green,2711,189,FALSE,NA,NA
+2026,Big Ten,9,Rutgers,Michigan,164,130,FALSE,NA,NA
+2026,SEC,9,Ole Miss,Auburn,145,2,FALSE,NA,NA
+2026,Sun Belt,9,Old Dominion,Marshall,295,276,FALSE,NA,NA
+2026,Big 12,9,Colorado,Kansas State,38,2306,FALSE,NA,NA
+2026,Sun Belt,9,Georgia State,Coastal Carolina,2247,324,FALSE,NA,NA
+2026,American Athletic,9,East Carolina,Temple,151,218,FALSE,NA,NA
+2026,Sun Belt,9,South Alabama,Louisiana Tech,6,2348,FALSE,NA,NA
+2026,ACC,9,Louisville,Stanford,97,24,FALSE,NA,NA
+2026,Sun Belt,9,UL Monroe,Southern Miss,2433,2572,FALSE,NA,NA
+2026,Big 12,9,BYU,Arizona State,252,9,FALSE,NA,NA
+2026,Big 12,9,TCU,Kansas,2628,2305,FALSE,NA,NA
+2026,Big Ten,9,Oregon,Northwestern,2483,77,FALSE,NA,NA
+2026,Mountain West,9,North Dakota State,UTEP,2449,2638,FALSE,NA,NA
+2026,Pac-12,9,Utah State,Colorado State,328,36,FALSE,NA,NA
+2026,Big Ten,9,Indiana,Minnesota,84,135,FALSE,NA,NA
+2026,Conference USA,9,Liberty,Florida International,2335,2229,FALSE,NA,NA
+2026,SEC,9,Georgia,Florida,61,57,FALSE,NA,NA
+2026,ACC,9,Wake Forest,Virginia,154,258,FALSE,NA,NA
+2026,Big 12,9,Cincinnati,Utah,2132,254,FALSE,NA,NA
+2026,Mountain West,9,San José State,New Mexico,23,167,FALSE,NA,NA
+2026,Big Ten,9,Penn State,Purdue,213,2509,FALSE,NA,NA
+2026,SEC,9,Oklahoma,South Carolina,201,2579,FALSE,NA,NA
+2026,Sun Belt,9,Georgia Southern,App State,290,2026,FALSE,NA,NA
+2026,Pac-12,9,San Diego State,Washington State,21,265,FALSE,NA,NA
+2026,ACC,9,Florida State,Clemson,52,228,FALSE,NA,NA
+2026,Big 12,9,Iowa State,Oklahoma State,66,197,FALSE,NA,NA
+2026,Big Ten,9,USC,Ohio State,30,194,FALSE,NA,NA
+2026,SEC,9,Texas,Mississippi State,251,344,FALSE,NA,NA
+2026,ACC,9,North Carolina,Miami,153,2390,FALSE,NA,NA
+2026,ACC,9,Pittsburgh,Georgia Tech,221,59,FALSE,NA,NA
+2026,SEC,9,Arkansas,Missouri,8,142,FALSE,NA,NA
+2026,Big Ten,9,Nebraska,Washington,158,264,FALSE,NA,NA
+2026,American Athletic,9,Memphis,Army,235,349,FALSE,NA,NA
+2026,Pac-12,9,Boise State,Texas State,68,326,FALSE,NA,NA
+2026,Mountain West,9,UNLV,Northern Illinois,2439,2459,FALSE,NA,NA
+2026,Pac-12,9,Fresno State,Oregon State,278,204,FALSE,NA,NA
+2026,Mid-American,10,Akron,Ohio,2006,195,FALSE,NA,NA
+2026,Mid-American,10,Miami (OH),Buffalo,193,2084,FALSE,NA,NA
+2026,Mid-American,10,Massachusetts,Ball State,113,2050,FALSE,NA,NA
+2026,Mid-American,10,Sacramento State,Toledo,16,2649,FALSE,NA,NA
+2026,Mid-American,10,Eastern Michigan,Central Michigan,2199,2117,FALSE,NA,NA
+2026,American Athletic,10,Florida Atlantic,UTSA,2226,2636,FALSE,NA,NA
+2026,Sun Belt,10,Southern Miss,James Madison,2572,256,FALSE,NA,NA
+2026,ACC,10,SMU,Virginia Tech,2567,259,FALSE,NA,NA
+2026,American Athletic,10,East Carolina,South Florida,151,58,FALSE,NA,NA
+2026,Big Ten,10,Illinois,Nebraska,356,158,FALSE,NA,NA
+2026,Mountain West,10,Nevada,New Mexico,2440,167,FALSE,NA,NA
+2026,Big 12,10,Arizona,TCU,12,2628,FALSE,NA,NA
+2026,Big 12,10,Texas Tech,West Virginia,2641,277,FALSE,NA,NA
+2026,Big 12,10,Kansas,UCF,2305,2116,FALSE,NA,NA
+2026,Big 12,10,Houston,Cincinnati,248,2132,FALSE,NA,NA
+2026,Big Ten,10,Washington,Penn State,264,213,FALSE,NA,NA
+2026,Big Ten,10,Northwestern,Iowa,77,2294,FALSE,NA,NA
+2026,Big Ten,10,Michigan,Michigan State,130,127,FALSE,NA,NA
+2026,Big 12,10,Baylor,Iowa State,239,66,FALSE,NA,NA
+2026,Big 12,10,Kansas State,Oklahoma State,2306,197,FALSE,NA,NA
+2026,Big Ten,10,Minnesota,UCLA,135,26,FALSE,NA,NA
+2026,American Athletic,10,Tulane,Tulsa,2655,202,FALSE,NA,NA
+2026,ACC,10,Boston College,Florida State,103,52,FALSE,NA,NA
+2026,ACC,10,Syracuse,Clemson,183,228,FALSE,NA,NA
+2026,Big 12,10,Utah,BYU,254,252,FALSE,NA,NA
+2026,SEC,10,Missouri,Texas,142,251,FALSE,NA,NA
+2026,ACC,10,NC State,Duke,152,150,FALSE,NA,NA
+2026,Big Ten,10,Wisconsin,Rutgers,275,164,FALSE,NA,NA
+2026,Big Ten,10,Purdue,Maryland,2509,120,FALSE,NA,NA
+2026,SEC,10,Auburn,Arkansas,2,8,FALSE,NA,NA
+2026,Sun Belt,10,Coastal Carolina,Old Dominion,324,295,FALSE,NA,NA
+2026,Sun Belt,10,App State,Georgia State,2026,2247,FALSE,NA,NA
+2026,Conference USA,10,Kennesaw State,Delaware,338,48,FALSE,NA,NA
+2026,Sun Belt,10,Arkansas State,UL Monroe,2032,2433,FALSE,NA,NA
+2026,SEC,10,South Carolina,Texas A&M,2579,245,FALSE,NA,NA
+2026,SEC,10,LSU,Alabama,99,333,FALSE,NA,NA
+2026,Conference USA,10,Middle Tennessee,Western Kentucky,2393,98,FALSE,NA,NA
+2026,American Athletic,10,UAB,Charlotte,5,2429,FALSE,NA,NA
+2026,American Athletic,10,Navy,Temple,2426,218,FALSE,NA,NA
+2026,Sun Belt,10,Georgia Southern,Marshall,290,276,FALSE,NA,NA
+2026,Big Ten,10,Ohio State,Oregon,194,2483,FALSE,NA,NA
+2026,American Athletic,10,North Texas,Rice,249,242,FALSE,NA,NA
+2026,Sun Belt,10,Troy,Louisiana Tech,2653,2348,FALSE,NA,NA
+2026,Mountain West,10,San José State,Northern Illinois,23,2459,FALSE,NA,NA
+2026,Conference USA,10,Florida International,Missouri State,2229,2623,FALSE,NA,NA
+2026,SEC,10,Mississippi State,Vanderbilt,344,238,FALSE,NA,NA
+2026,Sun Belt,10,Louisiana,South Alabama,309,6,FALSE,NA,NA
+2026,Pac-12,10,Colorado State,Boise State,36,68,FALSE,NA,NA
+2026,SEC,10,Tennessee,Kentucky,2633,96,FALSE,NA,NA
+2026,Conference USA,10,Jacksonville State,Sam Houston,55,2534,FALSE,NA,NA
+2026,ACC,10,Georgia Tech,Louisville,59,97,FALSE,NA,NA
+2026,SEC,10,Ole Miss,Georgia,145,61,FALSE,NA,NA
+2026,Big 12,10,Arizona State,Colorado,9,38,FALSE,NA,NA
+2026,SEC,10,Florida,Oklahoma,57,201,FALSE,NA,NA
+2026,Conference USA,10,New Mexico State,Liberty,166,2335,FALSE,NA,NA
+2026,Mountain West,10,UTEP,Hawai'i,2638,62,FALSE,NA,NA
+2026,Pac-12,10,Utah State,Fresno State,328,278,FALSE,NA,NA
+2026,Mountain West,10,UNLV,Wyoming,2439,2751,FALSE,NA,NA
+2026,Pac-12,10,Oregon State,Texas State,204,326,FALSE,NA,NA
+2026,Mid-American,11,Akron,Western Michigan,2006,2711,FALSE,NA,NA
+2026,Mid-American,11,Bowling Green,Kent State,189,2309,FALSE,NA,NA
+2026,Mid-American,11,Miami (OH),Ohio,193,195,FALSE,NA,NA
+2026,Mid-American,11,Toledo,Massachusetts,2649,113,FALSE,NA,NA
+2026,Mid-American,11,Central Michigan,Sacramento State,2117,16,FALSE,NA,NA
+2026,Mid-American,11,Ball State,Buffalo,2050,2084,FALSE,NA,NA
+2026,American Athletic,11,South Florida,Memphis,58,235,FALSE,NA,NA
+2026,Sun Belt,11,UL Monroe,Louisiana,2433,309,FALSE,NA,NA
+2026,ACC,11,Pittsburgh,Florida State,221,52,FALSE,NA,NA
+2026,Big Ten,11,UCLA,Illinois,26,356,FALSE,NA,NA
+2026,Big 12,11,Colorado,Houston,38,248,FALSE,NA,NA
+2026,SEC,11,LSU,Texas,99,251,FALSE,NA,NA
+2026,Big Ten,11,Indiana,USC,84,30,FALSE,NA,NA
+2026,SEC,11,Georgia,Missouri,61,142,FALSE,NA,NA
+2026,Sun Belt,11,Louisiana Tech,Southern Miss,2348,2572,FALSE,NA,NA
+2026,Big Ten,11,Oregon,Michigan,2483,130,FALSE,NA,NA
+2026,Sun Belt,11,Coastal Carolina,Arkansas State,324,2032,FALSE,NA,NA
+2026,SEC,11,Oklahoma,Ole Miss,201,145,FALSE,NA,NA
+2026,Big 12,11,Iowa State,Cincinnati,66,2132,FALSE,NA,NA
+2026,Big 12,11,West Virginia,Kansas,277,2305,FALSE,NA,NA
+2026,Big 12,11,Oklahoma State,Texas Tech,197,2641,FALSE,NA,NA
+2026,SEC,11,Mississippi State,Auburn,344,2,FALSE,NA,NA
+2026,ACC,11,Virginia,California,258,25,FALSE,NA,NA
+2026,ACC,11,Miami,Duke,2390,150,FALSE,NA,NA
+2026,ACC,11,Clemson,Georgia Tech,228,59,FALSE,NA,NA
+2026,ACC,11,North Carolina,Louisville,153,97,FALSE,NA,NA
+2026,ACC,11,Virginia Tech,Stanford,259,24,FALSE,NA,NA
+2026,ACC,11,SMU,Wake Forest,2567,154,FALSE,NA,NA
+2026,Big Ten,11,Maryland,Wisconsin,120,275,FALSE,NA,NA
+2026,Big Ten,11,Rutgers,Nebraska,164,158,FALSE,NA,NA
+2026,American Athletic,11,Tulsa,Florida Atlantic,202,2226,FALSE,NA,NA
+2026,American Athletic,11,Rice,Tulane,242,2655,FALSE,NA,NA
+2026,ACC,11,NC State,Syracuse,152,183,FALSE,NA,NA
+2026,Big 12,11,TCU,Kansas State,2628,2306,FALSE,NA,NA
+2026,Sun Belt,11,South Alabama,Troy,6,2653,FALSE,NA,NA
+2026,Mountain West,11,UTEP,Wyoming,2638,2751,FALSE,NA,NA
+2026,Mountain West,11,Northern Illinois,Nevada,2459,2440,FALSE,NA,NA
+2026,American Athletic,11,Temple,UAB,218,5,FALSE,NA,NA
+2026,American Athletic,11,Charlotte,East Carolina,2429,151,FALSE,NA,NA
+2026,Big Ten,11,Iowa,Purdue,2294,2509,FALSE,NA,NA
+2026,SEC,11,Vanderbilt,Alabama,238,333,FALSE,NA,NA
+2026,Big 12,11,Arizona,Utah,12,254,FALSE,NA,NA
+2026,Big 12,11,BYU,Baylor,252,239,FALSE,NA,NA
+2026,SEC,11,Texas A&M,Tennessee,245,2633,FALSE,NA,NA
+2026,Sun Belt,11,Georgia State,Georgia Southern,2247,290,FALSE,NA,NA
+2026,Big 12,11,UCF,Arizona State,2116,9,FALSE,NA,NA
+2026,Big Ten,11,Michigan State,Washington,127,264,FALSE,NA,NA
+2026,American Athletic,11,UTSA,North Texas,2636,249,FALSE,NA,NA
+2026,SEC,11,Arkansas,South Carolina,8,2579,FALSE,NA,NA
+2026,Big Ten,11,Ohio State,Northwestern,194,77,FALSE,NA,NA
+2026,SEC,11,Kentucky,Florida,96,57,FALSE,NA,NA
+2026,Sun Belt,11,Marshall,App State,276,2026,FALSE,NA,NA
+2026,Big Ten,11,Penn State,Minnesota,213,135,FALSE,NA,NA
+2026,Conference USA,11,Sam Houston,Kennesaw State,2534,338,FALSE,NA,NA
+2026,Conference USA,11,Delaware,Florida International,48,2229,FALSE,NA,NA
+2026,Conference USA,11,Missouri State,New Mexico State,2623,166,FALSE,NA,NA
+2026,Conference USA,11,Liberty,Middle Tennessee,2335,2393,FALSE,NA,NA
+2026,Conference USA,11,Western Kentucky,Jacksonville State,98,55,FALSE,NA,NA
+2026,Pac-12,11,Texas State,Fresno State,326,278,FALSE,NA,NA
+2026,Pac-12,11,Boise State,Oregon State,68,204,FALSE,NA,NA
+2026,Mountain West,11,Air Force,San José State,2005,23,FALSE,NA,NA
+2026,Mountain West,11,New Mexico,UNLV,167,2439,FALSE,NA,NA
+2026,Pac-12,11,San Diego State,Utah State,21,328,FALSE,NA,NA
+2026,Pac-12,11,Washington State,Colorado State,265,36,FALSE,NA,NA
+2026,Mountain West,11,Hawai'i,North Dakota State,62,2449,FALSE,NA,NA
+2026,Mid-American,12,Ohio,Ball State,195,2050,FALSE,NA,NA
+2026,Mid-American,12,Kent State,Miami (OH),2309,193,FALSE,NA,NA
+2026,Mid-American,12,Western Michigan,Eastern Michigan,2711,2199,FALSE,NA,NA
+2026,Mid-American,12,Massachusetts,Akron,113,2006,FALSE,NA,NA
+2026,Mid-American,12,Buffalo,Central Michigan,2084,2117,FALSE,NA,NA
+2026,American Athletic,12,Temple,Rice,218,242,FALSE,NA,NA
+2026,Big 12,12,UCF,Iowa State,2116,66,FALSE,NA,NA
+2026,Mid-American,12,Toledo,Bowling Green,2649,189,FALSE,NA,NA
+2026,ACC,12,Duke,Clemson,150,228,FALSE,NA,NA
+2026,Mountain West,12,Air Force,UTEP,2005,2638,FALSE,NA,NA
+2026,Big Ten,12,Michigan State,Oregon,127,2483,FALSE,NA,NA
+2026,Big Ten,12,Penn State,Rutgers,213,164,FALSE,NA,NA
+2026,Big Ten,12,Purdue,Wisconsin,2509,275,FALSE,NA,NA
+2026,Big Ten,12,Nebraska,Ohio State,158,194,FALSE,NA,NA
+2026,Big Ten,12,Michigan,UCLA,130,26,FALSE,NA,NA
+2026,ACC,12,Boston College,Syracuse,103,183,FALSE,NA,NA
+2026,Mountain West,12,Nevada,Hawai'i,2440,62,FALSE,NA,NA
+2026,Big Ten,12,USC,Maryland,30,120,FALSE,NA,NA
+2026,American Athletic,12,Florida Atlantic,South Florida,2226,58,FALSE,NA,NA
+2026,Big 12,12,Arizona State,Oklahoma State,9,197,FALSE,NA,NA
+2026,Sun Belt,12,Marshall,Georgia State,276,2247,FALSE,NA,NA
+2026,Sun Belt,12,Louisiana,Coastal Carolina,309,324,FALSE,NA,NA
+2026,American Athletic,12,UAB,UTSA,5,2636,FALSE,NA,NA
+2026,ACC,12,Miami,Virginia Tech,2390,259,FALSE,NA,NA
+2026,Sun Belt,12,Southern Miss,South Alabama,2572,6,FALSE,NA,NA
+2026,American Athletic,12,Tulsa,Charlotte,202,2429,FALSE,NA,NA
+2026,SEC,12,Tennessee,LSU,2633,99,FALSE,NA,NA
+2026,Sun Belt,12,Louisiana Tech,Arkansas State,2348,2032,FALSE,NA,NA
+2026,Big Ten,12,Illinois,Iowa,356,2294,FALSE,NA,NA
+2026,American Athletic,12,Tulane,North Texas,2655,249,FALSE,NA,NA
+2026,Big Ten,12,Washington,Indiana,264,84,FALSE,NA,NA
+2026,Big Ten,12,Minnesota,Northwestern,135,77,FALSE,NA,NA
+2026,ACC,12,Georgia Tech,Wake Forest,59,154,FALSE,NA,NA
+2026,ACC,12,Florida State,NC State,52,152,FALSE,NA,NA
+2026,SEC,12,Missouri,Kentucky,142,96,FALSE,NA,NA
+2026,SEC,12,Florida,Vanderbilt,57,238,FALSE,NA,NA
+2026,Big 12,12,Kansas State,Arizona,2306,12,FALSE,NA,NA
+2026,Big 12,12,Kansas,BYU,2305,252,FALSE,NA,NA
+2026,Big 12,12,Cincinnati,Colorado,2132,38,FALSE,NA,NA
+2026,Big 12,12,West Virginia,Houston,277,248,FALSE,NA,NA
+2026,Big 12,12,Baylor,Texas Tech,239,2641,FALSE,NA,NA
+2026,SEC,12,South Carolina,Georgia,2579,61,FALSE,NA,NA
+2026,SEC,12,Texas,Arkansas,251,8,FALSE,NA,NA
+2026,SEC,12,Oklahoma,Texas A&M,201,245,FALSE,NA,NA
+2026,Big 12,12,TCU,Utah,2628,254,FALSE,NA,NA
+2026,ACC,12,Virginia,North Carolina,258,153,FALSE,NA,NA
+2026,ACC,12,Louisville,Pittsburgh,97,221,FALSE,NA,NA
+2026,ACC,12,California,Stanford,25,24,FALSE,NA,NA
+2026,Sun Belt,12,App State,UL Monroe,2026,2433,FALSE,NA,NA
+2026,Sun Belt,12,Troy,Georgia Southern,2653,290,FALSE,NA,NA
+2026,American Athletic,12,Army,East Carolina,349,151,FALSE,NA,NA
+2026,American Athletic,12,Navy,Memphis,2426,235,FALSE,NA,NA
+2026,Conference USA,12,Liberty,Western Kentucky,2335,98,FALSE,NA,NA
+2026,Conference USA,12,Sam Houston,Middle Tennessee,2534,2393,FALSE,NA,NA
+2026,Conference USA,12,Jacksonville State,Missouri State,55,2623,FALSE,NA,NA
+2026,Conference USA,12,New Mexico State,Delaware,166,48,FALSE,NA,NA
+2026,Conference USA,12,Kennesaw State,Florida International,338,2229,FALSE,NA,NA
+2026,Mountain West,12,North Dakota State,Northern Illinois,2449,2459,FALSE,NA,NA
+2026,Pac-12,12,Texas State,Washington State,326,265,FALSE,NA,NA
+2026,Mountain West,12,San José State,UNLV,23,2439,FALSE,NA,NA
+2026,Pac-12,12,Fresno State,Colorado State,278,36,FALSE,NA,NA
+2026,Mountain West,12,Wyoming,New Mexico,2751,167,FALSE,NA,NA
+2026,Pac-12,12,Boise State,San Diego State,68,21,FALSE,NA,NA
+2026,Pac-12,12,Oregon State,Utah State,204,328,FALSE,NA,NA
+2026,Mid-American,13,Western Michigan,Miami (OH),2711,193,FALSE,NA,NA
+2026,Mid-American,13,Eastern Michigan,Kent State,2199,2309,FALSE,NA,NA
+2026,Big 12,13,Texas Tech,TCU,2641,2628,FALSE,NA,NA
+2026,American Athletic,13,Memphis,Temple,235,218,FALSE,NA,NA
+2026,American Athletic,13,South Florida,Tulane,58,2655,FALSE,NA,NA
+2026,American Athletic,13,East Carolina,Florida Atlantic,151,2226,FALSE,NA,NA
+2026,Mid-American,13,Ohio,Toledo,195,2649,FALSE,NA,NA
+2026,Big Ten,13,Iowa,Nebraska,2294,158,FALSE,NA,NA
+2026,Mid-American,13,Akron,Buffalo,2006,2084,FALSE,NA,NA
+2026,SEC,13,Ole Miss,Mississippi State,145,344,FALSE,NA,NA
+2026,Sun Belt,13,South Alabama,App State,6,2026,FALSE,NA,NA
+2026,Mountain West,13,San José State,North Dakota State,23,2449,FALSE,NA,NA
+2026,Big Ten,13,Wisconsin,Minnesota,275,135,FALSE,NA,NA
+2026,SEC,13,Texas A&M,Texas,245,251,FALSE,NA,NA
+2026,Big 12,13,Utah,West Virginia,254,277,FALSE,NA,NA
+2026,Sun Belt,13,Georgia Southern,Louisiana Tech,290,2348,FALSE,NA,NA
+2026,ACC,13,Virginia Tech,Virginia,259,258,FALSE,NA,NA
+2026,Sun Belt,13,James Madison,Coastal Carolina,256,324,FALSE,NA,NA
+2026,Big Ten,13,UCLA,USC,26,30,FALSE,NA,NA
+2026,ACC,13,North Carolina,NC State,153,152,FALSE,NA,NA
+2026,ACC,13,Wake Forest,Duke,154,150,FALSE,NA,NA
+2026,Big Ten,13,Northwestern,Illinois,77,356,FALSE,NA,NA
+2026,Big 12,13,Colorado,UCF,38,2116,FALSE,NA,NA
+2026,ACC,13,Stanford,SMU,24,2567,FALSE,NA,NA
+2026,Big Ten,13,Indiana,Purdue,84,2509,FALSE,NA,NA
+2026,Big Ten,13,Rutgers,Michigan State,164,127,FALSE,NA,NA
+2026,SEC,13,Alabama,Auburn,333,2,FALSE,NA,NA
+2026,Sun Belt,13,Georgia State,Louisiana,2247,309,FALSE,NA,NA
+2026,Mountain West,13,Northern Illinois,UTEP,2459,2638,FALSE,NA,NA
+2026,American Athletic,13,Charlotte,Navy,2429,2426,FALSE,NA,NA
+2026,American Athletic,13,UTSA,Tulsa,2636,202,FALSE,NA,NA
+2026,ACC,13,Miami,Boston College,2390,103,FALSE,NA,NA
+2026,Big 12,13,Houston,Baylor,248,239,FALSE,NA,NA
+2026,SEC,13,Vanderbilt,Tennessee,238,2633,FALSE,NA,NA
+2026,Big 12,13,BYU,Cincinnati,252,2132,FALSE,NA,NA
+2026,Big 12,13,Arizona,Arizona State,12,9,FALSE,NA,NA
+2026,American Athletic,13,Rice,Army,242,349,FALSE,NA,NA
+2026,Sun Belt,13,UL Monroe,Marshall,2433,276,FALSE,NA,NA
+2026,American Athletic,13,North Texas,UAB,249,5,FALSE,NA,NA
+2026,Big 12,13,Iowa State,Kansas State,66,2306,FALSE,NA,NA
+2026,Big Ten,13,Maryland,Penn State,120,213,FALSE,NA,NA
+2026,Big 12,13,Oklahoma State,Kansas,197,2305,FALSE,NA,NA
+2026,ACC,13,California,Pittsburgh,25,221,FALSE,NA,NA
+2026,SEC,13,Missouri,Oklahoma,142,201,FALSE,NA,NA
+2026,Big Ten,13,Oregon,Washington,2483,264,FALSE,NA,NA
+2026,Sun Belt,13,Old Dominion,Southern Miss,295,2572,FALSE,NA,NA
+2026,SEC,13,Arkansas,LSU,8,99,FALSE,NA,NA
+2026,Big Ten,13,Ohio State,Michigan,194,130,FALSE,NA,NA
+2026,Mid-American,13,Ball State,Central Michigan,2050,2117,FALSE,NA,NA
+2026,Mid-American,13,Bowling Green,Massachusetts,189,113,FALSE,NA,NA
+2026,Conference USA,13,Western Kentucky,Kennesaw State,98,338,FALSE,NA,NA
+2026,Conference USA,13,Middle Tennessee,New Mexico State,2393,166,FALSE,NA,NA
+2026,Conference USA,13,Missouri State,Liberty,2623,2335,FALSE,NA,NA
+2026,Conference USA,13,Florida International,Sam Houston,2229,2534,FALSE,NA,NA
+2026,Sun Belt,13,Arkansas State,Troy,2032,2653,FALSE,NA,NA
+2026,Conference USA,13,Delaware,Jacksonville State,48,55,FALSE,NA,NA
+2026,Mountain West,13,New Mexico,Air Force,167,2005,FALSE,NA,NA
+2026,Mountain West,13,UNLV,Nevada,2439,2440,FALSE,NA,NA

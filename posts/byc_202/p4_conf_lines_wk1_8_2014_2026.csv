@@ -1,0 +1,1453 @@
+season,week,home,away,home_id,away_id,home_conf,away_conf,home_points,away_points,home_spread
+2014,5,NC State,Florida State,152,52,ACC,ACC,41,56,17
+2014,5,Texas A&M,Arkansas,245,8,SEC,SEC,35,28,-9
+2014,5,Iowa State,Baylor,66,239,Big 12,Big 12,28,49,21
+2014,3,South Carolina,Georgia,2579,61,SEC,SEC,38,35,6.5
+2014,3,Virginia,Louisville,258,97,ACC,ACC,23,21,5.5
+2014,3,Florida,Kentucky,57,96,SEC,SEC,36,30,-18
+2014,3,Rutgers,Penn State,164,213,Big Ten,Big Ten,10,13,3.5
+2014,4,Florida State,Clemson,52,228,ACC,ACC,23,17,-10
+2014,4,Alabama,Florida,333,57,SEC,SEC,42,21,-14
+2014,4,West Virginia,Oklahoma,277,201,Big 12,Big 12,33,45,7.5
+2014,4,LSU,Mississippi State,99,344,SEC,SEC,29,34,-7
+2014,4,Vanderbilt,South Carolina,238,2579,SEC,SEC,34,48,23
+2014,4,Virginia Tech,Georgia Tech,259,59,ACC,ACC,24,27,-7.5
+2014,5,Oklahoma State,Texas Tech,197,2641,Big 12,Big 12,45,35,-14.5
+2014,5,Georgia,Tennessee,61,2633,SEC,SEC,35,32,-18.5
+2014,5,South Carolina,Missouri,2579,142,SEC,SEC,20,21,-5.5
+2014,5,Nebraska,Illinois,158,356,Big Ten,Big Ten,45,14,-21
+2014,5,Purdue,Iowa,2509,2294,Big Ten,Big Ten,10,24,8
+2014,5,Penn State,Northwestern,213,77,Big Ten,Big Ten,6,29,-10.5
+2014,5,Kentucky,Vanderbilt,96,238,SEC,SEC,17,7,-17
+2014,5,Indiana,Maryland,84,120,Big Ten,Big Ten,15,37,-3
+2014,5,Louisville,Wake Forest,97,154,ACC,ACC,20,10,-21.5
+2014,5,Michigan,Minnesota,130,135,Big Ten,Big Ten,14,30,-10.5
+2014,5,Kansas,Texas,2305,251,Big 12,Big 12,0,23,10.5
+2014,5,Clemson,North Carolina,228,153,ACC,ACC,50,35,-14
+2014,5,Miami,Duke,2390,150,ACC,ACC,22,10,-4.5
+2014,6,Syracuse,Louisville,183,97,ACC,ACC,6,28,2
+2014,6,Florida State,Wake Forest,52,154,ACC,ACC,43,3,-37.5
+2014,6,Ole Miss,Alabama,145,333,SEC,SEC,23,17,5
+2014,6,TCU,Oklahoma,2628,201,Big 12,Big 12,37,33,3.5
+2014,6,Auburn,LSU,2,99,SEC,SEC,41,7,-7
+2014,6,Mississippi State,Texas A&M,344,245,SEC,SEC,48,31,-2.5
+2014,6,Texas,Baylor,251,239,Big 12,Big 12,7,28,14
+2014,6,Michigan State,Nebraska,127,158,Big Ten,Big Ten,27,22,-6.5
+2014,6,Georgia,Vanderbilt,61,238,SEC,SEC,44,17,-33
+2014,6,Northwestern,Wisconsin,77,275,Big Ten,Big Ten,20,14,7.5
+2014,6,Maryland,Ohio State,120,194,Big Ten,Big Ten,24,52,7
+2014,6,Oklahoma State,Iowa State,197,66,Big 12,Big 12,37,20,-17
+2014,6,Kansas State,Texas Tech,2306,2641,Big 12,Big 12,45,13,-14
+2014,6,Illinois,Purdue,356,2509,Big Ten,Big Ten,27,38,-10
+2014,6,North Carolina,Virginia Tech,153,259,ACC,ACC,17,34,2.5
+2014,6,Clemson,NC State,228,152,ACC,ACC,41,0,-14
+2014,6,West Virginia,Kansas,277,2305,Big 12,Big 12,33,14,-27
+2014,6,Rutgers,Michigan,164,130,Big Ten,Big Ten,26,24,-3
+2014,6,Georgia Tech,Miami,59,2390,ACC,ACC,28,17,-1.5
+2014,6,Virginia,Pittsburgh,258,221,ACC,ACC,24,19,-5
+2014,6,Kentucky,South Carolina,96,2579,SEC,SEC,45,38,4.5
+2014,7,Syracuse,Florida State,183,52,ACC,ACC,20,38,23
+2014,7,Mississippi State,Auburn,344,2,SEC,SEC,38,23,2.5
+2014,7,Texas A&M,Ole Miss,245,145,SEC,SEC,20,35,-2.5
+2014,7,Baylor,TCU,239,2628,Big 12,Big 12,61,58,-7
+2014,7,Arkansas,Alabama,8,333,SEC,SEC,13,14,9
+2014,7,Purdue,Michigan State,2509,127,Big Ten,Big Ten,31,45,21.5
+2014,7,Oklahoma,Texas,201,251,Big 12,Big 12,31,26,-16.5
+2014,7,Missouri,Georgia,142,61,SEC,SEC,0,34,3
+2014,7,Kansas,Oklahoma State,2305,197,Big 12,Big 12,20,27,19.5
+2014,7,Georgia Tech,Duke,59,150,ACC,ACC,25,31,-4
+2014,7,Texas Tech,West Virginia,2641,277,Big 12,Big 12,34,37,6
+2014,7,Wisconsin,Illinois,275,356,Big Ten,Big Ten,38,28,-27
+2014,7,Iowa,Indiana,2294,84,Big Ten,Big Ten,45,29,-3.5
+2014,7,Minnesota,Northwestern,135,77,Big Ten,Big Ten,24,17,-3.5
+2014,7,NC State,Boston College,152,103,ACC,ACC,14,30,-2.5
+2014,7,Clemson,Louisville,228,97,ACC,ACC,23,17,-9
+2014,7,Michigan,Penn State,130,213,Big Ten,Big Ten,18,13,-2.5
+2014,7,Florida,LSU,57,99,SEC,SEC,27,30,2
+2014,8,Pittsburgh,Virginia Tech,221,259,ACC,ACC,21,16,1
+2014,8,Ole Miss,Tennessee,145,2633,SEC,SEC,34,3,-16
+2014,8,West Virginia,Baylor,277,239,Big 12,Big 12,41,27,8.5
+2014,8,Alabama,Texas A&M,333,245,SEC,SEC,59,0,-12
+2014,8,Indiana,Michigan State,84,127,Big Ten,Big Ten,17,56,16
+2014,8,Arkansas,Georgia,8,61,SEC,SEC,32,45,3
+2014,8,Oklahoma,Kansas State,201,2306,Big 12,Big 12,30,31,-7
+2014,8,TCU,Oklahoma State,2628,197,Big 12,Big 12,42,9,-10.5
+2014,8,Ohio State,Rutgers,194,164,Big Ten,Big Ten,56,17,-20.5
+2014,8,Northwestern,Nebraska,77,158,Big Ten,Big Ten,17,38,6.5
+2014,8,Boston College,Clemson,103,228,ACC,ACC,13,17,5.5
+2014,8,Wake Forest,Syracuse,154,183,ACC,ACC,7,30,6
+2014,8,Maryland,Iowa,120,2294,Big Ten,Big Ten,38,31,-4
+2014,8,Minnesota,Purdue,135,2509,Big Ten,Big Ten,39,38,-12.5
+2014,8,Duke,Virginia,150,258,ACC,ACC,20,13,-3
+2014,8,Louisville,NC State,97,152,ACC,ACC,30,18,-19.5
+2014,8,Texas Tech,Kansas,2641,2305,Big 12,Big 12,34,21,-12.5
+2014,8,North Carolina,Georgia Tech,153,59,ACC,ACC,48,43,-2.5
+2014,8,Florida,Missouri,57,142,SEC,SEC,13,42,-6.5
+2014,8,LSU,Kentucky,99,96,SEC,SEC,41,3,-11.5
+2014,8,Texas,Iowa State,251,66,Big 12,Big 12,48,45,-10.5
+2014,1,Louisville,Miami,97,2390,ACC,ACC,31,13,-5.5
+2014,2,Iowa State,Kansas State,66,2306,Big 12,Big 12,28,32,12
+2014,2,Boston College,Pittsburgh,103,221,ACC,ACC,20,30,5
+2014,2,Vanderbilt,Ole Miss,238,145,SEC,SEC,3,41,17.5
+2014,1,South Carolina,Texas A&M,2579,245,SEC,SEC,28,52,-9.5
+2014,1,Auburn,Arkansas,2,8,SEC,SEC,45,21,-17.5
+2015,2,Syracuse,Wake Forest,183,154,ACC,ACC,30,17,-4
+2015,2,South Carolina,Kentucky,2579,96,SEC,SEC,22,26,-7
+2015,3,Louisville,Clemson,97,228,ACC,ACC,17,20,5
+2015,3,Boston College,Florida State,103,52,ACC,ACC,0,14,9
+2015,3,Alabama,Ole Miss,333,145,SEC,SEC,37,43,-9
+2015,3,Georgia,South Carolina,61,2579,SEC,SEC,52,20,-15.5
+2015,3,LSU,Auburn,99,2,SEC,SEC,45,21,-6.5
+2015,3,Kentucky,Florida,96,57,SEC,SEC,9,14,3.5
+2015,3,Penn State,Rutgers,213,164,Big Ten,Big Ten,28,3,-8.5
+2015,4,Texas Tech,TCU,2641,2628,Big 12,Big 12,52,55,5
+2015,4,Ole Miss,Vanderbilt,145,238,SEC,SEC,27,16,-27
+2015,4,Arkansas,Texas A&M,8,245,SEC,SEC,21,28,6
+2015,4,Duke,Georgia Tech,150,59,ACC,ACC,34,20,7.5
+2015,4,Texas,Oklahoma State,251,197,Big 12,Big 12,27,30,2.5
+2015,4,Kentucky,Missouri,96,142,SEC,SEC,21,13,-3
+2015,4,Florida,Tennessee,57,2633,SEC,SEC,28,27,1
+2015,4,Auburn,Mississippi State,2,344,SEC,SEC,9,17,-1
+2015,5,Indiana,Ohio State,84,194,Big Ten,Big Ten,27,34,21.5
+2015,5,Michigan State,Purdue,127,2509,Big Ten,Big Ten,24,21,-23
+2015,5,Florida,Ole Miss,57,145,SEC,SEC,38,10,6.5
+2015,5,TCU,Texas,2628,251,Big 12,Big 12,50,7,-14.5
+2015,5,Baylor,Texas Tech,239,2641,Big 12,Big 12,63,35,-17
+2015,5,Georgia,Alabama,61,333,SEC,SEC,10,38,-1.5
+2015,5,Wake Forest,Florida State,154,52,ACC,ACC,16,24,18
+2015,5,Texas A&M,Mississippi State,245,344,SEC,SEC,30,17,-4
+2015,5,Oklahoma,West Virginia,201,277,Big 12,Big 12,44,24,-6.5
+2015,5,Northwestern,Minnesota,77,135,Big Ten,Big Ten,27,0,-4.5
+2015,5,Wisconsin,Iowa,275,2294,Big Ten,Big Ten,6,10,-5
+2015,5,Oklahoma State,Kansas State,197,2306,Big 12,Big 12,36,34,-7
+2015,5,Maryland,Michigan,120,130,Big Ten,Big Ten,0,28,13.5
+2015,5,Missouri,South Carolina,142,2579,SEC,SEC,24,10,-3
+2015,5,Iowa State,Kansas,66,2305,Big 12,Big 12,38,13,-20
+2015,5,NC State,Louisville,152,97,ACC,ACC,13,20,-3
+2015,5,Duke,Boston College,150,103,ACC,ACC,9,7,-4.5
+2015,5,Georgia Tech,North Carolina,59,153,ACC,ACC,31,38,-6.5
+2015,5,Illinois,Nebraska,356,158,Big Ten,Big Ten,14,13,3
+2015,5,Tennessee,Arkansas,2633,8,SEC,SEC,20,24,-6
+2015,6,Virginia Tech,NC State,259,152,ACC,ACC,28,13,-2.5
+2015,6,Ohio State,Maryland,194,120,Big Ten,Big Ten,49,28,-32
+2015,6,Kansas,Baylor,2305,239,Big 12,Big 12,7,66,46
+2015,6,Rutgers,Michigan State,164,127,Big Ten,Big Ten,24,31,12.5
+2015,6,Clemson,Georgia Tech,228,59,ACC,ACC,43,24,-7.5
+2015,6,LSU,South Carolina,99,2579,SEC,SEC,45,24,20.5
+2015,6,Alabama,Arkansas,333,8,SEC,SEC,27,14,-15.5
+2015,6,Texas,Oklahoma,251,201,Big 12,Big 12,24,17,16
+2015,6,Missouri,Florida,142,57,SEC,SEC,3,21,6.5
+2015,6,Florida State,Miami,52,2390,ACC,ACC,29,24,-6.5
+2015,6,Michigan,Northwestern,130,77,Big Ten,Big Ten,38,0,-10.5
+2015,6,Tennessee,Georgia,2633,61,SEC,SEC,38,31,2.5
+2015,6,West Virginia,Oklahoma State,277,197,Big 12,Big 12,26,33,-5
+2015,6,Iowa,Illinois,2294,356,Big Ten,Big Ten,29,20,-10.5
+2015,6,Penn State,Indiana,213,84,Big Ten,Big Ten,29,7,-4.5
+2015,6,Pittsburgh,Virginia,221,258,ACC,ACC,26,19,-8
+2015,6,Boston College,Wake Forest,103,154,ACC,ACC,0,3,-9.5
+2015,6,Texas Tech,Iowa State,2641,66,Big 12,Big 12,66,31,-12.5
+2015,6,Nebraska,Wisconsin,158,275,Big Ten,Big Ten,21,23,2.5
+2015,6,Purdue,Minnesota,2509,135,Big Ten,Big Ten,13,41,3.5
+2015,7,Kentucky,Auburn,96,2,SEC,SEC,27,30,2
+2015,7,Ohio State,Penn State,194,213,Big Ten,Big Ten,38,10,-18.5
+2015,7,Baylor,West Virginia,239,277,Big 12,Big 12,62,38,-20.5
+2015,7,Iowa State,TCU,66,2628,Big 12,Big 12,21,45,20.5
+2015,7,Clemson,Boston College,228,103,ACC,ACC,34,17,-18.5
+2015,7,LSU,Florida,99,57,SEC,SEC,35,28,-6
+2015,7,Michigan,Michigan State,130,127,Big Ten,Big Ten,23,27,-7
+2015,7,Texas A&M,Alabama,245,333,SEC,SEC,23,41,5
+2015,7,Florida State,Louisville,52,97,ACC,ACC,41,21,-6.5
+2015,7,Northwestern,Iowa,77,2294,Big Ten,Big Ten,10,40,2
+2015,7,Kansas State,Oklahoma,2306,201,Big 12,Big 12,0,55,4
+2015,7,Kansas,Texas Tech,2305,2641,Big 12,Big 12,20,30,33
+2015,7,Wisconsin,Purdue,275,2509,Big Ten,Big Ten,24,7,-21.5
+2015,7,Georgia Tech,Pittsburgh,59,221,ACC,ACC,28,31,-3
+2015,7,Miami,Virginia Tech,2390,259,ACC,ACC,30,20,-3
+2015,7,Virginia,Syracuse,258,183,ACC,ACC,44,38,-7
+2015,7,Indiana,Rutgers,84,164,Big Ten,Big Ten,52,55,-6.5
+2015,7,South Carolina,Vanderbilt,2579,238,SEC,SEC,19,10,-2
+2015,7,North Carolina,Wake Forest,153,154,ACC,ACC,50,14,-17
+2015,7,Georgia,Missouri,61,142,SEC,SEC,9,6,-15
+2015,8,Rutgers,Ohio State,164,194,Big Ten,Big Ten,7,49,23.5
+2015,8,Baylor,Iowa State,239,66,Big 12,Big 12,45,27,-35.5
+2015,8,Miami,Clemson,2390,228,ACC,ACC,0,58,9
+2015,8,Michigan State,Indiana,127,84,Big Ten,Big Ten,52,26,-14.5
+2015,8,Alabama,Tennessee,333,2633,SEC,SEC,19,14,-14.5
+2015,8,Georgia Tech,Florida State,59,52,ACC,ACC,22,16,5.5
+2015,8,Oklahoma State,Kansas,197,2305,Big 12,Big 12,58,10,-33.5
+2015,8,Ole Miss,Texas A&M,145,245,SEC,SEC,23,3,-6.5
+2015,8,Oklahoma,Texas Tech,201,2641,Big 12,Big 12,63,27,-14.5
+2015,8,Virginia Tech,Duke,259,150,ACC,ACC,43,45,-3.5
+2015,8,Syracuse,Pittsburgh,183,221,ACC,ACC,20,23,9.5
+2015,8,Arkansas,Auburn,8,2,SEC,SEC,54,46,-7
+2015,8,Wake Forest,NC State,154,152,ACC,ACC,17,35,9
+2015,8,Texas,Kansas State,251,2306,Big 12,Big 12,23,9,-7
+2015,8,Nebraska,Northwestern,158,77,Big Ten,Big Ten,28,30,-7
+2015,8,Louisville,Boston College,97,103,ACC,ACC,17,14,-7
+2015,8,North Carolina,Virginia,153,258,ACC,ACC,26,13,-16.5
+2015,8,Illinois,Wisconsin,356,275,Big Ten,Big Ten,13,24,4.5
+2015,8,Maryland,Penn State,120,213,Big Ten,Big Ten,30,31,5.5
+2015,8,Vanderbilt,Missouri,238,142,SEC,SEC,10,3,1.5
+2015,8,Mississippi State,Kentucky,344,96,SEC,SEC,42,16,-13.5
+2015,2,Vanderbilt,Georgia,238,61,SEC,SEC,14,31,18
+2015,2,Mississippi State,LSU,344,99,SEC,SEC,19,21,3.5
+2015,5,Virginia Tech,Pittsburgh,259,221,ACC,ACC,13,17,-3.5
+2015,6,Kansas State,TCU,2306,2628,Big 12,Big 12,45,52,9
+2016,1,Vanderbilt,South Carolina,238,2579,SEC,SEC,10,13,-5
+2016,2,Mississippi State,South Carolina,344,2579,SEC,SEC,27,14,-7.5
+2016,2,Florida,Kentucky,57,96,SEC,SEC,45,7,-14
+2016,2,Duke,Wake Forest,150,154,ACC,ACC,14,24,-6.5
+2016,3,Ole Miss,Alabama,145,333,SEC,SEC,43,48,10
+2016,3,Louisville,Florida State,97,52,ACC,ACC,63,20,-0.5
+2016,3,Missouri,Georgia,142,61,SEC,SEC,27,28,7
+2016,3,TCU,Iowa State,2628,66,Big 12,Big 12,41,20,-24.5
+2016,3,Virginia Tech,Boston College,259,103,ACC,ACC,49,0,-6.5
+2016,4,Georgia Tech,Clemson,59,228,ACC,ACC,7,26,10.5
+2016,4,Michigan,Penn State,130,213,Big Ten,Big Ten,49,10,-17
+2016,4,Michigan State,Wisconsin,127,275,Big Ten,Big Ten,6,30,-3.5
+2016,4,Texas A&M,Arkansas,245,8,SEC,SEC,45,24,-7
+2016,4,Ole Miss,Georgia,145,61,SEC,SEC,45,14,-7
+2016,4,Tennessee,Florida,2633,57,SEC,SEC,38,28,-4.5
+2016,4,Baylor,Oklahoma State,239,197,Big 12,Big 12,35,24,-7
+2016,4,Auburn,LSU,2,99,SEC,SEC,18,13,3.5
+2016,4,Northwestern,Nebraska,77,158,Big Ten,Big Ten,13,24,9.5
+2016,4,Rutgers,Iowa,164,2294,Big Ten,Big Ten,7,14,14.5
+2016,4,Kentucky,South Carolina,96,2579,SEC,SEC,17,10,-2.5
+2016,4,North Carolina,Pittsburgh,153,221,ACC,ACC,37,36,-7
+2016,5,Alabama,Kentucky,333,96,SEC,SEC,34,6,-37
+2016,5,Ohio State,Rutgers,194,164,Big Ten,Big Ten,58,0,-39
+2016,5,Clemson,Louisville,228,97,ACC,ACC,42,36,1
+2016,5,Michigan,Wisconsin,130,275,Big Ten,Big Ten,14,7,-12
+2016,5,Georgia,Tennessee,61,2633,SEC,SEC,31,34,3.5
+2016,5,Florida State,North Carolina,52,153,ACC,ACC,35,37,-10.5
+2016,5,Iowa State,Baylor,66,239,Big 12,Big 12,42,45,17
+2016,5,Georgia Tech,Miami,59,2390,ACC,ACC,21,35,7.5
+2016,5,Nebraska,Illinois,158,356,Big Ten,Big Ten,31,16,-20.5
+2016,5,Indiana,Michigan State,84,127,Big Ten,Big Ten,24,21,5
+2016,5,TCU,Oklahoma,2628,201,Big 12,Big 12,46,52,3.5
+2016,5,Oklahoma State,Texas,197,251,Big 12,Big 12,49,31,-2
+2016,5,Vanderbilt,Florida,238,57,SEC,SEC,6,13,11.5
+2016,5,Iowa,Northwestern,2294,77,Big Ten,Big Ten,31,38,-11.5
+2016,5,Duke,Virginia,150,258,ACC,ACC,20,34,-3.5
+2016,5,NC State,Wake Forest,152,154,ACC,ACC,33,16,-14
+2016,5,West Virginia,Kansas State,277,2306,Big 12,Big 12,17,16,-3
+2016,5,Maryland,Purdue,120,2509,Big Ten,Big Ten,50,7,-11
+2016,5,Penn State,Minnesota,213,135,Big Ten,Big Ten,29,26,-3
+2016,5,LSU,Missouri,99,142,SEC,SEC,42,7,-12
+2016,6,Boston College,Clemson,103,228,ACC,ACC,10,56,18
+2016,6,Arkansas,Alabama,8,333,SEC,SEC,30,49,14.5
+2016,6,Ohio State,Indiana,194,84,Big Ten,Big Ten,38,17,-28
+2016,6,Rutgers,Michigan,164,130,Big Ten,Big Ten,0,78,30.5
+2016,6,Texas A&M,Tennessee,245,2633,SEC,SEC,45,38,-7.5
+2016,6,North Carolina,Virginia Tech,153,259,ACC,ACC,3,34,3
+2016,6,Oklahoma,Texas,201,251,Big 12,Big 12,45,40,-12.5
+2016,6,Mississippi State,Auburn,344,2,SEC,SEC,14,38,3.5
+2016,6,Kansas,TCU,2305,2628,Big 12,Big 12,23,24,28.5
+2016,6,Minnesota,Iowa,135,2294,Big Ten,Big Ten,7,14,-2.5
+2016,6,Penn State,Maryland,213,120,Big Ten,Big Ten,38,14,1.5
+2016,6,Pittsburgh,Georgia Tech,221,59,ACC,ACC,37,34,-6.5
+2016,6,Oklahoma State,Iowa State,197,66,Big 12,Big 12,38,31,-14.5
+2016,6,Illinois,Purdue,356,2509,Big Ten,Big Ten,31,34,-9
+2016,6,Kentucky,Vanderbilt,96,238,SEC,SEC,20,13,-3
+2016,6,Wake Forest,Syracuse,154,183,ACC,ACC,28,9,-4.5
+2016,6,Kansas State,Texas Tech,2306,2641,Big 12,Big 12,44,38,-10
+2016,6,South Carolina,Georgia,2579,61,SEC,SEC,14,28,8.5
+2016,7,Louisville,Duke,97,150,ACC,ACC,24,14,-35
+2016,7,Tennessee,Alabama,2633,333,SEC,SEC,10,49,14
+2016,7,Wisconsin,Ohio State,275,194,Big Ten,Big Ten,23,30,10.5
+2016,7,Clemson,NC State,228,152,ACC,ACC,24,17,-20.5
+2016,7,Indiana,Nebraska,84,158,Big Ten,Big Ten,22,27,3.5
+2016,7,Baylor,Kansas,239,2305,Big 12,Big 12,49,7,-33.5
+2016,7,Arkansas,Ole Miss,8,145,SEC,SEC,34,30,10
+2016,7,Florida State,Wake Forest,52,154,ACC,ACC,17,6,-24
+2016,7,Miami,North Carolina,2390,153,ACC,ACC,13,20,-6
+2016,7,Syracuse,Virginia Tech,183,259,ACC,ACC,31,17,23
+2016,7,Florida,Missouri,57,142,SEC,SEC,40,14,-13
+2016,7,Oklahoma,Kansas State,201,2306,Big 12,Big 12,38,17,-13.5
+2016,7,Texas Tech,West Virginia,2641,277,Big 12,Big 12,17,48,3
+2016,7,Georgia,Vanderbilt,61,238,SEC,SEC,16,17,-14
+2016,7,Rutgers,Illinois,164,356,Big Ten,Big Ten,7,24,4
+2016,7,Purdue,Iowa,2509,2294,Big Ten,Big Ten,35,49,11.5
+2016,7,Virginia,Pittsburgh,258,221,ACC,ACC,31,45,3.5
+2016,7,Michigan State,Northwestern,127,77,Big Ten,Big Ten,40,54,-6.5
+2016,7,Texas,Iowa State,251,66,Big 12,Big 12,27,6,-17
+2016,8,Virginia Tech,Miami,259,2390,ACC,ACC,37,16,-4.5
+2016,8,Alabama,Texas A&M,333,245,SEC,SEC,33,14,-18
+2016,8,Penn State,Ohio State,213,194,Big Ten,Big Ten,24,21,17.5
+2016,8,Michigan,Illinois,130,356,Big Ten,Big Ten,41,8,-40
+2016,8,Louisville,NC State,97,152,ACC,ACC,54,13,-19
+2016,8,Nebraska,Purdue,158,2509,Big Ten,Big Ten,27,14,-24.5
+2016,8,West Virginia,TCU,277,2628,Big 12,Big 12,34,10,-5.5
+2016,8,Texas Tech,Oklahoma,2641,201,Big 12,Big 12,59,66,16.5
+2016,8,Auburn,Arkansas,2,8,SEC,SEC,56,3,-10.5
+2016,8,Virginia,North Carolina,258,153,ACC,ACC,14,35,11
+2016,8,LSU,Ole Miss,99,145,SEC,SEC,38,21,-8.5
+2016,8,Kansas,Oklahoma State,2305,197,Big 12,Big 12,20,44,23.5
+2016,8,Kansas State,Texas,2306,251,Big 12,Big 12,24,21,1
+2016,8,Minnesota,Rutgers,135,164,Big Ten,Big Ten,34,32,-17.5
+2016,8,Northwestern,Indiana,77,84,Big Ten,Big Ten,24,14,-3
+2016,8,Boston College,Syracuse,103,183,ACC,ACC,20,28,-3.5
+2016,8,Kentucky,Mississippi State,96,344,SEC,SEC,40,38,6.5
+2016,8,Maryland,Michigan State,120,127,Big Ten,Big Ten,28,17,3
+2016,6,Miami,Florida State,2390,52,ACC,ACC,19,20,-2
+2016,7,Maryland,Minnesota,120,135,Big Ten,Big Ten,10,31,-3.5
+2016,5,South Carolina,Texas A&M,2579,245,SEC,SEC,13,24,19.5
+2016,3,Auburn,Texas A&M,2,245,SEC,SEC,16,29,-2
+2016,3,LSU,Mississippi State,99,344,SEC,SEC,23,20,-13
+2016,5,Texas Tech,Kansas,2641,2305,Big 12,Big 12,55,19,-27.5
+2016,8,Iowa,Wisconsin,2294,275,Big Ten,Big Ten,9,17,4
+2016,1,Boston College,Georgia Tech,103,59,ACC,ACC,14,17,3.5
+2016,2,Syracuse,Louisville,183,97,ACC,ACC,28,62,17
+2017,6,Texas A&M,Alabama,245,333,SEC,SEC,19,27,25.5
+2017,6,Florida State,Miami,52,2390,ACC,ACC,20,24,2.5
+2017,6,Florida,LSU,57,99,SEC,SEC,16,17,1.5
+2017,7,Syracuse,Clemson,183,228,ACC,ACC,27,24,24
+2017,7,Alabama,Arkansas,333,8,SEC,SEC,41,9,-37
+2017,7,Indiana,Michigan,84,130,Big Ten,Big Ten,20,27,7
+2017,8,Minnesota,Illinois,135,356,Big Ten,Big Ten,24,17,-14
+2017,8,Virginia,Boston College,258,103,ACC,ACC,10,41,-7
+2017,5,NC State,Syracuse,152,183,ACC,ACC,33,25,-14
+2017,4,Oklahoma State,TCU,197,2628,Big 12,Big 12,31,44,-9.5
+2017,5,Texas Tech,Oklahoma State,2641,197,Big 12,Big 12,34,41,10
+2017,6,Virginia,Duke,258,150,ACC,ACC,28,21,-1
+2017,4,Baylor,Oklahoma,239,201,Big 12,Big 12,41,49,28
+2017,5,Georgia Tech,North Carolina,59,153,ACC,ACC,33,7,-10
+2017,6,Oklahoma,Iowa State,201,66,Big 12,Big 12,31,38,-31
+2017,8,Northwestern,Iowa,77,2294,Big Ten,Big Ten,17,10,-3
+2017,8,Georgia Tech,Wake Forest,59,154,ACC,ACC,38,24,-3.5
+2017,3,South Carolina,Kentucky,2579,96,SEC,SEC,13,23,-6
+2017,4,Purdue,Michigan,2509,130,Big Ten,Big Ten,10,28,13.5
+2017,6,Syracuse,Pittsburgh,183,221,ACC,ACC,27,24,-3
+2017,8,Michigan State,Indiana,127,84,Big Ten,Big Ten,17,9,-6
+2017,4,Arkansas,Texas A&M,8,245,SEC,SEC,43,50,2
+2017,5,Texas A&M,South Carolina,245,2579,SEC,SEC,24,17,-7.5
+2017,8,Wisconsin,Maryland,275,120,Big Ten,Big Ten,38,13,-24
+2017,5,Virginia Tech,Clemson,259,228,ACC,ACC,17,31,7
+2017,8,Texas Tech,Iowa State,2641,66,Big 12,Big 12,13,31,-6.5
+2017,5,Auburn,Mississippi State,2,344,SEC,SEC,49,10,-7.5
+2017,5,Florida,Vanderbilt,57,238,SEC,SEC,38,24,-9.5
+2017,7,West Virginia,Texas Tech,277,2641,Big 12,Big 12,46,35,-5
+2017,7,Florida,Texas A&M,57,245,SEC,SEC,17,19,-3.5
+2017,4,Kentucky,Florida,96,57,SEC,SEC,27,28,3
+2017,6,Michigan,Michigan State,130,127,Big Ten,Big Ten,10,14,-12.5
+2017,5,Minnesota,Maryland,135,120,Big Ten,Big Ten,24,31,-13.5
+2017,5,Kansas State,Baylor,2306,239,Big 12,Big 12,33,20,-14.5
+2017,3,Florida,Tennessee,57,2633,SEC,SEC,26,20,-6.5
+2017,4,Iowa,Penn State,2294,213,Big Ten,Big Ten,19,21,13.5
+2017,5,Wisconsin,Northwestern,275,77,Big Ten,Big Ten,33,24,-16.5
+2017,6,Purdue,Minnesota,2509,135,Big Ten,Big Ten,31,17,-3.5
+2017,7,Miami,Georgia Tech,2390,59,ACC,ACC,25,24,-6.5
+2017,7,Maryland,Northwestern,120,77,Big Ten,Big Ten,21,37,2.5
+2017,7,North Carolina,Virginia,153,258,ACC,ACC,14,20,3.5
+2017,8,TCU,Kansas,2628,2305,Big 12,Big 12,43,0,-37
+2017,3,Louisville,Clemson,97,228,ACC,ACC,21,47,3.5
+2017,5,Duke,Miami,150,2390,ACC,ACC,6,31,5.5
+2017,6,Kansas,Texas Tech,2305,2641,Big 12,Big 12,19,65,14.5
+2017,7,LSU,Auburn,99,2,SEC,SEC,27,23,6.5
+2017,7,Texas,Oklahoma,251,201,Big 12,Big 12,24,29,9
+2017,7,Iowa State,Kansas,66,2305,Big 12,Big 12,45,0,-23
+2017,7,Illinois,Rutgers,356,164,Big Ten,Big Ten,24,35,0.5
+2017,7,Louisville,Boston College,97,103,ACC,ACC,42,45,-20.5
+2017,8,Alabama,Tennessee,333,2633,SEC,SEC,45,7,-37
+2017,5,Illinois,Nebraska,356,158,Big Ten,Big Ten,6,28,6
+2017,8,Ole Miss,LSU,145,99,SEC,SEC,24,40,6.5
+2017,3,Mississippi State,LSU,344,99,SEC,SEC,37,7,7.5
+2017,7,Georgia,Missouri,61,142,SEC,SEC,53,28,-28.5
+2017,7,Pittsburgh,NC State,221,152,ACC,ACC,17,35,11
+2017,8,Miami,Syracuse,2390,183,ACC,ACC,27,19,-17.5
+2017,7,Tennessee,South Carolina,2633,2579,SEC,SEC,9,15,-2.5
+2017,6,Iowa,Illinois,2294,356,Big Ten,Big Ten,45,16,-16
+2017,7,Oklahoma State,Baylor,197,239,Big 12,Big 12,59,16,-26
+2017,2,Boston College,Wake Forest,103,154,ACC,ACC,10,34,-1.5
+2017,6,Ohio State,Maryland,194,120,Big Ten,Big Ten,62,14,-30
+2017,4,Missouri,Auburn,142,2,SEC,SEC,14,51,18
+2017,4,Georgia Tech,Pittsburgh,59,221,ACC,ACC,35,17,-7.5
+2017,6,TCU,West Virginia,2628,277,Big 12,Big 12,31,24,-12
+2017,6,Texas,Kansas State,251,2306,Big 12,Big 12,40,34,-5.5
+2017,5,Rutgers,Ohio State,164,194,Big Ten,Big Ten,0,56,28.5
+2017,6,Clemson,Wake Forest,228,154,ACC,ACC,28,14,-21.5
+2017,6,Auburn,Ole Miss,2,145,SEC,SEC,44,23,-21
+2017,6,South Carolina,Arkansas,2579,8,SEC,SEC,48,22,3
+2017,7,Minnesota,Michigan State,135,127,Big Ten,Big Ten,27,30,4.5
+2017,4,Florida State,NC State,52,152,ACC,ACC,21,27,-11
+2017,4,Nebraska,Rutgers,158,164,Big Ten,Big Ten,27,17,-12
+2017,5,Penn State,Indiana,213,84,Big Ten,Big Ten,45,14,-18.5
+2017,5,Tennessee,Georgia,2633,61,SEC,SEC,0,41,10
+2017,8,Rutgers,Purdue,164,2509,Big Ten,Big Ten,14,12,9
+2017,5,Alabama,Ole Miss,333,145,SEC,SEC,66,3,-29.5
+2017,6,Northwestern,Penn State,77,213,Big Ten,Big Ten,7,31,14.5
+2017,8,Virginia Tech,North Carolina,259,153,ACC,ACC,59,7,-20
+2017,8,Florida State,Louisville,52,97,ACC,ACC,28,31,-6.5
+2017,4,Vanderbilt,Alabama,238,333,SEC,SEC,0,59,19.5
+2017,4,Kansas,West Virginia,2305,277,Big 12,Big 12,34,56,23.5
+2017,6,Vanderbilt,Georgia,238,61,SEC,SEC,14,45,17
+2017,7,Nebraska,Ohio State,158,194,Big Ten,Big Ten,14,56,24
+2017,7,Duke,Florida State,150,52,ACC,ACC,10,17,7
+2017,8,Mississippi State,Kentucky,344,96,SEC,SEC,45,7,-14
+2017,4,Georgia,Mississippi State,61,344,SEC,SEC,31,3,-2.5
+2017,5,Michigan State,Iowa,127,2294,Big Ten,Big Ten,17,10,-3.5
+2017,7,Kansas State,TCU,2306,2628,Big 12,Big 12,6,26,7.5
+2017,7,Ole Miss,Vanderbilt,145,238,SEC,SEC,57,35,-3
+2017,6,NC State,Louisville,152,97,ACC,ACC,39,25,3
+2017,6,Nebraska,Wisconsin,158,275,Big Ten,Big Ten,17,38,12.5
+2017,6,Kentucky,Missouri,96,142,SEC,SEC,40,34,-8.5
+2017,8,Arkansas,Auburn,8,2,SEC,SEC,20,52,16.5
+2017,7,Wisconsin,Purdue,275,2509,Big Ten,Big Ten,17,9,-17
+2017,5,Iowa State,Texas,66,251,Big 12,Big 12,7,17,5
+2017,6,Boston College,Virginia Tech,103,259,ACC,ACC,10,23,16.5
+2017,8,Penn State,Michigan,213,130,Big Ten,Big Ten,42,13,-7.5
+2017,8,Kansas State,Oklahoma,2306,201,Big 12,Big 12,35,42,14.5
+2017,8,Texas,Oklahoma State,251,197,Big 12,Big 12,10,13,7
+2017,8,Baylor,West Virginia,239,277,Big 12,Big 12,36,38,10.5
+2017,8,Duke,Pittsburgh,150,221,ACC,ACC,17,24,-9
+2017,1,Indiana,Ohio State,84,194,Big Ten,Big Ten,21,49,20.5
+2017,4,Clemson,Boston College,228,103,ACC,ACC,34,7,-33
+2017,4,North Carolina,Duke,153,150,ACC,ACC,17,27,-1.5
+2017,2,North Carolina,Louisville,153,97,ACC,ACC,35,47,12
+2017,2,Missouri,South Carolina,142,2579,SEC,SEC,13,31,-3
+2017,5,Wake Forest,Florida State,154,52,ACC,ACC,19,26,7.5
+2018,4,Vanderbilt,South Carolina,238,2579,SEC,SEC,14,37,1.5
+2018,6,Wake Forest,Clemson,154,228,ACC,ACC,3,63,20.5
+2018,6,Oklahoma,Texas,201,251,Big 12,Big 12,45,48,-7
+2018,6,Mississippi State,Auburn,344,2,SEC,SEC,23,9,3
+2018,4,Georgia Tech,Clemson,59,228,ACC,ACC,21,49,16
+2018,7,TCU,Texas Tech,2628,2641,Big 12,Big 12,14,17,-7.5
+2018,5,Northwestern,Michigan,77,130,Big Ten,Big Ten,17,20,14.5
+2018,3,Ole Miss,Alabama,145,333,SEC,SEC,7,62,22.5
+2018,3,Auburn,LSU,2,99,SEC,SEC,21,22,-10
+2018,3,Syracuse,Florida State,183,52,ACC,ACC,30,7,3.5
+2018,3,Pittsburgh,Georgia Tech,221,59,ACC,ACC,24,19,3.5
+2018,4,Missouri,Georgia,142,61,SEC,SEC,29,43,14.5
+2018,4,Kentucky,Mississippi State,96,344,SEC,SEC,28,7,10
+2018,4,Oklahoma State,Texas Tech,197,2641,Big 12,Big 12,17,41,-14.5
+2018,4,Texas,TCU,251,2628,Big 12,Big 12,31,16,3
+2018,4,Iowa,Wisconsin,2294,275,Big Ten,Big Ten,17,28,3
+2018,4,Michigan,Nebraska,130,158,Big Ten,Big Ten,56,10,-18
+2018,4,Maryland,Minnesota,120,135,Big Ten,Big Ten,42,13,-2
+2018,4,North Carolina,Pittsburgh,153,221,ACC,ACC,38,35,3
+2018,4,Tennessee,Florida,2633,57,SEC,SEC,21,47,3.5
+2018,5,Clemson,Syracuse,228,183,ACC,ACC,27,23,-24.5
+2018,5,Penn State,Ohio State,213,194,Big Ten,Big Ten,26,27,3.5
+2018,5,Oklahoma,Baylor,201,239,Big 12,Big 12,66,33,-21
+2018,5,Texas Tech,West Virginia,2641,277,Big 12,Big 12,34,42,3.5
+2018,5,Kentucky,South Carolina,96,2579,SEC,SEC,24,10,1
+2018,5,Kansas State,Texas,2306,251,Big 12,Big 12,14,19,8.5
+2018,5,Duke,Virginia Tech,150,259,ACC,ACC,14,31,-6.5
+2018,5,Rutgers,Indiana,164,84,Big Ten,Big Ten,17,24,15
+2018,5,Kansas,Oklahoma State,2305,197,Big 12,Big 12,28,48,17
+2018,5,NC State,Virginia,152,258,ACC,ACC,35,21,-6
+2018,5,TCU,Iowa State,2628,66,Big 12,Big 12,17,14,-11
+2018,6,Louisville,Georgia Tech,97,59,ACC,ACC,31,66,5.5
+2018,6,Georgia,Vanderbilt,61,238,SEC,SEC,41,13,-26
+2018,6,Ohio State,Indiana,194,84,Big Ten,Big Ten,49,26,-27.5
+2018,6,Texas A&M,Kentucky,245,96,SEC,SEC,20,14,-5.5
+2018,6,Michigan,Maryland,130,120,Big Ten,Big Ten,42,21,-17.5
+2018,6,Miami,Florida State,2390,52,ACC,ACC,28,27,-14
+2018,6,Michigan State,Northwestern,127,77,Big Ten,Big Ten,19,29,-10.5
+2018,6,NC State,Boston College,152,103,ACC,ACC,28,23,-6.5
+2018,6,Oklahoma State,Iowa State,197,66,Big 12,Big 12,42,48,-10
+2018,6,South Carolina,Missouri,2579,142,SEC,SEC,37,35,1
+2018,6,Pittsburgh,Syracuse,221,183,ACC,ACC,44,37,3.5
+2018,6,Minnesota,Iowa,135,2294,Big Ten,Big Ten,31,48,7
+2018,7,LSU,Georgia,99,61,SEC,SEC,36,16,7
+2018,7,Penn State,Michigan State,213,127,Big Ten,Big Ten,17,21,-13.5
+2018,7,Texas,Baylor,251,239,Big 12,Big 12,23,17,-14
+2018,7,Virginia,Miami,258,2390,ACC,ACC,16,13,7
+2018,7,Auburn,Tennessee,2,2633,SEC,SEC,24,30,-15
+2018,7,South Carolina,Texas A&M,2579,245,SEC,SEC,23,26,2.5
+2018,7,Kansas State,Oklahoma State,2306,197,Big 12,Big 12,31,12,8.5
+2018,7,Northwestern,Nebraska,77,158,Big Ten,Big Ten,34,31,-3
+2018,7,Georgia Tech,Duke,59,150,ACC,ACC,14,28,-1.5
+2018,7,Boston College,Louisville,103,97,ACC,ACC,38,20,-11.5
+2018,7,North Carolina,Virginia Tech,153,259,ACC,ACC,19,22,6.5
+2018,8,Clemson,NC State,228,152,ACC,ACC,41,7,-18
+2018,8,LSU,Mississippi State,99,344,SEC,SEC,19,3,-5.5
+2018,8,Michigan State,Michigan,127,130,Big Ten,Big Ten,7,21,7.5
+2018,8,TCU,Oklahoma,2628,201,Big 12,Big 12,27,52,8
+2018,8,Kentucky,Vanderbilt,96,238,SEC,SEC,14,7,-10.5
+2018,8,Ole Miss,Auburn,145,2,SEC,SEC,16,31,5
+2018,8,Rutgers,Northwestern,164,77,Big Ten,Big Ten,15,18,20.5
+2018,8,Syracuse,North Carolina,183,153,ACC,ACC,40,37,-10
+2018,8,Duke,Virginia,150,258,ACC,ACC,14,28,-6.5
+2018,8,Texas Tech,Kansas,2641,2305,Big 12,Big 12,48,16,-17.5
+2018,8,Florida State,Wake Forest,52,154,ACC,ACC,38,17,-10
+2018,8,Nebraska,Minnesota,158,135,Big Ten,Big Ten,53,28,-4.5
+2018,6,Arkansas,Alabama,8,333,SEC,SEC,31,65,35
+2018,6,Baylor,Kansas State,239,2306,Big 12,Big 12,37,34,-3.5
+2018,8,Indiana,Penn State,84,213,Big Ten,Big Ten,28,33,14.5
+2018,5,LSU,Ole Miss,99,145,SEC,SEC,45,16,-11
+2018,6,Florida,LSU,57,99,SEC,SEC,27,19,1.5
+2018,7,Vanderbilt,Florida,238,57,SEC,SEC,27,37,9.5
+2018,5,Nebraska,Purdue,158,2509,Big Ten,Big Ten,28,42,3.5
+2018,6,Rutgers,Illinois,164,356,Big Ten,Big Ten,17,38,5
+2018,4,Virginia,Louisville,258,97,ACC,ACC,27,3,-4.5
+2018,7,Illinois,Purdue,356,2509,Big Ten,Big Ten,7,46,10.5
+2018,8,Tennessee,Alabama,2633,333,SEC,SEC,21,58,29.5
+2018,8,Purdue,Ohio State,2509,194,Big Ten,Big Ten,49,20,12.5
+2018,6,Wisconsin,Nebraska,275,158,Big Ten,Big Ten,41,24,-18
+2018,8,Wisconsin,Illinois,275,356,Big Ten,Big Ten,49,20,-24
+2018,3,Iowa State,Oklahoma,66,201,Big 12,Big 12,27,37,18.5
+2018,4,West Virginia,Kansas State,277,2306,Big 12,Big 12,35,6,-16
+2018,5,Texas A&M,Arkansas,245,8,SEC,SEC,24,17,-20
+2018,7,Michigan,Wisconsin,130,275,Big Ten,Big Ten,38,13,-10
+2018,5,Mississippi State,Florida,344,57,SEC,SEC,6,13,-6.5
+2018,4,Auburn,Arkansas,2,8,SEC,SEC,34,3,-30
+2018,2,Ohio State,Rutgers,194,164,Big Ten,Big Ten,52,3,-34.5
+2018,7,Alabama,Missouri,333,142,SEC,SEC,39,10,-28.5
+2018,4,Alabama,Texas A&M,333,245,SEC,SEC,45,23,-24.5
+2018,5,Miami,North Carolina,2390,153,ACC,ACC,47,10,-18
+2018,2,Florida,Kentucky,57,96,SEC,SEC,16,27,-13.5
+2018,8,Iowa,Maryland,2294,120,Big Ten,Big Ten,23,0,-9.5
+2018,2,South Carolina,Georgia,2579,61,SEC,SEC,17,41,9
+2018,3,Wake Forest,Boston College,154,103,ACC,ACC,34,41,6
+2018,5,Georgia,Tennessee,61,2633,SEC,SEC,38,12,-30
+2018,1,Florida State,Virginia Tech,52,259,ACC,ACC,3,24,-7
+2018,4,Baylor,Kansas,239,2305,Big 12,Big 12,26,7,-7.5
+2018,5,Louisville,Florida State,97,52,ACC,ACC,24,28,5
+2018,7,Indiana,Iowa,84,2294,Big Ten,Big Ten,16,42,3.5
+2018,4,Indiana,Michigan State,84,127,Big Ten,Big Ten,21,35,6
+2018,4,Illinois,Penn State,356,213,Big Ten,Big Ten,24,63,26.5
+2018,7,Ohio State,Minnesota,194,135,Big Ten,Big Ten,30,14,-29.5
+2018,6,West Virginia,Kansas,277,2305,Big 12,Big 12,38,22,-27.5
+2018,7,Iowa State,West Virginia,66,277,Big 12,Big 12,30,14,4.5
+2018,7,Arkansas,Ole Miss,8,145,SEC,SEC,33,37,6.5
+2018,7,Maryland,Rutgers,120,164,Big Ten,Big Ten,34,7,-23.5
+2018,1,Purdue,Northwestern,2509,77,Big Ten,Big Ten,27,31,-1
+2019,1,Vanderbilt,Georgia,238,61,SEC,SEC,6,30,22.5
+2019,3,Syracuse,Clemson,183,228,ACC,ACC,6,41,28
+2019,4,Florida,Tennessee,57,2633,SEC,SEC,34,3,-12.5
+2019,8,Rutgers,Minnesota,164,135,Big Ten,Big Ten,7,42,28.5
+2019,7,Duke,Georgia Tech,150,59,ACC,ACC,41,23,-17.5
+2019,8,Iowa,Purdue,2294,2509,Big Ten,Big Ten,26,20,-17.5
+2019,3,Virginia,Florida State,258,52,ACC,ACC,31,24,-7
+2019,6,Kansas State,Baylor,2306,239,Big 12,Big 12,12,31,-0.5
+2019,8,Wake Forest,Florida State,154,52,ACC,ACC,22,20,2.5
+2019,6,Michigan,Iowa,130,2294,Big Ten,Big Ten,10,3,-4
+2019,7,Clemson,Florida State,228,52,ACC,ACC,45,14,-26
+2019,7,Texas A&M,Alabama,245,333,SEC,SEC,28,47,17
+2019,7,Indiana,Rutgers,84,164,Big Ten,Big Ten,35,0,-27.5
+2019,7,Kentucky,Arkansas,96,8,SEC,SEC,24,20,-4.5
+2019,6,Ole Miss,Vanderbilt,145,238,SEC,SEC,31,6,-7
+2019,4,Texas A&M,Auburn,245,2,SEC,SEC,20,28,-4
+2019,4,Missouri,South Carolina,142,2579,SEC,SEC,34,14,-9.5
+2019,8,Arkansas,Auburn,8,2,SEC,SEC,10,51,20
+2019,5,Virginia Tech,Duke,259,150,ACC,ACC,10,45,-2.5
+2019,6,Nebraska,Northwestern,158,77,Big Ten,Big Ten,13,10,-7.5
+2019,7,Texas,Oklahoma,251,201,Big 12,Big 12,27,34,11
+2019,8,Kansas State,TCU,2306,2628,Big 12,Big 12,24,17,4
+2019,4,Kansas,West Virginia,2305,277,Big 12,Big 12,24,29,5
+2019,6,Kansas,Oklahoma,2305,201,Big 12,Big 12,20,45,32
+2019,8,Mississippi State,LSU,344,99,SEC,SEC,13,36,18.5
+2019,8,Louisville,Clemson,97,228,ACC,ACC,10,45,24.5
+2019,4,Texas,Oklahoma State,251,197,Big 12,Big 12,36,30,-7
+2019,3,Indiana,Ohio State,84,194,Big Ten,Big Ten,10,51,17.5
+2019,6,Louisville,Boston College,97,103,ACC,ACC,41,39,-4
+2019,6,West Virginia,Texas,277,251,Big 12,Big 12,31,42,10.5
+2019,1,Boston College,Virginia Tech,103,259,ACC,ACC,35,28,4.5
+2019,8,Northwestern,Ohio State,77,194,Big Ten,Big Ten,3,52,27
+2019,8,Syracuse,Pittsburgh,183,221,ACC,ACC,20,27,3.5
+2019,8,Illinois,Wisconsin,356,275,Big Ten,Big Ten,24,23,29.5
+2019,5,Alabama,Ole Miss,333,145,SEC,SEC,59,31,-37.5
+2019,5,Arkansas,Texas A&M,8,245,SEC,SEC,27,31,23
+2019,7,Georgia,South Carolina,61,2579,SEC,SEC,17,20,-20.5
+2019,8,Virginia Tech,North Carolina,259,153,ACC,ACC,43,41,4.5
+2019,2,Iowa,Rutgers,2294,164,Big Ten,Big Ten,30,0,-18
+2019,7,Miami,Virginia,2390,258,ACC,ACC,17,9,-2.5
+2019,6,Rutgers,Maryland,164,120,Big Ten,Big Ten,7,48,14
+2019,8,Texas,Kansas,251,2305,Big 12,Big 12,50,48,-20.5
+2019,7,West Virginia,Iowa State,277,66,Big 12,Big 12,14,38,9.5
+2019,7,Purdue,Maryland,2509,120,Big Ten,Big Ten,40,14,4
+2019,5,TCU,Kansas,2628,2305,Big 12,Big 12,51,14,-14.5
+2019,6,Penn State,Purdue,213,2509,Big Ten,Big Ten,35,7,-28.5
+2019,5,Auburn,Mississippi State,2,344,SEC,SEC,56,23,-7.5
+2019,5,South Carolina,Kentucky,2579,96,SEC,SEC,24,7,-3.5
+2019,5,Boston College,Wake Forest,103,154,ACC,ACC,24,27,5
+2019,7,Wisconsin,Michigan State,275,127,Big Ten,Big Ten,38,0,-8.5
+2019,7,Minnesota,Nebraska,135,158,Big Ten,Big Ten,34,7,-7
+2019,7,Illinois,Michigan,356,130,Big Ten,Big Ten,25,42,24.5
+2019,7,Tennessee,Mississippi State,2633,344,SEC,SEC,20,10,5
+2019,5,Baylor,Iowa State,239,66,Big 12,Big 12,23,21,2.5
+2019,6,Tennessee,Georgia,2633,61,SEC,SEC,14,43,24.5
+2019,6,Florida,Auburn,57,2,SEC,SEC,24,13,2.5
+2019,4,Northwestern,Michigan State,77,127,Big Ten,Big Ten,10,31,7.5
+2019,3,Wake Forest,North Carolina,154,153,ACC,ACC,24,18,-3
+2019,3,South Carolina,Alabama,2579,333,SEC,SEC,23,47,26
+2019,5,Maryland,Penn State,120,213,Big Ten,Big Ten,0,59,6.5
+2019,6,Ohio State,Michigan State,194,127,Big Ten,Big Ten,34,10,-19.5
+2019,6,Miami,Virginia Tech,2390,259,ACC,ACC,35,42,-14
+2019,6,Texas Tech,Oklahoma State,2641,197,Big 12,Big 12,45,35,9.5
+2019,7,LSU,Florida,99,57,SEC,SEC,42,28,-14
+2019,8,Georgia,Kentucky,61,96,SEC,SEC,21,0,-24
+2019,4,Vanderbilt,LSU,238,99,SEC,SEC,38,66,24
+2019,5,Oklahoma State,Kansas State,197,2306,Big 12,Big 12,26,13,-4
+2019,8,Alabama,Tennessee,333,2633,SEC,SEC,35,13,-35
+2019,8,Texas Tech,Iowa State,2641,66,Big 12,Big 12,24,34,8.5
+2019,2,Ole Miss,Arkansas,145,8,SEC,SEC,31,17,-5
+2019,5,Purdue,Minnesota,2509,135,Big Ten,Big Ten,31,38,-0.5
+2019,6,Minnesota,Illinois,135,356,Big Ten,Big Ten,40,17,-14
+2019,8,South Carolina,Florida,2579,57,SEC,SEC,27,38,3.5
+2019,4,Illinois,Nebraska,356,158,Big Ten,Big Ten,38,42,13
+2019,8,Miami,Georgia Tech,2390,59,ACC,ACC,21,28,-18.5
+2019,8,Penn State,Michigan,213,130,Big Ten,Big Ten,28,21,-7.5
+2019,5,Wisconsin,Northwestern,275,77,Big Ten,Big Ten,24,15,-23.5
+2019,7,NC State,Syracuse,152,183,ACC,ACC,16,10,-4.5
+2019,8,Oklahoma,West Virginia,201,277,Big 12,Big 12,52,14,-32.5
+2019,5,North Carolina,Clemson,153,228,ACC,ACC,20,21,27.5
+2019,8,Ole Miss,Texas A&M,145,245,SEC,SEC,17,24,6
+2019,6,Duke,Pittsburgh,150,221,ACC,ACC,30,33,-3.5
+2019,7,Baylor,Texas Tech,239,2641,Big 12,Big 12,33,30,-10.5
+2019,1,Pittsburgh,Virginia,221,258,ACC,ACC,14,30,2.5
+2019,3,Kentucky,Florida,96,57,SEC,SEC,21,29,10
+2019,8,Virginia,Duke,258,150,ACC,ACC,48,14,-3.5
+2019,2,North Carolina,Miami,153,2390,ACC,ACC,28,25,5
+2019,4,Mississippi State,Kentucky,344,96,SEC,SEC,28,13,-5.5
+2019,8,Oklahoma State,Baylor,197,239,Big 12,Big 12,27,45,-6
+2019,8,Vanderbilt,Missouri,238,142,SEC,SEC,21,14,21
+2019,8,Maryland,Indiana,120,84,Big Ten,Big Ten,28,34,6.5
+2019,5,Oklahoma,Texas Tech,201,2641,Big 12,Big 12,55,16,-27
+2019,6,Georgia Tech,North Carolina,59,153,ACC,ACC,22,38,10
+2019,7,Iowa,Penn State,2294,213,Big Ten,Big Ten,12,17,3.5
+2019,5,Michigan,Rutgers,130,164,Big Ten,Big Ten,52,0,-27.5
+2019,6,Iowa State,TCU,66,2628,Big 12,Big 12,49,24,-3
+2019,7,Wake Forest,Louisville,154,97,ACC,ACC,59,62,-7
+2019,7,Missouri,Ole Miss,142,145,SEC,SEC,38,27,-12.5
+2019,8,Boston College,NC State,103,152,ACC,ACC,45,24,4
+2019,5,Michigan State,Indiana,127,84,Big Ten,Big Ten,40,31,-14
+2019,5,Florida State,NC State,52,152,ACC,ACC,31,13,-7
+2019,5,Nebraska,Ohio State,158,194,Big Ten,Big Ten,7,48,17
+2019,4,Florida State,Louisville,52,97,ACC,ACC,35,24,-6.5
+2019,4,Wisconsin,Michigan,275,130,Big Ten,Big Ten,35,14,-3.5
+2019,1,Clemson,Georgia Tech,228,59,ACC,ACC,52,14,-36.5
+2020,2,North Carolina,Syracuse,153,183,ACC,ACC,31,6,-24
+2020,3,Duke,Boston College,150,103,ACC,ACC,6,26,-3.5
+2020,3,Pittsburgh,Syracuse,221,183,ACC,ACC,21,10,-21
+2020,4,Syracuse,Georgia Tech,183,59,ACC,ACC,37,20,7.5
+2020,4,Pittsburgh,Louisville,221,97,ACC,ACC,23,20,-3
+2020,5,Pittsburgh,NC State,221,152,ACC,ACC,29,30,-14
+2020,8,Boston College,Georgia Tech,103,59,ACC,ACC,48,27,-3.5
+2020,8,Wisconsin,Illinois,275,356,Big Ten,Big Ten,45,7,-20.5
+2020,3,NC State,Wake Forest,152,154,ACC,ACC,45,42,2
+2020,8,Michigan State,Rutgers,127,164,Big Ten,Big Ten,27,38,-9.5
+2020,4,Oklahoma,Kansas State,201,2306,Big 12,Big 12,35,38,-28
+2020,4,Ole Miss,Florida,145,57,SEC,SEC,35,51,14
+2020,6,Georgia Tech,Louisville,59,97,ACC,ACC,46,27,4.5
+2020,6,Clemson,Miami,228,2390,ACC,ACC,42,17,-14
+2020,5,Alabama,Texas A&M,333,245,SEC,SEC,52,24,-18
+2020,5,Florida,South Carolina,57,2579,SEC,SEC,38,24,-14.5
+2020,5,Georgia,Auburn,61,2,SEC,SEC,27,6,-7.5
+2020,5,Mississippi State,Arkansas,344,8,SEC,SEC,14,21,-17
+2020,5,Vanderbilt,LSU,238,99,SEC,SEC,7,41,21.5
+2020,5,Tennessee,Missouri,2633,142,SEC,SEC,35,12,-10
+2020,5,West Virginia,Baylor,277,239,Big 12,Big 12,27,21,1.5
+2020,4,Virginia,Duke,258,150,ACC,ACC,38,20,-4
+2020,4,Arkansas,Georgia,8,61,SEC,SEC,10,37,28
+2020,4,LSU,Mississippi State,99,344,SEC,SEC,34,44,-14.5
+2020,4,Auburn,Kentucky,2,96,SEC,SEC,29,13,-6
+2020,4,Oklahoma State,West Virginia,197,277,Big 12,Big 12,27,13,-6
+2020,4,Virginia Tech,NC State,259,152,ACC,ACC,45,24,-6
+2020,4,TCU,Iowa State,2628,66,Big 12,Big 12,34,37,4
+2020,4,Baylor,Kansas,239,2305,Big 12,Big 12,47,14,-17
+2020,5,Kansas,Oklahoma State,2305,197,Big 12,Big 12,7,47,22
+2020,5,Clemson,Virginia,228,258,ACC,ACC,41,23,-28.5
+2020,5,Texas,TCU,251,2628,Big 12,Big 12,31,33,-10.5
+2020,5,Iowa State,Oklahoma,66,201,Big 12,Big 12,37,30,8
+2020,5,Boston College,North Carolina,103,153,ACC,ACC,22,26,15
+2020,6,North Carolina,Virginia Tech,153,259,ACC,ACC,56,45,-3.5
+2020,6,Iowa State,Texas Tech,66,2641,Big 12,Big 12,31,15,-10.5
+2020,6,Kentucky,Mississippi State,96,344,SEC,SEC,24,2,-3
+2020,6,Syracuse,Duke,183,150,ACC,ACC,24,38,2.5
+2020,6,TCU,Kansas State,2628,2306,Big 12,Big 12,14,21,-10.5
+2020,6,Texas A&M,Florida,245,57,SEC,SEC,41,38,6
+2020,6,Notre Dame,Florida State,87,52,ACC,ACC,42,26,-20.5
+2020,6,Auburn,Arkansas,2,8,SEC,SEC,30,28,-13.5
+2020,6,Virginia,NC State,258,152,ACC,ACC,21,38,-7.5
+2020,7,Georgia Tech,Clemson,59,228,ACC,ACC,7,73,27
+2020,7,Notre Dame,Louisville,87,97,ACC,ACC,12,7,-16
+2020,7,Florida State,North Carolina,52,153,ACC,ACC,31,28,13.5
+2020,7,Mississippi State,Texas A&M,344,245,SEC,SEC,14,28,4
+2020,7,Miami,Pittsburgh,2390,221,ACC,ACC,31,19,-12.5
+2020,7,South Carolina,Auburn,2579,2,SEC,SEC,30,22,2.5
+2020,7,Tennessee,Kentucky,2633,96,SEC,SEC,7,34,-6.5
+2020,7,Virginia Tech,Boston College,259,103,ACC,ACC,40,14,-13
+2020,7,NC State,Duke,152,150,ACC,ACC,31,20,-4
+2020,7,Wake Forest,Virginia,154,258,ACC,ACC,40,23,-2
+2020,8,Texas,Baylor,251,239,Big 12,Big 12,27,16,-11
+2020,2,Florida State,Georgia Tech,52,59,ACC,ACC,13,16,-13.5
+2020,2,Wake Forest,Clemson,154,228,ACC,ACC,13,37,35
+2020,2,Notre Dame,Duke,87,150,ACC,ACC,27,13,-21.5
+2020,3,Louisville,Miami,97,2390,ACC,ACC,34,47,2
+2020,4,Missouri,Alabama,142,333,SEC,SEC,19,38,29
+2020,4,Texas Tech,Texas,2641,251,Big 12,Big 12,56,63,17.5
+2020,4,South Carolina,Tennessee,2579,2633,SEC,SEC,27,31,4.5
+2020,4,Texas A&M,Vanderbilt,245,238,SEC,SEC,17,12,-31.5
+2020,4,Miami,Florida State,2390,52,ACC,ACC,52,10,-12
+2020,5,Duke,Virginia Tech,150,259,ACC,ACC,31,38,12
+2020,5,Kentucky,Ole Miss,96,145,SEC,SEC,41,42,-7
+2020,6,Oklahoma,Texas,201,251,Big 12,Big 12,53,45,-3
+2020,6,Boston College,Pittsburgh,103,221,ACC,ACC,31,30,6.5
+2020,6,Georgia,Tennessee,61,2633,SEC,SEC,44,21,-12.5
+2020,6,LSU,Missouri,99,142,SEC,SEC,41,45,-17.5
+2020,6,Vanderbilt,South Carolina,238,2579,SEC,SEC,7,41,14
+2020,6,Ole Miss,Alabama,145,333,SEC,SEC,48,63,24
+2020,7,West Virginia,Kansas,277,2305,Big 12,Big 12,38,17,-21
+2020,8,Indiana,Penn State,84,213,Big Ten,Big Ten,36,35,6.5
+2020,8,Oklahoma State,Iowa State,197,66,Big 12,Big 12,24,21,-3
+2020,8,Kansas State,Kansas,2306,2305,Big 12,Big 12,55,14,-19
+2020,8,Clemson,Syracuse,228,183,ACC,ACC,47,21,-47.5
+2020,8,Ole Miss,Auburn,145,2,SEC,SEC,28,35,3.5
+2020,8,Ohio State,Nebraska,194,158,Big Ten,Big Ten,52,17,-28
+2020,8,Missouri,Kentucky,142,96,SEC,SEC,20,10,3.5
+2020,8,LSU,South Carolina,99,2579,SEC,SEC,52,24,-4.5
+2020,7,Alabama,Georgia,333,61,SEC,SEC,41,24,-6
+2020,8,Minnesota,Michigan,135,130,Big Ten,Big Ten,24,49,3
+2020,8,Tennessee,Alabama,2633,333,SEC,SEC,17,48,22
+2020,8,TCU,Oklahoma,2628,201,Big 12,Big 12,14,33,6.5
+2020,8,North Carolina,NC State,153,152,ACC,ACC,48,21,-15
+2020,8,Pittsburgh,Notre Dame,221,87,ACC,ACC,3,45,10
+2020,8,Texas Tech,West Virginia,2641,277,Big 12,Big 12,34,27,2.5
+2020,8,Louisville,Florida State,97,52,ACC,ACC,48,16,-5.5
+2020,8,Purdue,Iowa,2509,2294,Big Ten,Big Ten,24,20,3.5
+2020,8,Wake Forest,Virginia Tech,154,259,ACC,ACC,23,16,10.5
+2020,8,Miami,Virginia,2390,258,ACC,ACC,19,14,-14
+2020,8,Northwestern,Maryland,77,120,Big Ten,Big Ten,43,3,-13
+2021,3,Florida,Alabama,57,333,SEC,SEC,29,31,14.5
+2021,3,Georgia,South Carolina,61,2579,SEC,SEC,40,13,-31.5
+2021,7,Syracuse,Clemson,183,228,ACC,ACC,14,17,13
+2021,7,Oklahoma,TCU,201,2628,Big 12,Big 12,52,31,-13
+2021,7,Texas,Oklahoma State,251,197,Big 12,Big 12,24,32,-3
+2021,7,Kansas,Texas Tech,2305,2641,Big 12,Big 12,14,41,18.5
+2021,8,Ole Miss,LSU,145,99,SEC,SEC,31,17,-9
+2021,8,Texas A&M,South Carolina,245,2579,SEC,SEC,44,14,-19.5
+2021,8,Miami,NC State,2390,152,ACC,ACC,31,30,3.5
+2021,8,Pittsburgh,Clemson,221,228,ACC,ACC,27,17,-3.5
+2021,8,Purdue,Wisconsin,2509,275,Big Ten,Big Ten,13,30,3.5
+2021,8,Virginia Tech,Syracuse,259,183,ACC,ACC,36,41,-3.5
+2021,8,Minnesota,Maryland,135,120,Big Ten,Big Ten,34,16,-4
+2021,4,Vanderbilt,Georgia,238,61,SEC,SEC,0,62,36.5
+2021,5,Rutgers,Ohio State,164,194,Big Ten,Big Ten,13,52,15
+2021,5,Kansas State,Oklahoma,2306,201,Big 12,Big 12,31,37,12.5
+2021,5,Oklahoma State,Baylor,197,239,Big 12,Big 12,24,14,-4
+2021,5,TCU,Texas,2628,251,Big 12,Big 12,27,32,4
+2021,5,West Virginia,Texas Tech,277,2641,Big 12,Big 12,20,23,-7.5
+2021,5,Iowa State,Kansas,66,2305,Big 12,Big 12,59,7,-34.5
+2021,5,Nebraska,Northwestern,158,77,Big Ten,Big Ten,56,7,-11
+2021,6,Texas A&M,Alabama,245,333,SEC,SEC,41,38,18.5
+2021,6,Auburn,Georgia,2,61,SEC,SEC,10,34,15
+2021,6,Ole Miss,Arkansas,145,8,SEC,SEC,52,51,-5
+2021,6,Kentucky,LSU,96,99,SEC,SEC,42,21,-2
+2021,6,Syracuse,Wake Forest,183,154,ACC,ACC,37,40,6
+2021,6,Florida,Vanderbilt,57,238,SEC,SEC,42,0,-39
+2021,4,Virginia,Wake Forest,258,154,ACC,ACC,17,37,-3.5
+2021,4,Oklahoma,West Virginia,201,277,Big 12,Big 12,16,13,-17.5
+2021,4,Arkansas,Texas A&M,8,245,SEC,SEC,20,10,4.5
+2021,4,Florida,Tennessee,57,2633,SEC,SEC,38,14,-19
+2021,4,Baylor,Iowa State,239,66,Big 12,Big 12,31,29,7
+2021,4,Mississippi State,LSU,344,99,SEC,SEC,25,28,1.5
+2021,4,South Carolina,Kentucky,2579,96,SEC,SEC,10,16,4.5
+2021,8,Iowa State,Oklahoma State,66,197,Big 12,Big 12,24,21,-7
+2021,8,Kansas,Oklahoma,2305,201,Big 12,Big 12,23,35,38.5
+2021,5,Miami,Virginia,2390,258,ACC,ACC,28,30,-3.5
+2021,5,Alabama,Ole Miss,333,145,SEC,SEC,42,21,-15
+2021,5,Georgia,Arkansas,61,8,SEC,SEC,37,0,-16.5
+2021,5,Kentucky,Florida,96,57,SEC,SEC,20,13,7.5
+2021,5,Texas A&M,Mississippi State,245,344,SEC,SEC,22,26,-7
+2021,5,LSU,Auburn,99,2,SEC,SEC,19,24,-3
+2021,5,Missouri,Tennessee,142,2633,SEC,SEC,24,62,-2.5
+2021,3,Kansas,Baylor,2305,239,Big 12,Big 12,7,45,17.5
+2021,3,Illinois,Maryland,356,120,Big Ten,Big Ten,17,20,7.5
+2021,3,Clemson,Georgia Tech,228,59,ACC,ACC,14,8,-28
+2021,3,North Carolina,Virginia,153,258,ACC,ACC,59,39,-8
+2021,3,Wake Forest,Florida State,154,52,ACC,ACC,35,14,-5
+2021,5,Maryland,Iowa,120,2294,Big Ten,Big Ten,14,51,3
+2021,5,Penn State,Indiana,213,84,Big Ten,Big Ten,24,0,-12
+2021,5,Wisconsin,Michigan,275,130,Big Ten,Big Ten,17,38,-2
+2021,5,Wake Forest,Louisville,154,97,ACC,ACC,37,34,-7
+2021,5,Purdue,Minnesota,2509,135,Big Ten,Big Ten,13,20,-2.5
+2021,6,Iowa,Penn State,2294,213,Big Ten,Big Ten,23,20,-2.5
+2021,6,Ohio State,Maryland,194,120,Big Ten,Big Ten,66,17,-22
+2021,6,Nebraska,Michigan,158,130,Big Ten,Big Ten,29,32,2.5
+2021,6,Rutgers,Michigan State,164,127,Big Ten,Big Ten,13,31,4
+2021,6,Baylor,West Virginia,239,277,Big 12,Big 12,45,20,-1
+2021,6,Illinois,Wisconsin,356,275,Big Ten,Big Ten,0,24,12
+2021,2,Kentucky,Missouri,96,142,SEC,SEC,35,28,-5.5
+2021,5,Georgia Tech,Pittsburgh,59,221,ACC,ACC,21,52,3
+2021,5,North Carolina,Duke,153,150,ACC,ACC,38,7,-19.5
+2021,1,Minnesota,Ohio State,135,194,Big Ten,Big Ten,31,45,14
+2021,1,Wisconsin,Penn State,275,213,Big Ten,Big Ten,10,16,-5.5
+2021,1,Iowa,Indiana,2294,84,Big Ten,Big Ten,34,6,-3.5
+2021,8,Texas Tech,Kansas State,2641,2306,Big 12,Big 12,24,25,1
+2021,8,TCU,West Virginia,2628,277,Big 12,Big 12,17,29,-4.5
+2021,1,Illinois,Nebraska,356,158,Big Ten,Big Ten,30,22,6.5
+2021,1,Virginia Tech,North Carolina,259,153,ACC,ACC,17,10,5.5
+2021,1,Northwestern,Michigan State,77,127,Big Ten,Big Ten,21,38,-3
+2021,4,Purdue,Illinois,2509,356,Big Ten,Big Ten,13,9,-10.5
+2021,4,NC State,Clemson,152,228,ACC,ACC,27,21,10.5
+2021,4,Georgia Tech,North Carolina,59,153,ACC,ACC,45,22,14.5
+2021,4,Michigan State,Nebraska,127,158,Big Ten,Big Ten,23,20,-3.5
+2021,4,Michigan,Rutgers,130,164,Big Ten,Big Ten,20,13,-20
+2021,4,Florida State,Louisville,52,97,ACC,ACC,23,31,-0.5
+2021,4,Texas,Texas Tech,251,2641,Big 12,Big 12,70,35,-9
+2021,4,Oklahoma State,Kansas State,197,2306,Big 12,Big 12,31,20,-5.5
+2021,5,Florida State,Syracuse,52,183,ACC,ACC,33,30,-5.5
+2021,5,Clemson,Boston College,228,103,ACC,ACC,19,13,-14.5
+2021,6,Tennessee,South Carolina,2633,2579,SEC,SEC,45,20,-10.5
+2021,6,Louisville,Virginia,97,258,ACC,ACC,33,34,-2.5
+2021,6,North Carolina,Florida State,153,52,ACC,ACC,25,35,-17.5
+2021,6,Duke,Georgia Tech,150,59,ACC,ACC,27,31,4.5
+2021,6,Texas Tech,TCU,2641,2628,Big 12,Big 12,31,52,2.5
+2021,6,Texas,Oklahoma,251,201,Big 12,Big 12,48,55,4
+2021,7,Virginia,Duke,258,150,ACC,ACC,48,0,-10.5
+2021,7,Virginia Tech,Pittsburgh,259,221,ACC,ACC,7,28,6
+2021,7,Indiana,Michigan State,84,127,Big Ten,Big Ten,15,20,3.5
+2021,7,Minnesota,Nebraska,135,158,Big Ten,Big Ten,30,23,4.5
+2021,7,Missouri,Texas A&M,142,245,SEC,SEC,14,35,11.5
+2021,7,Tennessee,Ole Miss,2633,145,SEC,SEC,26,31,1
+2021,7,Kansas State,Iowa State,2306,66,Big 12,Big 12,20,33,6.5
+2021,7,Northwestern,Rutgers,77,164,Big Ten,Big Ten,21,7,2.5
+2021,7,North Carolina,Miami,153,2390,ACC,ACC,45,42,-7.5
+2021,7,South Carolina,Vanderbilt,2579,238,SEC,SEC,21,20,-19
+2021,7,Iowa,Purdue,2294,2509,Big Ten,Big Ten,7,24,-11
+2021,7,Georgia,Kentucky,61,96,SEC,SEC,30,13,-21.5
+2021,7,Arkansas,Auburn,8,2,SEC,SEC,23,38,-4.5
+2021,7,Mississippi State,Alabama,344,333,SEC,SEC,9,49,17.5
+2021,7,Boston College,NC State,103,152,ACC,ACC,7,33,3
+2021,7,LSU,Florida,99,57,SEC,SEC,49,42,12.5
+2021,8,Virginia,Georgia Tech,258,59,ACC,ACC,48,40,-6.5
+2021,8,Michigan,Northwestern,130,77,Big Ten,Big Ten,33,7,-23.5
+2021,8,Indiana,Ohio State,84,194,Big Ten,Big Ten,7,54,21
+2021,8,Penn State,Illinois,213,356,Big Ten,Big Ten,18,20,-24.5
+2021,8,Louisville,Boston College,97,103,ACC,ACC,28,14,-4.5
+2021,8,Alabama,Tennessee,333,2633,SEC,SEC,52,24,-25
+2021,8,Vanderbilt,Mississippi State,238,344,SEC,SEC,6,45,20.5
+2022,1,Georgia Tech,Clemson,59,228,ACC,ACC,10,41,24.5
+2022,4,Oklahoma,Kansas State,201,2306,Big 12,Big 12,34,41,-13.5
+2022,4,Texas A&M,Arkansas,245,8,SEC,SEC,23,21,-1.5
+2022,4,Iowa State,Baylor,66,239,Big 12,Big 12,24,31,-2.5
+2022,4,Texas Tech,Texas,2641,251,Big 12,Big 12,37,34,7
+2022,7,Ole Miss,Auburn,145,2,SEC,SEC,48,34,-15.5
+2022,7,Florida,LSU,57,99,SEC,SEC,35,45,-2
+2022,6,Mississippi State,Arkansas,344,8,SEC,SEC,40,17,-8.5
+2022,1,Northwestern,Nebraska,77,158,Big Ten,Big Ten,31,28,12.5
+2022,4,Ohio State,Wisconsin,194,275,Big Ten,Big Ten,52,21,-19
+2022,4,Michigan,Maryland,130,120,Big Ten,Big Ten,34,27,-17
+2022,4,Tennessee,Florida,2633,57,SEC,SEC,38,33,-11
+2022,4,Florida State,Boston College,52,103,ACC,ACC,44,14,-18.5
+2022,1,Purdue,Penn State,2509,213,Big Ten,Big Ten,31,35,3.5
+2022,1,Indiana,Illinois,84,356,Big Ten,Big Ten,23,20,-0.5
+2022,1,Syracuse,Louisville,183,97,ACC,ACC,31,7,6
+2022,2,Virginia Tech,Boston College,259,103,ACC,ACC,27,10,-3
+2022,2,Florida,Kentucky,57,96,SEC,SEC,16,26,-6
+2022,2,Arkansas,South Carolina,8,2579,SEC,SEC,44,30,-9
+2022,2,West Virginia,Kansas,277,2305,Big 12,Big 12,42,55,-14
+2022,3,Louisville,Florida State,97,52,ACC,ACC,31,35,2.5
+2022,3,South Carolina,Georgia,2579,61,SEC,SEC,7,48,25.5
+2022,3,LSU,Mississippi State,99,344,SEC,SEC,31,16,3
+2022,4,Wake Forest,Clemson,154,228,ACC,ACC,45,51,7.5
+2022,4,Auburn,Missouri,2,142,SEC,SEC,17,14,-7.5
+2022,4,Syracuse,Virginia,183,258,ACC,ACC,22,20,-9.5
+2022,4,Alabama,Vanderbilt,333,238,SEC,SEC,55,3,-40.5
+2022,4,Michigan State,Minnesota,127,135,Big Ten,Big Ten,7,34,3
+2022,4,Rutgers,Iowa,164,2294,Big Ten,Big Ten,10,27,7.5
+2022,5,Wisconsin,Illinois,275,356,Big Ten,Big Ten,10,34,-6.5
+2022,5,Ohio State,Rutgers,194,164,Big Ten,Big Ten,49,10,-39
+2022,5,Boston College,Louisville,103,97,ACC,ACC,34,33,13.5
+2022,5,Penn State,Northwestern,213,77,Big Ten,Big Ten,17,7,-25.5
+2022,5,Mississippi State,Texas A&M,344,245,SEC,SEC,42,24,-4
+2022,5,Kansas,Iowa State,2305,66,Big 12,Big 12,14,11,3.5
+2022,5,Arkansas,Alabama,8,333,SEC,SEC,26,49,17
+2022,5,Baylor,Oklahoma State,239,197,Big 12,Big 12,25,36,-2.5
+2022,5,TCU,Oklahoma,2628,201,Big 12,Big 12,55,24,5
+2022,5,Maryland,Michigan State,120,127,Big Ten,Big Ten,27,13,-7.5
+2022,5,Kansas State,Texas Tech,2306,2641,Big 12,Big 12,37,28,-7.5
+2022,5,Texas,West Virginia,251,277,Big 12,Big 12,38,20,-7.5
+2022,5,Iowa,Michigan,2294,130,Big Ten,Big Ten,14,27,10.5
+2022,5,Ole Miss,Kentucky,145,96,SEC,SEC,22,19,-6.5
+2022,5,Clemson,NC State,228,152,ACC,ACC,30,20,-6.5
+2022,5,Auburn,LSU,2,99,SEC,SEC,17,21,8
+2022,5,Nebraska,Indiana,158,84,Big Ten,Big Ten,35,21,-6.5
+2022,5,Pittsburgh,Georgia Tech,221,59,ACC,ACC,21,26,-21.5
+2022,5,Duke,Virginia,150,258,ACC,ACC,38,17,-2
+2022,5,Minnesota,Purdue,135,2509,Big Ten,Big Ten,10,20,-9
+2022,5,North Carolina,Virginia Tech,153,259,ACC,ACC,41,10,-9.5
+2022,5,Florida State,Wake Forest,52,154,ACC,ACC,21,31,-6
+2022,5,Missouri,Georgia,142,61,SEC,SEC,22,26,31
+2022,6,Indiana,Michigan,84,130,Big Ten,Big Ten,10,31,23.5
+2022,6,NC State,Florida State,152,52,ACC,ACC,19,17,-3.5
+2022,6,Georgia Tech,Duke,59,150,ACC,ACC,23,20,3.5
+2022,6,Vanderbilt,Ole Miss,238,145,SEC,SEC,28,52,17
+2022,6,Florida,Missouri,57,142,SEC,SEC,24,17,-11
+2022,6,Maryland,Purdue,120,2509,Big Ten,Big Ten,29,31,-3
+2022,6,Kentucky,South Carolina,96,2579,SEC,SEC,14,24,-4.5
+2022,6,Illinois,Iowa,356,2294,Big Ten,Big Ten,9,6,-3.5
+2022,6,Virginia,Louisville,258,97,ACC,ACC,17,34,-1.5
+2022,6,Alabama,Texas A&M,333,245,SEC,SEC,24,20,-24
+2022,6,Northwestern,Wisconsin,77,275,Big Ten,Big Ten,7,42,10
+2022,6,Michigan State,Ohio State,127,194,Big Ten,Big Ten,20,49,27
+2022,6,Miami,North Carolina,2390,153,ACC,ACC,24,27,-4
+2022,6,Rutgers,Nebraska,164,158,Big Ten,Big Ten,13,14,3
+2022,6,Iowa State,Kansas State,66,2306,Big 12,Big 12,9,10,1
+2022,6,Pittsburgh,Virginia Tech,221,259,ACC,ACC,45,29,-14.5
+2022,6,Kansas,TCU,2305,2628,Big 12,Big 12,31,38,7
+2022,6,Boston College,Clemson,103,228,ACC,ACC,3,31,21
+2022,6,Oklahoma State,Texas Tech,197,2641,Big 12,Big 12,41,31,-11.5
+2022,6,Oklahoma,Texas,201,251,Big 12,Big 12,0,49,7.5
+2022,6,LSU,Tennessee,99,2633,SEC,SEC,13,40,2.5
+2022,6,Georgia,Auburn,61,2,SEC,SEC,42,10,-27.5
+2022,7,Virginia Tech,Miami,259,2390,ACC,ACC,14,20,9
+2022,7,Indiana,Maryland,84,120,Big Ten,Big Ten,33,38,11
+2022,7,Syracuse,NC State,183,152,ACC,ACC,24,9,-3
+2022,7,Georgia,Vanderbilt,61,238,SEC,SEC,55,0,-37.5
+2022,7,Oklahoma,Kansas,201,2305,Big 12,Big 12,52,42,-10.5
+2022,7,Michigan,Penn State,130,213,Big Ten,Big Ten,41,17,-7
+2022,7,Michigan State,Wisconsin,127,275,Big Ten,Big Ten,34,28,7
+2022,7,Tennessee,Alabama,2633,333,SEC,SEC,52,49,9
+2022,7,Duke,North Carolina,150,153,ACC,ACC,35,38,7
+2022,7,Kentucky,Mississippi State,96,344,SEC,SEC,27,17,3.5
+2022,7,West Virginia,Baylor,277,239,Big 12,Big 12,43,40,3
+2022,7,TCU,Oklahoma State,2628,197,Big 12,Big 12,43,40,-5
+2022,7,Purdue,Nebraska,2509,158,Big Ten,Big Ten,43,37,-14
+2022,7,Florida State,Clemson,52,228,ACC,ACC,28,34,4.5
+2022,7,Texas,Iowa State,251,66,Big 12,Big 12,24,21,-15.5
+2022,7,Illinois,Minnesota,356,135,Big Ten,Big Ten,26,14,4.5
+2022,8,Alabama,Mississippi State,333,344,SEC,SEC,30,6,-21.5
+2022,8,South Carolina,Texas A&M,2579,245,SEC,SEC,30,24,3
+2022,8,Oklahoma State,Texas,197,251,Big 12,Big 12,41,34,6.5
+2022,8,Ohio State,Iowa,194,2294,Big Ten,Big Ten,54,10,-30
+2022,8,Georgia Tech,Virginia,59,258,ACC,ACC,9,16,-3.5
+2022,8,TCU,Kansas State,2628,2306,Big 12,Big 12,38,28,-3.5
+2022,8,Miami,Duke,2390,150,ACC,ACC,21,45,-10
+2022,8,Wake Forest,Boston College,154,103,ACC,ACC,43,15,-20
+2022,8,Texas Tech,West Virginia,2641,277,Big 12,Big 12,48,10,-5
+2022,8,Baylor,Kansas,239,2305,Big 12,Big 12,35,23,-10.5
+2022,8,Maryland,Northwestern,120,77,Big Ten,Big Ten,31,24,-14
+2022,8,Wisconsin,Purdue,275,2509,Big Ten,Big Ten,35,24,-1.5
+2022,8,Rutgers,Indiana,164,84,Big Ten,Big Ten,24,17,-3
+2022,8,Clemson,Syracuse,228,183,ACC,ACC,27,21,-14
+2022,8,Louisville,Pittsburgh,97,221,ACC,ACC,24,10,-1.5
+2022,8,Missouri,Vanderbilt,142,238,SEC,SEC,17,14,-14
+2022,8,Penn State,Minnesota,213,135,Big Ten,Big Ten,45,17,-5.5
+2023,8,Miami,Clemson,2390,228,ACC,ACC,28,20,5
+2023,8,Florida State,Duke,52,150,ACC,ACC,38,20,-14
+2023,8,Alabama,Tennessee,333,2633,SEC,SEC,34,20,-9
+2023,8,Arkansas,Mississippi State,8,344,SEC,SEC,3,7,-7
+2023,8,Illinois,Wisconsin,356,275,Big Ten,Big Ten,21,25,3
+2023,8,Michigan State,Michigan,127,130,Big Ten,Big Ten,0,49,25
+2023,6,Oklahoma State,Kansas State,197,2306,Big 12,Big 12,29,21,11.5
+2023,8,Ohio State,Penn State,194,213,Big Ten,Big Ten,20,12,-4
+2023,6,Illinois,Nebraska,356,158,Big Ten,Big Ten,7,20,-3
+2023,8,Iowa,Minnesota,2294,135,Big Ten,Big Ten,10,12,-3.5
+2023,8,Georgia Tech,Boston College,59,103,ACC,ACC,23,38,-6
+2023,7,Michigan,Indiana,130,84,Big Ten,Big Ten,52,7,-33.5
+2023,7,Vanderbilt,Georgia,238,61,SEC,SEC,20,37,32.5
+2023,7,Houston,West Virginia,248,277,Big 12,Big 12,41,39,3
+2023,7,Purdue,Ohio State,2509,194,Big Ten,Big Ten,7,41,17.5
+2023,7,South Carolina,Florida,2579,57,SEC,SEC,39,41,-0.5
+2023,7,Tennessee,Texas A&M,2633,245,SEC,SEC,20,13,-3
+2023,7,Wisconsin,Iowa,275,2294,Big Ten,Big Ten,6,15,-8.5
+2023,7,Duke,NC State,150,152,ACC,ACC,24,3,-3.5
+2023,7,Florida State,Syracuse,52,183,ACC,ACC,41,3,-19
+2023,7,Pittsburgh,Louisville,221,97,ACC,ACC,38,21,7
+2023,7,North Carolina,Miami,153,2390,ACC,ACC,41,31,-2.5
+2023,4,Alabama,Ole Miss,333,145,SEC,SEC,24,10,-7
+2023,3,Georgia,South Carolina,61,2579,SEC,SEC,24,14,-26
+2023,5,Texas,Kansas,251,2305,Big 12,Big 12,40,14,-16.5
+2023,5,Auburn,Georgia,2,61,SEC,SEC,20,27,14
+2023,5,Ole Miss,LSU,145,99,SEC,SEC,55,49,3
+2023,6,Texas,Oklahoma,251,201,Big 12,Big 12,30,34,-4.5
+2023,5,Arkansas,Texas A&M,8,245,SEC,SEC,22,34,6.5
+2023,5,Nebraska,Michigan,158,130,Big Ten,Big Ten,7,45,17
+2023,8,Kansas State,TCU,2306,2628,Big 12,Big 12,41,3,-5.5
+2023,7,LSU,Auburn,99,2,SEC,SEC,48,18,-11
+2023,4,LSU,Arkansas,99,8,SEC,SEC,34,31,-17.5
+2023,7,Alabama,Arkansas,333,8,SEC,SEC,24,21,-19.5
+2023,1,Georgia Tech,Louisville,59,97,ACC,ACC,34,39,7.5
+2023,1,Minnesota,Nebraska,135,158,Big Ten,Big Ten,13,10,-7.5
+2023,1,Indiana,Ohio State,84,194,Big Ten,Big Ten,3,23,29.5
+2023,4,Clemson,Florida State,228,52,ACC,ACC,24,31,2
+2023,1,Duke,Clemson,150,228,ACC,ACC,28,7,13
+2023,5,Tennessee,South Carolina,2633,2579,SEC,SEC,41,20,-12.5
+2023,3,Florida,Tennessee,57,2633,SEC,SEC,29,16,5.5
+2023,3,Mississippi State,LSU,344,99,SEC,SEC,14,41,9
+2023,1,Rutgers,Northwestern,164,77,Big Ten,Big Ten,24,7,-6
+2023,4,Baylor,Texas,239,251,Big 12,Big 12,6,38,16.5
+2023,6,Texas A&M,Alabama,245,333,SEC,SEC,20,26,2
+2023,3,Illinois,Penn State,356,213,Big Ten,Big Ten,13,30,13.5
+2023,3,Boston College,Florida State,103,52,ACC,ACC,29,31,25.5
+2023,3,Houston,TCU,248,2628,Big 12,Big 12,13,36,7.5
+2023,4,Pittsburgh,North Carolina,221,153,ACC,ACC,24,41,7
+2023,4,Vanderbilt,Kentucky,238,96,SEC,SEC,28,45,13.5
+2023,4,Louisville,Boston College,97,103,ACC,ACC,56,28,-14
+2023,4,Virginia,NC State,258,152,ACC,ACC,21,24,8
+2023,4,Wake Forest,Georgia Tech,154,59,ACC,ACC,16,30,-3.5
+2023,4,Iowa State,Oklahoma State,66,197,Big 12,Big 12,34,27,-3.5
+2023,4,West Virginia,Texas Tech,277,2641,Big 12,Big 12,20,13,6
+2023,4,Kansas,BYU,2305,252,Big 12,Big 12,38,27,-9.5
+2023,4,Northwestern,Minnesota,77,135,Big Ten,Big Ten,37,34,11
+2023,4,Michigan,Rutgers,130,164,Big Ten,Big Ten,31,7,-24
+2023,4,Penn State,Iowa,213,2294,Big Ten,Big Ten,31,0,-14
+2023,4,Texas A&M,Auburn,245,2,SEC,SEC,27,10,-9
+2023,4,Kansas State,UCF,2306,2116,Big 12,Big 12,44,31,-5.5
+2023,4,South Carolina,Mississippi State,2579,344,SEC,SEC,37,30,-6
+2023,4,Cincinnati,Oklahoma,2132,201,Big 12,Big 12,6,20,13.5
+2023,4,Purdue,Wisconsin,2509,275,Big Ten,Big Ten,17,38,6
+2023,4,Michigan State,Maryland,127,120,Big Ten,Big Ten,9,31,7.5
+2023,5,Syracuse,Clemson,183,228,ACC,ACC,14,31,7
+2023,5,Mississippi State,Alabama,344,333,SEC,SEC,17,40,15
+2023,5,Kentucky,Florida,96,57,SEC,SEC,33,14,-1.5
+2023,6,Missouri,LSU,142,99,SEC,SEC,39,49,5.5
+2023,5,Vanderbilt,Missouri,238,142,SEC,SEC,21,38,13.5
+2023,5,UCF,Baylor,2116,239,Big 12,Big 12,35,36,-10.5
+2023,6,Ohio State,Maryland,194,120,Big Ten,Big Ten,37,17,-18
+2023,5,Oklahoma,Iowa State,201,66,Big 12,Big 12,50,20,-20
+2023,5,Boston College,Virginia,103,258,ACC,ACC,27,24,-4
+2023,5,Virginia Tech,Pittsburgh,259,221,ACC,ACC,38,21,2.5
+2023,5,NC State,Louisville,152,97,ACC,ACC,10,13,3.5
+2023,5,Purdue,Illinois,2509,356,Big Ten,Big Ten,44,19,-0.5
+2023,5,Iowa,Michigan State,2294,127,Big Ten,Big Ten,26,16,-11.5
+2023,5,TCU,West Virginia,2628,277,Big 12,Big 12,21,24,-12.5
+2023,5,Maryland,Indiana,120,84,Big Ten,Big Ten,44,17,-14
+2023,5,BYU,Cincinnati,252,2132,Big 12,Big 12,35,27,-0.5
+2023,5,Northwestern,Penn State,77,213,Big Ten,Big Ten,13,41,26.5
+2023,5,Texas Tech,Houston,2641,248,Big 12,Big 12,49,28,-9
+2023,6,Iowa State,TCU,66,2628,Big 12,Big 12,27,14,6.5
+2023,6,Miami,Georgia Tech,2390,59,ACC,ACC,20,23,-19
+2023,6,Baylor,Texas Tech,239,2641,Big 12,Big 12,14,39,2
+2023,6,Minnesota,Michigan,135,130,Big Ten,Big Ten,10,52,18.5
+2023,6,Clemson,Wake Forest,228,154,ACC,ACC,17,12,-21
+2023,6,North Carolina,Syracuse,153,183,ACC,ACC,40,7,-9.5
+2023,6,Kansas,UCF,2305,2116,Big 12,Big 12,51,22,2
+2023,6,Florida,Vanderbilt,57,238,SEC,SEC,38,14,-18.5
+2023,6,Iowa,Purdue,2294,2509,Big Ten,Big Ten,20,14,-2.5
+2023,6,Wisconsin,Rutgers,275,164,Big Ten,Big Ten,24,13,-13
+2023,6,Florida State,Virginia Tech,52,259,ACC,ACC,39,17,-24
+2023,6,Ole Miss,Arkansas,145,8,SEC,SEC,27,20,-12.5
+2023,6,Georgia,Kentucky,61,96,SEC,SEC,51,13,-14.5
+2023,7,Rutgers,Michigan State,164,127,Big Ten,Big Ten,27,24,-4.5
+2023,7,Cincinnati,Iowa State,2132,66,Big 12,Big 12,10,30,-4.5
+2023,7,Virginia Tech,Wake Forest,259,154,ACC,ACC,30,13,-1.5
+2023,7,Texas Tech,Kansas State,2641,2306,Big 12,Big 12,21,38,-1
+2023,7,TCU,BYU,2628,252,Big 12,Big 12,44,11,-5
+2023,7,Kentucky,Missouri,96,142,SEC,SEC,21,38,-2
+2023,7,Oklahoma State,Kansas,197,2305,Big 12,Big 12,39,32,3
+2023,7,Maryland,Illinois,120,356,Big Ten,Big Ten,24,27,-13.5
+2023,8,North Carolina,Virginia,153,258,ACC,ACC,27,31,-24
+2023,8,BYU,Texas Tech,252,2641,Big 12,Big 12,27,14,3
+2023,8,Indiana,Rutgers,84,164,Big Ten,Big Ten,14,31,6
+2023,8,Houston,Texas,248,251,Big 12,Big 12,24,31,23.5
+2023,8,Oklahoma,UCF,201,2116,Big 12,Big 12,31,29,-17
+2023,8,Cincinnati,Baylor,2132,239,Big 12,Big 12,29,32,-2.5
+2023,8,Auburn,Ole Miss,2,145,SEC,SEC,21,28,6.5
+2023,8,Missouri,South Carolina,142,2579,SEC,SEC,34,12,-7.5
+2023,8,Wake Forest,Pittsburgh,154,221,ACC,ACC,21,17,1.5
+2023,8,Nebraska,Northwestern,158,77,Big Ten,Big Ten,17,9,-10.5
+2023,8,West Virginia,Oklahoma State,277,197,Big 12,Big 12,34,48,-3
+2024,7,Pittsburgh,California,221,25,ACC,ACC,17,15,-3.5
+2024,7,West Virginia,Iowa State,277,66,Big 12,Big 12,16,28,3
+2024,7,Virginia,Louisville,258,97,ACC,ACC,20,24,7
+2024,7,UCF,Cincinnati,2116,2132,Big 12,Big 12,13,19,-2.5
+2024,7,Iowa,Washington,2294,264,Big Ten,Big Ten,40,16,-2.5
+2024,7,Alabama,South Carolina,333,2579,SEC,SEC,27,25,-20.5
+2024,7,BYU,Arizona,252,12,Big 12,Big 12,41,19,-2.5
+2024,7,Arizona State,Utah,9,254,Big 12,Big 12,27,19,5.5
+2024,7,Kentucky,Vanderbilt,96,238,SEC,SEC,13,20,-12.5
+2024,7,Maryland,Northwestern,120,77,Big Ten,Big Ten,10,37,-11
+2024,7,NC State,Syracuse,152,183,ACC,ACC,17,24,1
+2024,7,Wake Forest,Clemson,154,228,ACC,ACC,14,49,21
+2024,7,North Carolina,Georgia Tech,153,59,ACC,ACC,34,41,3.5
+2024,7,Illinois,Purdue,356,2509,Big Ten,Big Ten,50,49,-22.5
+2024,7,UCLA,Minnesota,26,135,Big Ten,Big Ten,17,21,3.5
+2024,7,Georgia,Mississippi State,61,344,SEC,SEC,41,31,-34
+2024,7,Rutgers,Wisconsin,164,275,Big Ten,Big Ten,7,42,-1.5
+2024,7,LSU,Ole Miss,99,145,SEC,SEC,29,26,4
+2024,7,Oklahoma,Texas,201,251,SEC,SEC,3,34,17
+2024,7,Oregon,Ohio State,2483,194,Big Ten,Big Ten,32,31,3.5
+2024,7,USC,Penn State,30,213,Big Ten,Big Ten,30,33,3.5
+2024,7,Tennessee,Florida,2633,57,SEC,SEC,23,17,-14
+2024,7,Colorado,Kansas State,38,2306,Big 12,Big 12,28,31,3.5
+2024,8,Missouri,Auburn,142,2,SEC,SEC,21,17,-4
+2024,6,Georgia,Auburn,61,2,SEC,SEC,31,13,-21
+2024,5,Auburn,Oklahoma,2,201,SEC,SEC,21,27,-2
+2024,8,Tennessee,Alabama,2633,333,SEC,SEC,24,17,3.5
+2024,6,Washington,Michigan,264,130,Big Ten,Big Ten,27,17,-1.5
+2024,5,Duke,North Carolina,150,153,ACC,ACC,21,20,1.5
+2024,1,Florida State,Boston College,52,103,ACC,ACC,13,28,-16.5
+2024,4,Oklahoma State,Utah,197,254,Big 12,Big 12,19,22,1
+2024,5,Alabama,Georgia,333,61,SEC,SEC,41,34,-1
+2024,5,Kansas State,Oklahoma State,2306,197,Big 12,Big 12,42,20,-6
+2024,4,Oklahoma,Tennessee,201,2633,SEC,SEC,15,25,6
+2024,8,Iowa State,UCF,66,2116,Big 12,Big 12,38,35,-13
+2024,8,Virginia Tech,Boston College,259,103,ACC,ACC,42,21,-8.5
+2024,1,Georgia Tech,Florida State,59,52,ACC,ACC,24,21,10.5
+2024,8,West Virginia,Kansas State,277,2306,Big 12,Big 12,18,45,2.5
+2024,8,Florida,Kentucky,57,96,SEC,SEC,48,20,2.5
+2024,8,Arizona,Colorado,12,38,Big 12,Big 12,7,34,-2.5
+2024,8,Illinois,Michigan,356,130,Big Ten,Big Ten,21,7,6
+2024,8,Oklahoma,South Carolina,201,2579,SEC,SEC,9,35,1.5
+2024,8,Maryland,USC,120,30,Big Ten,Big Ten,29,28,6.5
+2024,8,Indiana,Nebraska,84,158,Big Ten,Big Ten,56,7,-6.5
+2024,4,Clemson,NC State,228,152,ACC,ACC,59,35,-18
+2024,6,Florida State,Clemson,52,228,ACC,ACC,13,29,16.5
+2024,3,Florida,Texas A&M,57,245,SEC,SEC,20,33,3.5
+2024,5,Texas A&M,Arkansas,245,8,SEC,SEC,21,17,-7
+2024,4,Michigan,USC,130,30,Big Ten,Big Ten,27,24,4
+2024,5,Miami,Virginia Tech,2390,259,ACC,ACC,38,34,-17.5
+2024,3,Kansas State,Arizona,2306,12,Big 12,Big 12,31,7,-8
+2024,8,Louisville,Miami,97,2390,ACC,ACC,45,52,4.5
+2024,6,Texas A&M,Missouri,245,142,SEC,SEC,41,10,-2.5
+2024,6,Ohio State,Iowa,194,2294,Big Ten,Big Ten,35,7,-17
+2024,5,Utah,Arizona,254,12,Big 12,Big 12,10,23,-7.5
+2024,5,USC,Wisconsin,30,275,Big Ten,Big Ten,38,21,-13.5
+2024,8,Arkansas,LSU,8,99,SEC,SEC,10,34,3
+2024,8,Texas,Georgia,251,61,SEC,SEC,15,30,-4
+2024,2,Syracuse,Georgia Tech,183,59,ACC,ACC,31,28,3
+2024,2,Utah,Baylor,254,239,Big 12,Big 12,23,12,-14.5
+2024,2,Wake Forest,Virginia,154,258,ACC,ACC,30,31,0.5
+2024,2,Kentucky,South Carolina,96,2579,SEC,SEC,6,31,-9.5
+2024,2,Maryland,Michigan State,120,127,Big Ten,Big Ten,24,27,-8.5
+2024,3,TCU,UCF,2628,2116,Big 12,Big 12,34,35,-2
+2024,3,Kentucky,Georgia,96,61,SEC,SEC,12,13,22.5
+2024,3,South Carolina,LSU,2579,99,SEC,SEC,33,36,6.5
+2024,3,UCLA,Indiana,26,84,Big Ten,Big Ten,13,42,3
+2024,5,Michigan State,Ohio State,127,194,Big Ten,Big Ten,7,38,23.5
+2024,8,Duke,Florida State,150,52,ACC,ACC,23,16,-2.5
+2024,8,Cincinnati,Arizona State,2132,9,Big 12,Big 12,24,14,-5
+2024,8,Mississippi State,Texas A&M,344,245,SEC,SEC,24,34,21
+2024,8,Clemson,Virginia,228,258,ACC,ACC,48,31,-20
+2024,5,UCF,Colorado,2116,38,Big 12,Big 12,21,48,-12.5
+2024,4,Texas Tech,Arizona State,2641,9,Big 12,Big 12,30,22,-4.5
+2024,8,Purdue,Oregon,2509,2483,Big Ten,Big Ten,0,35,29.5
+2024,8,BYU,Oklahoma State,252,197,Big 12,Big 12,38,35,-8
+2024,4,Auburn,Arkansas,2,8,SEC,SEC,14,24,-2.5
+2024,4,BYU,Kansas State,252,2306,Big 12,Big 12,38,9,7.5
+2024,4,Colorado,Baylor,38,239,Big 12,Big 12,38,31,-2.5
+2024,8,Texas Tech,Baylor,2641,239,Big 12,Big 12,35,59,-4.5
+2024,8,Utah,TCU,254,2628,Big 12,Big 12,7,13,-4
+2024,4,Florida State,California,52,25,ACC,ACC,14,9,-3
+2024,8,Northwestern,Wisconsin,77,275,Big Ten,Big Ten,3,23,9.5
+2024,8,California,NC State,25,152,ACC,ACC,23,24,-9.5
+2024,8,Kansas,Houston,2305,248,Big 12,Big 12,42,14,-5
+2024,8,Stanford,SMU,24,2567,ACC,ACC,10,40,16.5
+2024,4,Louisville,Georgia Tech,97,59,ACC,ACC,31,19,-9
+2024,8,Michigan State,Iowa,127,2294,Big Ten,Big Ten,32,20,6.5
+2024,4,Washington,Northwestern,264,77,Big Ten,Big Ten,24,5,-12
+2024,4,Missouri,Vanderbilt,142,238,SEC,SEC,30,27,-18
+2024,4,Minnesota,Iowa,135,2294,Big Ten,Big Ten,14,31,3
+2024,4,West Virginia,Kansas,277,2305,Big 12,Big 12,32,28,-1.5
+2024,4,Mississippi State,Florida,344,57,SEC,SEC,28,45,6.5
+2024,4,Nebraska,Illinois,158,356,Big Ten,Big Ten,24,31,-9
+2024,4,Syracuse,Stanford,183,24,ACC,ACC,24,26,-9
+2024,4,Cincinnati,Houston,2132,248,Big 12,Big 12,34,0,-4
+2024,8,Rutgers,UCLA,164,26,Big Ten,Big Ten,32,35,-4.5
+2024,5,UCLA,Oregon,26,2483,Big Ten,Big Ten,13,34,23.5
+2024,5,Penn State,Illinois,213,356,Big Ten,Big Ten,21,7,-19.5
+2024,5,Ole Miss,Kentucky,145,96,SEC,SEC,17,20,-15
+2024,5,SMU,Florida State,2567,52,ACC,ACC,42,16,-6
+2024,5,Clemson,Stanford,228,24,ACC,ACC,40,14,-24
+2024,5,Indiana,Maryland,84,120,Big Ten,Big Ten,42,28,-7.5
+2024,5,Kansas,TCU,2305,2628,Big 12,Big 12,27,38,-1.5
+2024,5,Texas Tech,Cincinnati,2641,2132,Big 12,Big 12,44,41,-3
+2024,5,Purdue,Nebraska,2509,158,Big Ten,Big Ten,10,28,10
+2024,5,Baylor,BYU,239,252,Big 12,Big 12,28,34,-3
+2024,5,Texas,Mississippi State,251,344,SEC,SEC,35,13,-37.5
+2024,5,Houston,Iowa State,248,66,Big 12,Big 12,0,20,16.5
+2024,5,Michigan,Minnesota,130,135,Big Ten,Big Ten,27,24,-10.5
+2024,5,Rutgers,Washington,164,264,Big Ten,Big Ten,21,18,-1.5
+2024,6,Oregon,Michigan State,2483,127,Big Ten,Big Ten,31,10,-22
+2024,6,Louisville,SMU,97,2567,ACC,ACC,27,34,-6.5
+2024,6,South Carolina,Ole Miss,2579,145,SEC,SEC,3,27,10
+2024,6,California,Miami,25,2390,ACC,ACC,38,39,9.5
+2024,6,Oklahoma State,West Virginia,197,277,Big 12,Big 12,14,38,-2.5
+2024,6,Arkansas,Tennessee,8,2633,SEC,SEC,19,14,14
+2024,6,North Carolina,Pittsburgh,153,221,ACC,ACC,24,34,2.5
+2024,6,Minnesota,USC,135,30,Big Ten,Big Ten,24,17,9
+2024,6,TCU,Houston,2628,248,Big 12,Big 12,19,30,-16.5
+2024,6,NC State,Wake Forest,152,154,ACC,ACC,30,34,-4
+2024,6,Georgia Tech,Duke,59,150,ACC,ACC,24,14,-10
+2024,6,Virginia,Boston College,258,103,ACC,ACC,24,14,-2
+2024,6,Vanderbilt,Alabama,238,333,SEC,SEC,40,35,23
+2024,6,Arizona State,Kansas,9,2305,Big 12,Big 12,35,31,-2.5
+2024,6,Northwestern,Indiana,77,84,Big Ten,Big Ten,24,41,12.5
+2024,6,Arizona,Texas Tech,12,2641,Big 12,Big 12,22,28,-6
+2024,6,Stanford,Virginia Tech,24,259,ACC,ACC,7,31,9
+2024,6,Iowa State,Baylor,66,239,Big 12,Big 12,43,21,-13
+2024,6,Wisconsin,Purdue,275,2509,Big Ten,Big Ten,52,6,-12
+2024,6,Penn State,UCLA,213,26,Big Ten,Big Ten,27,11,-29.5
+2024,6,Nebraska,Rutgers,158,164,Big Ten,Big Ten,14,7,-6.5
+2025,4,Nebraska,Michigan,158,130,Big Ten,Big Ten,27,30,0.5
+2025,5,Washington,Ohio State,264,194,Big Ten,Big Ten,6,24,9.5
+2025,5,Ole Miss,LSU,145,99,SEC,SEC,24,19,-3
+2025,6,Florida,Texas,57,251,SEC,SEC,29,21,4.5
+2025,4,Utah,Texas Tech,254,2641,Big 12,Big 12,10,34,-3.5
+2025,4,Indiana,Illinois,84,356,Big Ten,Big Ten,63,10,-7
+2025,7,Utah,Arizona State,254,9,Big 12,Big 12,42,10,-9
+2025,6,Florida State,Miami,52,2390,ACC,ACC,22,28,3
+2025,8,Miami,Louisville,2390,97,ACC,ACC,21,24,-10.5
+2025,5,Georgia,Alabama,61,333,SEC,SEC,21,24,-2.5
+2025,7,Texas,Oklahoma,251,201,SEC,SEC,23,6,-2.5
+2025,6,North Carolina,Clemson,153,228,ACC,ACC,10,38,15
+2025,7,Oregon,Indiana,2483,84,Big Ten,Big Ten,20,30,-7
+2025,8,Georgia,Ole Miss,61,145,SEC,SEC,43,35,-7.5
+2025,8,Arizona State,Texas Tech,9,2641,Big 12,Big 12,26,22,8
+2025,8,Michigan,Washington,130,264,Big Ten,Big Ten,24,7,-4
+2025,3,LSU,Florida,99,57,SEC,SEC,20,10,-5
+2025,1,Kansas State,Iowa State,2306,66,Big 12,Big 12,21,24,-3
+2025,2,Kentucky,Ole Miss,96,145,SEC,SEC,23,30,8
+2025,3,Tennessee,Georgia,2633,61,SEC,SEC,41,44,3.5
+2025,3,Georgia Tech,Clemson,59,228,ACC,ACC,24,21,3
+2025,2,NC State,Virginia,152,258,ACC,ACC,35,31,-3
+2025,8,Alabama,Tennessee,333,2633,SEC,SEC,37,20,-8.5
+2025,8,Iowa,Penn State,2294,213,Big Ten,Big Ten,25,24,-3
+2025,7,Auburn,Georgia,2,61,SEC,SEC,10,20,4.5
+2025,7,Illinois,Ohio State,356,194,Big Ten,Big Ten,16,34,15
+2025,5,Penn State,Oregon,213,2483,Big Ten,Big Ten,24,30,-4
+2025,6,Alabama,Vanderbilt,333,238,SEC,SEC,30,14,-13.5
+2025,3,Houston,Colorado,248,38,Big 12,Big 12,36,20,-4
+2025,3,Arizona,Kansas State,12,2306,Big 12,Big 12,23,17,1.5
+2025,3,Wake Forest,NC State,154,152,ACC,ACC,24,34,7.5
+2025,3,Northwestern,Oregon,77,2483,Big Ten,Big Ten,14,34,25.5
+2025,3,Purdue,USC,2509,30,Big Ten,Big Ten,17,33,20.5
+2025,3,South Carolina,Vanderbilt,2579,238,SEC,SEC,7,31,-3
+2025,3,Ole Miss,Arkansas,145,8,SEC,SEC,41,35,-4
+2025,3,Stanford,Boston College,24,103,ACC,ACC,30,20,14
+2025,4,Rutgers,Iowa,164,2294,Big Ten,Big Ten,28,38,2.5
+2025,4,Baylor,Arizona State,239,9,Big 12,Big 12,24,27,-2.5
+2025,4,Wisconsin,Maryland,275,120,Big Ten,Big Ten,10,27,-10.5
+2025,4,Oklahoma,Auburn,201,2,SEC,SEC,24,17,-6.5
+2025,4,USC,Michigan State,30,127,Big Ten,Big Ten,45,31,-18.5
+2025,4,Missouri,South Carolina,142,2579,SEC,SEC,29,20,-10
+2025,5,Virginia,Florida State,258,52,ACC,ACC,46,38,7
+2025,7,Washington,Rutgers,264,164,Big Ten,Big Ten,38,19,-9.5
+2025,5,Arizona State,TCU,9,2628,Big 12,Big 12,27,24,-3
+2025,6,Georgia,Kentucky,61,96,SEC,SEC,35,14,-19.5
+2025,6,Michigan,Wisconsin,130,275,Big Ten,Big Ten,24,10,-17.5
+2025,8,Vanderbilt,LSU,238,99,SEC,SEC,31,24,-1.5
+2025,5,Kansas State,UCF,2306,2116,Big 12,Big 12,34,20,-6
+2025,6,Ohio State,Minnesota,194,135,Big Ten,Big Ten,42,3,-23.5
+2025,7,Wisconsin,Iowa,275,2294,Big Ten,Big Ten,0,37,5
+2025,7,Missouri,Alabama,142,333,SEC,SEC,24,27,3
+2025,5,Iowa State,Arizona,66,12,Big 12,Big 12,39,14,-4
+2025,7,Tennessee,Arkansas,2633,8,SEC,SEC,34,31,-10
+2025,6,TCU,Colorado,2628,38,Big 12,Big 12,35,21,-14
+2025,8,Auburn,Missouri,2,142,SEC,SEC,17,23,1.5
+2025,5,Mississippi State,Tennessee,344,2633,SEC,SEC,34,41,7.5
+2025,6,Texas A&M,Mississippi State,245,344,SEC,SEC,31,9,-17.5
+2025,6,Houston,Texas Tech,248,2641,Big 12,Big 12,11,35,12.5
+2025,7,Texas A&M,Florida,245,57,SEC,SEC,34,17,-7
+2025,8,BYU,Utah,252,254,Big 12,Big 12,24,21,4.5
+2025,5,Iowa,Indiana,2294,84,Big Ten,Big Ten,15,20,9
+2025,7,Cincinnati,UCF,2132,2116,Big 12,Big 12,20,11,-10.5
+2025,5,West Virginia,Utah,277,254,Big 12,Big 12,14,48,13
+2025,6,Maryland,Washington,120,264,Big Ten,Big Ten,20,24,5.5
+2025,7,LSU,South Carolina,99,2579,SEC,SEC,20,10,-8.5
+2025,8,UCF,West Virginia,2116,277,Big 12,Big 12,45,13,-6.5
+2025,5,Illinois,USC,356,30,Big Ten,Big Ten,34,32,6.5
+2025,5,Texas A&M,Auburn,245,2,SEC,SEC,16,10,-6.5
+2025,8,South Carolina,Oklahoma,2579,201,SEC,SEC,7,26,4.5
+2025,7,Maryland,Nebraska,120,158,Big Ten,Big Ten,31,34,7
+2025,8,Arkansas,Texas A&M,8,245,SEC,SEC,42,45,7.5
+2025,7,Florida State,Pittsburgh,52,221,ACC,ACC,31,34,-11
+2025,5,Boston College,California,103,25,ACC,ACC,24,28,-6
+2025,8,Florida,Mississippi State,57,344,SEC,SEC,23,21,-9.5
+2025,5,Minnesota,Rutgers,135,164,Big Ten,Big Ten,31,28,-3.5
+2025,8,Indiana,Michigan State,84,127,Big Ten,Big Ten,38,13,-26.5
+2025,7,Penn State,Northwestern,213,77,Big Ten,Big Ten,21,22,-20.5
+2025,8,Rutgers,Oregon,164,2483,Big Ten,Big Ten,10,56,18
+2025,5,Wake Forest,Georgia Tech,154,59,ACC,ACC,29,30,12.5
+2025,7,Georgia Tech,Virginia Tech,59,259,ACC,ACC,35,20,-14
+2025,7,Michigan State,UCLA,127,26,Big Ten,Big Ten,13,38,-7
+2025,8,Northwestern,Purdue,77,2509,Big Ten,Big Ten,19,0,-3.5
+2025,8,Syracuse,Pittsburgh,183,221,ACC,ACC,13,30,9
+2025,5,Syracuse,Duke,183,150,ACC,ACC,3,38,4
+2025,5,Pittsburgh,Louisville,221,97,ACC,ACC,27,34,3
+2025,5,NC State,Virginia Tech,152,259,ACC,ACC,21,23,-10
+2025,8,Houston,Arizona,248,12,Big 12,Big 12,31,28,2
+2025,8,TCU,Baylor,2628,239,Big 12,Big 12,42,36,-3.5
+2025,7,Texas Tech,Kansas,2641,2305,Big 12,Big 12,42,17,-13.5
+2025,8,Minnesota,Nebraska,135,158,Big Ten,Big Ten,24,6,7
+2025,8,California,North Carolina,25,153,ACC,ACC,21,18,-8
+2025,8,Wisconsin,Ohio State,275,194,Big Ten,Big Ten,0,34,24.5
+2025,7,Colorado,Iowa State,38,66,Big 12,Big 12,24,17,3
+2025,5,Northwestern,UCLA,77,26,Big Ten,Big Ten,17,14,-6
+2025,5,Kansas,Cincinnati,2305,2132,Big 12,Big 12,34,37,-5
+2025,8,Oklahoma State,Cincinnati,197,2132,Big 12,Big 12,17,49,23.5
+2025,7,Arizona,BYU,12,252,Big 12,Big 12,27,33,2.5
+2025,7,SMU,Stanford,2567,24,ACC,ACC,34,10,-19.5
+2025,8,Kentucky,Texas,96,251,SEC,SEC,13,16,12.5
+2025,7,Oklahoma State,Houston,197,248,Big 12,Big 12,17,39,14.5
+2025,8,Stanford,Florida State,24,52,ACC,ACC,20,13,17.5
+2025,5,South Carolina,Kentucky,2579,96,SEC,SEC,35,13,-5.5
+2025,5,Oklahoma State,Baylor,197,239,Big 12,Big 12,27,45,21
+2025,8,Clemson,SMU,228,2567,ACC,ACC,24,35,-4
+2025,7,Kansas State,TCU,2306,2628,Big 12,Big 12,41,28,3
+2025,7,Minnesota,Purdue,135,2509,Big Ten,Big Ten,27,20,-7.5
+2025,5,Colorado,BYU,38,252,Big 12,Big 12,21,24,6.5
+2025,8,Duke,Georgia Tech,150,59,ACC,ACC,18,27,-3.5
+2025,8,UCLA,Maryland,26,120,Big Ten,Big Ten,20,17,-4
+2025,7,Boston College,Clemson,103,228,ACC,ACC,10,41,14
+2025,7,USC,Michigan,30,130,Big Ten,Big Ten,31,13,-3
+2025,6,Nebraska,Michigan State,158,127,Big Ten,Big Ten,38,27,-13
+2025,6,California,Duke,25,150,ACC,ACC,21,45,3.5
+2025,6,Louisville,Virginia,97,258,ACC,ACC,27,30,-6.5
+2025,6,Cincinnati,Iowa State,2132,66,Big 12,Big 12,38,30,-1.5
+2025,4,Clemson,Syracuse,228,183,ACC,ACC,21,34,-17.5
+2025,4,Duke,NC State,150,152,ACC,ACC,45,33,-3
+2025,6,BYU,West Virginia,252,277,Big 12,Big 12,38,24,-19.5
+2025,6,Pittsburgh,Boston College,221,103,ACC,ACC,48,7,-6.5
+2025,4,Kansas,West Virginia,2305,277,Big 12,Big 12,41,10,-13
+2025,4,Virginia,Stanford,258,24,ACC,ACC,48,20,-16
+2025,6,Virginia Tech,Wake Forest,259,154,ACC,ACC,23,30,-5
+2025,6,Purdue,Illinois,2509,356,Big Ten,Big Ten,27,43,7
+2025,6,Arizona,Oklahoma State,12,197,Big 12,Big 12,41,13,-22
+2025,6,UCLA,Penn State,26,213,Big Ten,Big Ten,42,37,24.5
+2025,6,SMU,Syracuse,2567,183,ACC,ACC,31,18,-17.5
+2025,6,Baylor,Kansas State,239,2306,Big 12,Big 12,35,34,-4.5
+2025,6,UCF,Kansas,2116,2305,Big 12,Big 12,20,27,4
+2026,8,UCF,BYU,2116,252,Big 12,Big 12,39,31,7.5
+2026,8,Kentucky,Vanderbilt,96,238,SEC,SEC,34,17,-10
+2026,8,South Carolina,Tennessee,2579,2633,SEC,SEC,27,24,-2.5
+2026,8,Miami,Pittsburgh,2390,221,ACC,ACC,52,23,-20.5
+2026,8,Clemson,Virginia Tech,228,259,ACC,ACC,16,20,-3
+2026,8,Minnesota,Iowa,135,2294,Big Ten,Big Ten,13,10,8
+2026,8,Auburn,LSU,2,99,SEC,SEC,17,38,7
+2026,8,Wisconsin,USC,275,30,Big Ten,Big Ten,24,7,2
+2026,8,Arizona,Iowa State,12,66,Big 12,Big 12,39,3,-12
+2026,3,Texas Tech,Houston,2641,248,Big 12,Big 12,28,26,-8
+2026,3,Louisville,SMU,97,2567,ACC,ACC,41,31,-3
+2026,4,LSU,Texas A&M,99,245,SEC,SEC,35,6,-8.5
+2026,4,USC,Oregon,30,2483,Big Ten,Big Ten,27,41,3.5
+2026,4,Georgia,Oklahoma,61,201,SEC,SEC,41,13,-11.5
+2026,3,Auburn,Florida,2,57,SEC,SEC,39,44,2.5
+2026,3,Ole Miss,LSU,145,99,SEC,SEC,32,24,3
+2026,5,Clemson,Miami,228,2390,ACC,ACC,13,41,15
+2026,4,Tennessee,Texas,2633,251,SEC,SEC,17,20,5.5
+2026,6,Penn State,USC,213,30,Big Ten,Big Ten,23,31,0.5
+2026,6,Alabama,Georgia,333,61,SEC,SEC,17,20,-2.5
+2026,8,Northwestern,Rutgers,77,164,Big Ten,Big Ten,42,14,-15.5
+2026,7,Indiana,Ohio State,84,194,Big Ten,Big Ten,15,19,3
+2026,6,Oklahoma,Texas,201,251,SEC,SEC,27,24,8
+2026,7,Michigan,Penn State,130,213,Big Ten,Big Ten,21,18,-6
+2026,7,Oregon,Nebraska,2483,158,Big Ten,Big Ten,17,14,-7
+2026,7,Georgia,Auburn,61,2,SEC,SEC,24,27,-19.5
+2026,7,Miami,Florida State,2390,52,ACC,ACC,43,35,-20.5
+2026,7,Kansas State,Kansas,2306,2305,Big 12,Big 12,35,24,-3.5
+2026,7,Duke,North Carolina,150,153,ACC,ACC,20,24,-3
+2026,7,Tennessee,Alabama,2633,333,SEC,SEC,26,10,8
+2026,8,TCU,West Virginia,2628,277,Big 12,Big 12,20,24,-10
+2026,8,UCLA,Michigan State,26,127,Big Ten,Big Ten,28,10,-16.5
+2026,8,Michigan,Indiana,130,84,Big Ten,Big Ten,6,13,7.5
+2026,8,Alabama,Texas A&M,333,245,SEC,SEC,31,20,-13.5
+2026,8,Kansas,Baylor,2305,239,Big 12,Big 12,25,24,-1.5
+2026,8,Cincinnati,Texas Tech,2132,2641,Big 12,Big 12,37,24,11
+2026,1,Virginia,NC State,258,152,ACC,ACC,34,8,-4
+2026,8,Arizona State,Kansas State,9,2306,Big 12,Big 12,28,17,1.5
+2026,8,North Carolina,Syracuse,153,183,ACC,ACC,30,31,-8.5
+2026,8,Oklahoma State,Colorado,197,38,Big 12,Big 12,57,24,-13
+2026,8,Illinois,Oregon,356,2483,Big Ten,Big Ten,21,10,10.5
+2026,8,Georgia Tech,Boston College,59,103,ACC,ACC,27,49,-6.5
+2026,8,Stanford,NC State,24,152,ACC,ACC,31,28,7.5
+2026,8,SMU,California,2567,25,ACC,ACC,59,20,-18.5
+2026,8,Utah,Houston,254,248,Big 12,Big 12,21,13,-6.5
+2026,8,Virginia,Duke,258,150,ACC,ACC,16,19,-2.5
+2026,8,Mississippi State,Oklahoma,344,201,SEC,SEC,15,23,1.5
+2026,8,Texas,Ole Miss,251,145,SEC,SEC,34,27,-3
+2026,1,Stanford,Miami,24,2390,ACC,ACC,6,45,24.5
+2026,2,Syracuse,California,183,25,ACC,ACC,18,21,-4
+2026,1,Florida State,SMU,52,2567,ACC,ACC,24,27,3
+2026,2,BYU,Arizona,252,12,Big 12,Big 12,28,17,-7
+2026,2,Kentucky,Alabama,96,333,SEC,SEC,17,45,9
+2026,3,Arkansas,Georgia,8,61,SEC,SEC,17,45,24.5
+2026,3,South Carolina,Mississippi State,2579,344,SEC,SEC,34,41,-3
+2026,3,Kansas,Arizona State,2305,9,Big 12,Big 12,17,24,5.5
+2026,3,Texas A&M,Kentucky,245,96,SEC,SEC,21,31,-16.5
+2026,3,Duke,Stanford,150,24,ACC,ACC,35,7,-10
+2026,3,Clemson,North Carolina,228,153,ACC,ACC,28,20,-3
+2026,3,Pittsburgh,Syracuse,221,183,ACC,ACC,27,13,-11
+2026,3,Rutgers,USC,164,30,Big Ten,Big Ten,35,42,21
+2026,3,UCLA,Purdue,26,2509,Big Ten,Big Ten,52,38,-13.5
+2026,4,Maryland,UCLA,120,26,Big Ten,Big Ten,3,54,2.5
+2026,4,Michigan State,Nebraska,127,158,Big Ten,Big Ten,13,31,6
+2026,4,Auburn,Vanderbilt,2,238,SEC,SEC,21,15,-10
+2026,4,Michigan,Iowa,130,2294,Big Ten,Big Ten,19,20,-5
+2026,4,Mississippi State,Missouri,344,142,SEC,SEC,31,24,-3.5
+2026,4,West Virginia,Oklahoma State,277,197,Big 12,Big 12,24,41,-1.5
+2026,4,Florida,Ole Miss,57,145,SEC,SEC,52,28,-4
+2026,4,Alabama,South Carolina,333,2579,SEC,SEC,49,18,-12.5
+2026,4,Penn State,Wisconsin,213,275,Big Ten,Big Ten,20,24,-10
+2026,3,Wake Forest,Miami,154,2390,ACC,ACC,20,33,20.5
+2026,4,Ohio State,Illinois,194,356,Big Ten,Big Ten,42,19,-25.5
+2026,4,Iowa State,Utah,66,254,Big 12,Big 12,17,31,7.5
+2026,4,Louisville,Wake Forest,97,154,ACC,ACC,27,30,-11.5
+2026,4,Washington,Minnesota,264,135,Big Ten,Big Ten,24,27,-12.5
+2026,4,Boston College,Virginia Tech,103,259,ACC,ACC,14,21,14.5
+2026,4,Indiana,Northwestern,84,77,Big Ten,Big Ten,29,23,-20.5
+2026,5,South Carolina,Kentucky,2579,96,SEC,SEC,34,35,-2.5
+2026,5,USC,Washington,30,264,Big Ten,Big Ten,25,21,-8.5
+2026,5,Tennessee,Auburn,2633,2,SEC,SEC,24,14,-6.5
+2026,5,NC State,Louisville,152,97,ACC,ACC,31,28,4.5
+2026,4,Stanford,Georgia Tech,24,59,ACC,ACC,34,27,3
+2026,5,TCU,BYU,2628,252,Big 12,Big 12,10,17,6
+2026,5,Missouri,Florida,142,57,SEC,SEC,45,17,5.5
+2026,5,Virginia Tech,Pittsburgh,259,221,ACC,ACC,33,35,-1.5
+2026,5,Iowa,Ohio State,2294,194,Big Ten,Big Ten,14,31,14.5
+2026,5,Northwestern,Penn State,77,213,Big Ten,Big Ten,34,13,3
+2026,4,Baylor,Colorado,239,38,Big 12,Big 12,23,13,-8.5
+2026,5,Georgia,Vanderbilt,61,238,SEC,SEC,38,14,-25.5
+2026,4,UCF,TCU,2116,2628,Big 12,Big 12,21,13,3.5
+2026,5,Mississippi State,Alabama,344,333,SEC,SEC,23,56,5.5
+2026,4,California,Clemson,25,228,ACC,ACC,10,24,2.5
+2026,5,Minnesota,Michigan,135,130,Big Ten,Big Ten,20,14,6.5
+2026,4,Cincinnati,Kansas State,2132,2306,Big 12,Big 12,31,26,6
+2026,5,Texas A&M,Arkansas,245,8,SEC,SEC,34,7,-14
+2026,5,SMU,Boston College,2567,103,ACC,ACC,25,16,-21.5
+2026,5,Houston,UCF,248,2116,Big 12,Big 12,27,17,-10.5
+2026,5,Arizona State,Baylor,9,239,Big 12,Big 12,19,55,-3.5
+2026,5,Arizona,Cincinnati,12,2132,Big 12,Big 12,34,7,-7
+2026,5,Iowa State,West Virginia,66,277,Big 12,Big 12,45,42,-3
+2026,5,Colorado,Texas Tech,38,2641,Big 12,Big 12,7,29,13.5
+2026,5,Wake Forest,Stanford,154,24,ACC,ACC,57,3,-14.5
+2026,5,Illinois,Purdue,356,2509,Big Ten,Big Ten,17,24,-10
+2026,5,Wisconsin,Michigan State,275,127,Big Ten,Big Ten,31,3,-9
+2026,5,Florida State,Virginia,52,258,ACC,ACC,38,7,1.5
+2026,5,Nebraska,Maryland,158,120,Big Ten,Big Ten,48,23,-15
+2026,5,Rutgers,Indiana,164,84,Big Ten,Big Ten,15,47,24.5
+2026,6,Vanderbilt,Ole Miss,238,145,SEC,SEC,17,52,9.5
+2026,6,Purdue,Minnesota,2509,135,Big Ten,Big Ten,41,13,3
+2026,6,Virginia,Syracuse,258,183,ACC,ACC,28,25,-14
+2026,6,West Virginia,Arizona,277,12,Big 12,Big 12,31,52,3.5
+2026,6,Kentucky,LSU,96,99,SEC,SEC,35,34,9.5
+2026,6,Oklahoma State,UCF,197,2116,Big 12,Big 12,42,28,-10.5
+2026,6,Pittsburgh,North Carolina,221,153,ACC,ACC,17,21,-3.5
+2026,6,Ohio State,Maryland,194,120,Big Ten,Big Ten,45,16,-31.5
+2026,6,Missouri,Texas A&M,142,245,SEC,SEC,27,6,-4.5
+2026,6,California,Virginia Tech,25,259,ACC,ACC,25,20,11
+2026,6,Louisville,Florida State,97,52,ACC,ACC,44,20,-4.5
+2026,6,Washington,Iowa,264,2294,Big Ten,Big Ten,24,41,-3
+2026,6,NC State,Wake Forest,152,154,ACC,ACC,14,38,4
+2026,6,Florida,South Carolina,57,2579,SEC,SEC,19,38,-10.5
+2026,6,Michigan State,Illinois,127,356,Big Ten,Big Ten,37,38,2.5
+2026,6,Nebraska,Indiana,158,84,Big Ten,Big Ten,17,20,9
+2026,6,Georgia Tech,Duke,59,150,ACC,ACC,28,25,4.5
+2026,6,BYU,Iowa State,252,66,Big 12,Big 12,24,10,-11.5
+2026,6,Kansas State,Houston,2306,248,Big 12,Big 12,16,35,-2.5
+2026,6,Arkansas,Tennessee,8,2633,SEC,SEC,17,24,14
+2026,6,Oregon,UCLA,2483,26,Big Ten,Big Ten,15,17,-10.5
+2026,6,Utah,Kansas,254,2305,Big 12,Big 12,41,24,-16
+2026,7,Michigan State,Northwestern,127,77,Big Ten,Big Ten,21,24,7.5
+2026,7,Boston College,Pittsburgh,103,221,ACC,ACC,27,21,6.5
+2026,7,West Virginia,Cincinnati,277,2132,Big 12,Big 12,45,42,-1.5
+2026,7,Texas,Florida,251,57,SEC,SEC,24,27,-13
+2026,7,Colorado,Utah,38,254,Big 12,Big 12,24,27,15.5
+2026,7,Baylor,TCU,239,2628,Big 12,Big 12,6,17,-4.5
+2026,7,Virginia Tech,Georgia Tech,259,59,ACC,ACC,34,24,-8.5
+2026,7,SMU,Virginia,2567,258,ACC,ACC,23,13,-10
+2026,7,Vanderbilt,Arkansas,238,8,SEC,SEC,21,31,-6
+2026,7,Purdue,Washington,2509,264,Big Ten,Big Ten,26,38,-3
+2026,7,Oklahoma,Kentucky,201,96,SEC,SEC,13,21,-7
+2026,7,LSU,Mississippi State,99,344,SEC,SEC,31,0,-18
+2026,7,Maryland,Rutgers,120,164,Big Ten,Big Ten,30,37,-6
+2026,7,Ole Miss,Missouri,145,142,SEC,SEC,31,3,-4.5
+2026,7,California,Wake Forest,25,154,ACC,ACC,7,41,10
+2026,7,Houston,Oklahoma State,248,197,Big 12,Big 12,35,32,-4.5
+2026,7,Syracuse,Louisville,183,97,ACC,ACC,26,34,14.5
+2026,7,UCLA,Wisconsin,26,275,Big Ten,Big Ten,17,7,-2
+2026,7,Texas Tech,Arizona State,2641,9,Big 12,Big 12,53,25,-16
