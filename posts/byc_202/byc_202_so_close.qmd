@@ -56,7 +56,7 @@ theme_byc <- function() {
 }
 ```
 
-### Logo strip: how bunched is each league?
+### Logo strip
 
 ```{r parity-strip, warning=FALSE, message=FALSE}
 sp <- readr::read_csv("sp_plus_2026_10_26.csv", show_col_types = FALSE)
