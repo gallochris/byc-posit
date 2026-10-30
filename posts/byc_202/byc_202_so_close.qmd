@@ -58,8 +58,6 @@ theme_byc <- function() {
 
 ### Logo strip: how bunched is each league?
 
-One row per league, one logo per team at its SP+ rating. Leagues are ordered by the standard deviation of their teams' ratings, so the most bunched league is on top. Logos are placed beeswarm-style: each one takes the nearest open slot above or below the line.
-
 ```{r parity-strip, warning=FALSE, message=FALSE}
 sp <- readr::read_csv("sp_plus_2026_10_26.csv", show_col_types = FALSE)
 sp_date <- as.Date(sp$sp_date[1])
@@ -170,8 +168,6 @@ knitr::include_graphics("parity_strip_2026.png")
 ```
 
 ### GT table: Double-digit underdogs in Power 4 conference play
-
-Every Power 4 conference game in weeks 1–8 with a line. An underdog is the team getting points. The trend strip in the header is plain HTML bars, one per season, with wins and games beneath.
 
 ```{r dd-dogs-table, warning=FALSE, message=FALSE}
 season <- 2026L
@@ -288,8 +284,6 @@ dd_tbl
 ```
 
 ### Schedule grids: every FBS league
-
-Each grid is a league: every team down the side and across the top. A filled square means the two teams play in the regular season. Every grid is drawn in the same-size box, so a league with more teams gets smaller squares.
 
 ```{r schedule-grids, warning=FALSE, message=FALSE}
 sched <- readr::read_csv("conf_schedules_2014_2026.csv", show_col_types = FALSE)
